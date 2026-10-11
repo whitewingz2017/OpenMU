@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 using Microsoft.Extensions.Logging.Abstractions;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
 using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.InMemory;
@@ -34,6 +35,11 @@ internal class StartingSiegeSkillsTest
         var (context, configuration) = await CreateConfigurationAsync().ConfigureAwait(false);
         using var _ = context;
         AssertGrants(context, configuration);
+        Assert.That(configuration.Skills.Single(skill => skill.Number == 45).QualifiedCharacters
+            .Any(characterClass => characterClass.Number == 0), Is.True, "New Dark Wizards must be eligible to use their starting Lance skill.");
+        var dragonSlasher = configuration.Skills.Single(skill => skill.Number == 265);
+        Assert.That(dragonSlasher.AttributeRelationships.Count(relationship => relationship.TargetAttribute == Stats.DragonSlasherShieldDamageChance), Is.EqualTo(2));
+        Assert.That(dragonSlasher.AttributeRelationships.Count(relationship => relationship.TargetAttribute == Stats.DragonSlasherShieldDamageRate), Is.EqualTo(2));
         foreach (var (_, skillNumber, damage) in StartingSkills)
         {
             Assert.That(configuration.Skills.Single(skill => skill.Number == skillNumber).AttackDamage, Is.EqualTo(damage));
