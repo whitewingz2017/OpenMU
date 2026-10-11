@@ -73,7 +73,7 @@ public class SpeedHackDetectPlugIn : IFeaturePlugIn, ISupportCustomConfiguration
                 var elapsed = now - (state.LastWalkTime ?? now);
                 state.WalkCreditMs = state.LastWalkTime is null
                     ? maxCreditMs
-                    : Math.Min(maxCreditMs, state.WalkCreditMs + elapsed.TotalMilliseconds);
+                    : state.WalkCreditMs + elapsed.TotalMilliseconds;
 
                 if (state.LastWalkStartPoint is { } lastStartPoint)
                 {
@@ -104,6 +104,10 @@ public class SpeedHackDetectPlugIn : IFeaturePlugIn, ISupportCustomConfiguration
                     }
                 }
 
+                // Cap the remaining credit after paying for the traveled distance. Capping before
+                // payment discards time spent on a legitimate long path whose cost exceeds the
+                // tolerance, even when its elapsed time is greater than the required walking time.
+                state.WalkCreditMs = Math.Min(maxCreditMs, state.WalkCreditMs);
                 state.LastWalkTime = now;
                 state.LastWalkStartPoint = startPoint;
             }

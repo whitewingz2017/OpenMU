@@ -1,0 +1,411 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MUnique.OpenMU.Startup</name>
+    </assembly>
+    <members>
+        <member name="T:MUnique.OpenMU.Startup.ChatServerContainer">
+            <summary>
+            A container which takes care of the <see cref="T:MUnique.OpenMU.Interfaces.IChatServer"/>.
+            It initializes and restarts it, as soon as the database is reinitialized.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ChatServerContainer.#ctor(MUnique.OpenMU.ChatServer.ChatServer,MUnique.OpenMU.Persistence.IPersistenceContextProvider,MUnique.OpenMU.Persistence.SetupService,Microsoft.Extensions.Logging.ILogger{MUnique.OpenMU.Startup.ChatServerContainer})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.ChatServerContainer"/> class.
+            </summary>
+            <param name="chatServer">The chat server.</param>
+            <param name="persistenceContextProvider">The persistence context provider.</param>
+            <param name="setupService">The setup service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ChatServerContainer.StartInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ChatServerContainer.StopInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ChatServerContainer.StartListenersAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.ChatServerDefinitionExtensions">
+            <summary>
+            Extensions for <see cref="T:MUnique.OpenMU.DataModel.Configuration.ChatServerDefinition"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ChatServerDefinitionExtensions.ConvertToSettings(MUnique.OpenMU.DataModel.Configuration.ChatServerDefinition)">
+            <summary>
+            Converts the <see cref="T:MUnique.OpenMU.DataModel.Configuration.ChatServerDefinition"/> into corresponding <see cref="T:MUnique.OpenMU.ChatServer.ChatServerSettings"/>.
+            </summary>
+            <param name="definition">The definition.</param>
+            <returns>The settings.</returns>
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.ConfigurationChangeHandler">
+            <summary>
+            An implementation of <see cref="T:MUnique.OpenMU.Interfaces.IConfigurationChangePublisher"/> which directly handles the changes
+            by updating some components and forwarding the events to the <see cref="T:MUnique.OpenMU.GameLogic.IConfigurationChangeMediator"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConfigurationChangeHandler.#ctor(System.IServiceProvider,MUnique.OpenMU.GameLogic.IConfigurationChangeMediatorListener)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.ConfigurationChangeHandler" /> class.
+            </summary>
+            <param name="serviceProvider">The service provider.</param>
+            <param name="changeMediator">The change mediator.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConfigurationChangeHandler.ConfigurationChangedAsync(System.Type,System.Guid,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConfigurationChangeHandler.ConfigurationAddedAsync(System.Type,System.Guid,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConfigurationChangeHandler.ConfigurationRemovedAsync(System.Type,System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.ConnectServerContainer">
+            <summary>
+            A container which keeps all <see cref="T:MUnique.OpenMU.Interfaces.IConnectServer"/>s in one <see cref="T:Microsoft.Extensions.Hosting.IHostedService"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.#ctor(System.Collections.Generic.IList{MUnique.OpenMU.Interfaces.IManageableServer},MUnique.OpenMU.Persistence.IPersistenceContextProvider,Microsoft.Extensions.Logging.ILogger{MUnique.OpenMU.Startup.ConnectServerContainer},MUnique.OpenMU.ConnectServer.ConnectServerFactory,MUnique.OpenMU.Persistence.SetupService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.ConnectServerContainer" /> class.
+            </summary>
+            <param name="servers">The servers.</param>
+            <param name="persistenceContextProvider">The persistence context provider.</param>
+            <param name="logger">The logger.</param>
+            <param name="connectServerFactory">The connect server factory.</param>
+            <param name="setupService">The setup service.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.InitializeConnectServerAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.RemoveConnectServerAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.GetObserver(MUnique.OpenMU.DataModel.Configuration.GameClientDefinition)">
+            <summary>
+            Gets the observer.
+            </summary>
+            <param name="gameClient">The game client.</param>
+            <returns>The observer for the client.</returns>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.StartListenersAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.StartInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ConnectServerContainer.StopInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.GameServerContainer">
+            <summary>
+            A container which keeps all <see cref="T:MUnique.OpenMU.Interfaces.IGameServer"/>s in one <see cref="T:Microsoft.Extensions.Hosting.IHostedService"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.Collections.Generic.IList{MUnique.OpenMU.Interfaces.IManageableServer},System.Collections.Generic.IDictionary{System.Int32,MUnique.OpenMU.Interfaces.IGameServer},MUnique.OpenMU.Persistence.IPersistenceContextProvider,MUnique.OpenMU.Startup.ConnectServerContainer,MUnique.OpenMU.Interfaces.IGuildServer,MUnique.OpenMU.Interfaces.ILoginServer,MUnique.OpenMU.Interfaces.IFriendServer,MUnique.OpenMU.Network.IIpAddressResolver,MUnique.OpenMU.PlugIns.PlugInManager,MUnique.OpenMU.Persistence.SetupService,MUnique.OpenMU.GameLogic.IConfigurationChangeMediator,System.Collections.Generic.IEnumerable{MUnique.OpenMU.Interfaces.IGameEventListener},MUnique.OpenMU.Network.Analyzer.Archive.IPacketArchive)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.GameServerContainer" /> class.
+            </summary>
+            <param name="loggerFactory">The logger factory.</param>
+            <param name="servers">The servers.</param>
+            <param name="gameServers">The game servers.</param>
+            <param name="persistenceContextProvider">The persistence context provider.</param>
+            <param name="connectServerContainer">The connect server container.</param>
+            <param name="guildServer">The guild server.</param>
+            <param name="loginServer">The login server.</param>
+            <param name="friendServer">The friend server.</param>
+            <param name="ipResolver">The ip resolver.</param>
+            <param name="plugInManager">The plug in manager.</param>
+            <param name="setupService">The setup service.</param>
+            <param name="changeMediator">The change mediator.</param>
+            <param name="gameEventListeners">The listeners for the game events.</param>
+            <param name="packetArchive">The archive for the traffic of observed accounts.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.InitializeGameServerAsync(System.Byte)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.RemoveGameServerAsync(System.Byte)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.BeforeStartAsync(System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.StartInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.StartListenersAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.GameServerContainer.StopInnerAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.InMemoryEventPublisher">
+            <summary>
+            An <see cref="T:MUnique.OpenMU.Interfaces.IEventPublisher"/> which publishes directly to the available started servers in this application.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.#ctor(System.Collections.Generic.IDictionary{System.Int32,MUnique.OpenMU.Interfaces.IGameServer},MUnique.OpenMU.Interfaces.IFriendServer,MUnique.OpenMU.Interfaces.IGuildServer,System.Collections.Generic.IEnumerable{MUnique.OpenMU.Interfaces.IGameEventListener},Microsoft.Extensions.Logging.ILogger{MUnique.OpenMU.Startup.InMemoryEventPublisher})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.InMemoryEventPublisher"/> class.
+            </summary>
+            <param name="gameServers">The game servers.</param>
+            <param name="friendServer">The friend server.</param>
+            <param name="guildServer">The guild server.</param>
+            <param name="gameEventListeners">The listeners for the <see cref="T:MUnique.OpenMU.Interfaces.GameEvent"/>s.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.PlayerEnteredGameAsync(System.Byte,System.Guid,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.PlayerLeftGameAsync(System.Byte,System.Guid,System.String,System.UInt32)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.GuildMessageAsync(System.UInt32,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.AllianceMessageAsync(System.UInt32,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.PlayerAlreadyLoggedInAsync(System.Byte,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.InMemoryEventPublisher.GameEventAsync(MUnique.OpenMU.Interfaces.GameEvent)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver">
+            <summary>
+            An implementation of a <see cref="T:MUnique.OpenMU.Interfaces.IGameServerStateObserver"/> which forwards registrations to multiple state observers,
+            e.g when there are multiple connect servers defined for the same game client.
+            </summary>
+            <seealso cref="T:MUnique.OpenMU.Interfaces.IGameServerStateObserver" />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver"/> class.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.AddObserver(MUnique.OpenMU.Interfaces.IGameServerStateObserver)">
+            <summary>
+            Adds the observer which wants to get notified about changes.
+            </summary>
+            <param name="observer">The observer.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.RegisterGameServer(MUnique.OpenMU.Interfaces.ServerInfo,System.Net.IPEndPoint)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.UnregisterGameServer(System.UInt16)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.CurrentConnectionsChanged(System.UInt16,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.MulticastConnectionServerStateObserver.PullRegistrations(MUnique.OpenMU.Interfaces.IGameServerStateObserver)">
+            <summary>
+            Pulls the registrations.
+            </summary>
+            <param name="observer">The observer.</param>
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.Program">
+            <summary>
+            The startup class for an all-in-one game server.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.Program.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.Program"/> class.
+            </summary>
+        </member>
+        <member name="P:MUnique.OpenMU.Startup.Program.ServerTimeZone">
+            <summary>
+            Gets the resolved server time zone (from <see cref="P:MUnique.OpenMU.DataModel.Configuration.SystemConfiguration.TimeZoneId"/>),
+            used to interpret the times of periodic event schedules. Defaults to <see cref="P:System.TimeZoneInfo.Utc"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.Program.Main(System.String[])">
+            <summary>
+            The main method.
+            </summary>
+            <param name="args">The command line args.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.Program.InitializeAsync(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.Program"/> class.
+            </summary>
+            <param name="args">The command line args.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.Program.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.Program.AddActorControlEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the test actor control endpoint, but only when <c>OPENMU_ACTOR_PORT</c> names a
+            port; it binds loopback unless <c>OPENMU_ACTOR_ADDRESS</c> says otherwise. It is
+            unauthenticated development tooling and stays off by default, and it is registered after
+            the server containers on purpose -
+            hosted services are stopped in reverse order, so the actors are logged out (and their
+            progress saved) before the game servers go down.
+            </summary>
+            <param name="services">The service collection.</param>
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.ServerContainerBase">
+            <summary>
+            Base class for a server container, which reacts on database recreations.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.#ctor(MUnique.OpenMU.Persistence.SetupService,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.ServerContainerBase"/> class.
+            </summary>
+            <param name="setupService">The setup service.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.StartAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.RestartAllAsync(System.Boolean)">
+            <summary>
+            Restarts all servers of this container.
+            </summary>
+            <param name="onDatabaseInit">If set to <c>true</c>, this method is called during a database initialization.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.StartInnerAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts the hosted service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.StopInnerAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops the hosted service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.StartListenersAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts the listeners of the hosted service.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.ServerContainerBase.BeforeStartAsync(System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Befores the start asynchronous.
+            </summary>
+            <param name="onDatabaseInit">If set to <c>true</c>, this method is called during a database initialization.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.TestActors.ActorControlService">
+            <summary>
+            The local control endpoint: a plain TCP listener which speaks newline-delimited JSON.
+            </summary>
+            <remarks>
+            Development tooling, without any authentication: it is only started when
+            <see cref="F:MUnique.OpenMU.Startup.TestActors.ActorControlService.PortVariableName"/> names a port, and it binds the loopback address unless
+            <see cref="F:MUnique.OpenMU.Startup.TestActors.ActorControlService.AddressVariableName"/> explicitly names another one (see
+            <see cref="M:MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions.TryParse(System.String,System.String)"/>). So setting the port on a host which is run
+            directly opens the endpoint for local processes only; a container has to ask for
+            <c>0.0.0.0</c> and rely on its port publishing.
+            </remarks>
+        </member>
+        <member name="F:MUnique.OpenMU.Startup.TestActors.ActorControlService.PortVariableName">
+            <summary>
+            The environment variable which enables the endpoint by naming its port.
+            </summary>
+        </member>
+        <member name="F:MUnique.OpenMU.Startup.TestActors.ActorControlService.AddressVariableName">
+            <summary>
+            The environment variable which names the address to bind; unset, the loopback address.
+            </summary>
+        </member>
+        <member name="F:MUnique.OpenMU.Startup.TestActors.ActorControlService.LineEncoding">
+            <summary>
+            UTF-8 without a byte order mark: the first line of a connection must be plain JSON, or a
+            strict reader (stdlib Python, <c>jq</c>) chokes on the BOM.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorControlService.#ctor(MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions,MUnique.OpenMU.GameLogic.TestActors.IActorRegistry,MUnique.OpenMU.GameLogic.TestActors.ActorProtocolHandler,MUnique.OpenMU.PlugIns.PlugInManager,Microsoft.Extensions.Logging.ILogger{MUnique.OpenMU.Startup.TestActors.ActorControlService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:MUnique.OpenMU.Startup.TestActors.ActorControlService"/> class.
+            </summary>
+            <param name="options">The endpoint options, i.e. the address and port.</param>
+            <param name="registry">The actor registry, so shutdown can stop every actor.</param>
+            <param name="handler">The protocol handler.</param>
+            <param name="plugInManager">The plugin manager of the game servers, to register the hit recorder.</param>
+            <param name="logger">The logger.</param>
+        </member>
+        <member name="P:MUnique.OpenMU.Startup.TestActors.ActorControlService.ConfiguredOptions">
+            <summary>
+            Gets the endpoint configured in the environment, or <c>null</c> when the endpoint is off (the default).
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorControlService.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Registers the hit recorder, which is not a discoverable plugin on purpose, and starts listening.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The task.</returns>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorControlService.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops every actor through the normal logout path, before the game servers of this host stop.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The task.</returns>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorControlService.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions">
+            <summary>
+            The options of the actor control endpoint.
+            </summary>
+            <param name="EndPoint">The address and port to listen on.</param>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions.#ctor(System.Net.IPEndPoint)">
+            <summary>
+            The options of the actor control endpoint.
+            </summary>
+            <param name="EndPoint">The address and port to listen on.</param>
+        </member>
+        <member name="P:MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions.EndPoint">
+            <summary>The address and port to listen on.</summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TestActors.ActorEndpointOptions.TryParse(System.String,System.String)">
+            <summary>
+            Parses the values of the two environment variables: the port, which enables the endpoint,
+            and the optional address to bind. Without an address the IPv4 loopback address is bound;
+            an operator who explicitly wants another one names it - e.g. <c>0.0.0.0</c> inside a
+            container whose port publishing does the containment.
+            </summary>
+            <param name="port">The port variable's value.</param>
+            <param name="address">The address variable's value, or <c>null</c> when it is unset.</param>
+            <returns>The options, or <c>null</c> when the port is unset or either value is invalid.</returns>
+        </member>
+        <member name="T:MUnique.OpenMU.Startup.TextReaderExtensions">
+            <summary>
+            Extensions for a <see cref="T:System.IO.TextReader"/>.
+            </summary>
+        </member>
+        <member name="M:MUnique.OpenMU.Startup.TextReaderExtensions.ReadLineAsync(System.IO.TextReader,System.Threading.CancellationToken)">
+            <summary>
+            Reads the line asynchronously and considers the <see cref="T:System.Threading.CancellationToken"/>.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>The read line or <c>null</c>.</returns>
+        </member>
+    </members>
+</doc>

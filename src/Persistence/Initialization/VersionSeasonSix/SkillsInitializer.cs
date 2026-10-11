@@ -163,7 +163,7 @@ internal class SkillsInitializer : SkillsInitializerBase
         this.CreateSkill(SkillNumber.RagefulBlow, "Rageful Blow", CharacterClasses.BladeKnightAndBladeMaster, DamageType.Physical, 60, 3, 20, 25, 170, elementalModifier: ElementalType.Earth, skillType: SkillType.AreaSkillAutomaticHits);
         this.CreateSkill(SkillNumber.DeathStab, "Death Stab", CharacterClasses.BladeKnightAndBladeMaster, DamageType.Physical, 70, 2, 12, 15, 160, elementalModifier: ElementalType.Wind, skillType: SkillType.DirectHit, skillTarget: SkillTarget.ExplicitWithImplicitInRange, implicitTargetRange: 1);
         this.CreateSkill(SkillNumber.CrescentMoonSlash, "Crescent Moon Slash", CharacterClasses.AllKnights, DamageType.Physical, 90, 4, 15, 22, movesToTarget: true, movesTarget: true);
-        this.CreateSkill(SkillNumber.Lance, "Lance", CharacterClasses.SoulMasterAndGrandMaster | CharacterClasses.AllSummoners, DamageType.Wizardry, 90, 6, 10, 150);
+        this.CreateSkill(SkillNumber.Lance, "Lance", CharacterClasses.AllWizards | CharacterClasses.AllSummoners, DamageType.Wizardry, 90, 6, 10, 150);
         this.CreateSkill(SkillNumber.Starfall, "Starfall", CharacterClasses.AllElfs, DamageType.Physical, 120, 8, 15, 20);
         this.CreateSkill(SkillNumber.Impale, "Impale", CharacterClasses.AllKnights | CharacterClasses.AllMGs, DamageType.Physical, 15, 3, manaConsumption: 8, levelRequirement: 28);
         this.CreateSkill(SkillNumber.SwellLife, "Swell Life", CharacterClasses.AllKnights, abilityConsumption: 24, manaConsumption: 22, levelRequirement: 120, skillType: SkillType.Buff, skillTarget: SkillTarget.ImplicitParty);

@@ -1,0 +1,1292 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "MUnique.OpenMU.Startup/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.ChatServer": "1.0.0",
+          "MUnique.OpenMU.ConnectServer": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.FriendServer": "1.0.0",
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.GameServer": "1.0.0",
+          "MUnique.OpenMU.GuildServer": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.LoginServer": "1.0.0",
+          "MUnique.OpenMU.Network.Analyzer": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.Persistence.EntityFramework": "1.0.0",
+          "MUnique.OpenMU.Persistence.InMemory": "1.0.0",
+          "MUnique.OpenMU.Persistence.Initialization": "1.0.0",
+          "MUnique.OpenMU.Web.AdminPanel": "1.0.0",
+          "Serilog": "4.3.0",
+          "Serilog.Extensions.Hosting": "10.0.0",
+          "Serilog.Settings.Configuration": "10.0.0",
+          "Serilog.Sinks.Console": "6.1.1",
+          "Serilog.Sinks.File": "7.0.0",
+          "System.Configuration.ConfigurationManager": "10.0.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Startup.dll": {}
+        }
+      },
+      "BCrypt.Net-Next/4.0.3": {
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
+          }
+        }
+      },
+      "BlazorInputFile/0.2.0": {
+        "runtime": {
+          "lib/netstandard2.1/BlazorInputFile.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Castle.Core/5.1.1": {
+        "runtime": {
+          "lib/net6.0/Castle.Core.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.1.1.0"
+          }
+        }
+      },
+      "Mapster/7.4.0": {
+        "dependencies": {
+          "Mapster.Core": "1.2.1"
+        },
+        "runtime": {
+          "lib/net7.0/Mapster.dll": {
+            "assemblyVersion": "7.4.0.0",
+            "fileVersion": "7.4.0.0"
+          }
+        }
+      },
+      "Mapster.Core/1.2.1": {
+        "runtime": {
+          "lib/net7.0/Mapster.Core.dll": {
+            "assemblyVersion": "1.2.1.0",
+            "fileVersion": "1.2.1.0"
+          }
+        }
+      },
+      "MathParser.org-mXparser/4.4.2": {
+        "runtime": {
+          "lib/netcoreapp31/MathParser.org-mXparser.dll": {
+            "assemblyVersion": "4.4.2.0",
+            "fileVersion": "4.4.2.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.QuickGrid/10.0.2": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.dll": {
+            "assemblyVersion": "10.0.2.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.Common/4.14.0": {
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.dll": {
+            "assemblyVersion": "4.14.0.0",
+            "fileVersion": "4.1400.25.26210"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.CSharp/4.14.0": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Common": "4.14.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.CSharp.dll": {
+            "assemblyVersion": "4.14.0.0",
+            "fileVersion": "4.1400.25.26210"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.EntityFrameworkCore/10.0.2": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Abstractions": "10.0.2"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.EntityFrameworkCore.dll": {
+            "assemblyVersion": "10.0.2.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Abstractions/10.0.2": {
+        "runtime": {
+          "lib/net10.0/Microsoft.EntityFrameworkCore.Abstractions.dll": {
+            "assemblyVersion": "10.0.2.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Relational/10.0.2": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.2"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.EntityFrameworkCore.Relational.dll": {
+            "assemblyVersion": "10.0.2.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyModel/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.DependencyModel.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.Win32.SystemEvents/6.0.0": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "Moq/4.20.72": {
+        "dependencies": {
+          "Castle.Core": "5.1.1"
+        },
+        "runtime": {
+          "lib/net6.0/Moq.dll": {
+            "assemblyVersion": "4.20.72.0",
+            "fileVersion": "4.20.72.0"
+          }
+        }
+      },
+      "Nito.AsyncEx/5.1.2": {
+        "dependencies": {
+          "Nito.AsyncEx.Context": "5.1.2",
+          "Nito.AsyncEx.Coordination": "5.1.2",
+          "Nito.AsyncEx.Interop.WaitHandles": "5.1.2",
+          "Nito.AsyncEx.Oop": "5.1.2",
+          "Nito.AsyncEx.Tasks": "5.1.2",
+          "Nito.Cancellation": "1.1.2"
+        }
+      },
+      "Nito.AsyncEx.Context/5.1.2": {
+        "dependencies": {
+          "Nito.AsyncEx.Tasks": "5.1.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.AsyncEx.Context.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        }
+      },
+      "Nito.AsyncEx.Coordination/5.1.2": {
+        "dependencies": {
+          "Nito.AsyncEx.Tasks": "5.1.2",
+          "Nito.Collections.Deque": "1.1.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.AsyncEx.Coordination.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        }
+      },
+      "Nito.AsyncEx.Interop.WaitHandles/5.1.2": {
+        "dependencies": {
+          "Nito.AsyncEx.Tasks": "5.1.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.AsyncEx.Interop.WaitHandles.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        }
+      },
+      "Nito.AsyncEx.Oop/5.1.2": {
+        "dependencies": {
+          "Nito.AsyncEx.Coordination": "5.1.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.AsyncEx.Oop.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        }
+      },
+      "Nito.AsyncEx.Tasks/5.1.2": {
+        "dependencies": {
+          "Nito.Disposables": "2.2.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.AsyncEx.Tasks.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        }
+      },
+      "Nito.Cancellation/1.1.2": {
+        "dependencies": {
+          "Nito.Disposables": "2.2.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Nito.Cancellation.dll": {
+            "assemblyVersion": "1.1.2.0",
+            "fileVersion": "1.1.2.0"
+          }
+        }
+      },
+      "Nito.Collections.Deque/1.1.1": {
+        "runtime": {
+          "lib/netstandard2.0/Nito.Collections.Deque.dll": {
+            "assemblyVersion": "1.1.1.0",
+            "fileVersion": "1.1.1.0"
+          }
+        }
+      },
+      "Nito.Disposables/2.2.1": {
+        "runtime": {
+          "lib/netstandard2.1/Nito.Disposables.dll": {
+            "assemblyVersion": "2.2.1.0",
+            "fileVersion": "2.2.1.0"
+          }
+        }
+      },
+      "Npgsql/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Npgsql.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Npgsql.EntityFrameworkCore.PostgreSQL/10.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.2",
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.2",
+          "Npgsql": "10.0.0"
+        },
+        "runtime": {
+          "lib/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Pipelines.Sockets.Unofficial/2.2.8": {
+        "runtime": {
+          "lib/net5.0/Pipelines.Sockets.Unofficial.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "2.2.8.1080"
+          }
+        }
+      },
+      "QRCoder/1.8.0": {
+        "dependencies": {
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/QRCoder.dll": {
+            "assemblyVersion": "1.8.0.0",
+            "fileVersion": "1.8.0.0"
+          }
+        }
+      },
+      "Serilog/4.3.0": {
+        "runtime": {
+          "lib/net9.0/Serilog.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0"
+          }
+        }
+      },
+      "Serilog.Extensions.Hosting/10.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.0",
+          "Serilog.Extensions.Logging": "10.0.0"
+        },
+        "runtime": {
+          "lib/net10.0/Serilog.Extensions.Hosting.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Serilog.Extensions.Logging/10.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.0"
+        },
+        "runtime": {
+          "lib/net10.0/Serilog.Extensions.Logging.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Serilog.Settings.Configuration/10.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyModel": "10.0.0",
+          "Serilog": "4.3.0"
+        },
+        "runtime": {
+          "lib/net10.0/Serilog.Settings.Configuration.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.0.0"
+          }
+        }
+      },
+      "Serilog.Sinks.Console/6.1.1": {
+        "dependencies": {
+          "Serilog": "4.3.0"
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Sinks.Console.dll": {
+            "assemblyVersion": "6.1.1.0",
+            "fileVersion": "6.1.1.0"
+          }
+        }
+      },
+      "Serilog.Sinks.File/7.0.0": {
+        "dependencies": {
+          "Serilog": "4.3.0"
+        },
+        "runtime": {
+          "lib/net9.0/Serilog.Sinks.File.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.0.0"
+          }
+        }
+      },
+      "System.Configuration.ConfigurationManager/10.0.2": {
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "10.0.2"
+        },
+        "runtime": {
+          "lib/net10.0/System.Configuration.ConfigurationManager.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "System.Drawing.Common/6.0.0": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/net6.0/System.Drawing.Common.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          },
+          "runtimes/win/lib/net6.0/System.Drawing.Common.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Security.Cryptography.ProtectedData/10.0.2": {
+        "runtime": {
+          "lib/net10.0/System.Security.Cryptography.ProtectedData.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.225.61305"
+          }
+        }
+      },
+      "MUnique.OpenMU.Annotations/1.0.0": {
+        "runtime": {
+          "MUnique.OpenMU.Annotations.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.AttributeSystem/1.0.0": {
+        "runtime": {
+          "MUnique.OpenMU.AttributeSystem.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.ChatServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Network": "0.9.10",
+          "MUnique.OpenMU.Network.Analyzer": "1.0.0",
+          "MUnique.OpenMU.Network.Packets": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.ChatServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.ConnectServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Network": "0.9.10",
+          "MUnique.OpenMU.Network.Analyzer": "1.0.0",
+          "MUnique.OpenMU.Network.Packets": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.ConnectServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.DataModel/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.Annotations": "1.0.0",
+          "MUnique.OpenMU.AttributeSystem": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Network": "0.9.10",
+          "MUnique.OpenMU.PlugIns": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.DataModel.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.DataModel.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.DataModel.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.FriendServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.ChatServer": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.FriendServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.GameLogic/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "MUnique.OpenMU.AttributeSystem": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Pathfinding": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.PlugIns": "0.9.10",
+          "MathParser.org-mXparser": "4.4.2",
+          "Nito.AsyncEx": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.GameLogic.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.GameLogic.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.GameLogic.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.GameServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.AttributeSystem": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Network": "0.9.10",
+          "MUnique.OpenMU.Network.Analyzer": "1.0.0",
+          "MUnique.OpenMU.Network.Packets": "0.9.10",
+          "MUnique.OpenMU.Pathfinding": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.PlugIns": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.GameServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.GameServer.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.GameServer.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.GuildServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.GuildServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Interfaces/1.0.0": {
+        "runtime": {
+          "MUnique.OpenMU.Interfaces.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Interfaces.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.Interfaces.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.LoginServer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "Nito.AsyncEx.Coordination": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.LoginServer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Network/0.9.10": {
+        "dependencies": {
+          "MUnique.OpenMU.PlugIns": "0.9.10",
+          "Nito.AsyncEx.Tasks": "5.1.2",
+          "Pipelines.Sockets.Unofficial": "2.2.8"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Network.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Network.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.Network.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.Network.Analyzer/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Network": "0.9.10",
+          "MUnique.OpenMU.Network.Packets": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Network.Analyzer.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Network.Packets/0.9.10": {
+        "dependencies": {
+          "MUnique.OpenMU.Network": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Network.Packets.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Pathfinding/1.0.0": {
+        "runtime": {
+          "MUnique.OpenMU.Pathfinding.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Persistence/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.PlugIns": "0.9.10"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Persistence.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Persistence.EntityFramework/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "MUnique.OpenMU.AttributeSystem": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.PlugIns": "0.9.10",
+          "Microsoft.EntityFrameworkCore": "10.0.2",
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.2",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Persistence.EntityFramework.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Persistence.Initialization/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "MUnique.OpenMU.AttributeSystem": "1.0.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.GameServer": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.Persistence.InMemory": "1.0.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Persistence.Initialization.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Persistence.Initialization.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.Persistence.Initialization.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.Persistence.InMemory/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.Interfaces": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Persistence.InMemory.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.PlugIns/0.9.10": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "Nito.AsyncEx.Coordination": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.PlugIns.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Web.AdminPanel/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "BlazorInputFile": "0.2.0",
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.Network.Analyzer": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.Persistence.Initialization": "1.0.0",
+          "MUnique.OpenMU.Web.Map": "1.0.0",
+          "MUnique.OpenMU.Web.Shared": "1.0.0",
+          "Microsoft.AspNetCore.Components.QuickGrid": "10.0.2",
+          "Nito.AsyncEx": "5.1.2",
+          "QRCoder": "1.8.0"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Web.AdminPanel.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Web.AdminPanel.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.Web.AdminPanel.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      },
+      "MUnique.OpenMU.Web.ItemEditor/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.DataModel": "1.0.0",
+          "Moq": "4.20.72",
+          "Nito.AsyncEx": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Web.ItemEditor.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        }
+      },
+      "MUnique.OpenMU.Web.Map/1.0.0": {
+        "dependencies": {
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.Web.Shared": "1.0.0",
+          "Nito.AsyncEx": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Web.Map.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Web.Map.resources.dll": {
+            "locale": "de"
+          }
+        }
+      },
+      "MUnique.OpenMU.Web.Shared/1.0.0": {
+        "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
+          "BlazorInputFile": "0.2.0",
+          "MUnique.OpenMU.GameLogic": "1.0.0",
+          "MUnique.OpenMU.Persistence": "1.0.0",
+          "MUnique.OpenMU.Web.ItemEditor": "1.0.0",
+          "Mapster": "7.4.0",
+          "Microsoft.AspNetCore.Components.QuickGrid": "10.0.2",
+          "Nito.AsyncEx": "5.1.2"
+        },
+        "runtime": {
+          "MUnique.OpenMU.Web.Shared.dll": {
+            "assemblyVersion": "0.9.10.0",
+            "fileVersion": "0.9.10.0"
+          }
+        },
+        "resources": {
+          "de/MUnique.OpenMU.Web.Shared.resources.dll": {
+            "locale": "de"
+          },
+          "zh-CN/MUnique.OpenMU.Web.Shared.resources.dll": {
+            "locale": "zh-CN"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MUnique.OpenMU.Startup/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BCrypt.Net-Next/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
+    },
+    "BlazorInputFile/0.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wsPTwoA9fkHOxjEh0W0brNeTaVBaMCFwfBLehbRhfW+RzlIrYtlJ5qFpT5f377Ej6ELk+xeoUrkDBx9c8JF7DQ==",
+      "path": "blazorinputfile/0.2.0",
+      "hashPath": "blazorinputfile.0.2.0.nupkg.sha512"
+    },
+    "Castle.Core/5.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rpYtIczkzGpf+EkZgDr9CClTdemhsrwA/W5hMoPjLkRFnXzH44zDLoovXeKtmxb1ykXK9aJVODSpiJml8CTw2g==",
+      "path": "castle.core/5.1.1",
+      "hashPath": "castle.core.5.1.1.nupkg.sha512"
+    },
+    "Mapster/7.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RYGoDqvS4WTKIq0HDyPBBVIj6N0mluOCXQ1Vk95JKseMHEsbCXSEGKSlP95oL+s42IXAXbqvHj7p0YaRBUcfqg==",
+      "path": "mapster/7.4.0",
+      "hashPath": "mapster.7.4.0.nupkg.sha512"
+    },
+    "Mapster.Core/1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-11lokmfliBEMMmjeqxFGNpqGXq6tN96zFqpBmfYeahr4Ybk63oDmeJmOflsATjobYkX248g5Y62oQ2NNnZaeww==",
+      "path": "mapster.core/1.2.1",
+      "hashPath": "mapster.core.1.2.1.nupkg.sha512"
+    },
+    "MathParser.org-mXparser/4.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-V72hYZPG3VEt9NgjQ2gXxL55JWNlgi8TDLOgtoNu8raYVb+IRqgQTKssvDyGK5vzyvTi9WglmmbkEODhgeI4+w==",
+      "path": "mathparser.org-mxparser/4.4.2",
+      "hashPath": "mathparser.org-mxparser.4.4.2.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.QuickGrid/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1p/KmQb72b08Cb9c0nIsS6d81dTVIanNqfBx20Ln/u6v83IrCt0ojjEdprKTQYorkk7KbsTWlQunKgpBdbRgTA==",
+      "path": "microsoft.aspnetcore.components.quickgrid/10.0.2",
+      "hashPath": "microsoft.aspnetcore.components.quickgrid.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.Common/4.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PC3tuwZYnC+idaPuoC/AZpEdwrtX7qFpmnrfQkgobGIWiYmGi5MCRtl5mx6QrfMGQpK78X2lfIEoZDLg/qnuHg==",
+      "path": "microsoft.codeanalysis.common/4.14.0",
+      "hashPath": "microsoft.codeanalysis.common.4.14.0.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.CSharp/4.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-568a6wcTivauIhbeWcCwfWwIn7UV7MeHEBvFB2uzGIpM2OhJ4eM/FZ8KS0yhPoNxnSpjGzz7x7CIjTxhslojQA==",
+      "path": "microsoft.codeanalysis.csharp/4.14.0",
+      "hashPath": "microsoft.codeanalysis.csharp.4.14.0.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-d3+XKbLSHPCu3vwpXECoXcFbvGKmAhEeUmc1xy2czmuPnEF7rZN2HP5ZGMwCMbAKk4B01+nS4HixSMo2Vf/Y9g==",
+      "path": "microsoft.entityframeworkcore/10.0.2",
+      "hashPath": "microsoft.entityframeworkcore.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Abstractions/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BzAwIU5mYeOmnKbEXrkwx7feW2V+zUTrK/kRonSib94tjvc0/iRj2a4N6YGXRhTNjaFP3tvCMIDaX1vIFF6dkg==",
+      "path": "microsoft.entityframeworkcore.abstractions/10.0.2",
+      "hashPath": "microsoft.entityframeworkcore.abstractions.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Relational/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1fUeyNmqDNfMogJ2ut7OKO57/WGjjkHMYeX51SpA3PwP7ftbx8g/Z3fbErD+1q14DILrqJfsszYsYhGssBRfDg==",
+      "path": "microsoft.entityframeworkcore.relational/10.0.2",
+      "hashPath": "microsoft.entityframeworkcore.relational.10.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyModel/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RFYJR7APio/BiqdQunRq6DB+nDB6nc2qhHr77mlvZ0q0BT8PubMXN7XicmfzCbrDE/dzhBnUKBRXLTcqUiZDGg==",
+      "path": "microsoft.extensions.dependencymodel/10.0.0",
+      "hashPath": "microsoft.extensions.dependencymodel.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
+      "path": "microsoft.win32.systemevents/6.0.0",
+      "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
+    },
+    "Moq/4.20.72": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EA55cjyNn8eTNWrgrdZJH5QLFp2L43oxl1tlkoYUKIE9pRwL784OWiTXeCV5ApS+AMYEAlt7Fo03A2XfouvHmQ==",
+      "path": "moq/4.20.72",
+      "hashPath": "moq.4.20.72.nupkg.sha512"
+    },
+    "Nito.AsyncEx/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hq+N63M/2znx2z1VzvPDHNg+HIWKdIloEZre+P7E0O+2iRf1Q4HBOgeiJU6SzFD/fWoyKyKSSSrekk4RgiXaeQ==",
+      "path": "nito.asyncex/5.1.2",
+      "hashPath": "nito.asyncex.5.1.2.nupkg.sha512"
+    },
+    "Nito.AsyncEx.Context/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rMwL7Nj3oNyvFu/jxUzQ/YBobEkM2RQHe+5mpCDRyq6mfD7vCj7Z3rjB6XgpM6Mqcx1CA2xGv0ascU/2Xk8IIg==",
+      "path": "nito.asyncex.context/5.1.2",
+      "hashPath": "nito.asyncex.context.5.1.2.nupkg.sha512"
+    },
+    "Nito.AsyncEx.Coordination/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QMyUfsaxov//0ZMbOHWr9hJaBFteZd66DV1ay4J5wRODDb8+K/uHC7+3VsOflo6SVw/29mu8OWZp8vMDSuzc0w==",
+      "path": "nito.asyncex.coordination/5.1.2",
+      "hashPath": "nito.asyncex.coordination.5.1.2.nupkg.sha512"
+    },
+    "Nito.AsyncEx.Interop.WaitHandles/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qym29lFBCSIacKvFcJDW+beXzuO+6y9lWdd1KecxzzAqtNuvlYgNPwIsxwdhEINLhTT4aDuCM3JalpUZYWI51Q==",
+      "path": "nito.asyncex.interop.waithandles/5.1.2",
+      "hashPath": "nito.asyncex.interop.waithandles.5.1.2.nupkg.sha512"
+    },
+    "Nito.AsyncEx.Oop/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MxQl/NFoPgMApyjbB2fSZBrjdf9r6ODd/BTrWLyJKYX6UeNfw0Ocr0cPiTg2LRN0Ayud8Gj4dh67AdasNn709Q==",
+      "path": "nito.asyncex.oop/5.1.2",
+      "hashPath": "nito.asyncex.oop.5.1.2.nupkg.sha512"
+    },
+    "Nito.AsyncEx.Tasks/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jEkCfR2/M26OK/U4G7SEN063EU/F4LiVA06TtpZILMdX/quIHCg+wn31Zerl2LC+u1cyFancjTY3cNAr2/89PA==",
+      "path": "nito.asyncex.tasks/5.1.2",
+      "hashPath": "nito.asyncex.tasks.5.1.2.nupkg.sha512"
+    },
+    "Nito.Cancellation/1.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Z+SZKp0KxMC6tEVbXe8ah4pBJadyqP0pObQMaZcBavhIDEIsGuxt7PL+B9AiNJD3Ni5VgnZsnii5HPJgVDE81w==",
+      "path": "nito.cancellation/1.1.2",
+      "hashPath": "nito.cancellation.1.1.2.nupkg.sha512"
+    },
+    "Nito.Collections.Deque/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CU0/Iuv5VDynK8I8pDLwkgF0rZhbQoZahtodfL0M3x2gFkpBRApKs8RyMyNlAi1mwExE4gsmqQXk4aFVvW9a4Q==",
+      "path": "nito.collections.deque/1.1.1",
+      "hashPath": "nito.collections.deque.1.1.1.nupkg.sha512"
+    },
+    "Nito.Disposables/2.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6sZ5uynQeAE9dPWBQGKebNmxbY4xsvcc5VplB5WkYEESUS7oy4AwnFp0FhqxTSKm/PaFrFqLrYr696CYN8cugg==",
+      "path": "nito.disposables/2.2.1",
+      "hashPath": "nito.disposables.2.2.1.nupkg.sha512"
+    },
+    "Npgsql/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xZAYhPOU2rUIFpV48xsqhCx9vXs6Y+0jX2LCoSEfDFYMw9jtAOUk3iQsCnDLrFIv9NT3JGMihn7nnuZsPKqJmA==",
+      "path": "npgsql/10.0.0",
+      "hashPath": "npgsql.10.0.0.nupkg.sha512"
+    },
+    "Npgsql.EntityFrameworkCore.PostgreSQL/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E2+uSWxSB8LdsUVwPaqRWOcGOP92biry2JEwc0KJMdLJF+aZdczeIdEXVwEyv4nSVMQJH0o8tLhyAMiR6VF0lw==",
+      "path": "npgsql.entityframeworkcore.postgresql/10.0.0",
+      "hashPath": "npgsql.entityframeworkcore.postgresql.10.0.0.nupkg.sha512"
+    },
+    "Pipelines.Sockets.Unofficial/2.2.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zG2FApP5zxSx6OcdJQLbZDk2AVlN2BNQD6MorwIfV6gVj0RRxWPEp2LXAxqDGZqeNV1Zp0BNPcNaey/GXmTdvQ==",
+      "path": "pipelines.sockets.unofficial/2.2.8",
+      "hashPath": "pipelines.sockets.unofficial.2.2.8.nupkg.sha512"
+    },
+    "QRCoder/1.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RuvX3PEXU6pbY/I5ItAk800jm62r+YnoPLgyS2WTgwxkOnGkOfU9ORiipHUF0LkLyqM8rlroUCA319JjRYfRFQ==",
+      "path": "qrcoder/1.8.0",
+      "hashPath": "qrcoder.1.8.0.nupkg.sha512"
+    },
+    "Serilog/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+cDryFR0GRhsGOnZSKwaDzRRl4MupvJ42FhCE4zhQRVanX0Jpg6WuCBk59OVhVDPmab1bB+nRykAnykYELA9qQ==",
+      "path": "serilog/4.3.0",
+      "hashPath": "serilog.4.3.0.nupkg.sha512"
+    },
+    "Serilog.Extensions.Hosting/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E7juuIc+gzoGxgzFooFgAV8g9BfiSXNKsUok9NmEpyAXg2odkcPsMa/Yo4axkJRlh0se7mkYQ1GXDaBemR+b6w==",
+      "path": "serilog.extensions.hosting/10.0.0",
+      "hashPath": "serilog.extensions.hosting.10.0.0.nupkg.sha512"
+    },
+    "Serilog.Extensions.Logging/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vx0kABKl2dWbBhhqAfTOk53/i8aV/5VaT3a6il9gn72Wqs2pM7EK2OB6No6xdqK2IaY6Zf9gdjLuK9BVa2rT+Q==",
+      "path": "serilog.extensions.logging/10.0.0",
+      "hashPath": "serilog.extensions.logging.10.0.0.nupkg.sha512"
+    },
+    "Serilog.Settings.Configuration/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LNq+ibS1sbhTqPV1FIE69/9AJJbfaOhnaqkzcjFy95o+4U+STsta9mi97f1smgXsWYKICDeGUf8xUGzd/52/uA==",
+      "path": "serilog.settings.configuration/10.0.0",
+      "hashPath": "serilog.settings.configuration.10.0.0.nupkg.sha512"
+    },
+    "Serilog.Sinks.Console/6.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8jbqgjUyZlfCuSTaJk6lOca465OndqOz3KZP6Cryt/IqZYybyBu7GP0fE/AXBzrrQB3EBmQntBFAvMVz1COvAA==",
+      "path": "serilog.sinks.console/6.1.1",
+      "hashPath": "serilog.sinks.console.6.1.1.nupkg.sha512"
+    },
+    "Serilog.Sinks.File/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fKL7mXv7qaiNBUC71ssvn/dU0k9t0o45+qm2XgKAlSt19xF+ijjxyA3R6HmCgfKEKwfcfkwWjayuQtRueZFkYw==",
+      "path": "serilog.sinks.file/7.0.0",
+      "hashPath": "serilog.sinks.file.7.0.0.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UpBPpVzF+xbB3GsBrraPvlYCwUiOhs+RLxnTMKLqDs2gNNaAtxQRlKjXfMV3zxE+hiQkGId5olZ+9tE6xXHdwQ==",
+      "path": "system.configuration.configurationmanager/10.0.2",
+      "hashPath": "system.configuration.configurationmanager.10.0.2.nupkg.sha512"
+    },
+    "System.Drawing.Common/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NfuoKUiP2nUWwKZN6twGqXioIe1zVD0RIj2t976A+czLHr2nY454RwwXs6JU9Htc6mwqL6Dn/nEL3dpVf2jOhg==",
+      "path": "system.drawing.common/6.0.0",
+      "hashPath": "system.drawing.common.6.0.0.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/10.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-me7W69hkjdu5EzHXCQSXv9OS3uAkMXT26oZuWTaabeoO5BPxSVuRVJ2FSfIW8xyGxBb6mKCE6ZKg7TLk3IzJBQ==",
+      "path": "system.security.cryptography.protecteddata/10.0.2",
+      "hashPath": "system.security.cryptography.protecteddata.10.0.2.nupkg.sha512"
+    },
+    "MUnique.OpenMU.Annotations/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.AttributeSystem/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.ChatServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.ConnectServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.DataModel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.FriendServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.GameLogic/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.GameServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.GuildServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Interfaces/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.LoginServer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Network/0.9.10": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Network.Analyzer/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Network.Packets/0.9.10": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Pathfinding/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Persistence/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Persistence.EntityFramework/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Persistence.Initialization/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Persistence.InMemory/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.PlugIns/0.9.10": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Web.AdminPanel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Web.ItemEditor/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Web.Map/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MUnique.OpenMU.Web.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

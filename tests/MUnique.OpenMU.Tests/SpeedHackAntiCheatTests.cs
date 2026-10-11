@@ -359,6 +359,30 @@ public class SpeedHackAntiCheatTests
     }
 
     /// <summary>
+    /// Tests that a normally paced path costing more than the tolerance does not lose elapsed time.
+    /// </summary>
+    [TestCase(8)]
+    [TestCase(11)]
+    public async Task TestLongNormalWalkDoesNotTriggerFalsePositiveAsync(int tiles)
+    {
+        var player = await CreatePlayerWithSpeedAttributesAsync().ConfigureAwait(false);
+        var plugin = player.GameContext.FeaturePlugIns.GetPlugIn<SpeedHackDetectPlugIn>()!;
+        WalkingStep[] firstSteps = [new() { From = StartPoint, To = new Point(101, 100), Direction = Direction.East }];
+        await plugin.WalkCheatCheckAsync(player, firstSteps, new SpeedHackCheckEventArgs()).ConfigureAwait(false);
+
+        // Reproduce a long client path between requests. Its duration exceeds the bucket limit,
+        // but it also exceeds the minimum walking time, so it must not be treated as a speed hack.
+        await Task.Delay(player.StepDelay * tiles).ConfigureAwait(false);
+        var nextStart = new Point((byte)(StartPoint.X + tiles), StartPoint.Y);
+        WalkingStep[] nextSteps = [new() { From = nextStart, To = new Point((byte)(nextStart.X + 1), nextStart.Y), Direction = Direction.East }];
+        var result = new SpeedHackCheckEventArgs();
+        await plugin.WalkCheatCheckAsync(player, nextSteps, result).ConfigureAwait(false);
+
+        Assert.That(result.IsCheatDetected, Is.False);
+        Assert.That(plugin.GetWarningCount(player), Is.Zero);
+    }
+
+    /// <summary>
     /// Tests that the speed check is bypassed when the plugin is disabled.
     /// </summary>
     [Test]

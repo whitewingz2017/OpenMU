@@ -1,0 +1,21 @@
+@import '../../_content/Microsoft.AspNetCore.Components.QuickGrid/Microsoft.AspNetCore.Components.QuickGrid.boiwgh0w5b.bundle.scp.css';
+@import '../../_content/MUnique.OpenMU.Web.ItemEditor/MUnique.OpenMU.Web.ItemEditor.26k5bbuot0.bundle.scp.css';
+@import '../../_content/MUnique.OpenMU.Web.Shared/MUnique.OpenMU.Web.Shared.2wzwrxfrae.bundle.scp.css';
+
+/* _content/MUnique.OpenMU.Web.Map/Components/LiveMap.razor.rz.scp.css */
+.livemap-target[b-lpa9vu2w3h] {
+    width: auto;
+}
+/* _content/MUnique.OpenMU.Web.Map/Components/Map.razor.rz.scp.css */
+.livemap[b-3xy7ga4f06] {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.livemap-players[b-3xy7ga4f06] {
+    flex: 0 0 500px;
+}
+/* _content/MUnique.OpenMU.Web.Map/Components/MapPlayerList.razor.rz.scp.css */
+.player-row[b-1p772bdbda] {
+    cursor: pointer;
+}

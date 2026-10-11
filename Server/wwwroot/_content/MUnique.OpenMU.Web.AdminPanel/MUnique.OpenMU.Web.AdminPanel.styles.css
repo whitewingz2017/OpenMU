@@ -1,0 +1,659 @@
+@import '../../_content/Microsoft.AspNetCore.Components.QuickGrid/Microsoft.AspNetCore.Components.QuickGrid.boiwgh0w5b.bundle.scp.css';
+@import '../../_content/MUnique.OpenMU.Web.ItemEditor/MUnique.OpenMU.Web.ItemEditor.26k5bbuot0.bundle.scp.css';
+@import '../../_content/MUnique.OpenMU.Web.Shared/MUnique.OpenMU.Web.Shared.2wzwrxfrae.bundle.scp.css';
+
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/ItemDrops/DropItemGroupTable.razor.rz.scp.css */
+.drop-group-table .description-column[b-q5ofdkxa0d] {
+    min-width: 14rem;
+}
+
+.drop-group-table .number-input[b-q5ofdkxa0d] {
+    width: 4.5rem;
+}
+
+.drop-group-table .money-input[b-q5ofdkxa0d] {
+    width: 7rem;
+}
+
+.drop-group-table .group-row > td[b-q5ofdkxa0d] {
+    border-bottom-width: 0;
+}
+
+.drop-group-table .items-row > td[b-q5ofdkxa0d] {
+    padding-top: 0;
+    font-size: 0.875em;
+    white-space: normal;
+}
+
+.drop-group-table .details-row > td[b-q5ofdkxa0d] {
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--bs-primary, #0d6efd);
+}
+
+.drop-group-table .type-select[b-q5ofdkxa0d] {
+    min-width: 9rem;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/ConfigurationSearch.razor.rz.scp.css */
+.configuration-search[b-zjyzbluzoi] {
+    position: relative;
+    width: min(100%, 48rem);
+    min-width: 16rem;
+    z-index: 90;
+}
+
+.configuration-search__results[b-zjyzbluzoi] {
+    position: absolute;
+    top: calc(100% + 0.15rem);
+    left: 0;
+    width: 100%;
+    max-height: min(68vh, 28rem);
+    z-index: 1060;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.25rem 0;
+}
+
+.configuration-search__result[b-zjyzbluzoi] {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 0.14rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    white-space: normal;
+}
+
+.configuration-search__result-caption[b-zjyzbluzoi] {
+    font-weight: 600;
+    color: inherit;
+}
+
+.configuration-search__result-path[b-zjyzbluzoi] {
+    font-size: 0.78rem;
+    color: var(--omu-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.configuration-search__result:hover .configuration-search__result-path[b-zjyzbluzoi],
+.configuration-search__result:focus .configuration-search__result-path[b-zjyzbluzoi] {
+    color: var(--omu-text);
+}
+
+@media (max-width: 767.98px) {
+    .configuration-search[b-zjyzbluzoi] {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .configuration-search__results[b-zjyzbluzoi] {
+        max-height: min(56vh, 22rem);
+    }
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/CreationPanel.razor.rz.scp.css */
+.creation-panel[b-fgnplwwnin] {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--omu-surface-2);
+    color: var(--omu-text);
+    border-left: var(--bs-border-width) solid var(--omu-border);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    z-index: 2;
+}
+
+.creation-panel.collapsed[b-fgnplwwnin] {
+    width: 1.75rem;
+}
+
+.collapse-toggle[b-fgnplwwnin] {
+    flex-shrink: 0;
+    width: 1.75rem;
+    padding: 0;
+    border: none;
+    border-right: var(--bs-border-width) solid var(--omu-border);
+    background-color: var(--omu-surface-muted);
+    cursor: pointer;
+    color: var(--omu-text);
+}
+
+.collapse-toggle:hover[b-fgnplwwnin] {
+    background-color: var(--omu-surface-hover);
+}
+
+.creation-panel-body[b-fgnplwwnin] {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.creation-panel-body h3[b-fgnplwwnin] {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    word-break: break-word;
+}
+
+.creation-panel-body[b-fgnplwwnin]  form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.creation-panel-body[b-fgnplwwnin]  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    background-color: var(--omu-surface-2);
+    margin: 1rem -1.5rem -1rem -1.5rem;
+    padding: 1rem 1.25rem;
+    border-top: var(--bs-border-width) solid var(--omu-border);
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    box-sizing: border-box;
+}
+
+/* Let the form controls fill the wider panel so the space is actually used. */
+.creation-panel-body[b-fgnplwwnin]  input:not([type="checkbox"]):not([type="radio"]),
+.creation-panel-body[b-fgnplwwnin]  select,
+.creation-panel-body[b-fgnplwwnin]  textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/LoginLayout.razor.rz.scp.css */
+.login-panel[b-5p38dqa40l] {
+    max-width: 26rem;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/MainLayout.razor.rz.scp.css */
+.page[b-iim2ifnpp7] {
+    display: flex;
+    flex-direction: row;
+}
+
+main[b-iim2ifnpp7] {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar[b-iim2ifnpp7] {
+    background-image: var(--omu-sidebar-gradient);
+}
+
+.header-search[b-iim2ifnpp7] {
+    max-width: 48rem;
+}
+
+.main-header[b-iim2ifnpp7] {
+    top: 0;
+    z-index: 99;
+    position: sticky;
+}
+
+.breadcrumb-bar[b-iim2ifnpp7] {
+    min-height: 2.5rem;
+    background-color: var(--omu-surface-2);
+}
+
+.breadcrumb-bar[b-iim2ifnpp7]  .breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+}
+
+.breadcrumb-bar[b-iim2ifnpp7]  .breadcrumb {
+    margin-bottom: 0;
+    padding: 0.25rem 0;
+    background-color: transparent;
+}
+
+.breadcrumb-bar[b-iim2ifnpp7]  .btn-group {
+    margin-right: 1rem;
+}
+
+@media (max-width: 767.98px) {
+    .header-content[b-iim2ifnpp7] {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+    }
+
+    .header-actions[b-iim2ifnpp7] {
+        margin-left: 0 !important;
+        text-align: right;
+    }
+}
+
+#blazor-error-ui[b-iim2ifnpp7] {
+    background: var(--omu-error-bg);
+    color: var(--omu-error-text);
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss[b-iim2ifnpp7] {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/NavMenu.razor.rz.scp.css */
+.navbar-toggler[b-flr4oampom] {
+    appearance: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    color: white;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler:checked[b-flr4oampom] {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.top-row[b-flr4oampom] {
+    min-height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand[b-flr4oampom] {
+    font-size: 1.1rem;
+}
+
+.bi[b-flr4oampom] {
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    top: -1px;
+    background-size: cover;
+}
+
+.bi-house-door-fill-nav-menu[b-flr4oampom] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-house-door-fill' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z'/%3E%3C/svg%3E");
+}
+
+.bi-plus-square-fill-nav-menu[b-flr4oampom] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-plus-square-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z'/%3E%3C/svg%3E");
+}
+
+.bi-list-nested-nav-menu[b-flr4oampom] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
+}
+
+.nav-item[b-flr4oampom] {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type[b-flr4oampom] {
+        padding-top: 1rem;
+    }
+
+    .nav-item:last-of-type[b-flr4oampom] {
+        padding-bottom: 1rem;
+    }
+
+    .nav-item[b-flr4oampom]  .nav-link {
+        color: #d7d7d7;
+        background: none;
+        border: none;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+        width: 100%;
+    }
+
+.nav-item[b-flr4oampom]  a.active {
+    background-color: rgba(255,255,255,0.37);
+    color: white;
+}
+
+.nav-item[b-flr4oampom]  .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.nav-scrollable[b-flr4oampom] {
+    display: none;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable[b-flr4oampom] {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .navbar-toggler[b-flr4oampom] {
+        display: none;
+    }
+
+    .nav-scrollable[b-flr4oampom] {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/Layout/ReconnectModal.razor.rz.scp.css */
+.components-reconnect-first-attempt-visible[b-2pe6je7v86],
+.components-reconnect-repeated-attempt-visible[b-2pe6je7v86],
+.components-reconnect-failed-visible[b-2pe6je7v86],
+.components-pause-visible[b-2pe6je7v86],
+.components-resume-failed-visible[b-2pe6je7v86],
+.components-rejoining-animation[b-2pe6je7v86] {
+    display: none;
+}
+
+#components-reconnect-modal.components-reconnect-show .components-reconnect-first-attempt-visible[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-show .components-rejoining-animation[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-paused .components-pause-visible[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-resume-failed .components-resume-failed-visible[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-retrying[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-retrying .components-reconnect-repeated-attempt-visible[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-retrying .components-rejoining-animation[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-failed[b-2pe6je7v86],
+#components-reconnect-modal.components-reconnect-failed .components-reconnect-failed-visible[b-2pe6je7v86] {
+    display: block;
+}
+
+
+#components-reconnect-modal[b-2pe6je7v86] {
+    background-color: var(--omu-bg);
+    width: 20rem;
+    margin: 20vh auto;
+    padding: 2rem;
+    border: 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 3px 6px 2px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: display 0.5s allow-discrete, overlay 0.5s allow-discrete;
+    animation: components-reconnect-modal-fadeOutOpacity-b-2pe6je7v86 0.5s both;
+    &[open]
+
+{
+    animation: components-reconnect-modal-slideUp-b-2pe6je7v86 1.5s cubic-bezier(.05, .89, .25, 1.02) 0.3s, components-reconnect-modal-fadeInOpacity-b-2pe6je7v86 0.5s ease-in-out 0.3s;
+    animation-fill-mode: both;
+}
+
+}
+
+#components-reconnect-modal[b-2pe6je7v86]::backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+    animation: components-reconnect-modal-fadeInOpacity-b-2pe6je7v86 0.5s ease-in-out;
+    opacity: 1;
+}
+
+@keyframes components-reconnect-modal-slideUp-b-2pe6je7v86 {
+    0% {
+        transform: translateY(30px) scale(0.95);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes components-reconnect-modal-fadeInOpacity-b-2pe6je7v86 {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes components-reconnect-modal-fadeOutOpacity-b-2pe6je7v86 {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.components-reconnect-container[b-2pe6je7v86] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#components-reconnect-modal p[b-2pe6je7v86] {
+    margin: 0;
+    text-align: center;
+}
+
+#components-reconnect-modal button[b-2pe6je7v86] {
+    border: 0;
+    background-color: var(--omu-link-primary);
+    color: #fff;
+    padding: 4px 24px;
+    border-radius: 4px;
+}
+
+    #components-reconnect-modal button:hover[b-2pe6je7v86] {
+        background-color: var(--omu-link-primary-border);
+    }
+
+    #components-reconnect-modal button:active[b-2pe6je7v86] {
+        background-color: var(--omu-link-primary);
+    }
+
+.components-rejoining-animation[b-2pe6je7v86] {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+    .components-rejoining-animation div[b-2pe6je7v86] {
+        position: absolute;
+        border: 3px solid var(--omu-link);
+        opacity: 1;
+        border-radius: 50%;
+        animation: components-rejoining-animation-b-2pe6je7v86 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+        .components-rejoining-animation div:nth-child(2)[b-2pe6je7v86] {
+            animation-delay: -0.5s;
+        }
+
+@keyframes components-rejoining-animation-b-2pe6je7v86 {
+    0% {
+        top: 40px;
+        left: 40px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    4.9% {
+        top: 40px;
+        left: 40px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+    }
+
+    5% {
+        top: 40px;
+        left: 40px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 80px;
+        height: 80px;
+        opacity: 0;
+    }
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/NetworkAnalyzer/ArchiveList.razor.rz.scp.css */
+.accordion[b-fw32tabwnh] {
+    /* The sessions scroll inside the sidebar, so the page doesn't grow with them. */
+    max-height: 40vh;
+    overflow-y: auto;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/NetworkAnalyzer/ConnectionList.razor.rz.scp.css */
+.accordion[b-sccwos58wa] {
+    /* The connections scroll inside the sidebar, so the page doesn't grow with them. */
+    max-height: 60vh;
+    overflow-y: auto;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/NetworkAnalyzer/PacketDetail.razor.rz.scp.css */
+.packet-detail[b-whl9dnji3t] {
+    /* The detail is shown inside the row of its packet, so its height is limited to keep the
+       rows of the grid readable. */
+    margin-top: 0.25rem;
+    max-width: 60rem;
+    white-space: normal;
+}
+
+.packet-raw-data[b-whl9dnji3t],
+.packet-extracted-info[b-whl9dnji3t] {
+    max-height: 12rem;
+    overflow: auto;
+    background-color: var(--bs-secondary-bg);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Components/NetworkAnalyzer/PacketGrid.razor.rz.scp.css */
+.packet-grid[b-tp9ig2skoj] {
+    /* The grid scrolls inside its own area, so the page doesn't grow with the traffic. Its
+       height is set by the component, based on the number of rows which should be visible.
+       The vertical scrollbar is always shown, so the width doesn't change when the first
+       packets arrive. A horizontal one would appear and disappear with the arriving packets,
+       so it's never shown - the content is kept inside the width instead. */
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.packet-message[b-tp9ig2skoj] {
+    /* The message of a packet is kept on one line, so that the rows keep their height - the
+       virtualization of the grid depends on it. The whole content is shown in the details of
+       the selected packet. */
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
+/* The rules below apply to the markup of the QuickGrid, which is a child component - the
+   scope of this stylesheet has to be lifted with ::deep for them. */
+.packet-grid[b-tp9ig2skoj]  thead th {
+    /* The column headers stay visible while the rows are scrolled. */
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--bs-body-bg);
+
+    /* A sticky header loses the border of the collapsed table, so it's drawn as a shadow. */
+    box-shadow: inset 0 -1px 0 var(--bs-border-color);
+}
+
+.packet-grid[b-tp9ig2skoj]  table {
+    margin-bottom: 0;
+}
+
+.packet-grid[b-tp9ig2skoj]  tr {
+    /* The application fades in new table rows. Here the rows change with every arriving
+       packet, so they would be animated again and again - and the animation scales them up
+       slightly, which makes a horizontal scrollbar flicker. */
+    animation: none;
+    opacity: 1;
+    transform: none;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Pages/AccountSecurity.razor.rz.scp.css */
+.qr-code[b-riuj97aflh]  svg {
+    width: 12rem;
+    height: 12rem;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Pages/EditConfigGrid.razor.rz.scp.css */
+.col-title[b-4tptwwa3w3] {
+    min-width: 0px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-grow: 1;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: var(--bs-border-radius);
+    background: none;
+    cursor: pointer;
+    color: inherit;
+    transition: background-color 0.15s;
+}
+
+.col-title:hover[b-4tptwwa3w3] {
+    background-color: rgba(128, 128, 128, 0.15);
+}
+
+.col-title-text[b-4tptwwa3w3] {
+    font-weight: bold;
+}
+
+.col-search[b-4tptwwa3w3] {
+    width: 50%;
+}
+
+.add-new-bar[b-4tptwwa3w3] {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--omu-surface-2);
+    padding: 0.5rem 1.5rem;
+    margin: 1rem -1.5rem -1rem -1.5rem;
+    border-top: var(--bs-border-width) solid var(--omu-border);
+}
+
+.add-new-bar hr[b-4tptwwa3w3] {
+    display: none;
+}
+/* _content/MUnique.OpenMU.Web.AdminPanel/Pages/EditItemDrops.razor.rz.scp.css */
+.item-drops-toolbar[b-t4we9scwmg] {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 0.5rem 0;
+    background-color: var(--bs-body-bg, #fff);
+}
+
+.monster-max-drops[b-t4we9scwmg] {
+    width: 6rem;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="AddLance_Name" xml:space="preserve"><value>Add Lance for Dark Wizard</value></data>
+  <data name="AddLance_Description" xml:space="preserve"><value>Grants Lance to newly created dark wizards.</value></data>
+  <data name="Update_Name" xml:space="preserve"><value>Enable starting Castle Siege skills</value></data>
+  <data name="Update_Description" xml:space="preserve"><value>Enables the class-specific starting skill grants and allows Dark Wizard to learn Lance. Existing learned skills are preserved.</value></data>
+</root>
