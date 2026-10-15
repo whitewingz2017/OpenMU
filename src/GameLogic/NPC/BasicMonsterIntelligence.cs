@@ -148,7 +148,7 @@ public class BasicMonsterIntelligence : INpcIntelligence, IDisposable
         // players behind walls. If nobody is visible, fall back to the nearest
         // target so the monster still walks toward it (and around the wall).
         // todo: check the walk distance
-        return NpcTargetSelection.GetNearestPreferVisible(possibleTargets, this.Npc, target => target.GetDistanceTo(this.Npc));
+        return NpcTargetSelection.GetNearestPreferVisible(possibleTargets, this.Npc, target => target.GetDistanceTo(this.Npc), this.Npc.Definition.ViewRange);
     }
 
     /// <summary>

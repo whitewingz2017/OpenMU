@@ -229,3 +229,11 @@ edits.
 The search box in the navigation area searches the whole configuration by name
 and jumps directly to the edit page of a result. It is usually much faster than
 walking the tree — if you know an item, monster or skill by name, search for it.
+
+## Monster detection and ground skills
+
+A monster's `ViewRange` limits acquisition of new targets, including player summons. Seeing a player in the observation list does not extend detection beyond that range. Existing target retention uses the same configured range; no global aggro distance override is needed.
+
+For area skills with `UseTargetAreaFilter`, distance-dependent hit chance is measured from the aimed ground tile to the victim. For other area skills it remains measured from the caster. This prevents an accurately aimed Flame from losing almost all of its hits merely because the caster is several tiles away. The area diameter, hit count, hit delay, and damage formulas remain configurable.
+
+These corrections require deploying the updated game-server binaries and restarting the game server. They do not require a database configuration update, and updating only the client does not apply them.

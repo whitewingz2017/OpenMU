@@ -1,4 +1,4 @@
-﻿// <copyright file="AreaSkillAttackAction.cs" company="MUnique">
+// <copyright file="AreaSkillAttackAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -67,6 +67,19 @@ public class AreaSkillAttackAction
         }
 
         await player.ForEachWorldObserverAsync<IShowAreaSkillAnimationPlugIn>(p => p.ShowAreaSkillAnimationAsync(player, skill, targetAreaCenter, rotation), true).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Calculates distance attenuation from the aimed area for ground spells,
+    /// or from the caster for attacks without a target-area filter.
+    /// </summary>
+    /// <param name="settings">The configured hit rules.</param>
+    /// <param name="casterDistance">The distance from caster to victim.</param>
+    /// <param name="areaDistance">The distance from aimed ground tile to victim.</param>
+    /// <returns>The chance for a distance-dependent hit.</returns>
+    internal static double CalculateDistanceHitChance(AreaSkillSettings settings, double casterDistance, double areaDistance)
+    {
+        return Math.Pow(settings.HitChancePerDistanceMultiplier, settings.UseTargetAreaFilter ? areaDistance : casterDistance);
     }
 
     private static bool AreaSkillSettingsAreDefault([NotNullWhen(true)] AreaSkillSettings? settings)
@@ -306,7 +319,7 @@ public class AreaSkillAttackAction
                     double hitChance;
                     if (attackRound >= areaSkillSettings.MinimumNumberOfHitsPerTarget)
                     {
-                        hitChance = Math.Pow(areaSkillSettings.HitChancePerDistanceMultiplier, player.GetDistanceTo(target));
+                        hitChance = CalculateDistanceHitChance(areaSkillSettings, player.GetDistanceTo(target), target.GetDistanceTo(targetAreaCenter));
                     }
                     else if (attackCount >= minAttacks)
                     {

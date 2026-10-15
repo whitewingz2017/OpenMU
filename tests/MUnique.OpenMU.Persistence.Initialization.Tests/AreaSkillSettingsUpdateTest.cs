@@ -18,6 +18,34 @@ using MUnique.OpenMU.Persistence.InMemory;
 internal class AreaSkillSettingsUpdateTest
 {
     /// <summary>
+    /// Audits ground-area spells for the Flame falloff issue, while preserving
+    /// caster-origin falloff configured for Twister and Evil Spirit.
+    /// </summary>
+    [Test]
+    public async Task GroundAreaDistanceFalloffAuditAsync()
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var groundSkills = configuration.Skills.Where(s => s.AreaSkillSettings?.UseTargetAreaFilter == true).ToList();
+        Assert.That(groundSkills.Select(s => s.Number), Does.Contain((short)SkillNumber.Flame));
+        foreach (var skill in groundSkills)
+        {
+            TestContext.Out.WriteLine($"Ground-area skill {skill.Number}: multiplier={skill.AreaSkillSettings!.HitChancePerDistanceMultiplier}, diameter={skill.AreaSkillSettings.TargetAreaDiameter}");
+            if (skill.Number is not (short)SkillNumber.Flame and not (short)SkillNumber.FlameStrengthener and not (short)SkillNumber.FlameStrengthenerDuelMaster)
+            {
+                Assert.That(skill.AreaSkillSettings.HitChancePerDistanceMultiplier, Is.EqualTo(1), $"Unexpected ground falloff on skill {skill.Number}");
+            }
+        }
+
+        foreach (var number in new[] { SkillNumber.Twister, SkillNumber.EvilSpirit })
+        {
+            var settings = configuration.Skills.First(s => s.Number == (short)number).AreaSkillSettings!;
+            Assert.That(settings.UseTargetAreaFilter, Is.False);
+            Assert.That(settings.HitChancePerDistanceMultiplier, Is.LessThan(1));
+        }
+    }
+
+    /// <summary>
     /// Tests that the update restores missing area skill settings and the Ice Storm
     /// delay on an existing database, and that applying it twice doesn't
     /// duplicate any settings.

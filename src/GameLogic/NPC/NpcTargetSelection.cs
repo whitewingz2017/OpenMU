@@ -18,8 +18,9 @@ internal static class NpcTargetSelection
     /// <param name="candidates">The attack candidates.</param>
     /// <param name="viewer">The viewing object (e.g. the attacking monster).</param>
     /// <param name="getDistance">Measures the distance of a candidate; defines what "nearest" means.</param>
+    /// <param name="detectionRange">The optional configured detection range of the viewer.</param>
     /// <returns>The nearest visible candidate, or the nearest candidate if nobody is visible; <c>null</c> when there are no candidates.</returns>
-    internal static T? GetNearestPreferVisible<T>(IEnumerable<T> candidates, ILocateable viewer, Func<T, double> getDistance)
+    internal static T? GetNearestPreferVisible<T>(IEnumerable<T> candidates, ILocateable viewer, Func<T, double> getDistance, int? detectionRange = null)
         where T : class, ILocateable
     {
         T? nearest = null;
@@ -28,6 +29,11 @@ internal static class NpcTargetSelection
         var nearestVisibleDistance = double.MaxValue;
         foreach (var candidate in candidates)
         {
+            if (detectionRange is { } range && !candidate.IsInRange(viewer.Position, range))
+            {
+                continue;
+            }
+
             var distance = getDistance(candidate);
             if (distance < nearestDistance)
             {
