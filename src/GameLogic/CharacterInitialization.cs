@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic;
 
 using System.Text.RegularExpressions;
 using MUnique.OpenMU.AttributeSystem;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.Persistence;
 
 /// <summary>
@@ -66,6 +67,18 @@ public static class CharacterInitialization
                      .Select(a => context.CreateNew<StatAttribute>(a.Attribute, a.BaseValue)))
         {
             character.Attributes.Add(attribute);
+        }
+
+        // Class base current values can be below the computed maximum even at level one.
+        // Initialize the persisted resource stats from the same relationships used in game.
+        var attributes = new AttributeSystem(character.Attributes, characterClass.BaseAttributeValues, characterClass.AttributeCombinations);
+        foreach (var regeneration in new[] { Stats.HealthRegeneration, Stats.ManaRegeneration })
+        {
+            if (character.Attributes.FirstOrDefault(attribute => attribute.Definition == regeneration.CurrentAttribute) is { } current
+                && attributes[regeneration.MaximumAttribute] > 0)
+            {
+                current.Value = attributes[regeneration.MaximumAttribute];
+            }
         }
 
         character.CurrentMap = characterClass.HomeMap;

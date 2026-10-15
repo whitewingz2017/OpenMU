@@ -39,6 +39,18 @@ The updates take effect after a restart of the server process. Until then, the
 running server still works with the configuration it loaded at startup.
 :::
 
+## Safe-zone recovery
+
+Version 2 of **Regenerations Refactor** enables automatic HP and MP recovery in
+Season 6 safe zones without requiring a resting action or MU Helper. It adds a
+3% recovery contribution to each resource's existing recovery interval. Existing
+resting bonuses and recovery customizations are preserved when upgrading version
+1. Apply the configuration update and restart the server to activate it.
+
+The updated server also initializes newly created characters with their class's
+calculated maximum HP and MP instead of fixed base resource values. Existing
+characters retain their saved HP when logging in.
+
 ## Preconditions
 
 If the database is not installed yet, or a schema update is pending, this page

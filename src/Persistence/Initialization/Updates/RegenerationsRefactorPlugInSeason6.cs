@@ -30,12 +30,34 @@ public class RegenerationsRefactorPlugInSeason6 : RegenerationsRefactorPlugInBas
     public override string DataInitializationKey => DataInitialization.Id;
 
     /// <inheritdoc />
-    public override string Description => PlugInDescription;
+    public override string Description => PlugInDescription + " Version 2 enables automatic health and mana recovery in safe zones.";
+
+    /// <inheritdoc />
+    public override int Version => 2;
+
+    /// <inheritdoc />
+    public override DateTime UpdatedAt => new(2026, 10, 15, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
+    protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration, int? installedVersion)
+    {
+        // Replaying the legacy refactor would duplicate resting relationships and replace
+        // owner recovery customizations. Installed versions need only the safe-zone delta.
+        if (installedVersion is >= 1)
+        {
+            ApplySafezoneRecovery(context, gameConfiguration);
+            return;
+        }
+
+        await this.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
+    }
 
     /// <inheritdoc />
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         await base.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
+
+        ApplySafezoneRecovery(context, gameConfiguration);
 
         // Create new Stats, but only when the configuration doesn't contain them already - it would
         // create duplicated attribute definitions otherwise.
@@ -136,6 +158,22 @@ public class RegenerationsRefactorPlugInSeason6 : RegenerationsRefactorPlugInBas
             increaseSdRecoveryRate.ValueFormula = $"1 + {SkillsInitializer.FormulaRecoveryIncrease120}";
             increaseSdRecoveryRate.TargetAttribute = shieldRecoveryMultiplier;
             increaseSdRecoveryRate.Aggregation = AggregateType.Multiplicate;
+        }
+    }
+
+    private static void ApplySafezoneRecovery(IContext context, GameConfiguration gameConfiguration)
+    {
+        var safezone = Stats.IsInSafezone.GetPersistent(gameConfiguration);
+        foreach (var characterClass in gameConfiguration.CharacterClasses)
+        {
+            foreach (var recovery in new[] { Stats.HealthRecoveryMultiplier, Stats.ManaRecoveryMultiplier })
+            {
+                var target = recovery.GetPersistent(gameConfiguration);
+                if (!characterClass.AttributeCombinations.Any(relationship => relationship.InputAttribute == safezone && relationship.TargetAttribute == target))
+                {
+                    characterClass.AttributeCombinations.Add(context.CreateNew<AttributeRelationship>(target, 0.03f, safezone, AggregateType.AddRaw));
+                }
+            }
         }
     }
 }
