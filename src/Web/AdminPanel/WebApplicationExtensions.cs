@@ -67,6 +67,7 @@ public static class WebApplicationExtensions
             AdminPanelEnvironment.IsGrafanaAvailable = builder.Configuration.IsOtlpExportConfigured();
         }
 
+        services.AddTestRegistration();
         services.AddControllers()
             .ConfigureApplicationPartManager(setup =>
                 setup.FeatureProviders.Add(new GenericControllerFeatureProvider()));
@@ -138,6 +139,7 @@ public static class WebApplicationExtensions
         app.UseStaticFiles();
 
         app.UseRouting();
+        app.UseRateLimiter();
         app.UseAdminPanelAuth();
 
         // The log files may contain sensitive information, so they are only served to authorized users.

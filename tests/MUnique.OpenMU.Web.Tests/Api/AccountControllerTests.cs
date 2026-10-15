@@ -6,14 +6,17 @@ namespace MUnique.OpenMU.Web.Tests.Api;
 
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
-using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Persistence.InMemory;
+using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.API;
 
 /// <summary>
@@ -119,6 +122,54 @@ public class AccountControllerTests
     public void InvalidRegistrationIsRejected(string loginName, string password, string? eMail, string invalidMember)
     {
         Assert.That(GetInvalidMembers(CreateRegistration(loginName, password, eMail)), Is.EqualTo(new[] { invalidMember }));
+    }
+
+    /// <summary>Direct client registration must remain opt-in.</summary>
+    [Test]
+    public async Task TestRegistrationIsDisabledByDefaultAsync()
+    {
+        var configuration = new ConfigurationBuilder().Build();
+        var result = await this._controller.RegisterTestAccountAsync(CreateRegistration("newbie", "secret1", "a@b.c"), configuration, CancellationToken.None).ConfigureAwait(false);
+        Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        Assert.That(await this.GetAccountAsync("newbie").ConfigureAwait(false), Is.Null);
+    }
+
+    /// <summary>Enabled registration still requires transport protection and an e-mail address.</summary>
+    /// <param name="https">Whether the request uses HTTPS.</param>
+    /// <param name="email">The submitted e-mail address.</param>
+    [TestCase(false, "a@b.c")]
+    [TestCase(true, "")]
+    public async Task TestRegistrationRejectsIncompleteOrInsecureRequestsAsync(bool https, string email)
+    {
+        this._controller.Request.Scheme = https ? "https" : "http";
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["TestRegistration:Enabled"] = "true" }).Build();
+        var result = await this._controller.RegisterTestAccountAsync(CreateRegistration("newbie", "secret1", email), configuration, CancellationToken.None).ConfigureAwait(false);
+        Assert.That(result, Is.InstanceOf<BadRequestResult>());
+        Assert.That(await this.GetAccountAsync("newbie").ConfigureAwait(false), Is.Null);
+    }
+
+    /// <summary>The opt-in endpoint uses the same password hashing and duplicate-name behavior.</summary>
+    [Test]
+    public async Task TestRegistrationCreatesAndRejectsDuplicateAsync()
+    {
+        this._controller.Request.Scheme = "https";
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["TestRegistration:Enabled"] = "true" }).Build();
+        var registration = CreateRegistration("newbie", "secret1", "a@b.c");
+        var result = await this._controller.RegisterTestAccountAsync(registration, configuration, CancellationToken.None).ConfigureAwait(false);
+        Assert.That(((StatusCodeResult)result).StatusCode, Is.EqualTo(StatusCodes.Status201Created));
+        Assert.That(BCrypt.Net.BCrypt.Verify("secret1", (await this.GetAccountAsync("newbie").ConfigureAwait(false))!.PasswordHash), Is.True);
+        Assert.That(await this._controller.RegisterTestAccountAsync(registration, configuration, CancellationToken.None).ConfigureAwait(false), Is.InstanceOf<ConflictResult>());
+    }
+
+    /// <summary>Only the test endpoint bypasses authentication, and it requires a rate-limit policy.</summary>
+    [Test]
+    public void OnlyTestEndpointAllowsAnonymousRegistration()
+    {
+        var method = typeof(AccountController).GetMethod(nameof(AccountController.RegisterTestAccountAsync))!;
+        Assert.That(method.GetCustomAttributes(typeof(AllowAnonymousAttribute), true), Has.Length.EqualTo(1));
+        Assert.That(method.GetCustomAttributes(typeof(EnableRateLimitingAttribute), true), Has.Length.EqualTo(1));
+        Assert.That(typeof(AccountController).GetMethod(nameof(AccountController.RegisterAsync))!.GetCustomAttributes(typeof(AllowAnonymousAttribute), true), Is.Empty);
+        Assert.That(typeof(AccountController).GetCustomAttributes(typeof(AuthorizeAttribute), true), Has.Length.EqualTo(1));
     }
 
     private static AccountRegistration CreateRegistration(string loginName, string password, string? eMail)

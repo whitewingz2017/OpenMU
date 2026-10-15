@@ -8,6 +8,8 @@ using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
@@ -95,6 +97,34 @@ public class AccountController : ControllerBase
 
         this._logger.LogInformation("Account {LoginName} was registered by API client {Client}.", account.LoginName, this.User.Identity?.Name);
         return this.StatusCode(StatusCodes.Status201Created);
+    }
+
+    /// <summary>
+    /// Registers a test account directly from the game client when explicitly enabled by the operator.
+    /// </summary>
+    /// <param name="registration">The account credentials and required e-mail address.</param>
+    /// <param name="configuration">The host configuration.</param>
+    /// <param name="cancellationToken">The request cancellation token.</param>
+    /// <returns>The registration result, or not found when test registration is disabled.</returns>
+    [HttpPost("test-registration")]
+    [AllowAnonymous]
+    [EnableRateLimiting(TestRegistrationExtensions.PolicyName)]
+    public async ValueTask<IActionResult> RegisterTestAccountAsync(
+        [FromBody] AccountRegistration registration,
+        [FromServices] IConfiguration configuration,
+        CancellationToken cancellationToken)
+    {
+        if (!configuration.GetValue<bool>("TestRegistration:Enabled"))
+        {
+            return this.NotFound();
+        }
+
+        if (!this.Request.IsHttps || string.IsNullOrWhiteSpace(registration.EMail))
+        {
+            return this.BadRequest();
+        }
+
+        return await this.RegisterAsync(registration, cancellationToken).ConfigureAwait(false);
     }
 
     private async ValueTask<bool> IsRegisteredAsync(string loginName, GameConfiguration gameConfiguration, CancellationToken cancellationToken)

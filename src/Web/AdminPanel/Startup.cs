@@ -57,6 +57,7 @@ public class Startup
 
         services.AddSignalR().AddJsonProtocol(o => o.PayloadSerializerOptions.Converters.Add(new TimeSpanConverter()));
 
+        services.AddTestRegistration();
         services.AddControllers()
             .ConfigureApplicationPartManager(setup =>
                 setup.FeatureProviders.Add(new GenericControllerFeatureProvider()));
@@ -110,6 +111,7 @@ public class Startup
         app.UseStaticFiles();
 
         app.UseRouting();
+        app.UseRateLimiter();
         app.UseAdminPanelAuth();
 
         // The log files may contain sensitive information, so they are only served to authorized users.
