@@ -143,6 +143,11 @@ public class DefaultDropGenerator : IDropGenerator
         }
 
         item.Level = GetItemLevelByMonsterLevel(item.Definition!, monsterLevel);
+        // Only 20% of items calculated as +3 keep that level.
+        if (item.Level == 3 && !this._randomizer.NextRandomBool(0.20f))
+        {
+            item.Level = (byte)this._randomizer.NextInt(0, 3);
+        }
         item.Durability = item.GetMaximumDurabilityOfOnePiece();
         return item;
     }
