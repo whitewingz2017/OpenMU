@@ -18,7 +18,7 @@ public class DefaultDropGenerator : IDropGenerator
     /// </summary>
     private const int BaseMoneyDrop = 7;
     private const int DropLevelMaxGap = 12;
-    private const int SkillDropChancePercent = 50;
+    private const int SkillDropChancePercent = 20;
 
     private const byte DefaultMaxItemOptionLevelDrop = 3;
     private const byte MinItemOptionLevelDrop = 1;
