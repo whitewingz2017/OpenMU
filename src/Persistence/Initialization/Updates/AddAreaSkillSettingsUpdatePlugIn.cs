@@ -16,8 +16,8 @@ using MUnique.OpenMU.PlugIns;
 /// Version 2 additionally fixes the Hellfire, Decay and Ice Storm skills'
 /// range, effect radius and delay.
 /// Version 3 additionally sets the projectile count of the Triple Shot skill.
-/// Every step only fills in missing values or corrects seeded ones, so
-/// customized values are preserved and re-running stays a no-op.
+/// Version 4 repairs Flame and its master variants to hit every monster in a small area.
+/// Upgrading from version 3 only changes Flame, preserving other customized skills.
 /// </remarks>
 [PlugIn]
 [Display(Name = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Name), Description = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Description), ResourceType = typeof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources))]
@@ -47,13 +47,41 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
-    public override int Version => 3;
+    public override int Version => 4;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2024, 10, 25, 19, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 09, 30, 12, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 10, 17, 12, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
+    protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration, int? installedVersion)
+    {
+        if (installedVersion is null or < 3)
+        {
+            await this.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
+        }
+
+        // Version 4 only repairs Flame, preserving unrelated owner customizations.
+        foreach (var skill in gameConfiguration.Skills.Where(s => s.Number is (short)SkillNumber.Flame or (short)SkillNumber.FlameStrengthener or (short)SkillNumber.FlameStrengthenerDuelMaster))
+        {
+            var settings = skill.AreaSkillSettings ?? context.CreateNew<AreaSkillSettings>();
+            skill.AreaSkillSettings = settings;
+            skill.SkillType = SkillType.AreaSkillAutomaticHits;
+            settings.UseTargetAreaFilter = true;
+            settings.UseFrustumFilter = false;
+            settings.TargetAreaDiameter = 3;
+            settings.UseDeferredHits = true;
+            settings.DelayPerOneDistance = TimeSpan.Zero;
+            settings.DelayBetweenHits = TimeSpan.FromMilliseconds(500);
+            settings.MinimumNumberOfHitsPerTarget = 1;
+            settings.MaximumNumberOfHitsPerTarget = 2;
+            settings.MinimumNumberOfHitsPerAttack = 0;
+            settings.MaximumNumberOfHitsPerAttack = 0;
+            settings.HitChancePerDistanceMultiplier = 0.5f;
+        }
+    }
 
     /// <inheritdoc />
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)

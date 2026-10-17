@@ -82,23 +82,14 @@ public class AreaSkillAttackAction
         return Math.Pow(settings.HitChancePerDistanceMultiplier, settings.UseTargetAreaFilter ? areaDistance : casterDistance);
     }
 
-    private static bool AreaSkillSettingsAreDefault([NotNullWhen(true)] AreaSkillSettings? settings)
-    {
-        if (settings is null)
-        {
-            return true;
-        }
-
-        return !settings.UseDeferredHits
-               && settings.DelayPerOneDistance <= TimeSpan.Zero
-               && settings.MinimumNumberOfHitsPerTarget == 1
-               && settings.MaximumNumberOfHitsPerTarget == 1
-               && settings.MinimumNumberOfHitsPerAttack == 0
-               && settings.MaximumNumberOfHitsPerAttack == 0
-               && Math.Abs(settings.HitChancePerDistanceMultiplier - 1.0) <= 0.00001f;
-    }
-
-    private static IEnumerable<IAttackable> GetTargets(Player player, Point targetAreaCenter, Skill skill, byte rotation, ushort extraTargetId)
+    /// <summary>Enumerates each valid victim once, including monsters sharing the same tile.</summary>
+    /// <param name="player">The caster.</param>
+    /// <param name="targetAreaCenter">The aimed ground position.</param>
+    /// <param name="skill">The configured skill.</param>
+    /// <param name="rotation">The cast direction.</param>
+    /// <param name="extraTargetId">An optional explicitly selected victim.</param>
+    /// <returns>The victims accepted by the skill's target filters.</returns>
+    internal static IEnumerable<IAttackable> GetTargets(Player player, Point targetAreaCenter, Skill skill, byte rotation, ushort extraTargetId)
     {
         var isExtraTargetDefined = extraTargetId != UndefinedTarget;
         var extraTarget = isExtraTargetDefined ? player.GetObject(extraTargetId) as IAttackable : null;
@@ -137,6 +128,22 @@ public class AreaSkillAttackAction
 
             yield return target;
         }
+    }
+
+    private static bool AreaSkillSettingsAreDefault([NotNullWhen(true)] AreaSkillSettings? settings)
+    {
+        if (settings is null)
+        {
+            return true;
+        }
+
+        return !settings.UseDeferredHits
+               && settings.DelayPerOneDistance <= TimeSpan.Zero
+               && settings.MinimumNumberOfHitsPerTarget == 1
+               && settings.MaximumNumberOfHitsPerTarget == 1
+               && settings.MinimumNumberOfHitsPerAttack == 0
+               && settings.MaximumNumberOfHitsPerAttack == 0
+               && Math.Abs(settings.HitChancePerDistanceMultiplier - 1.0) <= 0.00001f;
     }
 
     private static IEnumerable<IAttackable> GetTargetsInRange(Player player, Point targetAreaCenter, Skill skill, byte rotation)

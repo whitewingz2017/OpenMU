@@ -17,6 +17,42 @@ using MUnique.OpenMU.Persistence.InMemory;
 [TestFixture]
 internal class AreaSkillSettingsUpdateTest
 {
+    /// <summary>Fresh installations must damage all monsters within the small Flame area.</summary>
+    [Test]
+    public async Task FreshFlameHasGuaranteedAreaHitAsync()
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        AssertFlame(configuration);
+    }
+
+    /// <summary>A version-three installation is repaired without changing other skills, twice safely.</summary>
+    /// <param name="missingSettings">Whether the existing installation has no Flame area settings.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task VersionFourRepairsFlameOnlyAsync(bool missingSettings)
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var update = new AddAreaSkillSettingsUpdatePlugIn();
+        var installed = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).First(e => e.Key == update.Key);
+        installed.Version = 3;
+        var flame = configuration.Skills.First(s => s.Number == (short)SkillNumber.Flame);
+        flame.SkillType = SkillType.AreaSkillExplicitTarget;
+        flame.AreaSkillSettings!.MaximumNumberOfHitsPerAttack = 1;
+        flame.AreaSkillSettings.TargetAreaDiameter = 2;
+        if (missingSettings) flame.AreaSkillSettings = null;
+        var twister = configuration.Skills.First(s => s.Number == (short)SkillNumber.Twister);
+        twister.Range = 19;
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        AssertFlame(configuration);
+        var count = (await context.GetAsync<AreaSkillSettings>().ConfigureAwait(false)).Count();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        AssertFlame(configuration);
+        Assert.That(twister.Range, Is.EqualTo(19));
+        Assert.That((await context.GetAsync<AreaSkillSettings>().ConfigureAwait(false)).Count(), Is.EqualTo(count));
+    }
+
     /// <summary>
     /// Audits ground-area spells for the Flame falloff issue, while preserving
     /// caster-origin falloff configured for Twister and Evil Spirit.
@@ -61,6 +97,8 @@ internal class AreaSkillSettingsUpdateTest
         iceStorm.AreaSkillSettings!.DelayBetweenHits = TimeSpan.FromMilliseconds(200);
 
         var update = new AddAreaSkillSettingsUpdatePlugIn();
+        var installed = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).First(e => e.Key == update.Key);
+        installed.Version = 2;
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         var settingsCount = (await context.GetAsync<AreaSkillSettings>().ConfigureAwait(false)).Count();
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
@@ -69,6 +107,18 @@ internal class AreaSkillSettingsUpdateTest
         Assert.That(iceStorm.AreaSkillSettings?.DelayBetweenHits, Is.EqualTo(TimeSpan.Zero));
         Assert.That(gameConfiguration.Skills.First(s => s.Number == (short)SkillNumber.TripleShot).AreaSkillSettings?.ProjectileCount, Is.EqualTo(3));
         Assert.That((await context.GetAsync<AreaSkillSettings>().ConfigureAwait(false)).Count(), Is.EqualTo(settingsCount));
+    }
+
+    private static void AssertFlame(GameConfiguration configuration)
+    {
+        foreach (var skill in configuration.Skills.Where(s => s.Number is (short)SkillNumber.Flame or (short)SkillNumber.FlameStrengthener or (short)SkillNumber.FlameStrengthenerDuelMaster))
+        {
+            Assert.That(skill.SkillType, Is.EqualTo(SkillType.AreaSkillAutomaticHits));
+            Assert.That(skill.AreaSkillSettings!.UseTargetAreaFilter, Is.True);
+            Assert.That(skill.AreaSkillSettings.TargetAreaDiameter, Is.EqualTo(3));
+            Assert.That(skill.AreaSkillSettings.MinimumNumberOfHitsPerTarget, Is.EqualTo(1));
+            Assert.That(skill.AreaSkillSettings.MaximumNumberOfHitsPerAttack, Is.Zero);
+        }
     }
 
     private static async Task<(IContext Context, GameConfiguration GameConfiguration)> CreateSeason6ConfigurationAsync()

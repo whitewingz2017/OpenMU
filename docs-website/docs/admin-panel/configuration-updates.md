@@ -8,6 +8,13 @@ description: Apply the configuration data updates which ship with new OpenMU ver
 
 **Navigation:** *Updates* — route `/config-updates`
 
+For the Season 6 Flame area-damage repair, apply **Add Area Skill Settings**, version **4**,
+after rebuilding the server, then restart the game server. This updates Flame and its
+master variants to hit all eligible monsters within a small area, including monsters
+on the same tile. The first hit is guaranteed for each eligible victim; the normal
+damage calculation still applies. Upgrading from version 3 preserves settings for
+other skills. Updating a mobile client alone does not update these persisted rules.
+
 OpenMU is under active development, and new versions regularly bring changes to
 the **game configuration data**: a corrected monster stat, a new drop item group,
 a new plugin configuration, a fixed quest.
