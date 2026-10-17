@@ -27,6 +27,43 @@ using MUnique.OpenMU.PlugIns;
 public class MoveItemActionTests
 {
     /// <summary>
+    /// Shared weapon hand slots must not grant dual wielding to classes without it.
+    /// A single-hand shield remains usable by those classes.
+    /// </summary>
+    /// <param name="canDualWield">Whether the class has the configured capability.</param>
+    /// <param name="targetSlot">The requested equipment slot.</param>
+    /// <param name="shield">Whether the definition is an off-hand-only shield.</param>
+    /// <param name="allowed">Whether the item should be equipped.</param>
+    [TestCase(false, 1, false, false)]
+    [TestCase(true, 1, false, true)]
+    [TestCase(false, 0, false, true)]
+    [TestCase(false, 1, true, true)]
+    public async ValueTask EquipSharedWeaponRespectsDualWieldCapabilityAsync(bool canDualWield, byte targetSlot, bool shield, bool allowed)
+    {
+        var player = await CreateTestPlayerAsync(canDualWield).ConfigureAwait(false);
+        var definition = new Mock<ItemDefinition>();
+        definition.SetupAllProperties();
+        definition.Setup(d => d.Requirements).Returns(new List<AttributeRequirement>());
+        definition.Setup(d => d.QualifiedCharacters).Returns(new List<CharacterClass> { player.SelectedCharacter!.CharacterClass! });
+        definition.Setup(d => d.BasePowerUpAttributes).Returns(new List<ItemBasePowerUpDefinition>());
+        definition.Setup(d => d.PossibleItemSetGroups).Returns(new List<ItemSetGroup>());
+        var slot = new Mock<ItemSlotType>();
+        slot.Setup(s => s.ItemSlots).Returns(shield ? new List<int> { 1 } : new List<int> { 0, 1 });
+        definition.Object.ItemSlot = slot.Object;
+        definition.Object.Group = shield ? (byte)6 : (byte)5;
+        definition.Object.Width = 1;
+        definition.Object.Height = 3;
+        definition.Object.Durability = 20;
+        var item = CreateItem(definition.Object, 20);
+        await player.Inventory!.AddItemAsync(20, item).ConfigureAwait(false);
+
+        await new MoveItemAction().MoveItemAsync(player, 20, Storages.Inventory, targetSlot, Storages.Inventory).ConfigureAwait(false);
+
+        Assert.That(player.Inventory.GetItem(targetSlot), allowed ? Is.SameAs(item) : Is.Null);
+        Assert.That(player.Inventory.GetItem(20), allowed ? Is.Null : Is.SameAs(item));
+    }
+
+    /// <summary>
     /// Verifies that a complete stack move consumes the source item.
     /// </summary>
     [Test]
@@ -499,7 +536,7 @@ public class MoveItemActionTests
         return definition;
     }
 
-    private static async ValueTask<Player> CreateTestPlayerAsync()
+    private static async ValueTask<Player> CreateTestPlayerAsync(bool canDualWield = false)
     {
         var gameConfig = new Mock<GameConfiguration>();
         gameConfig.SetupAllProperties();
@@ -513,6 +550,7 @@ public class MoveItemActionTests
         gameConfig.Setup(c => c.GlobalBaseAttributeValues).Returns(new List<ConstValueAttribute>
         {
             new(1, Stats.MoneyAmountRate),
+            new(canDualWield ? 0 : -1, Stats.HasDoubleWield),
         });
         var map = new Mock<GameMapDefinition>();
         map.SetupAllProperties();

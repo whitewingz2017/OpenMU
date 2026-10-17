@@ -16,6 +16,44 @@ using MUnique.OpenMU.Network.Packets.ClientToServer;
 public class LostConnectionDetectionPlugInTest
 {
     /// <summary>
+    /// An authenticated reconnect releases only a session which exceeds the
+    /// configured heartbeat timeout, and respects disabled detection.
+    /// </summary>
+    /// <param name="hasReport">Whether the client supports heartbeat reports.</param>
+    /// <param name="expired">Whether the recorded heartbeat has expired.</param>
+    /// <param name="enabled">Whether detection is enabled.</param>
+    /// <param name="expected">Whether the session should be released.</param>
+    [TestCase(true, true, true, true)]
+    [TestCase(true, false, true, false)]
+    [TestCase(false, true, true, false)]
+    [TestCase(true, true, false, false)]
+    public async ValueTask LoginRetryRespectsHeartbeatConfigurationAsync(bool hasReport, bool expired, bool enabled, bool expected)
+    {
+        var gameContext = (GameContext)GameContextTestHelper.CreateGameContext();
+        var player = await CreateConnectedPlayerAsync(gameContext).ConfigureAwait(false);
+        var detector = new LostConnectionDetectionPlugIn
+        {
+            Configuration = new LostConnectionDetectionConfiguration
+            {
+                Timeout = !enabled ? TimeSpan.Zero : expired ? TimeSpan.FromMilliseconds(50) : TimeSpan.FromMinutes(1),
+            },
+        };
+        if (hasReport)
+        {
+            player.ReportAlive();
+        }
+
+        if (expired)
+        {
+            await Task.Delay(150).ConfigureAwait(false);
+        }
+
+        Assert.That(await detector.DisconnectIfTimedOutAsync(player).ConfigureAwait(false), Is.EqualTo(expected));
+        var players = await gameContext.GetPlayersAsync().ConfigureAwait(false);
+        Assert.That(players.Contains(player), Is.EqualTo(!expected));
+    }
+
+    /// <summary>
     /// Tests that the ping of the client reports that it's alive.
     /// </summary>
     [Test]

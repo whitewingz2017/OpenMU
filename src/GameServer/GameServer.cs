@@ -12,6 +12,7 @@ using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Properties;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Guild;
@@ -358,6 +359,18 @@ public sealed class GameServer : IGameServer, IDisposable, IAsyncDisposable, IGa
 
         if (affectedPlayer is not null)
         {
+            // The notification follows successful authentication. Reuse the
+            // active detector so administrator timeouts and disabling still apply.
+            foreach (var detector in this._gameContext.PlugInManager
+                         .GetActivePlugInsOf<IPeriodicTaskPlugIn>()
+                         .OfType<LostConnectionDetectionPlugIn>())
+            {
+                if (await detector.DisconnectIfTimedOutAsync(affectedPlayer).ConfigureAwait(false))
+                {
+                    return;
+                }
+            }
+
             await affectedPlayer.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.LoginAttemptWarning)).ConfigureAwait(false);
         }
     }

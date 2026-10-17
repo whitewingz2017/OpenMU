@@ -8,6 +8,7 @@ using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.GameLogic.Views.Trade;
@@ -298,6 +299,16 @@ public class MoveItemAction
         if (toStorage.Storage == player.Inventory && toSlot <= LastEquippableItemSlotIndex)
         {
             var itemDefinition = item.Definition;
+
+            // Shared weapon definitions can allow either hand for a dual-wield
+            // class, without granting that capability to every qualified class.
+            if (toSlot == InventoryConstants.RightHandSlot
+                && itemDefinition?.ItemSlot?.ItemSlots.Contains(InventoryConstants.LeftHandSlot) == true
+                && player.Attributes![Stats.HasDoubleWield] < 0)
+            {
+                return Movement.None;
+            }
+
             if (storage.GetItem(toSlot) != null || itemDefinition?.ItemSlot is null)
             {
                 return Movement.None;

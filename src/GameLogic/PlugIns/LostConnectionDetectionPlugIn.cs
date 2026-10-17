@@ -50,16 +50,30 @@ public class LostConnectionDetectionPlugIn : IPeriodicTaskPlugIn, ISupportCustom
         var players = await gameContext.GetPlayersAsync().ConfigureAwait(false);
         foreach (var player in players)
         {
-            if (player.LastAliveReport is not { } lastAliveReport
-                || now - lastAliveReport <= timeout
-                || !player.IsConnected)
-            {
-                continue;
-            }
-
-            player.Logger.LogInformation("Disconnecting {Player}, because its client didn't report since {LastAliveReport} that it's alive.", player, lastAliveReport);
-            await player.DisconnectAsync().ConfigureAwait(false);
+            await this.DisconnectIfTimedOutAsync(player).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// Releases a lost session during an authenticated login retry, using the same
+    /// configured timeout as the periodic connection check.
+    /// </summary>
+    /// <param name="player">The player whose connection may have been lost.</param>
+    /// <returns>Whether the lost session was disconnected.</returns>
+    public async ValueTask<bool> DisconnectIfTimedOutAsync(Player player)
+    {
+        var timeout = (this.Configuration ??= new LostConnectionDetectionConfiguration()).Timeout;
+        if (timeout <= TimeSpan.Zero
+            || player.LastAliveReport is not { } lastAliveReport
+            || DateTime.UtcNow - lastAliveReport <= timeout
+            || !player.IsConnected)
+        {
+            return false;
+        }
+
+        player.Logger.LogInformation("Disconnecting {Player}, because its client didn't report since {LastAliveReport} that it's alive.", player, lastAliveReport);
+        await player.DisconnectAsync().ConfigureAwait(false);
+        return true;
     }
 
     /// <inheritdoc />
