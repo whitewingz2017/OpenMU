@@ -32,6 +32,7 @@ using MUnique.OpenMU.Persistence.AdminAuth;
 using MUnique.OpenMU.Persistence.EntityFramework;
 using MUnique.OpenMU.Persistence.EntityFramework.AdminAuth;
 using MUnique.OpenMU.Persistence.EntityFramework.Json;
+using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.Initialization.Version075;
 using MUnique.OpenMU.Persistence.InMemory;
 using MUnique.OpenMU.PlugIns;
@@ -393,6 +394,7 @@ internal sealed class Program : IDisposable
         this.AddActorControlEndpoint(builder.Services);
 
         var host = builder.Build();
+        await this.ApplyRequestedConfigurationUpdateAsync(host.Services, builder.Configuration).ConfigureAwait(false);
 
         // NpgsqlLoggingConfiguration.InitializeLogging(host.Services.GetRequiredService<ILoggerFactory>())
         this._logger.Information("Host created");
@@ -450,6 +452,43 @@ internal sealed class Program : IDisposable
             .AddSingleton<BotsController>()
             .AddSingleton<ActorProtocolHandler>()
             .AddHostedService<ActorControlService>();
+    }
+
+    /// <summary>
+    /// Applies a single explicitly requested data update before game servers load their configuration.
+    /// This allows operators to repair an existing database during deployment without an admin-panel session.
+    /// </summary>
+    /// <param name="services">The configured host services.</param>
+    /// <param name="configuration">The startup configuration.</param>
+    private async ValueTask ApplyRequestedConfigurationUpdateAsync(IServiceProvider services, IConfiguration configuration)
+    {
+        if (configuration["ApplyConfigurationUpdate"] is not { Length: > 0 } requested)
+        {
+            return;
+        }
+
+        if (!Guid.TryParse(requested, out var key))
+        {
+            throw new ArgumentException("ApplyConfigurationUpdate must identify a configuration update by GUID.");
+        }
+
+        var updateService = new DataUpdateService(services.GetRequiredService<IPersistenceContextProvider>(), services.GetRequiredService<PlugInManager>());
+        var pending = await updateService.DetermineAvailableUpdatesAsync().ConfigureAwait(false);
+        var update = pending.SingleOrDefault(candidate => candidate.Key == key);
+        if (update is null)
+        {
+            var installed = await updateService.GetInstalledUpdatesAsync().ConfigureAwait(false);
+            if (installed.ContainsKey(key))
+            {
+                this._logger.Information("Configuration update {UpdateKey} is already installed.", key);
+                return;
+            }
+
+            throw new InvalidOperationException($"Configuration update {key} is not available for this database.");
+        }
+
+        this._logger.Information("Applying configuration update {UpdateName}, version {Version}, before starting game servers.", update.Name, update.Version);
+        await updateService.ApplyUpdatesAsync([update], new Progress<(Guid CurrentUpdatingKey, bool IsCompleted)>()).ConfigureAwait(false);
     }
 
     private IIpAddressResolver CreateIpResolver(IServiceProvider serviceProvider, string[] args)

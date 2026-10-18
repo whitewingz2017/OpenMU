@@ -18,6 +18,7 @@ using MUnique.OpenMU.PlugIns;
 /// Version 3 additionally sets the projectile count of the Triple Shot skill.
 /// Version 4 repairs Flame and its master variants to hit every monster in a small area.
 /// Upgrading from version 3 only changes Flame, preserving other customized skills.
+/// Version 5 removes distance-based target rejection inside Flame's impact radius.
 /// </remarks>
 [PlugIn]
 [Display(Name = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Name), Description = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Description), ResourceType = typeof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources))]
@@ -47,13 +48,13 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
-    public override int Version => 4;
+    public override int Version => 5;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2024, 10, 25, 19, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 10, 17, 12, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 10, 18, 3, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration, int? installedVersion)
@@ -79,7 +80,7 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
             settings.MaximumNumberOfHitsPerTarget = 2;
             settings.MinimumNumberOfHitsPerAttack = 0;
             settings.MaximumNumberOfHitsPerAttack = 0;
-            settings.HitChancePerDistanceMultiplier = 0.5f;
+            settings.HitChancePerDistanceMultiplier = 1f;
         }
     }
 

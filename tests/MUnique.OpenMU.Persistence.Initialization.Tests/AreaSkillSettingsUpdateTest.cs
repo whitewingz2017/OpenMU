@@ -26,17 +26,20 @@ internal class AreaSkillSettingsUpdateTest
         AssertFlame(configuration);
     }
 
-    /// <summary>A version-three installation is repaired without changing other skills, twice safely.</summary>
+    /// <summary>An existing installation is repaired without changing other skills, twice safely.</summary>
     /// <param name="missingSettings">Whether the existing installation has no Flame area settings.</param>
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task VersionFourRepairsFlameOnlyAsync(bool missingSettings)
+    /// <param name="installedVersion">The previous version of the area settings update.</param>
+    [TestCase(false, 3)]
+    [TestCase(true, 3)]
+    [TestCase(false, 4)]
+    [TestCase(true, 4)]
+    public async Task VersionFiveRepairsFlameOnlyAsync(bool missingSettings, int installedVersion)
     {
         var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
         using var _ = context;
         var update = new AddAreaSkillSettingsUpdatePlugIn();
         var installed = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).First(e => e.Key == update.Key);
-        installed.Version = 3;
+        installed.Version = installedVersion;
         var flame = configuration.Skills.First(s => s.Number == (short)SkillNumber.Flame);
         flame.SkillType = SkillType.AreaSkillExplicitTarget;
         flame.AreaSkillSettings!.MaximumNumberOfHitsPerAttack = 1;
@@ -118,6 +121,7 @@ internal class AreaSkillSettingsUpdateTest
             Assert.That(skill.AreaSkillSettings.TargetAreaDiameter, Is.EqualTo(3));
             Assert.That(skill.AreaSkillSettings.MinimumNumberOfHitsPerTarget, Is.EqualTo(1));
             Assert.That(skill.AreaSkillSettings.MaximumNumberOfHitsPerAttack, Is.Zero);
+            Assert.That(skill.AreaSkillSettings.HitChancePerDistanceMultiplier, Is.EqualTo(1));
         }
     }
 
