@@ -24,6 +24,47 @@ public class ItemConsumptionTest
     private const int ItemSlot = 12;
 
     /// <summary>
+    /// Ensures a running server discovers the backpack consumption strategy,
+    /// including an existing configuration without a persisted entry for it.
+    /// </summary>
+    [Test]
+    public void MagicBackpackIsDiscovered()
+    {
+        var manager = new PlugIns.PlugInManager([], Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance, null, null);
+        var handler = manager.GetStrategy<ItemIdentifier, IItemConsumeHandlerPlugIn>(GameLogic.CashShop.InventoryExtensionDeliveryPlugIn.MagicBackpack);
+        Assert.That(handler, Is.TypeOf<InventoryExtensionConsumeHandlerPlugIn>());
+    }
+
+    /// <summary>
+    /// Tests backpack consumption and configured extension limits.
+    /// </summary>
+    /// <param name="extensions">The existing extension count.</param>
+    /// <param name="maximum">The configured maximum.</param>
+    /// <param name="expected">Whether consumption is expected.</param>
+    [TestCase(0, 4, true)]
+    [TestCase(3, 4, true)]
+    [TestCase(4, 4, false)]
+    [TestCase(1, 1, false)]
+    [TestCase(4, 10, false)]
+    public async ValueTask MagicBackpackAsync(byte extensions, int maximum, bool expected)
+    {
+        var player = await this.GetPlayerAsync().ConfigureAwait(false);
+        player.SelectedCharacter!.InventoryExtensions = extensions;
+        var item = this.GetItem();
+        item.Durability = 1;
+        var handler = new InventoryExtensionConsumeHandlerPlugIn
+        {
+            Configuration = new GameLogic.CashShop.InventoryExtensionDeliveryConfiguration { MaximumExtensions = maximum },
+        };
+
+        var consumed = await handler.ConsumeItemAsync(player, item, null, FruitUsage.Undefined).ConfigureAwait(false);
+
+        Assert.That(consumed, Is.EqualTo(expected));
+        Assert.That(player.SelectedCharacter.InventoryExtensions, Is.EqualTo(extensions + (expected ? 1 : 0)));
+        Assert.That(item.Durability, Is.EqualTo(expected ? 0 : 1));
+    }
+
+    /// <summary>
     /// Tests the jewel of bless consume.
     /// </summary>
     /// <param name="itemLevel">The item level.</param>
