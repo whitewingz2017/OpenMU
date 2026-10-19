@@ -17703,6 +17703,119 @@ public readonly struct ChatCommandListRequest
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(ChatCommandListRequest packet) => packet._data; 
 }
+
+
+/// <summary>
+/// Is sent by the client when: A custom client opens or operates the account jewel bank.
+/// Causes reaction on server side: The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.
+/// </summary>
+public readonly struct JewelBankRequestExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JewelBankRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public JewelBankRequestExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JewelBankRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private JewelBankRequestExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFA;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x20;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 15;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data.Span[4];
+        set => this._data.Span[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the item.
+    /// </summary>
+    public ushort Item
+    {
+        get => ReadUInt16LittleEndian(this._data.Span[5..]);
+        set => WriteUInt16LittleEndian(this._data.Span[5..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the amount.
+    /// </summary>
+    public uint Amount
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[7..]);
+        set => WriteUInt32LittleEndian(this._data.Span[7..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[11..]);
+        set => WriteUInt32LittleEndian(this._data.Span[11..], value);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="JewelBankRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator JewelBankRequestExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="JewelBankRequestExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(JewelBankRequestExtended packet) => packet._data; 
+}
     /// <summary>
     /// The state of the trade button.
     /// </summary>

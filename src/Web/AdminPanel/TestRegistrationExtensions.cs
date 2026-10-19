@@ -4,10 +4,13 @@
 
 namespace MUnique.OpenMU.Web.AdminPanel;
 
+using System.Net;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>Configures request limits for the opt-in test registration endpoint.</summary>
@@ -20,6 +23,20 @@ internal static class TestRegistrationExtensions
     /// <param name="services">The host services.</param>
     internal static void AddTestRegistration(this IServiceCollection services)
     {
+        services.AddOptions<ForwardedHeadersOptions>().Configure<IConfiguration>((options, configuration) =>
+        {
+            if (!configuration.GetValue<bool>("TestRegistration:TrustLoopbackProxy"))
+            {
+                return;
+            }
+
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.ForwardLimit = 1;
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
+            options.KnownProxies.Add(IPAddress.Loopback);
+            options.KnownProxies.Add(IPAddress.IPv6Loopback);
+        });
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;

@@ -123,3 +123,6 @@ complexity and effort). Complexity 0 means we wont implement it.
 | *Teleport*                    | 0x15 | 100%     | 2          |                                               |
 | *Walk*                        | 0xD4     | 100%     | 10         |                                               |
 
+
+Custom client: **Jewel Bank** (C1 FA 20 / C2 FA 19) implemented with persistent
+account balances, atomic inventory transfers, bundle deposits and confirmed snapshots.

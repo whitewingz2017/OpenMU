@@ -3949,4 +3949,34 @@ public class PacketStructureTests
         Assert.That(actualLength, Is.EqualTo(expectedLength), 
             "Packet length mismatch: declared length does not match calculated size");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for JewelBankRequestExtended.
+    /// </summary>
+    [Test]
+    public void JewelBankRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 15;
+        var actualLength = JewelBankRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'Item' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Item' exceeds packet boundary");
+        
+        // Validate field 'Amount' boundary
+        Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Amount' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(11 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

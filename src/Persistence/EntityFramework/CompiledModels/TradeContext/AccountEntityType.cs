@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Account",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Account),
                 baseEntityType,
-                propertyCount: 19,
+                propertyCount: 20,
                 navigationCount: 3,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -91,6 +91,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<IsVaultExtended>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: false);
             isVaultExtended.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var jewelBankBalances = runtimeEntityType.AddProperty(
+                "JewelBankBalances",
+                typeof(string),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("JewelBankBalances", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<JewelBankBalances>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            jewelBankBalances.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var languageIsoCode = runtimeEntityType.AddProperty(
                 "LanguageIsoCode",

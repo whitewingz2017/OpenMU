@@ -4301,6 +4301,7 @@
       <CausedReaction>The server sends an AvailableChatCommand message for each available chat command.</CausedReaction>
       <Fields />
     </Packet>
+    <Packet><HeaderType>C1HeaderWithSubCode</HeaderType><Code>FA</Code><SubCode>20</SubCode><Name>JewelBankRequestExtended</Name><Length>15</Length><Direction>ClientToServer</Direction><SentWhen>A custom client opens or operates the account jewel bank.</SentWhen><CausedReaction>The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.</CausedReaction><Fields><Field><Index>4</Index><Type>Byte</Type><Name>Operation</Name></Field><Field><Index>5</Index><Type>ShortLittleEndian</Type><Name>Item</Name></Field><Field><Index>7</Index><Type>IntegerLittleEndian</Type><Name>Amount</Name></Field><Field><Index>11</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field></Fields></Packet>
   </Packets>
   <Enums>
     <Enum>

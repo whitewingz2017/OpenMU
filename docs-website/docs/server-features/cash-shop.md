@@ -138,6 +138,12 @@ An item can't be used when its effect is already applied, for example when the
 vault is already extended; it stays in the storage then. A new inventory
 extension can be used after selecting the character again.
 
+A Magic Backpack which is already held in the character's inventory can also
+be consumed there. The inventory consume plugin grants one extension and consumes
+one backpack only when the character is below its configured maximum (at most
+four). At the limit, the backpack is retained. Select the character again to use
+the newly granted space, just as after cash-shop delivery.
+
 The plugin *UnlockSummonerAtLevel1* unlocks the Summoner for every account,
 which makes the Summoner Character Card useless. Deactivate that plugin if you
 sell the card.

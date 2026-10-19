@@ -125,6 +125,13 @@ public class Account
     public bool IsVaultExtended { get; set; }
 
     /// <summary>
+    /// Gets or sets the jewel bank ledger, keyed by item group, number and level.
+    /// </summary>
+    /// <remarks>Stored with inventory changes in the player's persistence transaction.</remarks>
+    [Browsable(false)]
+    public string JewelBankBalances { get; set; } = "{}";
+
+    /// <summary>
     /// Gets or sets the available WCoin (C) of the cash shop.
     /// </summary>
     /// <remarks>

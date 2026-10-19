@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 {
-    [DbContext(typeof(EntityDataContext))]
+    [DbContext(typeof(MUnique.OpenMU.Persistence.EntityFramework.EntityDataContext))]
     partial class EntityDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -49,6 +49,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.Property<bool>("IsVaultExtended")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("JewelBankBalances")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("LanguageIsoCode")
                         .IsRequired()

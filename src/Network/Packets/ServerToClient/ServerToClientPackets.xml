@@ -15010,6 +15010,7 @@
         </Field>
       </Fields>
     </Packet>
+    <Packet><HeaderType>C2HeaderWithSubCode</HeaderType><Code>FA</Code><SubCode>19</SubCode><Name>JewelBankResponseExtended</Name><Direction>ServerToClient</Direction><SentWhen>A custom client opens or operates the account jewel bank.</SentWhen><CausedReaction>The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.</CausedReaction><Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields></Packet>
   </Packets>
   <Enums>
     <Enum>

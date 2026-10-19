@@ -95,6 +95,7 @@ public class Startup
     /// <param name="env">The web host environment.</param>
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseForwardedHeaders();
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

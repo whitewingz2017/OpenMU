@@ -127,6 +127,7 @@ public static class WebApplicationExtensions
     /// <returns>The configured web application.</returns>
     public static WebApplication ConfigureAdminPanel(this WebApplication app)
     {
+        app.UseForwardedHeaders();
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

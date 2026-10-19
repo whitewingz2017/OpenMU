@@ -41396,6 +41396,93 @@ public readonly struct CashShopBannerVersion
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(CashShopBannerVersion packet) => packet._data; 
 }
+
+
+/// <summary>
+/// Is sent by the server when: A custom client opens or operates the account jewel bank.
+/// Causes reaction on client side: The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.
+/// </summary>
+public readonly struct JewelBankResponseExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JewelBankResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public JewelBankResponseExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JewelBankResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private JewelBankResponseExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFA;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x19;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(5).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="JewelBankResponseExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator JewelBankResponseExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="JewelBankResponseExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(JewelBankResponseExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 5;
+}
     /// <summary>
     /// Describes the gens type.
     /// </summary>

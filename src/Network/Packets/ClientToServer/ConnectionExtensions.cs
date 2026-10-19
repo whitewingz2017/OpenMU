@@ -5606,4 +5606,38 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="JewelBankRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="item">The item.</param>
+    /// <param name="amount">The amount.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: A custom client opens or operates the account jewel bank.
+    /// Causes reaction on server side: The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.
+    /// </remarks>
+    public static async ValueTask SendJewelBankRequestExtendedAsync(this IConnection? connection, byte @operation, ushort @item, uint @amount, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = JewelBankRequestExtendedRef.Length;
+            var packet = new JewelBankRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.Item = @item;
+            packet.Amount = @amount;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}
