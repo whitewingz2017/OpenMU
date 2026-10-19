@@ -40,7 +40,16 @@ public class ForceSkillAction : TargetedSkillDefaultPlugin
             await base.PerformSkillAsync(player, target, skillId).ConfigureAwait(false);
         }
     }
-
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Force Wave always hits, even if an outdated configuration defines it as an area skill.
+    /// </remarks>
+    protected override bool IsDirectHitSkill(Skill skill)
+    {
+        return base.IsDirectHitSkill(skill)
+               || skill.Number == ForceWaveSkillId
+               || skill.Number == ForceWaveStrengSkillId;
+    }
     /// <inheritdoc/>
     protected override IEnumerable<IAttackable> DetermineTargets(Player player, IAttackable targetedTarget, Skill skill)
     {

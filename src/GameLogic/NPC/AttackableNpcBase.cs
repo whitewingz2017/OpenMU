@@ -25,7 +25,7 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
     private readonly IEventStateProvider? _eventStateProvider;
     private readonly IDropGenerator _dropGenerator;
     private readonly PlugInManager _plugInManager;
-    private readonly List<IDisposable> _registrations = new();
+    // private readonly List<IDisposable> _registrations = new();
 
     private int _health;
 
@@ -184,10 +184,10 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
     /// together with this instance.
     /// </summary>
     /// <param name="disposable">The disposable.</param>
-    public void RegisterDisposable(IDisposable disposable)
-    {
-        this._registrations.Add(disposable);
-    }
+    // public void RegisterDisposable(IDisposable disposable)
+    // {
+    //     this._registrations.Add(disposable);
+    // }
 
     /// <inheritdoc/>
     protected override void Dispose(bool managed)
@@ -196,12 +196,12 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
         {
             this.Died = null;
             this.IsAlive = false;
-            foreach (var registration in this._registrations)
-            {
-                registration.Dispose();
-            }
+            // foreach (var registration in this._registrations)
+            // {
+            //     registration.Dispose();
+            // }
 
-            this._registrations.Clear();
+            // this._registrations.Clear();
         }
 
         base.Dispose(managed);
@@ -257,6 +257,11 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
             this.LastDeath = new DeathInformation(attacker.Id, attacker.GetName(), hitInfo, skill?.Number ?? 0);
             await this.OnDeathAsync(attacker).ConfigureAwait(false);
             this.Died?.Invoke(this, this.LastDeath);
+            if (this.IsDisposed || this.IsDisposing)
+            {
+                // It got disposed while waiting for the respawn, e.g. because its spawn area was removed.
+                return;
+            }
             if (!this.ShouldRespawn)
             {
                 await this.RemoveFromMapAndDisposeAsync().ConfigureAwait(false);
@@ -455,6 +460,9 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
 
         var droppedMoney = new DroppedMoney(amount, this.Position, this.CurrentMap, shares);
         await this.CurrentMap.AddAsync(droppedMoney).ConfigureAwait(false);
+        await killer.GameContext.PlugInManager.NotifyPlugInsAsync<IMonsterMoneyDroppedPlugIn>(
+            p => p.MonsterMoneyDroppedAsync(this, killer, droppedMoney),
+            killer.Logger).ConfigureAwait(false);
     }
 
     private async ValueTask DropItemAsync(IReadOnlyList<ExperienceShare> experienceShares, Player killer)
