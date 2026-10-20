@@ -5,7 +5,9 @@
 namespace MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 
 using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.DataModel.Configuration.ItemCrafting;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.Interfaces;
 using MUnique.OpenMU.Persistence.Initialization.Properties;
 
@@ -32,10 +34,34 @@ internal class CashShopItems : InitializerBase
     /// <inheritdoc />
     public override void Initialize()
     {
+        new CashShopCatalogItems(this.Context, this.GameConfiguration).Initialize();
+        new CashShopEffectItems(this.Context, this.GameConfiguration).Initialize();
         this.CreateItem(91, LocalizedString.FromResource(() => ItemNames.SummonerCharacterCard));
         this.CreateItem(162, LocalizedString.FromResource(() => ItemNames.MagicBackpack));
         this.CreateItem(163, LocalizedString.FromResource(() => ItemNames.VaultExpansionCertificate));
         this.CreateItem(169, LocalizedString.FromResource(() => ItemNames.RageFighterCharacterCard));
+        this.ConfigureLuckTalisman();
+    }
+
+    private void ConfigureLuckTalisman()
+    {
+        var talisman = this.GameConfiguration.Items.Single(item => item.Group == 14 && item.Number == 53);
+        talisman.Durability = Math.Max(talisman.Durability, (byte)10);
+        foreach (var settings in this.GameConfiguration.Monsters.Where(monster => monster.NpcWindow == NpcWindow.ChaosMachine).SelectMany(monster => monster.ItemCraftings)
+            .Select(crafting => crafting.SimpleCraftingSettings).OfType<SimpleCraftingSettings>()
+            .Where(settings => settings.RequiredItems.All(required => !required.PossibleItems.Contains(talisman))))
+        {
+            // Native talisman durability is its success-rate percentage; recipe caps still apply.
+            var optional = this.Context.CreateNew<ItemCraftingRequiredItem>();
+            optional.PossibleItems.Add(talisman);
+            optional.MinimumAmount = 0;
+            optional.MaximumAmount = 10;
+            optional.MaximumItemLevel = 15;
+            optional.AddPercentage = 1;
+            optional.SuccessResult = MixResult.Disappear;
+            optional.FailResult = MixResult.Disappear;
+            settings.RequiredItems.Add(optional);
+        }
     }
 
     private void CreateItem(byte number, LocalizedString name)

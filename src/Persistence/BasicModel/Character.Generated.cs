@@ -128,6 +128,27 @@ public partial class Character : MUnique.OpenMU.DataModel.Entities.Character, II
     }
 
     /// <summary>
+    /// Gets the raw collection of <see cref="PurchasedEffects" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("purchasedEffects")]
+    public ICollection<CharacterMagicEffect> RawPurchasedEffects { get; } = new List<CharacterMagicEffect>();
+    
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override ICollection<MUnique.OpenMU.DataModel.Entities.CharacterMagicEffect> PurchasedEffects
+    {
+        get => base.PurchasedEffects ??= new CollectionAdapter<MUnique.OpenMU.DataModel.Entities.CharacterMagicEffect, CharacterMagicEffect>(this.RawPurchasedEffects);
+        protected set
+        {
+            this.PurchasedEffects.Clear();
+            foreach (var item in value)
+            {
+                this.PurchasedEffects.Add(item);
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets the raw object of <see cref="CharacterClass" />.
     /// </summary>
     [System.Text.Json.Serialization.JsonPropertyName("characterClass")]

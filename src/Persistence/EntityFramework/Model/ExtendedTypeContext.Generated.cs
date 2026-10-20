@@ -35,6 +35,7 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CastleSiegeNpcState>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CastleSiegePendingReward>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.Character>();
+        modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CharacterMagicEffect>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CharacterQuestState>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CrywolfData>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.GensAbuse>();
@@ -144,6 +145,7 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<Character>().HasMany(entity => entity.RawLearnedSkills).WithOne().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Character>().HasOne(entity => entity.RawInventory).WithOne().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Character>().HasMany(entity => entity.RawQuestStates).WithOne().OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Character>().HasMany(entity => entity.RawPurchasedEffects).WithOne().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<CharacterQuestState>().HasMany(entity => entity.RawRequirementStates).WithOne().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Item>().HasMany(entity => entity.RawItemOptions).WithOne().OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<ItemStorage>().HasMany(entity => entity.RawItems).WithOne().OnDelete(DeleteBehavior.Cascade);

@@ -263,6 +263,12 @@ public class Character
     [MemberOfAggregate]
     public virtual ICollection<CharacterQuestState> QuestStates { get; protected set; } = null!;
 
+    /// <summary>
+    /// Gets or sets the purchased effects which continue to expire while offline.
+    /// </summary>
+    [MemberOfAggregate]
+    public virtual ICollection<CharacterMagicEffect> PurchasedEffects { get; protected set; } = null!;
+
     /// <inheritdoc />
     public override string ToString()
     {

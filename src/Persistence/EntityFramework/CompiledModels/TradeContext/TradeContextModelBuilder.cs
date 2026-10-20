@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
     public partial class TradeContextModel
     {
         private TradeContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("331f0907-9e8a-49cc-8f9c-27c9b7269268"), entityTypeCount: 45)
+            : base(skipDetectChanges: false, modelId: new Guid("612c2ec6-2898-4c30-aedc-1e2f301168e7"), entityTypeCount: 46)
         {
         }
 
@@ -31,6 +31,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             var castleSiegePendingReward = CastleSiegePendingRewardEntityType.Create(this);
             var character = CharacterEntityType.Create(this);
             var characterDropItemGroup = CharacterDropItemGroupEntityType.Create(this);
+            var characterMagicEffect = CharacterMagicEffectEntityType.Create(this);
             var characterQuestState = CharacterQuestStateEntityType.Create(this);
             var constValueAttribute = ConstValueAttributeEntityType.Create(this);
             var crywolfData = CrywolfDataEntityType.Create(this);
@@ -73,6 +74,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             CastleSiegePendingRewardEntityType.CreateForeignKey1(castleSiegePendingReward, character);
             CharacterEntityType.CreateForeignKey1(character, account);
             CharacterDropItemGroupEntityType.CreateForeignKey1(characterDropItemGroup, character);
+            CharacterMagicEffectEntityType.CreateForeignKey1(characterMagicEffect, character);
             CharacterQuestStateEntityType.CreateForeignKey1(characterQuestState, character);
             GensAbuseEntityType.CreateForeignKey1(gensAbuse, character);
             GensAbuseEntityType.CreateForeignKey2(gensAbuse, character);
@@ -104,6 +106,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             CastleSiegePendingRewardEntityType.CreateAnnotations(castleSiegePendingReward);
             CharacterEntityType.CreateAnnotations(character);
             CharacterDropItemGroupEntityType.CreateAnnotations(characterDropItemGroup);
+            CharacterMagicEffectEntityType.CreateAnnotations(characterMagicEffect);
             CharacterQuestStateEntityType.CreateAnnotations(characterQuestState);
             ConstValueAttributeEntityType.CreateAnnotations(constValueAttribute);
             CrywolfDataEntityType.CreateAnnotations(crywolfData);

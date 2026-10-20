@@ -87,7 +87,7 @@ public class DefaultDropGenerator : IDropGenerator
         }
 
         uint money = 0;
-        var (droppedItems, moneyResult) = this.GenerateDrops(monster, gainedExperience);
+        var (droppedItems, moneyResult) = this.GenerateDrops(monster, gainedExperience, player.Attributes?[Stats.ItemDropRate] ?? 1);
         if (moneyResult > 0)
         {
             money = moneyResult;
@@ -275,7 +275,7 @@ public class DefaultDropGenerator : IDropGenerator
         return itemDefinition.MaximumDropLevel is not { } maxDropLevel || monsterLevel <= maxDropLevel;
     }
 
-    private (IList<Item>? Items, uint Money) GenerateDrops(MonsterDefinition monster, int gainedExperience)
+    private (IList<Item>? Items, uint Money) GenerateDrops(MonsterDefinition monster, int gainedExperience, double dropRate)
     {
         uint money = 0;
         List<Item>? droppedItems = null;
@@ -315,7 +315,7 @@ public class DefaultDropGenerator : IDropGenerator
 
             for (int i = 0; i < remainingDrops; i++)
             {
-                var group = this.SelectRandomGroup(this._chanceDropGroups, totalChance);
+                var group = this.SelectRandomGroup(this._chanceDropGroups, totalChance, dropRate);
                 if (group is null)
                 {
                     continue;
@@ -557,13 +557,11 @@ public class DefaultDropGenerator : IDropGenerator
         };
     }
 
-    private DropItemGroup? SelectRandomGroup(IEnumerable<DropItemGroup> groups, double totalChance)
+    private DropItemGroup? SelectRandomGroup(IEnumerable<DropItemGroup> groups, double totalChance, double dropRate = 1)
     {
-        var remainingThreshold = this._randomizer.NextDouble();
-        if (totalChance > 1.0)
-        {
-            remainingThreshold *= totalChance;
-        }
+        // Keep guaranteed groups unchanged and cap the combined chance at 100%.
+        var multiplier = dropRate > 0 && double.IsFinite(dropRate) ? dropRate : 1;
+        var remainingThreshold = this._randomizer.NextDouble() * Math.Max(totalChance, 1.0 / multiplier);
 
         foreach (var group in groups)
         {

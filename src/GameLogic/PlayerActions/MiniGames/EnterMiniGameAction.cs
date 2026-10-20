@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.PlayerActions.MiniGames;
 
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.GuildWar;
 using MUnique.OpenMU.GameLogic.MiniGames;
 using MUnique.OpenMU.GameLogic.PlayerActions.PlayerStore;
@@ -125,7 +126,10 @@ public class EnterMiniGameAction
                 player.TryRemoveMoney(entranceFee);
             }
 
-            await this.ConsumeTicketItemAsync(ticketItem, player).ConfigureAwait(false);
+            if (!CashShopEventPasses.IsReusable(player, ticketItem, miniGameType, gameLevel))
+            {
+                await this.ConsumeTicketItemAsync(ticketItem, player).ConfigureAwait(false);
+            }
 
             if (!miniGameDefinition.AllowParty && player.Party is { } party)
             {
@@ -230,7 +234,8 @@ public class EnterMiniGameAction
             }
         }
 
-        return false;
+        ticketItem = CashShopEventPasses.Find(player, miniGameDefinition.Type, miniGameDefinition.GameLevel, gameTicketInventoryIndex);
+        return ticketItem is not null;
     }
 
     private bool IsValidTicket(Item? ticketItem, ItemDefinition requiredItemDefinition, MiniGameDefinition miniGameDefinition)
@@ -238,6 +243,7 @@ public class EnterMiniGameAction
         return ticketItem is not null
             && requiredItemDefinition.Equals(ticketItem.Definition)
             && ticketItem.Durability > 0
+            && (ticketItem.ExpiresAtUtc is null || ticketItem.ExpiresAtUtc > DateTime.UtcNow)
             && ticketItem.Level == miniGameDefinition.TicketItemLevel;
     }
 

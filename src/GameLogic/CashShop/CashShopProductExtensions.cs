@@ -25,7 +25,6 @@ public static class CashShopProductExtensions
     {
         return product.ItemDefinition is { } definition
             && product.Duration >= TimeSpan.Zero
-            && (product.Duration == TimeSpan.Zero || definition.ItemSlot is not null)
             // Native Season 6 expiration messages use a signed 32-bit Unix timestamp.
             && product.Duration.TotalSeconds <= int.MaxValue - DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }

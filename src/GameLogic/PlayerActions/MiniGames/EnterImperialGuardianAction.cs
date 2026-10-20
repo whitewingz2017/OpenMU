@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic.PlayerActions.MiniGames;
 
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.MiniGames.ImperialGuardian;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
@@ -82,7 +83,10 @@ public class EnterImperialGuardianAction
         await this._enterAction.TryEnterMiniGameAsync(player, MiniGameType.ImperialGuardian, day, UndefinedTicketSlot).ConfigureAwait(false);
         if (player.CurrentMiniGame is ImperialGuardianContext)
         {
-            await ConsumeTicketAsync(player, ticket).ConfigureAwait(false);
+            if (!CashShopEventPasses.IsReusable(player, ticket, MiniGameType.ImperialGuardian, day))
+            {
+                await ConsumeTicketAsync(player, ticket).ConfigureAwait(false);
+            }
         }
     }
 
@@ -98,7 +102,9 @@ public class EnterImperialGuardianAction
         return player.Inventory?.Items.FirstOrDefault(item =>
             item.Durability > 0
             && item.Definition is { Group: TicketGroup } definition
-            && definition.Number == ticketNumber);
+            && definition.Number == ticketNumber
+            && (item.ExpiresAtUtc is null || item.ExpiresAtUtc > DateTime.UtcNow))
+            ?? CashShopEventPasses.Find(player, MiniGameType.ImperialGuardian, day);
     }
 
     private static ValueTask ShowResultAsync(Player player, ImperialGuardianEnterResult result, byte day)

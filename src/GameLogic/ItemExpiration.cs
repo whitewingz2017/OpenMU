@@ -22,7 +22,7 @@ public static class ItemExpiration
     {
         await player.RunPersistenceExclusiveAsync(async () =>
         {
-            var changed = false;
+            var changed = await CashShop.PurchasedEffectDelivery.SynchronizeAsync(player, utcNow).ConfigureAwait(false);
             if (player.Inventory is { } inventory)
             {
                 foreach (var item in inventory.Items.Where(i => i.ExpiresAtUtc <= utcNow).ToList())

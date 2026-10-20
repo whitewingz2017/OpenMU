@@ -108,6 +108,7 @@ public class CashShopViewPlugIn : ICashShopViewPlugIn
             CashShopUseResult.ItemNotFound => CashShopStorageItemConsumeResult.CashShopConsumeResult.ItemNotFound,
             CashShopUseResult.InventoryFull => CashShopStorageItemConsumeResult.CashShopConsumeResult.InventoryFull,
             CashShopUseResult.CannotUse => CashShopStorageItemConsumeResult.CashShopConsumeResult.CannotUse,
+            CashShopUseResult.ConflictingItemActive => CashShopStorageItemConsumeResult.CashShopConsumeResult.ConflictingItemActive,
             _ => CashShopStorageItemConsumeResult.CashShopConsumeResult.Error,
         };
         await this._player.Connection.SendCashShopStorageItemConsumeResultAsync(packetResult).ConfigureAwait(false);

@@ -14,6 +14,17 @@ namespace MUnique.OpenMU.GameLogic.CashShop;
 public class CashShopSettings
 {
     /// <summary>
+    /// Gets or sets the alternate entrance tickets sold by the cash shop.
+    /// </summary>
+    public IList<CashShopEventPass> EventPasses { get; set; } = new List<CashShopEventPass>
+    {
+        new() { Event = MiniGameType.DevilSquare, ItemNumber = 46 },
+        new() { Event = MiniGameType.BloodCastle, ItemNumber = 47 },
+        new() { Event = MiniGameType.IllusionTemple, ItemNumber = 61 },
+        new() { Event = MiniGameType.ImperialGuardian, ItemNumber = 127, Levels = new List<int> { 7 } },
+    };
+
+    /// <summary>
     /// Gets or sets a value indicating whether players can send packages as gift.
     /// </summary>
     public bool IsGiftingEnabled { get; set; } = true;

@@ -15,6 +15,8 @@ using MUnique.OpenMU.DataModel.Properties;
 [Cloneable]
 public partial class Item
 {
+    private DateTime? _expiresAtUtc;
+
     /// <summary>
     /// Gets or sets the item slot in the <see cref="ItemStorage"/>.
     /// </summary>
@@ -35,7 +37,17 @@ public partial class Item
     /// Gets or sets the UTC expiration of this item, or <see langword="null"/> for a permanent item.
     /// The clock starts when a cash shop product is collected, and continues while offline.
     /// </summary>
-    public DateTime? ExpiresAtUtc { get; set; }
+    public DateTime? ExpiresAtUtc
+    {
+        get => this._expiresAtUtc is { Kind: DateTimeKind.Local } local
+            ? local.ToUniversalTime()
+            : this._expiresAtUtc;
+        set => this._expiresAtUtc = value is { } deadline
+            ? deadline.Kind == DateTimeKind.Local
+                ? deadline.ToUniversalTime()
+                : DateTime.SpecifyKind(deadline, DateTimeKind.Utc)
+            : null;
+    }
 
     /// <summary>
     /// Gets or sets the level of the item.

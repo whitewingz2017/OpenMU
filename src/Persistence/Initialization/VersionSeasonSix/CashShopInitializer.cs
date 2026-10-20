@@ -121,7 +121,7 @@ internal sealed class CashShopInitializer : InitializerBase
             .AddProduct(122, 181, 0, 13, 113, 0, 1, 86400);
         this.AddPackage(configuration, 98, "Talisman of Luck", 100, CashShopCoinType.WCoinC, isForSale: true, isGiftable: false, isBundle: false)
             .AddProduct(22, 37, 100, 14, 53, 0, 1, 0)
-            .AddProduct(22, 38, 400, 14, 53, 0, 1, 0);
+            .AddProduct(22, 38, 400, 14, 53, 0, 5, 0);
         this.AddPackage(configuration, 114, "Reset Fruit Strength", 250, CashShopCoinType.WCoinC, isForSale: true, isGiftable: false, isBundle: false)
             .AddProduct(14, 24, 250, 13, 54, 0, 1, 0);
         this.AddPackage(configuration, 112, "Reset Fruit Quickness", 250, CashShopCoinType.WCoinC, isForSale: true, isGiftable: false, isBundle: false)
@@ -489,7 +489,7 @@ internal sealed class CashShopInitializer : InitializerBase
             .AddProduct(70, 118, 60, 14, 113, 0, 1, 0);
         this.AddPackage(configuration, 99, "[Talisman of Luck]", 100, CashShopCoinType.WCoinP, isForSale: true, isGiftable: true, isBundle: false)
             .AddProduct(22, 37, 100, 14, 53, 0, 1, 0)
-            .AddProduct(22, 38, 400, 14, 53, 0, 1, 0);
+            .AddProduct(22, 38, 400, 14, 53, 0, 5, 0);
         this.AddPackage(configuration, 264, "[Rage Fighter Character Card]", 500, CashShopCoinType.WCoinP, isForSale: true, isGiftable: true, isBundle: false)
             .AddProduct(284, 353, 500, 14, 169, 0, 1, 0);
         this.AddPackage(configuration, 127, "[Summoner Character Card]", 500, CashShopCoinType.WCoinP, isForSale: true, isGiftable: true, isBundle: false)
@@ -755,7 +755,7 @@ internal sealed class CashShopInitializer : InitializerBase
         this.AddPackage(configuration, 388, "Bundle of Jewel of Harmony (10)", 4800, CashShopCoinType.GoblinPoints, isForSale: true, isGiftable: true, isBundle: false)
             .AddProduct(503, 582, 4800, 12, 140, 0, 1, 0);
         this.AddPackage(configuration, 389, "Talisman of Luck 10%", 3200, CashShopCoinType.GoblinPoints, isForSale: true, isGiftable: true, isBundle: false)
-            .AddProduct(504, 583, 3200, 14, 53, 0, 1, 0);
+            .AddProduct(504, 583, 3200, 14, 53, 0, 10, 0);
         this.AddPackage(configuration, 391, "Rare Item Ticket 8", 100000, CashShopCoinType.GoblinPoints, isForSale: true, isGiftable: true, isBundle: false)
             .AddProduct(506, 585, 100000, 14, 146, 0, 1, 0);
         this.AddPackage(configuration, 390, "Rare Item Ticket 11", 60000, CashShopCoinType.GoblinPoints, isForSale: true, isGiftable: true, isBundle: false)
@@ -853,6 +853,15 @@ internal sealed class CashShopInitializer : InitializerBase
 
             if (this._initializer._repairExistingItems)
             {
+                if (itemGroup == 14 && itemNumber == 53 && quantity > 1)
+                {
+                    foreach (var existing in this._package.Products.Where(product => product.ProductSequence == productSequence && product.PriceSequence == priceSequence && product.Quantity == 1))
+                    {
+                        existing.Quantity = quantity;
+                        this._initializer._repairedPackages.Add(this._package);
+                    }
+                }
+
                 var definition = this._initializer.GameConfiguration.Items.FirstOrDefault(item => item.Group == itemGroup && item.Number == itemNumber);
                 if (definition is not null)
                 {

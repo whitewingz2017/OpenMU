@@ -12,6 +12,11 @@ using MUnique.OpenMU.AttributeSystem;
 public class Stats
 {
     /// <summary>
+    /// Gets the multiplier for non-guaranteed monster drops, including purchased seal bonuses.
+    /// </summary>
+    public static AttributeDefinition ItemDropRate { get; } = new(new Guid("16E7D2D8-8D04-4CCE-B36F-EBF60460142F"), "Item Drop Rate", "Multiplier of non-guaranteed monster drop probabilities.");
+
+    /// <summary>
     /// Gets the base strength attribute definition.
     /// </summary>
     public static AttributeDefinition BaseStrength { get; } = new(new Guid("123282FE-FEAD-448E-AD2C-BAECE939B4B1"), "Base Strength", "The base strength of the character.");

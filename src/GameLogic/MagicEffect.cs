@@ -44,7 +44,7 @@ public class MagicEffect : AsyncDisposable
         this.PowerUpElements = powerUps;
         this.Definition = definition;
         this.Duration = duration;
-        this._finishTimer = new Timer(this.OnTimerTimeout, null, (int)this.Duration.TotalMilliseconds, Timeout.Infinite);
+        this._finishTimer = new Timer(this.OnTimerTimeout, null, this.Duration, Timeout.InfiniteTimeSpan);
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public class MagicEffect : AsyncDisposable
             throw new ObjectDisposedException(nameof(MagicEffect));
         }
 
-        this._finishTimer.Change((int)this.Duration.TotalMilliseconds, Timeout.Infinite);
+        this._finishTimer.Change(this.Duration, Timeout.InfiniteTimeSpan);
     }
 
     /// <inheritdoc/>

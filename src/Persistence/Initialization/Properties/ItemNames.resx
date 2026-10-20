@@ -2082,4 +2082,118 @@
   <data name="MirrorOfDimensions" xml:space="preserve">
     <value>Mirror of Dimensions</value>
   </data>
+  <data name="CashShop_12_12" xml:space="preserve"><value>Skill book package for Dark Knight</value></data>
+  <data name="CashShop_12_14" xml:space="preserve"><value>Skill book package for Dark Knight</value></data>
+  <data name="CashShop_12_17" xml:space="preserve"><value>Skill book package for Fairy Elf</value></data>
+  <data name="CashShop_12_18" xml:space="preserve"><value>Skill book package for Fairy Elf</value></data>
+  <data name="CashShop_12_19" xml:space="preserve"><value>Skill book package for Dark Knight</value></data>
+  <data name="CashShop_12_30" xml:space="preserve"><value>Bundle of Jewel of Bless (30)</value></data>
+  <data name="CashShop_12_31" xml:space="preserve"><value>Bundle of Jewel of Soul (30)</value></data>
+  <data name="CashShop_12_44" xml:space="preserve"><value>Skill book package for Dark Knight</value></data>
+  <data name="CashShop_12_45" xml:space="preserve"><value>Skill book package for Fairy Elf</value></data>
+  <data name="CashShop_12_46" xml:space="preserve"><value>Skill book package for Fairy Elf</value></data>
+  <data name="CashShop_12_47" xml:space="preserve"><value>Skill book package for Magic Gladiator</value></data>
+  <data name="CashShop_12_131" xml:space="preserve"><value>Small Wings of Disaster</value></data>
+  <data name="CashShop_12_132" xml:space="preserve"><value>Small Wings of Fairy</value></data>
+  <data name="CashShop_12_133" xml:space="preserve"><value>Small Wings of Heaven</value></data>
+  <data name="CashShop_12_134" xml:space="preserve"><value>Small Wings of Satan</value></data>
+  <data name="CashShop_12_135" xml:space="preserve"><value>Little Warrior's Cloak</value></data>
+  <data name="CashShop_12_136" xml:space="preserve"><value>Jewel of Life Bundle (10)</value></data>
+  <data name="CashShop_12_140" xml:space="preserve"><value>Bundle of Jewel of Harmony (10)</value></data>
+  <data name="CashShop_12_141" xml:space="preserve"><value>Jewel of Chaos Bundle (10)</value></data>
+  <data name="CashShop_13_20" xml:space="preserve"><value>Wizard Ring</value></data>
+  <data name="CashShop_13_43" xml:space="preserve"><value>Seal of Ascension</value></data>
+  <data name="CashShop_13_44" xml:space="preserve"><value>Seal of Wealth</value></data>
+  <data name="CashShop_13_45" xml:space="preserve"><value>Seal of Sustenance</value></data>
+  <data name="CashShop_13_46" xml:space="preserve"><value>Devil Square Ticket</value></data>
+  <data name="CashShop_13_47" xml:space="preserve"><value>Blood Castle Ticket</value></data>
+  <data name="CashShop_13_48" xml:space="preserve"><value>Kalima Ticket</value></data>
+  <data name="CashShop_13_54" xml:space="preserve"><value>Reset Fruit Strength</value></data>
+  <data name="CashShop_13_55" xml:space="preserve"><value>Reset Fruit Quickness</value></data>
+  <data name="CashShop_13_56" xml:space="preserve"><value>Reset Fruit Health</value></data>
+  <data name="CashShop_13_57" xml:space="preserve"><value>Reset Fruit Energy</value></data>
+  <data name="CashShop_13_58" xml:space="preserve"><value>Reset Fruit Control</value></data>
+  <data name="CashShop_13_61" xml:space="preserve"><value>Illusion Temple Ticket</value></data>
+  <data name="CashShop_13_62" xml:space="preserve"><value>Seal of Healing</value></data>
+  <data name="CashShop_13_63" xml:space="preserve"><value>Seal of Divinity</value></data>
+  <data name="CashShop_13_64" xml:space="preserve"><value>Demon</value></data>
+  <data name="CashShop_13_65" xml:space="preserve"><value>Spirit of Guardian</value></data>
+  <data name="CashShop_13_69" xml:space="preserve"><value>Talisman of Resurrection</value></data>
+  <data name="CashShop_13_70" xml:space="preserve"><value>Talisman of Mobility</value></data>
+  <data name="CashShop_13_76" xml:space="preserve"><value>Panda Ring</value></data>
+  <data name="CashShop_13_80" xml:space="preserve"><value>Pet Panda</value></data>
+  <data name="CashShop_13_93" xml:space="preserve"><value>Master Seal of Ascension</value></data>
+  <data name="CashShop_13_94" xml:space="preserve"><value>Master Seal of Wealth</value></data>
+  <data name="CashShop_13_104" xml:space="preserve"><value>AG Boost Aura</value></data>
+  <data name="CashShop_13_105" xml:space="preserve"><value>SD Boost Aura</value></data>
+  <data name="CashShop_13_106" xml:space="preserve"><value>Pet Unicorn</value></data>
+  <data name="CashShop_13_107" xml:space="preserve"><value>Critical Ring of Wizard</value></data>
+  <data name="CashShop_13_109" xml:space="preserve"><value>Sapphire Ring</value></data>
+  <data name="CashShop_13_110" xml:space="preserve"><value>Ruby Ring</value></data>
+  <data name="CashShop_13_111" xml:space="preserve"><value>Topaz Ring</value></data>
+  <data name="CashShop_13_112" xml:space="preserve"><value>Amethyst Ring</value></data>
+  <data name="CashShop_13_113" xml:space="preserve"><value>Ruby Necklace</value></data>
+  <data name="CashShop_13_114" xml:space="preserve"><value>Emerald Necklace</value></data>
+  <data name="CashShop_13_115" xml:space="preserve"><value>Sapphire Necklace</value></data>
+  <data name="CashShop_13_122" xml:space="preserve"><value>Skeleton Transformation Ring</value></data>
+  <data name="CashShop_13_123" xml:space="preserve"><value>Pet Skeleton</value></data>
+  <data name="CashShop_13_124" xml:space="preserve"><value>Gold Channel Ticket</value></data>
+  <data name="CashShop_13_127" xml:space="preserve"><value>Open Access Ticket to Varka 7</value></data>
+  <data name="CashShop_13_128" xml:space="preserve"><value>Statue of Hawk</value></data>
+  <data name="CashShop_13_129" xml:space="preserve"><value>Statue of Goral</value></data>
+  <data name="CashShop_13_130" xml:space="preserve"><value>Oak Charm</value></data>
+  <data name="CashShop_13_132" xml:space="preserve"><value>Golden Oak Charm</value></data>
+  <data name="CashShop_13_134" xml:space="preserve"><value>Worn Horseshoe</value></data>
+  <data name="CashShop_13_135" xml:space="preserve"><value>1st Lucky Armor Ticket</value></data>
+  <data name="CashShop_13_136" xml:space="preserve"><value>1st Lucky Pants Ticket</value></data>
+  <data name="CashShop_13_137" xml:space="preserve"><value>1st Lucky Helm Ticket</value></data>
+  <data name="CashShop_13_138" xml:space="preserve"><value>1st Lucky Gloves Ticket</value></data>
+  <data name="CashShop_13_139" xml:space="preserve"><value>1st Lucky Boots Ticket</value></data>
+  <data name="CashShop_13_140" xml:space="preserve"><value>2nd Lucky Armor Ticket</value></data>
+  <data name="CashShop_13_141" xml:space="preserve"><value>2nd Lucky Pants Ticket</value></data>
+  <data name="CashShop_13_142" xml:space="preserve"><value>2nd Lucky Helm Ticket</value></data>
+  <data name="CashShop_13_143" xml:space="preserve"><value>2nd Lucky Gloves Ticket</value></data>
+  <data name="CashShop_13_144" xml:space="preserve"><value>2nd Lucky Boots Ticket</value></data>
+  <data name="CashShop_14_11" xml:space="preserve"><value>GP]Box of kundun +5</value></data>
+  <data name="CashShop_14_53" xml:space="preserve"><value>Talisman of Luck</value></data>
+  <data name="CashShop_14_70" xml:space="preserve"><value>Elite Healing Potion</value></data>
+  <data name="CashShop_14_71" xml:space="preserve"><value>Elite Mana Potion</value></data>
+  <data name="CashShop_14_72" xml:space="preserve"><value>Scroll of Quickness</value></data>
+  <data name="CashShop_14_73" xml:space="preserve"><value>Scroll of Protection</value></data>
+  <data name="CashShop_14_74" xml:space="preserve"><value>Scroll of Wrath</value></data>
+  <data name="CashShop_14_75" xml:space="preserve"><value>Scroll of Wizardry</value></data>
+  <data name="CashShop_14_76" xml:space="preserve"><value>Scroll of Health</value></data>
+  <data name="CashShop_14_77" xml:space="preserve"><value>Scroll of Mana</value></data>
+  <data name="CashShop_14_85" xml:space="preserve"><value>Cherry Blossom Wine</value></data>
+  <data name="CashShop_14_86" xml:space="preserve"><value>Cherry Blossom Rice Cake</value></data>
+  <data name="CashShop_14_87" xml:space="preserve"><value>Cherry Blossom Petal</value></data>
+  <data name="CashShop_14_91" xml:space="preserve"><value>Summoner Character Card</value></data>
+  <data name="CashShop_14_92" xml:space="preserve"><value>Chaos Card Gold</value></data>
+  <data name="CashShop_14_95" xml:space="preserve"><value>Chaos Card  Mini</value></data>
+  <data name="CashShop_14_97" xml:space="preserve"><value>Scroll of Battle</value></data>
+  <data name="CashShop_14_98" xml:space="preserve"><value>Scroll of Strengthener</value></data>
+  <data name="CashShop_14_112" xml:space="preserve"><value>Silver Key</value></data>
+  <data name="CashShop_14_113" xml:space="preserve"><value>Gold Key</value></data>
+  <data name="CashShop_14_120" xml:space="preserve"><value>+GP][Gold Channel Ticket_7 Day</value></data>
+  <data name="CashShop_14_133" xml:space="preserve"><value>Elite SD Potion</value></data>
+  <data name="CashShop_14_137" xml:space="preserve"><value>Premium Service</value></data>
+  <data name="CashShop_14_146" xml:space="preserve"><value>Rare Item Ticket 8</value></data>
+  <data name="CashShop_14_149" xml:space="preserve"><value>Rare Item Ticket 11</value></data>
+  <data name="CashShop_14_162" xml:space="preserve"><value>Magic Backpack</value></data>
+  <data name="CashShop_14_163" xml:space="preserve"><value>Vault Expansion Certificate</value></data>
+  <data name="CashShop_14_169" xml:space="preserve"><value>Rage Fighter Character Card</value></data>
+  <data name="CashShop_15_8" xml:space="preserve"><value>Skill book package for Magic Gladiator</value></data>
+  <data name="CashShop_15_12" xml:space="preserve"><value>Skill book package for Magic Gladiator</value></data>
+  <data name="CashShop_15_15" xml:space="preserve"><value>Skill book package for Dark Wizard</value></data>
+  <data name="CashShop_15_18" xml:space="preserve"><value>Skill book package for Dark Wizard</value></data>
+  <data name="CashShop_15_19" xml:space="preserve"><value>Skill book package for Summoner</value></data>
+  <data name="CashShop_15_21" xml:space="preserve"><value>Skill book package for Summoner</value></data>
+  <data name="CashShop_15_22" xml:space="preserve"><value>Skill book package for Summoner</value></data>
+  <data name="CashShop_15_23" xml:space="preserve"><value>Skill book package for Summoner</value></data>
+  <data name="CashShop_15_28" xml:space="preserve"><value>Skill book package for Dark Wizard</value></data>
+  <data name="CashShop_15_29" xml:space="preserve"><value>Skill book package for Magic Gladiator</value></data>
+  <data name="CashShop_15_31" xml:space="preserve"><value>Skill book package for Rage Fighter</value></data>
+  <data name="CashShop_15_33" xml:space="preserve"><value>Skill book package for Rage Fighter</value></data>
+  <data name="CashShop_15_35" xml:space="preserve"><value>Skill book package for Rage Fighter</value></data>
+  <data name="CashShop_15_36" xml:space="preserve"><value>Skill book package for Rage Fighter</value></data>
 </root>

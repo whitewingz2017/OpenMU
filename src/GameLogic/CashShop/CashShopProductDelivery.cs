@@ -60,7 +60,8 @@ public static class CashShopProductDelivery
                 return null;
             }
 
-            delivery = new InventoryProductDelivery();
+            delivery = product.Duration > TimeSpan.Zero && definition.ConsumeEffect is not null
+                ? new PurchasedEffectDelivery() : new InventoryProductDelivery();
         }
 
         return delivery.CanDeliver(product) ? delivery : null;

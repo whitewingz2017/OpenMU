@@ -74,6 +74,7 @@ internal sealed class BasicModelConverter
             CastleSiegeZoneDefinition value => this.Convert(value),
             Character value => this.Convert(value),
             CharacterClass value => this.Convert(value),
+            CharacterMagicEffect value => this.Convert(value),
             CharacterQuestState value => this.Convert(value),
             ChatServerDefinition value => this.Convert(value),
             CombinationBonusRequirement value => this.Convert(value),
@@ -182,6 +183,7 @@ internal sealed class BasicModelConverter
         target.VaultPassword = source.VaultPassword;
         target.Vault = (MUnique.OpenMU.DataModel.Entities.ItemStorage)this.ConvertObject(source.Vault)!;
         target.IsVaultExtended = source.IsVaultExtended;
+        target.JewelBankBalances = source.JewelBankBalances;
         target.WCoinC = source.WCoinC;
         target.WCoinP = source.WCoinP;
         target.GoblinPoints = source.GoblinPoints;
@@ -812,6 +814,14 @@ internal sealed class BasicModelConverter
             }
         }
 
+        if (source.PurchasedEffects is { } purchasedEffectsItems)
+        {
+            foreach (var item in purchasedEffectsItems)
+            {
+                target.PurchasedEffects.Add((MUnique.OpenMU.DataModel.Entities.CharacterMagicEffect)this.ConvertObject(item)!);
+            }
+        }
+
         return target;
     }
 
@@ -860,6 +870,21 @@ internal sealed class BasicModelConverter
 
         target.HomeMap = (MUnique.OpenMU.DataModel.Configuration.GameMapDefinition)this.ConvertObject(source.HomeMap)!;
         target.ComboDefinition = (MUnique.OpenMU.DataModel.Configuration.SkillComboDefinition)this.ConvertObject(source.ComboDefinition)!;
+        return target;
+    }
+
+    private BasicModel.CharacterMagicEffect Convert(CharacterMagicEffect source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.CharacterMagicEffect)converted;
+        }
+
+        var target = new BasicModel.CharacterMagicEffect();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.Definition = (MUnique.OpenMU.DataModel.Configuration.MagicEffectDefinition)this.ConvertObject(source.Definition)!;
+        target.ExpiresAtUtc = source.ExpiresAtUtc;
         return target;
     }
 
@@ -1694,6 +1719,7 @@ internal sealed class BasicModelConverter
         target.ItemSlot = source.ItemSlot;
         target.Definition = (MUnique.OpenMU.DataModel.Configuration.Items.ItemDefinition)this.ConvertObject(source.Definition)!;
         target.Durability = source.Durability;
+        target.ExpiresAtUtc = source.ExpiresAtUtc;
         target.Level = source.Level;
         target.HasSkill = source.HasSkill;
         if (source.ItemOptions is { } itemOptionsItems)

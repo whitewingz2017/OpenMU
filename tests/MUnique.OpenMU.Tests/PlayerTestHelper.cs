@@ -82,6 +82,8 @@ public static class PlayerTestHelper
         inventoryMock.SetupAllProperties();
         inventoryMock.Setup(i => i.Items).Returns(new List<Item>());
 
+        characterMock.Setup(c => c.PurchasedEffects).Returns(new List<CharacterMagicEffect>());
+
         var character = characterMock.Object;
         character.Inventory = inventoryMock.Object;
         character.CurrentMap = gameContext.Configuration.Maps.FirstOrDefault(m => m.Number == 0);

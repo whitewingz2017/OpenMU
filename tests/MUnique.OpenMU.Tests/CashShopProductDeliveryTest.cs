@@ -11,6 +11,8 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.DataModel.Attributes;
 using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.PlayerActions.CashShop;
 using MUnique.OpenMU.GameLogic.PlugIns;
@@ -304,6 +306,57 @@ public class CashShopProductDeliveryTest
             ItemDefinition = new ItemDefinition { Group = item.Group, Number = item.Number ?? 0, Width = 1, Height = 1, Durability = 1 },
         });
         return package;
+    }
+
+    /// <summary>
+    /// A purchased buff applies once, survives runtime-effect reconstruction and expires by its saved deadline.
+    /// </summary>
+    [Test]
+    public async Task PurchasedEffectActivatesRestoresAndExpiresAsync()
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var product = player.GameContext.Configuration.CashShopConfiguration!.Packages
+            .Single(package => package.PackageSequence == OtherGroupItemPrice).Products.Single();
+        var effect = player.PersistenceContext.CreateNew<MagicEffectDefinition>();
+        effect.Number = 29;
+        effect.SubType = 60;
+        var bonus = player.PersistenceContext.CreateNew<PowerUpDefinition>();
+        bonus.TargetAttribute = Stats.ExperienceRate;
+        bonus.Boost = player.PersistenceContext.CreateNew<PowerUpDefinitionValue>();
+        bonus.Boost.ConstantValue.Value = 0.5f;
+        effect.PowerUpDefinitions.Add(bonus);
+        product.ItemDefinition!.ConsumeEffect = effect;
+        product.Duration = TimeSpan.FromDays(1);
+        var original = player.Attributes![Stats.ExperienceRate];
+        await AddStorageItemAsync(player, OtherGroupItemPrice).ConfigureAwait(false);
+        await AddStorageItemAsync(player, OtherGroupItemPrice).ConfigureAwait(false);
+
+        await this._actions.UseStorageItemAsync(player, 0, OtherGroupItemPrice).ConfigureAwait(false);
+        Assert.That(player.SelectedCharacter!.PurchasedEffects, Has.Count.EqualTo(1));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
+        await this._actions.UseStorageItemAsync(player, 0, OtherGroupItemPrice).ConfigureAwait(false);
+        Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Has.Count.EqualTo(1));
+        Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
+
+        await player.MagicEffectList.ClearAllEffectsAsync().ConfigureAwait(false);
+        await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
+        Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
+        player.SelectedCharacter.PurchasedEffects.Single().ExpiresAtUtc = DateTime.UtcNow.AddSeconds(-1);
+        await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
+        Assert.That(player.SelectedCharacter.PurchasedEffects, Is.Empty);
+        Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original));
+    }
+
+    /// <summary>
+    /// Thirty-day timers fit the native product duration without signed-millisecond overflow.
+    /// </summary>
+    [Test]
+    public void PurchasedEffectSupportsThirtyDays()
+    {
+        using var effect = new MagicEffect(TimeSpan.FromDays(30), new BasicModel.MagicEffectDefinition());
+        Assert.DoesNotThrow(effect.ResetTimer);
     }
 
     private async ValueTask<Player> CreatePlayerAsync()

@@ -41,6 +41,25 @@ public class CashShopRemoteViewTests
     }
 
     /// <summary>
+    /// A database/provider local timestamp must retain its instant in the period packet.
+    /// </summary>
+    [Test]
+    public async Task LocalPeriodItemPacketAsync()
+    {
+        var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
+        var deadline = DateTimeOffset.FromUnixTimeSeconds(1800000000);
+        var item = new BasicModel.Item
+        {
+            Definition = new ItemDefinition { Group = 13, Number = 123 },
+            ItemSlot = 42,
+            ExpiresAtUtc = deadline.LocalDateTime,
+        };
+        await new ItemExpirationViewPlugIn(player).ShowItemExpirationAsync(item).ConfigureAwait(false);
+        Assert.That(item.ExpiresAtUtc, Is.EqualTo(deadline.UtcDateTime));
+        Assert.That(BitConverter.ToUInt32(output.ToArray(), 8), Is.EqualTo(1800000000));
+    }
+
+    /// <summary>
     /// Tests that the script and banner versions are sent, so that the client unlocks its cash shop.
     /// </summary>
     [Test]

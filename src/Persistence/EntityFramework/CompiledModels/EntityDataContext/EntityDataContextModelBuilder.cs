@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("265576c6-8cca-4075-a51e-e305fb28c840"), entityTypeCount: 121)
+            : base(skipDetectChanges: false, modelId: new Guid("32906827-038b-4f32-ab64-5fe93cb2f2df"), entityTypeCount: 122)
         {
         }
 
@@ -45,6 +45,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var character = CharacterEntityType.Create(this);
             var characterClass = CharacterClassEntityType.Create(this);
             var characterDropItemGroup = CharacterDropItemGroupEntityType.Create(this);
+            var characterMagicEffect = CharacterMagicEffectEntityType.Create(this);
             var characterQuestState = CharacterQuestStateEntityType.Create(this);
             var chatServerDefinition = ChatServerDefinitionEntityType.Create(this);
             var chatServerEndpoint = ChatServerEndpointEntityType.Create(this);
@@ -200,6 +201,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             CharacterClassEntityType.CreateForeignKey4(characterClass, characterClass);
             CharacterDropItemGroupEntityType.CreateForeignKey1(characterDropItemGroup, character);
             CharacterDropItemGroupEntityType.CreateForeignKey2(characterDropItemGroup, dropItemGroup);
+            CharacterMagicEffectEntityType.CreateForeignKey1(characterMagicEffect, character);
+            CharacterMagicEffectEntityType.CreateForeignKey2(characterMagicEffect, magicEffectDefinition);
             CharacterQuestStateEntityType.CreateForeignKey1(characterQuestState, questDefinition);
             CharacterQuestStateEntityType.CreateForeignKey2(characterQuestState, character);
             CharacterQuestStateEntityType.CreateForeignKey3(characterQuestState, questDefinition);
@@ -406,6 +409,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             CharacterEntityType.CreateAnnotations(character);
             CharacterClassEntityType.CreateAnnotations(characterClass);
             CharacterDropItemGroupEntityType.CreateAnnotations(characterDropItemGroup);
+            CharacterMagicEffectEntityType.CreateAnnotations(characterMagicEffect);
             CharacterQuestStateEntityType.CreateAnnotations(characterQuestState);
             ChatServerDefinitionEntityType.CreateAnnotations(chatServerDefinition);
             ChatServerEndpointEntityType.CreateAnnotations(chatServerEndpoint);

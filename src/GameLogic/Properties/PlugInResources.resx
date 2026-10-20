@@ -1619,4 +1619,20 @@
   <data name="ItemExpirationPlugIn_Description" xml:space="preserve">
     <value>Removes expired inventory and vault items and their equipment effects. Item clocks continue while offline.</value>
   </data>
+  <data name="EliteHealthPotionConsumeHandlerPlugIn_Name" xml:space="preserve"><value>EliteHealthPotion recovery</value></data>
+  <data name="EliteHealthPotionConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Recovers the configured percentage instantly when the elite potion is consumed.</value></data>
+  <data name="EliteManaPotionConsumeHandlerPlugIn_Name" xml:space="preserve"><value>EliteManaPotion recovery</value></data>
+  <data name="EliteManaPotionConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Recovers the configured percentage instantly when the elite potion is consumed.</value></data>
+  <data name="EliteShieldPotionConsumeHandlerPlugIn_Name" xml:space="preserve"><value>EliteShieldPotion recovery</value></data>
+  <data name="EliteShieldPotionConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Recovers the configured percentage instantly when the elite potion is consumed.</value></data>
+  <data name="ResetStrengthFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Strength fruit</value></data>
+  <data name="ResetStrengthFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Strength points up to the configured fruit capacity.</value></data>
+  <data name="ResetAgilityFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Agility fruit</value></data>
+  <data name="ResetAgilityFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Agility points up to the configured fruit capacity.</value></data>
+  <data name="ResetVitalityFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Vitality fruit</value></data>
+  <data name="ResetVitalityFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Vitality points up to the configured fruit capacity.</value></data>
+  <data name="ResetEnergyFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Energy fruit</value></data>
+  <data name="ResetEnergyFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Energy points up to the configured fruit capacity.</value></data>
+  <data name="ResetLeadershipFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Leadership fruit</value></data>
+  <data name="ResetLeadershipFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Leadership points up to the configured fruit capacity.</value></data>
 </root>

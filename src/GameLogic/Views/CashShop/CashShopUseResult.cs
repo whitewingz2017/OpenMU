@@ -33,4 +33,9 @@ public enum CashShopUseResult
     /// The usage couldn't be saved.
     /// </summary>
     SaveFailed,
+
+    /// <summary>
+    /// An active purchase in the same effect group prevents activation.
+    /// </summary>
+    ConflictingItemActive,
 }

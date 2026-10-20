@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 {
-    [DbContext(typeof(MUnique.OpenMU.Persistence.EntityFramework.EntityDataContext))]
+    [DbContext(typeof(EntityDataContext))]
     partial class EntityDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -1143,6 +1143,30 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.HasIndex("DropItemGroupId");
 
                     b.ToTable("CharacterDropItemGroup", "data");
+                });
+
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterMagicEffect", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CharacterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.HasIndex("DefinitionId");
+
+                    b.ToTable("CharacterMagicEffect", "data");
                 });
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterQuestState", b =>
@@ -4691,6 +4715,20 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Navigation("DropItemGroup");
                 });
 
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterMagicEffect", b =>
+                {
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", null)
+                        .WithMany("RawPurchasedEffects")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.MagicEffectDefinition", "RawDefinition")
+                        .WithMany()
+                        .HasForeignKey("DefinitionId");
+
+                    b.Navigation("RawDefinition");
+                });
+
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterQuestState", b =>
                 {
                     b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.QuestDefinition", "RawActiveQuest")
@@ -6099,6 +6137,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Navigation("RawLearnedSkills");
 
                     b.Navigation("RawLetters");
+
+                    b.Navigation("RawPurchasedEffects");
 
                     b.Navigation("RawQuestStates");
                 });

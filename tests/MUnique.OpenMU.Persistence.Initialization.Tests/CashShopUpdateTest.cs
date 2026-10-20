@@ -124,7 +124,7 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
         Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
-        Assert.That(update.Version, Is.EqualTo(3));
+        Assert.That(update.Version, Is.EqualTo(4));
     }
 
     /// <summary>
@@ -153,7 +153,60 @@ internal class CashShopUpdateTest
         Assert.That(products, Has.All.Matches<CashShopProduct>(p => p.Price == 987));
         Assert.That(shop.Packages.Sum(p => p.Products.Count), Is.EqualTo(productCount));
         var unsupported = shop.Packages.Single(p => p.PackageSequence == 122);
-        Assert.That(unsupported.IsForSale, Is.False, "missing seal effects must not become inert purchases");
+        Assert.That(unsupported.IsForSale, Is.True);
+        Assert.That(unsupported.Products, Has.All.Matches<CashShopProduct>(p => p.ItemDefinition?.ConsumeEffect?.PowerUpDefinitions.Count > 0));
+    }
+
+    /// <summary>
+    /// The upgrade creates missing buff definitions and repairs links in an old catalog.
+    /// </summary>
+    [Test]
+    public async Task UpdateRepairsMissingBuffDefinitionsAsync()
+    {
+        var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var shop = gameConfiguration.CashShopConfiguration!;
+        var products = shop.Packages.SelectMany(package => package.Products)
+            .Where(product => product.Duration > TimeSpan.Zero && product.ItemDefinition?.ConsumeEffect?.PowerUpDefinitions.Count > 0).ToList();
+        Assert.That(products, Is.Not.Empty);
+        var missing = products.Select(product => product.ItemDefinition!).Distinct().ToList();
+        foreach (var item in missing)
+        {
+            gameConfiguration.Items.Remove(item);
+        }
+
+        foreach (var product in products)
+        {
+            product.ItemDefinition = null;
+        }
+
+        var update = new AddCashShopUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+        var itemCount = gameConfiguration.Items.Count;
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+
+        Assert.That(products, Has.All.Matches<CashShopProduct>(product => product.CanBeDelivered()
+            && product.ItemDefinition?.ConsumeEffect?.PowerUpDefinitions.Count > 0));
+        Assert.That(shop.Packages.Single(package => package.PackageSequence == 122).Products,
+            Has.All.Matches<CashShopProduct>(product => product.ItemDefinition is { Group: 13, Number: 44 }));
+        Assert.That(gameConfiguration.Items.Count, Is.EqualTo(itemCount));
+    }
+
+    /// <summary>
+    /// Every catalog option must have a real definition and delivery path.
+    /// </summary>
+    [Test]
+    public async Task EveryCatalogProductHasDeliveryAsync()
+    {
+        var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        // These script products are Gold Channel access and the undefined Premium Service.
+        int[] deferred = [528, 149, 1352, 526, 527, 98, 912, 913, 914, 915];
+        var unavailable = gameConfiguration.CashShopConfiguration!.Packages
+            .SelectMany(package => package.Products.Where(product => !deferred.Contains(product.ProductSequence) && !product.CanBeDelivered())
+                .Select(product => $"{package.Name}: product {product.ProductSequence}, price {product.PriceSequence}, item {product.ItemDefinition}"))
+            .Distinct().ToArray();
+        Assert.That(unavailable, Is.Empty, string.Join(Environment.NewLine, unavailable));
     }
 
     private static bool IsDeliveryItem(DataModel.Configuration.Items.ItemDefinition item)
