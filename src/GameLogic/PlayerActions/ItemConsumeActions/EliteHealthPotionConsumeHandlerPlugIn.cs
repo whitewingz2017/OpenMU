@@ -14,7 +14,7 @@ using MUnique.OpenMU.PlugIns;
 /// </summary>
 [PlugIn]
 [Guid("10abc56c-c04a-464e-af48-befb07f7ffbe")]
-[Display(Name = "EliteHealthPotionConsumeHandlerPlugIn_Name", Description = "EliteHealthPotionConsumeHandlerPlugIn_Description", ResourceType = typeof(PlugInResources))]
+[Display(Name = nameof(PlugInResources.EliteHealthPotionConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.EliteHealthPotionConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class EliteHealthPotionConsumeHandlerPlugIn : ElitePotionConsumeHandlerPlugIn
 {
     /// <inheritdoc />

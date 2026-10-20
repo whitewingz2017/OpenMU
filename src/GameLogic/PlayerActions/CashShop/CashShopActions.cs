@@ -312,6 +312,22 @@ public class CashShopActions
 
             if (!package.IsForSale || products.Any(product => !CashShopProductDelivery.CanDeliver(player.GameContext, product)))
             {
+                foreach (var product in products)
+                {
+                    player.Logger.LogWarning(
+                        "Cash shop purchase rejected: package {Package}, for sale {ForSale}, product {Product}, price option {PriceOption}, item {ItemGroup}/{ItemNumber}, duration {Duration}, effect {Effect}, bonus count {BonusCount}, item expiration active {ExpirationActive}.",
+                        package.PackageSequence,
+                        package.IsForSale,
+                        product.ProductSequence,
+                        product.PriceSequence,
+                        product.ItemDefinition?.Group,
+                        product.ItemDefinition?.Number,
+                        product.Duration,
+                        product.ItemDefinition?.ConsumeEffect?.Number,
+                        product.ItemDefinition?.ConsumeEffect?.PowerUpDefinitions.Count,
+                        player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn)));
+                }
+
                 return PurchaseResult.NotForSale;
             }
 

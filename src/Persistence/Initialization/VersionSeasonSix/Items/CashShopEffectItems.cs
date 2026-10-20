@@ -74,12 +74,12 @@ internal class CashShopEffectItems(IContext context, GameConfiguration gameConfi
     private void Configure(byte group, short number, short effectNumber, byte conflictGroup, params (AttributeDefinition Attribute, float Value, AggregateType Type)[] bonuses)
     {
         var item = this.GameConfiguration.Items.Single(item => item.Group == group && item.Number == number);
-        if (item.ConsumeEffect is not null)
+        if (item.ConsumeEffect is { PowerUpDefinitions.Count: > 0 })
         {
             return;
         }
 
-        var effect = this.GameConfiguration.MagicEffects.FirstOrDefault(effect => effect.Number == effectNumber);
+        var effect = item.ConsumeEffect ?? this.GameConfiguration.MagicEffects.FirstOrDefault(effect => effect.Number == effectNumber);
         if (effect is null)
         {
             effect = this.Context.CreateNew<MagicEffectDefinition>();

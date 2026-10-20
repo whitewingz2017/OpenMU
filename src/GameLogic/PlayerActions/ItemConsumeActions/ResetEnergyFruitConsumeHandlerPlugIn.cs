@@ -14,7 +14,7 @@ using MUnique.OpenMU.PlugIns;
 /// </summary>
 [PlugIn]
 [Guid("ddc20399-db34-40e2-8e8a-ebaf580e9098")]
-[Display(Name = "ResetEnergyFruitConsumeHandlerPlugIn_Name", Description = "ResetEnergyFruitConsumeHandlerPlugIn_Description", ResourceType = typeof(PlugInResources))]
+[Display(Name = nameof(PlugInResources.ResetEnergyFruitConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.ResetEnergyFruitConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class ResetEnergyFruitConsumeHandlerPlugIn : ResetFruitConsumeHandlerPlugIn
 {
     /// <inheritdoc />

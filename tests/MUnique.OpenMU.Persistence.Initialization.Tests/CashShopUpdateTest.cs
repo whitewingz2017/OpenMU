@@ -125,7 +125,7 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
         Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
-        Assert.That(update.Version, Is.EqualTo(5));
+        Assert.That(update.Version, Is.EqualTo(6));
     }
 
     /// <summary>
@@ -208,6 +208,26 @@ internal class CashShopUpdateTest
         Assert.That(shop.Packages.Single(package => package.PackageSequence == 122).Products,
             Has.All.Matches<CashShopProduct>(product => product.ItemDefinition!.ConsumeEffect!.PowerUpDefinitions
                 .Any(bonus => ReferenceEquals(bonus.TargetAttribute, persistentDropRate))));
+    }
+
+    /// <summary>
+    /// An existing item link must not hide an unconfigured purchased effect.
+    /// </summary>
+    [Test]
+    public async Task UpdateRepairsExistingEmptyBuffEffectAsync()
+    {
+        var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var seal = gameConfiguration.Items.Single(item => item.Group == 13 && item.Number == 44);
+        var effect = seal.ConsumeEffect!;
+        effect.PowerUpDefinitions.Clear();
+        var update = new AddCashShopUpdatePlugIn();
+
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+
+        Assert.That(seal.ConsumeEffect, Is.SameAs(effect));
+        Assert.That(effect.PowerUpDefinitions, Has.Count.EqualTo(2));
     }
 
     /// <summary>

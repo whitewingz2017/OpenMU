@@ -14,7 +14,7 @@ using MUnique.OpenMU.PlugIns;
 /// </summary>
 [PlugIn]
 [Guid("e30cca5a-bddb-4f52-8bdc-d2e06e3b6f94")]
-[Display(Name = "EliteManaPotionConsumeHandlerPlugIn_Name", Description = "EliteManaPotionConsumeHandlerPlugIn_Description", ResourceType = typeof(PlugInResources))]
+[Display(Name = nameof(PlugInResources.EliteManaPotionConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.EliteManaPotionConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class EliteManaPotionConsumeHandlerPlugIn : ElitePotionConsumeHandlerPlugIn
 {
     /// <inheritdoc />

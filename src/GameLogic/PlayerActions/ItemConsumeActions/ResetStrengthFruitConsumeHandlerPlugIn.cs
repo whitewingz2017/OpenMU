@@ -14,7 +14,7 @@ using MUnique.OpenMU.PlugIns;
 /// </summary>
 [PlugIn]
 [Guid("b7bdac0b-b819-40ed-ba66-51b38278a0df")]
-[Display(Name = "ResetStrengthFruitConsumeHandlerPlugIn_Name", Description = "ResetStrengthFruitConsumeHandlerPlugIn_Description", ResourceType = typeof(PlugInResources))]
+[Display(Name = nameof(PlugInResources.ResetStrengthFruitConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.ResetStrengthFruitConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class ResetStrengthFruitConsumeHandlerPlugIn : ResetFruitConsumeHandlerPlugIn
 {
     /// <inheritdoc />

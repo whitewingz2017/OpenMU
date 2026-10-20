@@ -14,7 +14,7 @@ using MUnique.OpenMU.PlugIns;
 /// </summary>
 [PlugIn]
 [Guid("0abff12d-eb32-4bdf-a631-9b2e44e6712e")]
-[Display(Name = "ResetVitalityFruitConsumeHandlerPlugIn_Name", Description = "ResetVitalityFruitConsumeHandlerPlugIn_Description", ResourceType = typeof(PlugInResources))]
+[Display(Name = nameof(PlugInResources.ResetVitalityFruitConsumeHandlerPlugIn_Name), Description = nameof(PlugInResources.ResetVitalityFruitConsumeHandlerPlugIn_Description), ResourceType = typeof(PlugInResources))]
 public class ResetVitalityFruitConsumeHandlerPlugIn : ResetFruitConsumeHandlerPlugIn
 {
     /// <inheritdoc />

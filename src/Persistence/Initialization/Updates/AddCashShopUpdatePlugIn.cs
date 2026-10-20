@@ -36,7 +36,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     /// <summary>
     /// The plug-in description.
     /// </summary>
-    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension). Version 5 first registers the item-drop-rate attribute missing from older databases, then adds missing catalog definitions and repairs item links, configures seals and scrolls, and enables timed effect persistence, expiration, elite potions and reset fruits. Gold Channel and Premium Service remain unavailable until their access rules or benefits are configured. Existing prices, durations and explicit item assignments are preserved.";
+    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension). Version 6 also repairs linked buff definitions with no bonuses. It first registers the item-drop-rate attribute missing from older databases, then adds missing catalog definitions and repairs item links, configures seals and scrolls, and enables timed effect persistence, expiration, elite potions and reset fruits. Gold Channel and Premium Service remain unavailable until their access rules or benefits are configured. Existing prices, durations and explicit item assignments are preserved.";
 
     /// <summary>
     /// The item numbers (of group 14) of the items of the delivery plugins, by the product sequence numbers of the script.
@@ -50,7 +50,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     };
 
     /// <inheritdoc />
-    public override int Version => 5;
+    public override int Version => 6;
 
     /// <inheritdoc />
     public override DateTime UpdatedAt => new(2026, 10, 20, 0, 0, 0, DateTimeKind.Utc);
