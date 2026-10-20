@@ -40,6 +40,11 @@ public static class CashShopProductDelivery
             return null;
         }
 
+        if (product.Duration > TimeSpan.Zero && !gameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn)))
+        {
+            return null;
+        }
+
         var plugInManager = gameContext.PlugInManager;
         var itemKey = new ItemIdentifier(definition.Number, definition.Group);
         var groupKey = new ItemIdentifier(null, definition.Group);

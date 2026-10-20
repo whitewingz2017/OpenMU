@@ -63,7 +63,7 @@ public class InventoryStorage : Storage, IInventoryStorage
         {
             for (int i = FirstEquippableItemSlotIndex; i <= LastEquippableItemSlotIndex; i++)
             {
-                if (this.ItemArray[i] is not null)
+                if (this.ItemArray[i] is { } item && (item.ExpiresAtUtc is null || item.ExpiresAtUtc > DateTime.UtcNow))
                 {
                     yield return this.ItemArray[i]!;
                 }

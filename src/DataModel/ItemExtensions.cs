@@ -153,7 +153,8 @@ public static class ItemExtensions
     /// <returns>
     ///   <c>true</c> if this item is of the same type as the specified other item; otherwise, <c>false</c>.
     /// </returns>
-    public static bool IsSameItemAs(this Item item, Item otherItem) => item.Definition == otherItem.Definition && item.Level == otherItem.Level;
+    public static bool IsSameItemAs(this Item item, Item otherItem) => item.Definition == otherItem.Definition
+        && item.Level == otherItem.Level && item.ExpiresAtUtc == otherItem.ExpiresAtUtc;
 
     /// <summary>
     /// Determines whether the item level can be upgraded by using jewels of bless or soul.

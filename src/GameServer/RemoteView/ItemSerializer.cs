@@ -111,6 +111,16 @@ public class ItemSerializer : IItemSerializer
             target[5] |= GuardianOptionFlag;
         }
 
+        if (item.ExpiresAtUtc is { } expiration)
+        {
+            // Season 6 uses bits 1 and 2 of the group/380 byte for period items.
+            target[5] |= 0x02;
+            if (expiration <= DateTime.UtcNow)
+            {
+                target[5] |= 0x04;
+            }
+        }
+
         target[6] = (byte)(GetHarmonyByte(item) | GetSocketBonusByte(item));
         SetSocketBytes(target.Slice(7, MaximumSockets), item);
 

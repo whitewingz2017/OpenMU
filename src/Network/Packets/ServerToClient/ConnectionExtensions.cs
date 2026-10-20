@@ -8822,4 +8822,64 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopPeriodItemCount" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="itemCount">The item count.</param>
+    /// <remarks>
+    /// Is sent by the server when: The inventory is sent and its period-item expiration list follows.
+    /// Causes reaction on client side: The client refreshes its expiration metadata for the following inventory entries.
+    /// </remarks>
+    public static async ValueTask SendCashShopPeriodItemCountAsync(this IConnection? connection, byte @itemCount)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopPeriodItemCountRef.Length;
+            var packet = new CashShopPeriodItemCountRef(connection.Output.GetSpan(length)[..length]);
+            packet.ItemCount = @itemCount;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CashShopPeriodItem" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="itemCode">The item code.</param>
+    /// <param name="inventorySlot">The inventory slot.</param>
+    /// <param name="expiresAt">The expires at.</param>
+    /// <remarks>
+    /// Is sent by the server when: A timed item appears in the inventory, moves to an inventory slot, or follows the inventory list.
+    /// Causes reaction on client side: The client stores its UTC Unix expiration timestamp and displays the remaining time.
+    /// </remarks>
+    public static async ValueTask SendCashShopPeriodItemAsync(this IConnection? connection, ushort @itemCode, ushort @inventorySlot, uint @expiresAt)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CashShopPeriodItemRef.Length;
+            var packet = new CashShopPeriodItemRef(connection.Output.GetSpan(length)[..length]);
+            packet.ItemCode = @itemCode;
+            packet.InventorySlot = @inventorySlot;
+            packet.ExpiresAt = @expiresAt;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

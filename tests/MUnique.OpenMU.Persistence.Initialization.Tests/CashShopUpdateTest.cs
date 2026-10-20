@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 
 using Microsoft.Extensions.Logging.Abstractions;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.InMemory;
@@ -41,8 +42,8 @@ internal class CashShopUpdateTest
         Assert.That(configuration.Packages, Has.All.Matches<CashShopPackage>(p => p.Products.Select(product => product.PriceSequence).Distinct().Count() == p.Products.Count));
         Assert.That(
             configuration.Packages.Where(p => p.IsForSale).SelectMany(p => p.Products),
-            Has.All.Matches<CashShopProduct>(product => product.ItemDefinition is not null && product.Duration == TimeSpan.Zero));
-        Assert.That(configuration.Packages.Count(p => p.IsForSale), Is.EqualTo(21));
+            Has.All.Matches<CashShopProduct>(product => product.CanBeDelivered()));
+        Assert.That(configuration.Packages.Count(p => p.IsForSale), Is.GreaterThan(21));
         Assert.That(configuration.Packages.Where(p => DeliveryPackages.Contains(p.PackageSequence)), Has.All.Matches<CashShopPackage>(p => p.IsForSale));
 
         var seal = configuration.Packages.Single(p => p.PackageSequence == 122);
@@ -98,10 +99,32 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
 
         Assert.That(gameConfiguration.Items.Count(IsDeliveryItem), Is.EqualTo(4));
-        Assert.That(configuration.Packages.Count(p => p.IsForSale), Is.EqualTo(21));
+        Assert.That(configuration.Packages.Count(p => p.IsForSale), Is.GreaterThan(21));
         Assert.That(
             configuration.Packages.Where(p => DeliveryPackages.Contains(p.PackageSequence)).SelectMany(p => p.Products),
             Has.All.Matches<CashShopProduct>(product => product.ItemDefinition is { } item && IsDeliveryItem(item)));
+    }
+
+    /// <summary>
+    /// Version two upgrades the old disabled timed catalog without duplicating plugins.
+    /// </summary>
+    [Test]
+    public async Task UpdateEnablesTimedWearablesAsync()
+    {
+        var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var packages = gameConfiguration.CashShopConfiguration!.Packages
+            .Where(p => p.Products.Any(product => product.Duration > TimeSpan.Zero)
+                && p.Products.All(product => product.CanBeDelivered())).ToList();
+        Assert.That(packages, Is.Not.Empty);
+        packages.ForEach(p => p.IsForSale = false);
+        var update = new AddCashShopUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+        var pluginCount = gameConfiguration.PlugInConfigurations.Count;
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+        Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
+        Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
+        Assert.That(update.Version, Is.EqualTo(2));
     }
 
     private static bool IsDeliveryItem(DataModel.Configuration.Items.ItemDefinition item)

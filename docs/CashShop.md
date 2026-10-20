@@ -89,7 +89,7 @@ unaligned offsets.
 | 0A | `CashShopDeleteStorageItemRequest` | — | never sent by the client |
 | 0B | `CashShopStorageItemConsumeRequest` | `CashShopStorageItemConsumeResult` | done |
 | 0C | — | `CashShopScriptVersion` | done |
-| 11/12 | — | period item count / expire time | not implemented |
+| 11/12 | — | period item count / expire time | implemented for timed wearable items |
 | 13/14 | `CashShopEventItemListRequest` | event item count / list | not implemented |
 | 15 | — | `CashShopBannerVersion` | done |
 
@@ -193,8 +193,8 @@ refused delivery loses nothing.
 3. otherwise `InventoryProductDelivery`, which puts the items into the inventory.
    It isn't a plugin and can't be deactivated.
 
-The selected delivery's `CanDeliver(product)` must agree as well; all delivery
-plugins refuse time-limited products. A plugin's `DeliverAsync` runs under the
+The selected delivery's `CanDeliver(product)` must agree as well; application-only delivery
+plugins still refuse time-limited products. A plugin's `DeliverAsync` runs under the
 persistence lock before the storage item is removed, and changes nothing unless
 it succeeds. `DeliveredAsync` runs after the lock, for messages and view updates.
 
@@ -287,7 +287,7 @@ catalog is initialized. They have no item rules (`ItemRules`), because they neve
 reach the inventory: a delivery plugin applies them, or they stay in the storage.
 
 Packages with a product that can't be delivered are initialized as not for sale.
-That leaves 21 packages for sale: jewel bundles, Kundun boxes and Cherry Blossom
+Before timed wearable support, that left 21 packages for sale: jewel bundles, Kundun boxes and Cherry Blossom
 items for Goblin Points, and the character cards, the Magic Backpack and the
 Vault Expansion Certificate for WCoin (C) and (P). Most cash shop items, like
 seals, scrolls and talismans, aren't defined in the item configuration yet.
@@ -314,8 +314,7 @@ packages on sale.
 * **One delivery decision:** `CashShopProductDelivery.CanDeliver` decides for
   purchases and use. Initialization and the catalog editor don't know the plugins
   of a game server and use `CashShopProductExtensions.CanBeDelivered` (item
-  defined, not time-limited) as approximation. Time-limited products aren't
-  delivered, because items can't expire yet.
+  defined, with supported duration and delivery type) as approximation. Timed wearable products are delivered with an absolute deadline.
 * **Sequence numbers must match the client script** of the configured version.
 
 ## Decisions
@@ -333,8 +332,8 @@ packages on sale.
 
 ## Roadmap
 
-1. **Items which expire:** expiry on `Item`, the period packets `D2 11/12`, then
-   selling time-limited products. This unlocks most of the catalog.
+1. **Timed wearable items:** implemented with persisted UTC expiration and `D2 11/12`.
+   Application-only timed effects remain part of the missing-items work below.
 2. **Missing cash shop items:** item definitions for seals, scrolls, talismans,
    tickets etc., with their effects.
 3. **Event item list:** `D2 13/14`.
@@ -378,9 +377,9 @@ the catalog or the plugin settings in the admin panel. Loading the catalog from
 PostgreSQL needs `IntervalAsTimeSpanJsonConverter`, because PostgreSQL writes a
 product duration of a day or more as e.g. `"7 days"` into the JSON.
 
-What can be bought: 21 of 205 packages (see
-[Catalog initialization](#catalog-initialization)). The others have items OpenMU
-doesn't define, or are time-limited.
+The catalog contains 205 packages. Supported permanent packages and timed wearable
+packages can be sold; packages with missing definitions or unsupported timed effects
+remain disabled (see [Timed wearable delivery](#timed-wearable-delivery)).
 
 ## Working on it
 
@@ -400,3 +399,39 @@ doesn't define, or are time-limited.
 * **Plugin GUIDs** are generated, never typed or copied (rule 5).
 * **QuickGrid and `@key`** compare rows by `Id`. Objects from a persistence
   context have one; objects created with `new` in tests need one.
+
+## Timed wearable delivery
+
+Wearable products with an item definition can now be collected as timed items.
+`Item.ExpiresAtUtc` stores an absolute UTC deadline, starting when the item is
+collected from shop storage, rather than when it is purchased. The clock keeps
+running offline, in the vault, and after restarts. The expiration plugin removes
+elapsed items through normal storage removal, detaching equipped power-ups.
+Expired equipment is excluded during inventory initialization.
+
+Timed instances may move between inventory and vault, but cannot be dropped,
+traded, listed in a personal store or used as crafting inputs. Stacking compares
+deadlines to prevent combining permanent and temporary instances. The native
+Season 6 item flags and D2 11/12 messages expose expiration to compatible clients.
+The custom client displays the remaining time in inventory item tooltips.
+
+Existing databases require the `AddItemExpiration` schema migration and version 2
+of the optional **Add cash shop** configuration update. That update enables
+packages whose timed wearable products are supported and adds the expiration
+plugins, retaining any explicit activation choices already configured. Timed
+purchases and collection are blocked while expiration enforcement is disabled.
+This does not define missing seals, scrolls or their effects.
+
+Verification for this increment: 100 focused cash shop, period packet view and
+persistence-model checks; four initialization/upgrade tests; two generated period
+packet tests; and six admin catalog tests passed. Windows and Android clients were
+not built, and the migration/configuration update was not applied to a live database.
+In-game collection and expiration still need verification after the server upgrade.
+
+The server changes cover the item model and comparison, cash shop delivery,
+inventory expiration, login/vault cleanup, expiration plugins and views, item
+serialization, packet XML/generated output, migration/compiled models/loader,
+configuration update, admin catalog checks, resources and tests. The custom client
+changes are `Client.Main/Networking/PacketHandling/Handlers/CashShopHandler.cs`,
+`Client.Main/Core/Client/CharacterState.cs` and
+`Client.Main/Controls/UI/Game/Common/ItemUiHelper.cs` in the MuOnlineS6 checkout.

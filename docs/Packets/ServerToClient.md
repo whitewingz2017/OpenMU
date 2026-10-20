@@ -250,6 +250,8 @@
   * [C1 D2 0C - CashShopScriptVersion (by server)](C1-D2-0C-CashShopScriptVersion_by-server.md)
   * [C1 D2 0D - CashShopStorageItem (by server)](C1-D2-0D-CashShopStorageItem_by-server.md)
   * [C1 D2 0E - CashShopGiftStorageItem (by server)](C1-D2-0E-CashShopGiftStorageItem_by-server.md)
+  * [C1 D2 11 - CashShopPeriodItemCount (by server)](C1-D2-11-CashShopPeriodItemCount_by-server.md)
+  * [C1 D2 12 - CashShopPeriodItem (by server)](C1-D2-12-CashShopPeriodItem_by-server.md)
   * [C1 D2 15 - CashShopBannerVersion (by server)](C1-D2-15-CashShopBannerVersion_by-server.md)
   * [C1 D4 - ObjectWalked (by server)](C1-D4-ObjectWalked_by-server.md)
   * [C1 D4 - ObjectWalkedExtended (by server)](C1-D4-ObjectWalkedExtended_by-server.md)

@@ -34,8 +34,12 @@ internal sealed class InventoryProductDelivery : ICashShopProductDeliveryPlugIn
             return CashShopUseResult.CannotUse;
         }
 
+        // Compute one deadline for the entire delivery. A failed inventory transaction
+        // rolls back these items; the storage product retains its unstarted duration.
+        var expiresAtUtc = product.Duration > TimeSpan.Zero ? DateTime.UtcNow.Add(product.Duration) : (DateTime?)null;
         foreach (var item in CreateItems(player, definition, product.ItemLevel, product.Quantity))
         {
+            item.ExpiresAtUtc = expiresAtUtc;
             if (!await inventory.AddItemAsync(item).ConfigureAwait(false))
             {
                 await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);

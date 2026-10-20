@@ -8,6 +8,9 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.Views.CashShop;
 using MUnique.OpenMU.GameServer.RemoteView.CashShop;
+using MUnique.OpenMU.GameServer.RemoteView.Inventory;
+using MUnique.OpenMU.DataModel.Configuration.Items;
+using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
 /// <summary>
 /// Tests for the packets of the <see cref="CashShopViewPlugIn"/>.
@@ -15,6 +18,28 @@ using MUnique.OpenMU.GameServer.RemoteView.CashShop;
 [TestFixture]
 public class CashShopRemoteViewTests
 {
+    /// <summary>
+    /// Period messages retain the packed native item, slot and Unix deadline layout.
+    /// </summary>
+    [Test]
+    public async Task PeriodItemPacketAsync()
+    {
+        var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
+        var view = new ItemExpirationViewPlugIn(player);
+        var item = new BasicModel.Item
+        {
+            Definition = new ItemDefinition { Group = 13, Number = 80 },
+            ItemSlot = 42,
+            ExpiresAtUtc = DateTimeOffset.FromUnixTimeSeconds(1800000000).UtcDateTime,
+        };
+        await view.ShowItemExpirationAsync(item).ConfigureAwait(false);
+        var data = output.ToArray();
+        Assert.That(data[..4], Is.EqualTo(new byte[] { 0xC1, 12, 0xD2, 0x12 }));
+        Assert.That(BitConverter.ToUInt16(data, 4), Is.EqualTo((13 * 512) + 80));
+        Assert.That(BitConverter.ToUInt16(data, 6), Is.EqualTo(42));
+        Assert.That(BitConverter.ToUInt32(data, 8), Is.EqualTo(1800000000));
+    }
+
     /// <summary>
     /// Tests that the script and banner versions are sent, so that the client unlocks its cash shop.
     /// </summary>

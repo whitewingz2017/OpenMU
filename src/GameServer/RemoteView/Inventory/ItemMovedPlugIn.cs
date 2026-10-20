@@ -62,5 +62,9 @@ public class ItemMovedPlugIn : IItemMovedPlugIn
         }
 
         await connection.SendAsync(Write).ConfigureAwait(false);
+        if (storage == Storages.Inventory)
+        {
+            await this._player.InvokeViewPlugInAsync<MUnique.OpenMU.GameLogic.Views.Inventory.IItemExpirationViewPlugIn>(p => p.ShowItemExpirationAsync(item)).ConfigureAwait(false);
+        }
     }
 }

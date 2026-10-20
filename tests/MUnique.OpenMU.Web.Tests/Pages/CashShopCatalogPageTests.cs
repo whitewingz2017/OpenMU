@@ -185,6 +185,19 @@ public class CashShopCatalogPageTests
         Assert.That(CashShopCatalogCheck.GetIssues(configuration, bundle), Is.EqualTo(new[] { Resources.CashShopIssueNegativeBundlePrice }));
     }
 
+    /// <summary>
+    /// Supported timed wearable products no longer show the unsupported-duration warning.
+    /// </summary>
+    [Test]
+    public void TimedWearableCanBeSoldWithoutWarning()
+    {
+        var item = new ItemDefinition { ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 8 } } };
+        var package = CreatePackage(30, "Pet Panda", true, item, TimeSpan.FromDays(1));
+        var configuration = this._gameConfiguration.CashShopConfiguration!;
+        Assert.That(CashShopCatalogCheck.IsSellable(package), Is.True);
+        Assert.That(CashShopCatalogCheck.GetIssues(configuration, package), Is.Empty);
+    }
+
     private static CashShopPackage CreatePackage(int sequence, string name, bool isForSale, ItemDefinition? item, TimeSpan duration)
     {
         // The ids are set like the persistence context does, because the page lists the packages by them.

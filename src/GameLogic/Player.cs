@@ -2006,6 +2006,7 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         this.LogInvalidInventoryItems();
 
         this._storages.CreateForCharacter(selectedCharacter);
+        await ItemExpiration.RemoveExpiredAsync(this, DateTime.UtcNow).ConfigureAwait(false);
         this.SkillList = new SkillList(this);
         this.SetReclaimableAttributesBeforeEnterGame();
         if (this.DetermineComboDefinition() is { } comboDefinition)

@@ -28,6 +28,16 @@ namespace MUnique.OpenMU.GameServer.Properties {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
+        /// <summary>
+        /// Looks up the localized item expiration view plugin name.
+        /// </summary>
+        public static string ItemExpirationViewPlugIn_Name => ResourceManager.GetString("ItemExpirationViewPlugIn_Name", resourceCulture);
+
+        /// <summary>
+        /// Looks up the localized item expiration view plugin description.
+        /// </summary>
+        public static string ItemExpirationViewPlugIn_Description => ResourceManager.GetString("ItemExpirationViewPlugIn_Description", resourceCulture);
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal PlugInResources() {
         }

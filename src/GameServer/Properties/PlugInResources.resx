@@ -2645,4 +2645,10 @@
   <data name="CashShopItemGiftRequestHandlerPlugIn_Description" xml:space="preserve">
     <value>Packet handler for cash shop gift requests (0xD2, 0x04 identifier).</value>
   </data>
+  <data name="ItemExpirationViewPlugIn_Name" xml:space="preserve">
+    <value>Item expiration display</value>
+  </data>
+  <data name="ItemExpirationViewPlugIn_Description" xml:space="preserve">
+    <value>Sends timed item expiration timestamps to Season 6 clients.</value>
+  </data>
 </root>

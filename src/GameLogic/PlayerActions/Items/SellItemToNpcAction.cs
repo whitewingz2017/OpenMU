@@ -33,7 +33,7 @@ public class SellItemToNpcAction
     {
         using var loggerScope = player.Logger.BeginScope(this.GetType());
         var item = player.Inventory?.GetItem(slot);
-        if (item is null)
+        if (item is null || item.ExpiresAtUtc <= DateTime.UtcNow)
         {
             player.Logger.LogWarning("Player {0} requested to sell item at slot {1}, but item wasn't found.", player, slot);
             await player.InvokeViewPlugInAsync<IItemSoldToNpcPlugIn>(p => p.ItemSoldToNpcAsync(false)).ConfigureAwait(false);

@@ -102,6 +102,7 @@ public class TalkNpcAction
                 player.Account!.Vault ??= player.PersistenceContext.CreateNew<ItemStorage>();
                 var warehouseSize = player.Account.IsVaultExtended ? InventoryConstants.WarehouseSize * 2 : InventoryConstants.WarehouseSize;
                 player.Vault = new Storage(warehouseSize, player.Account.Vault);
+                await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
                 await player.InvokeViewPlugInAsync<IShowVaultPlugIn>(p => p.ShowVaultAsync()).ConfigureAwait(false);
                 break;
             case NpcWindow.GuildMaster:

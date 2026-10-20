@@ -1613,4 +1613,10 @@
   <data name="GameEventPublisherConfiguration_PublishAncientItemDrops_Name" xml:space="preserve">
     <value>Publish ancient item drops</value>
   </data>
+  <data name="ItemExpirationPlugIn_Name" xml:space="preserve">
+    <value>Item expiration</value>
+  </data>
+  <data name="ItemExpirationPlugIn_Description" xml:space="preserve">
+    <value>Removes expired inventory and vault items and their equipment effects. Item clocks continue while offline.</value>
+  </data>
 </root>

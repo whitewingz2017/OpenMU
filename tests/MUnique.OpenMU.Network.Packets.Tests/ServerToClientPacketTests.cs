@@ -8615,4 +8615,48 @@ public class PacketStructureTests
         Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
             "GetRequiredSize calculation incorrect for binary field");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for CashShopPeriodItemCount.
+    /// </summary>
+    [Test]
+    public void CashShopPeriodItemCount_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 5;
+        var actualLength = CashShopPeriodItemCountRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'ItemCount' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'ItemCount' exceeds packet boundary");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for CashShopPeriodItem.
+    /// </summary>
+    [Test]
+    public void CashShopPeriodItem_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 12;
+        var actualLength = CashShopPeriodItemRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'ItemCode' boundary
+        Assert.That(4 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'ItemCode' exceeds packet boundary");
+        
+        // Validate field 'InventorySlot' boundary
+        Assert.That(6 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'InventorySlot' exceeds packet boundary");
+        
+        // Validate field 'ExpiresAt' boundary
+        Assert.That(8 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'ExpiresAt' exceeds packet boundary");
+    }
 }

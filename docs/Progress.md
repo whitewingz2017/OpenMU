@@ -97,7 +97,7 @@ complexity and effort). Complexity 0 means we wont implement it.
 | *ChatRoomCreate*              | 0xCA              | 100%     | 2          |                                               |
 | *ChatRoomInvitationReq*       | 0xCB              | 100%     | 2          |                                               |
 | KanturuGroup                | 0xD1              | 0%       | 10         |                                               |
-| CashShopGroup               | 0xD2              | 90%      | 10         | Opening, points, the storage list, buying, gifting and using items. The event item list and items which expire are missing. |
+| CashShopGroup               | 0xD2              | 90%      | 10         | Opening, points, the storage list, buying, gifting and using items. Timed wearable items and expiration messages are supported; the event item list and timed consumable effects are missing. |
 | *AreaSkillHit*                | 0xDB              | 100%     | 10         |                                               |
 | GuildAssignType             | 0xE2              | 0%       | 2          |                                               |
 | RequestAllyJoinLeave        | 0xE5              | 0%       | 3          |                                               |

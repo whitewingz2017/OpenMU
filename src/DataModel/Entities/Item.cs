@@ -32,6 +32,12 @@ public partial class Item
     public double Durability { get; set; }
 
     /// <summary>
+    /// Gets or sets the UTC expiration of this item, or <see langword="null"/> for a permanent item.
+    /// The clock starts when a cash shop product is collected, and continues while offline.
+    /// </summary>
+    public DateTime? ExpiresAtUtc { get; set; }
+
+    /// <summary>
     /// Gets or sets the level of the item.
     /// </summary>
     public byte Level { get; set; }
@@ -76,6 +82,7 @@ public partial class Item
     {
         this.Definition = otherItem.Definition;
         this.Durability = otherItem.Durability;
+        this.ExpiresAtUtc = otherItem.ExpiresAtUtc;
         this.Level = otherItem.Level;
         this.HasSkill = otherItem.HasSkill;
         this.SocketCount = otherItem.SocketCount;

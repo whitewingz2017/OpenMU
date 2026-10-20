@@ -313,7 +313,17 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash shop version.
+        ///   Looks up the localized item expiration plugin name.
+        /// </summary>
+        public static string ItemExpirationPlugIn_Name => ResourceManager.GetString("ItemExpirationPlugIn_Name", resourceCulture);
+
+        /// <summary>
+        /// Looks up the localized item expiration plugin description.
+        /// </summary>
+        public static string ItemExpirationPlugIn_Description => ResourceManager.GetString("ItemExpirationPlugIn_Description", resourceCulture);
+
+        /// <summary>
+        /// Looks up the localized cash shop version plugin name.
         /// </summary>
         public static string CashShopVersionPlugIn_Name {
             get {

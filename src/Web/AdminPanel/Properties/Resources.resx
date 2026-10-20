@@ -1946,7 +1946,7 @@
     <value>Product {0} has no item.</value>
   </data>
   <data name="CashShopIssueTimeLimited" xml:space="preserve">
-    <value>Product {0} is time-limited, which isn't supported yet.</value>
+    <value>Product {0} has an unsupported duration or requires a timed-effect delivery plugin.</value>
   </data>
   <data name="CashShopIssueNegativeBundlePrice" xml:space="preserve">
     <value>The bundle price is negative.</value>

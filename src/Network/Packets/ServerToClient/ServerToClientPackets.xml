@@ -15011,6 +15011,32 @@
       </Fields>
     </Packet>
     <Packet><HeaderType>C2HeaderWithSubCode</HeaderType><Code>FA</Code><SubCode>19</SubCode><Name>JewelBankResponseExtended</Name><Direction>ServerToClient</Direction><SentWhen>A custom client opens or operates the account jewel bank.</SentWhen><CausedReaction>The server validates and commits inventory and bank changes before returning a JSON UTF-8 snapshot. Requests use monotonically increasing session identifiers; operations are 0 refresh, 1 deposit all, 2 withdraw with amount 0, 1, 10, 20 or 30.</CausedReaction><Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields></Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>11</SubCode>
+      <Name>CashShopPeriodItemCount</Name>
+      <Length>5</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>The inventory is sent and its period-item expiration list follows.</SentWhen>
+      <CausedReaction>The client refreshes its expiration metadata for the following inventory entries.</CausedReaction>
+      <Fields><Field><Index>4</Index><Type>Byte</Type><Name>ItemCount</Name></Field></Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>D2</Code>
+      <SubCode>12</SubCode>
+      <Name>CashShopPeriodItem</Name>
+      <Length>12</Length>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A timed item appears in the inventory, moves to an inventory slot, or follows the inventory list.</SentWhen>
+      <CausedReaction>The client stores its UTC Unix expiration timestamp and displays the remaining time.</CausedReaction>
+      <Fields>
+        <Field><Index>4</Index><Type>ShortLittleEndian</Type><Name>ItemCode</Name></Field>
+        <Field><Index>6</Index><Type>ShortLittleEndian</Type><Name>InventorySlot</Name></Field>
+        <Field><Index>8</Index><Type>IntegerLittleEndian</Type><Name>ExpiresAt</Name></Field>
+      </Fields>
+    </Packet>
   </Packets>
   <Enums>
     <Enum>

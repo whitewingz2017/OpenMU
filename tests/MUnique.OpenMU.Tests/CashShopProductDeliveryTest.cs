@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.Tests;
 
 using System.Runtime.InteropServices;
 using Moq;
+using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
@@ -170,6 +171,88 @@ public class CashShopProductDeliveryTest
         Assert.That(player.Account!.UnlockedCharacterClasses, Is.Empty);
         Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Has.Count.EqualTo(1));
         GetView(player).Verify(v => v.ShowUseResultAsync(CashShopUseResult.CannotUse), Times.Once);
+    }
+
+    /// <summary>
+    /// Collection starts a real-time deadline, and expiration removes only elapsed instances.
+    /// </summary>
+    [Test]
+    public async Task TimedWearableExpiresAfterCollectionAsync()
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var product = player.GameContext.Configuration.CashShopConfiguration!.Packages
+            .Single(p => p.PackageSequence == OtherGroupItemPrice).Products.Single();
+        product.ItemDefinition!.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 8 } };
+        product.Duration = TimeSpan.FromHours(24);
+        await AddStorageItemAsync(player, OtherGroupItemPrice).ConfigureAwait(false);
+        var before = DateTime.UtcNow;
+
+        await this._actions.UseStorageItemAsync(player, 0, OtherGroupItemPrice).ConfigureAwait(false);
+
+        var item = player.Inventory!.Items.Single();
+        Assert.That(item.ExpiresAtUtc, Is.InRange(before.AddHours(24), DateTime.UtcNow.AddHours(24)));
+        Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Is.Empty);
+        await ItemExpiration.RemoveExpiredAsync(player, before.AddHours(23)).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items.Count(), Is.EqualTo(1));
+        await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow.AddHours(25)).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items, Is.Empty);
+    }
+
+    /// <summary>
+    /// Timed items are refused if expiration enforcement has been disabled.
+    /// </summary>
+    [Test]
+    public async Task TimedItemWithoutExpirationPluginStaysInStorageAsync()
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        var product = player.GameContext.Configuration.CashShopConfiguration!.Packages
+            .Single(p => p.PackageSequence == OtherGroupItemPrice).Products.Single();
+        product.ItemDefinition!.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 8 } };
+        product.Duration = TimeSpan.FromHours(24);
+        await AddStorageItemAsync(player, OtherGroupItemPrice).ConfigureAwait(false);
+
+        await this._actions.UseStorageItemAsync(player, 0, OtherGroupItemPrice).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// Permanent instances cannot merge with temporary instances or inherit their lifetime.
+    /// </summary>
+    [Test]
+    public void TimedAndPermanentItemsAreNotTheSame()
+    {
+        var definition = new ItemDefinition();
+        var permanent = new BasicModel.Item { Definition = definition };
+        var temporary = new BasicModel.Item { Definition = definition, ExpiresAtUtc = DateTime.UtcNow.AddDays(1) };
+        Assert.That(permanent.IsSameItemAs(temporary), Is.False);
+        var copy = new BasicModel.Item();
+        copy.AssignValues(temporary);
+        Assert.That(copy.ExpiresAtUtc, Is.EqualTo(temporary.ExpiresAtUtc));
+    }
+
+    /// <summary>
+    /// Failed timed collection rolls back all partial additions and retains the purchase.
+    /// </summary>
+    [Test]
+    public async Task TimedCollectionWithoutEnoughSpaceRollsBackAsync()
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var product = player.GameContext.Configuration.CashShopConfiguration!.Packages
+            .Single(p => p.PackageSequence == OtherGroupItemPrice).Products.Single();
+        product.ItemDefinition!.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 8 } };
+        product.Duration = TimeSpan.FromHours(24);
+        product.Quantity = 1000;
+        await AddStorageItemAsync(player, OtherGroupItemPrice).ConfigureAwait(false);
+
+        await this._actions.UseStorageItemAsync(player, 0, OtherGroupItemPrice).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Has.Count.EqualTo(1));
+        GetView(player).Verify(v => v.ShowUseResultAsync(CashShopUseResult.InventoryFull), Times.Once);
     }
 
     private static Mock<ICashShopViewPlugIn> GetView(Player player)

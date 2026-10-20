@@ -7,6 +7,8 @@ namespace MUnique.OpenMU.Persistence.Initialization.Updates;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.GameLogic.CashShop;
+using MUnique.OpenMU.GameLogic.PlugIns;
+using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix;
 using MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 using MUnique.OpenMU.PlugIns;
@@ -33,7 +35,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     /// <summary>
     /// The plug-in description.
     /// </summary>
-    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension).";
+    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension). Version 2 enables supported timed equipment packages and adds expiration plugins, preserving existing plugin activation choices.";
 
     /// <summary>
     /// The item numbers (of group 14) of the items of the delivery plugins, by the product sequence numbers of the script.
@@ -45,6 +47,12 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
         { 282, 163 }, // Vault Expansion Certificate
         { 284, 169 }, // Rage Fighter Character Card
     };
+
+    /// <inheritdoc />
+    public override int Version => 2;
+
+    /// <inheritdoc />
+    public override DateTime UpdatedAt => new(2026, 10, 20, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     public override string Name => PlugInName;
@@ -70,6 +78,26 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
         new CashShopItems(context, gameConfiguration).Initialize();
         new CashShopInitializer(context, gameConfiguration).Initialize();
         AssignDeliveryItems(gameConfiguration);
+        foreach (var type in new[] { typeof(ItemExpirationPlugIn), typeof(ItemExpirationViewPlugIn) })
+        {
+            if (gameConfiguration.PlugInConfigurations.All(p => p.TypeId != type.GUID))
+            {
+                var plugIn = context.CreateNew<PlugInConfiguration>();
+                plugIn.TypeId = type.GUID;
+                plugIn.IsActive = true;
+                gameConfiguration.PlugInConfigurations.Add(plugIn);
+            }
+        }
+
+        if (gameConfiguration.CashShopConfiguration is { } shop)
+        {
+            foreach (var package in shop.Packages.Where(p => p.Products.Any(product => product.Duration > TimeSpan.Zero)
+                && p.Products.All(product => product.CanBeDelivered())))
+            {
+                package.IsForSale = true;
+            }
+        }
+
         return ValueTask.CompletedTask;
     }
 
