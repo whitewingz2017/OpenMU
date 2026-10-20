@@ -5,8 +5,9 @@
 namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 
 using Microsoft.Extensions.Logging.Abstractions;
-using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.InMemory;
 
@@ -124,7 +125,7 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
         Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
-        Assert.That(update.Version, Is.EqualTo(4));
+        Assert.That(update.Version, Is.EqualTo(5));
     }
 
     /// <summary>
@@ -170,8 +171,19 @@ internal class CashShopUpdateTest
             .Where(product => product.Duration > TimeSpan.Zero && product.ItemDefinition?.ConsumeEffect?.PowerUpDefinitions.Count > 0).ToList();
         Assert.That(products, Is.Not.Empty);
         var missing = products.Select(product => product.ItemDefinition!).Distinct().ToList();
+        var dropRate = gameConfiguration.Attributes.Single(attribute => attribute.Id == Stats.ItemDropRate.Id);
+        gameConfiguration.Attributes.Remove(dropRate);
+        foreach (var characterClass in gameConfiguration.CharacterClasses)
+        {
+            foreach (var value in characterClass.BaseAttributeValues.Where(value => value.Definition == dropRate).ToList())
+            {
+                characterClass.BaseAttributeValues.Remove(value);
+            }
+        }
+
         foreach (var item in missing)
         {
+            gameConfiguration.MagicEffects.Remove(item.ConsumeEffect!);
             gameConfiguration.Items.Remove(item);
         }
 
@@ -190,6 +202,12 @@ internal class CashShopUpdateTest
         Assert.That(shop.Packages.Single(package => package.PackageSequence == 122).Products,
             Has.All.Matches<CashShopProduct>(product => product.ItemDefinition is { Group: 13, Number: 44 }));
         Assert.That(gameConfiguration.Items.Count, Is.EqualTo(itemCount));
+        var persistentDropRate = gameConfiguration.Attributes.Single(attribute => attribute.Id == Stats.ItemDropRate.Id);
+        Assert.That(gameConfiguration.CharacterClasses, Has.All.Matches<CharacterClass>(characterClass =>
+            characterClass.BaseAttributeValues.Count(value => value.Definition == persistentDropRate && value.Value == 1) == 1));
+        Assert.That(shop.Packages.Single(package => package.PackageSequence == 122).Products,
+            Has.All.Matches<CashShopProduct>(product => product.ItemDefinition!.ConsumeEffect!.PowerUpDefinitions
+                .Any(bonus => ReferenceEquals(bonus.TargetAttribute, persistentDropRate))));
     }
 
     /// <summary>

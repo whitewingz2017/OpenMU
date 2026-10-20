@@ -18,6 +18,14 @@ internal class CashShopEffectItems(IContext context, GameConfiguration gameConfi
     /// <inheritdoc />
     public override void Initialize()
     {
+        // Existing databases predate this stat; power-up creation resolves persisted attributes.
+        // Register it before configuring Wealth or Divinity, rather than only their base values.
+        if (this.GameConfiguration.Attributes.All(attribute => attribute.Id != Stats.ItemDropRate.Id))
+        {
+            this.GameConfiguration.Attributes.Add(this.Context.CreateNew<AttributeDefinition>(
+                Stats.ItemDropRate.Id, Stats.ItemDropRate.Designation, Stats.ItemDropRate.Description));
+        }
+
         this.Configure(13, 43, 29, 60, (Stats.ExperienceRate, 0.5f, AggregateType.AddRaw));
         this.Configure(13, 44, 30, 60, (Stats.ExperienceRate, 1f, AggregateType.AddRaw), (Stats.ItemDropRate, 1.5f, AggregateType.Multiplicate));
         this.Configure(13, 45, 31, 60, (Stats.ExperienceRate, 0f, AggregateType.Multiplicate), (Stats.MasterExperienceRate, 0f, AggregateType.Multiplicate));
