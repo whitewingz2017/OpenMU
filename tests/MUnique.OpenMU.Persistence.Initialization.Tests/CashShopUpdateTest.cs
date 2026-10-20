@@ -124,7 +124,36 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
         Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
-        Assert.That(update.Version, Is.EqualTo(2));
+        Assert.That(update.Version, Is.EqualTo(3));
+    }
+
+    /// <summary>
+    /// Repairs stale pet and non-pet links without replacing owner pricing or duplicating products.
+    /// </summary>
+    [Test]
+    public async Task UpdateRepairsMissingSupportedProductItemsAsync()
+    {
+        var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var shop = gameConfiguration.CashShopConfiguration!;
+        var packages = shop.Packages.Where(p => new[] { 10, 28, 30, 100, 102, 385 }.Contains(p.PackageSequence)).ToList();
+        var products = packages.SelectMany(p => p.Products).ToList();
+        var expectedItems = products.Select(p => p.ItemDefinition).ToArray();
+        var productCount = shop.Packages.Sum(p => p.Products.Count);
+        packages.ForEach(p => p.IsForSale = false);
+        products.ForEach(p => { p.ItemDefinition = null; p.Price = 987; });
+
+        var update = new AddCashShopUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
+
+        Assert.That(packages, Has.Count.EqualTo(6));
+        Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
+        Assert.That(products.Select(p => p.ItemDefinition), Is.EqualTo(expectedItems));
+        Assert.That(products, Has.All.Matches<CashShopProduct>(p => p.Price == 987));
+        Assert.That(shop.Packages.Sum(p => p.Products.Count), Is.EqualTo(productCount));
+        var unsupported = shop.Packages.Single(p => p.PackageSequence == 122);
+        Assert.That(unsupported.IsForSale, Is.False, "missing seal effects must not become inert purchases");
     }
 
     private static bool IsDeliveryItem(DataModel.Configuration.Items.ItemDefinition item)

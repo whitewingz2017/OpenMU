@@ -35,7 +35,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     /// <summary>
     /// The plug-in description.
     /// </summary>
-    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension). Version 2 enables supported timed equipment packages and adds expiration plugins, preserving existing plugin activation choices.";
+    internal const string PlugInDescription = "This update adds the cash shop configuration with the packages of the cash shop script 512.2012.084 of the game client, and the items which are applied when they're used from the cash shop storage (character cards, vault and inventory extension). Version 3 repairs missing item links for the matching script and enables repaired deliverable packages, in addition to timed equipment and expiration plugins. Existing prices, durations and explicit item assignments are preserved.";
 
     /// <summary>
     /// The item numbers (of group 14) of the items of the delivery plugins, by the product sequence numbers of the script.
@@ -49,7 +49,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     };
 
     /// <inheritdoc />
-    public override int Version => 2;
+    public override int Version => 3;
 
     /// <inheritdoc />
     public override DateTime UpdatedAt => new(2026, 10, 20, 0, 0, 0, DateTimeKind.Utc);
@@ -76,7 +76,9 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         new CashShopItems(context, gameConfiguration).Initialize();
-        new CashShopInitializer(context, gameConfiguration).Initialize();
+        var initializer = new CashShopInitializer(context, gameConfiguration);
+        initializer.Initialize();
+        var repairedPackages = initializer.RepairExistingItemReferences();
         AssignDeliveryItems(gameConfiguration);
         foreach (var type in new[] { typeof(ItemExpirationPlugIn), typeof(ItemExpirationViewPlugIn) })
         {
@@ -91,7 +93,7 @@ public class AddCashShopUpdatePlugIn : UpdatePlugInBase
 
         if (gameConfiguration.CashShopConfiguration is { } shop)
         {
-            foreach (var package in shop.Packages.Where(p => p.Products.Any(product => product.Duration > TimeSpan.Zero)
+            foreach (var package in shop.Packages.Where(p => (p.Products.Any(product => product.Duration > TimeSpan.Zero) || repairedPackages.Contains(p))
                 && p.Products.All(product => product.CanBeDelivered())))
             {
                 package.IsForSale = true;

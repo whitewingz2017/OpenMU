@@ -435,3 +435,13 @@ configuration update, admin catalog checks, resources and tests. The custom clie
 changes are `Client.Main/Networking/PacketHandling/Handlers/CashShopHandler.cs`,
 `Client.Main/Core/Client/CharacterState.cs` and
 `Client.Main/Controls/UI/Game/Common/ItemUiHelper.cs` in the MuOnlineS6 checkout.
+
+
+### Version 3 catalog repair
+
+The existing optional Add cash shop update now repairs missing item references
+from the same initializer script records, guarded by the script version. Existing
+item choices, prices, quantities and durations are preserved. Repaired packages
+are enabled only when all products are supported. The five initialization and
+upgrade tests pass, including pet/non-pet reference restoration, repeat application,
+and retention of customized prices. No live database update was applied.

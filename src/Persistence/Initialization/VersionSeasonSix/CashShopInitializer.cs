@@ -18,7 +18,7 @@ using MUnique.OpenMU.GameLogic.CashShop;
 /// The script doesn't define the item level, so it's taken from the product names,
 /// e.g. 'Box of Kundun +3' or 'Bundle of Jewel of Soul (30)'.
 /// Products whose item isn't defined in this configuration can't be delivered, and
-/// time-limited products neither, because items which expire aren't supported yet.
+/// products with unsupported timed application effects can't be delivered either.
 /// Their packages are therefore initialized as not for sale.
 /// </remarks>
 internal sealed class CashShopInitializer : InitializerBase
@@ -35,6 +35,10 @@ internal sealed class CashShopInitializer : InitializerBase
     private const short BannerYear = 2011;
 
     private const short BannerYearId = 1;
+
+    private readonly HashSet<CashShopPackage> _repairedPackages = [];
+
+    private bool _repairExistingItems;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CashShopInitializer"/> class.
@@ -64,6 +68,34 @@ internal sealed class CashShopInitializer : InitializerBase
         this.GameConfiguration.CashShopConfiguration = configuration;
 
         this.AddPackages(configuration);
+    }
+
+    /// <summary>
+    /// Repairs missing item links using the same script records as fresh initialization.
+    /// Existing product prices, durations, quantities and explicit item choices are retained.
+    /// </summary>
+    /// <returns>The packages whose missing item links were repaired.</returns>
+    internal IReadOnlyCollection<CashShopPackage> RepairExistingItemReferences()
+    {
+        this._repairedPackages.Clear();
+        if (this.GameConfiguration.CashShopConfiguration is not { } configuration
+            || configuration.ScriptSaleZone != ScriptSaleZone || configuration.ScriptYear != ScriptYear
+            || configuration.ScriptYearId != ScriptYearId)
+        {
+            return this._repairedPackages;
+        }
+
+        this._repairExistingItems = true;
+        try
+        {
+            this.AddPackages(configuration);
+        }
+        finally
+        {
+            this._repairExistingItems = false;
+        }
+
+        return this._repairedPackages;
     }
 
     private void AddPackages(CashShopConfiguration configuration)
@@ -764,6 +796,11 @@ internal sealed class CashShopInitializer : InitializerBase
 
     private PackageBuilder AddPackage(CashShopConfiguration configuration, int packageSequence, string name, int price, CashShopCoinType coinType, bool isForSale, bool isGiftable, bool isBundle)
     {
+        if (this._repairExistingItems)
+        {
+            return new PackageBuilder(this, configuration.Packages.FirstOrDefault(p => p.PackageSequence == packageSequence));
+        }
+
         var package = this.Context.CreateNew<CashShopPackage>();
         package.PackageSequence = packageSequence;
         package.Name = name;
@@ -782,14 +819,14 @@ internal sealed class CashShopInitializer : InitializerBase
     private sealed class PackageBuilder
     {
         private readonly CashShopInitializer _initializer;
-        private readonly CashShopPackage _package;
+        private readonly CashShopPackage? _package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PackageBuilder"/> class.
         /// </summary>
         /// <param name="initializer">The initializer.</param>
         /// <param name="package">The package.</param>
-        public PackageBuilder(CashShopInitializer initializer, CashShopPackage package)
+        public PackageBuilder(CashShopInitializer initializer, CashShopPackage? package)
         {
             this._initializer = initializer;
             this._package = package;
@@ -809,6 +846,27 @@ internal sealed class CashShopInitializer : InitializerBase
         /// <returns>This builder.</returns>
         public PackageBuilder AddProduct(int productSequence, int priceSequence, int price, byte itemGroup, short itemNumber, byte itemLevel, int quantity, int durationSeconds)
         {
+            if (this._package is null)
+            {
+                return this;
+            }
+
+            if (this._initializer._repairExistingItems)
+            {
+                var definition = this._initializer.GameConfiguration.Items.FirstOrDefault(item => item.Group == itemGroup && item.Number == itemNumber);
+                if (definition is not null)
+                {
+                    foreach (var existing in this._package.Products.Where(p => p.ProductSequence == productSequence
+                        && p.PriceSequence == priceSequence && p.ItemDefinition is null))
+                    {
+                        existing.ItemDefinition = definition;
+                        this._initializer._repairedPackages.Add(this._package);
+                    }
+                }
+
+                return this;
+            }
+
             var product = this._initializer.Context.CreateNew<CashShopProduct>();
             product.ProductSequence = productSequence;
             product.PriceSequence = priceSequence;
