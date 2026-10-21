@@ -217,3 +217,8 @@ skill buffs, even when its legacy `SendDuration` flag is disabled or its bonus
 attribute has no item-specific packet mapping. Refreshing an active buff resets
 the displayed countdown along with the server timer. Untimed effects keep their
 status-only notification; duration packets are sent only to the affected player.
+
+Timed pets retain their displayed HP and do not lose it from combat damage.
+They remain available until their purchased UTC expiration; ordinary pets without
+an expiration still take durability damage and can die. This rule applies to all
+period pets, including Panda, rather than a list of pet species.

@@ -2241,6 +2241,13 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
 
     private async ValueTask DecreasePetDurabilityAsync(Item pet, float damage)
     {
+        // Period pets are consumed by their expiration time, not by combat wear.
+        // Keep the HP display without allowing damage to destroy a rented pet.
+        if (pet.ExpiresAtUtc.HasValue)
+        {
+            return;
+        }
+
         if (pet.Durability == 0 || pet.Definition is null || this.Attributes is not { } attributes)
         {
             return;
