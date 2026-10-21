@@ -78,8 +78,7 @@ for sale:
 
 * packages with items which aren't defined in the game configuration — most
   special cash shop items, like seals, scrolls and talismans;
-* packages with time-limited items (for example pets for 1 day), because items
-  can't expire yet;
+* timed application-only products without an implemented effect delivery plugin;
 * packages with a [special item](#special-items) whose plugin is deactivated.
 
 ### Editing the catalog
@@ -89,7 +88,7 @@ edits the catalog:
 
 * The list shows every package with its coin type, price and flags. The column
   *Sellable* shows whether a player can buy it, or why not: a product without
-  item, a time-limited product, no products, or a number used twice.
+  item, an unsupported timed effect, no products, or a number used twice.
 * **Edit** opens a package: number, name, coin type, bundle price, the flags,
   and its products with their numbers, price, item, item level, quantity and
   duration.
@@ -150,3 +149,71 @@ sell the card.
 
 While the plugin of a special item is deactivated, its packages can't be bought,
 and bought items stay in the storage until the plugin is active again.
+
+### Timed equipment
+
+Supported timed pets and other wearable items start their duration when collected
+from shop storage. Their UTC deadline persists through logout, restart and vault
+storage. Expired equipment loses its bonuses and is removed by the server.
+Temporary items cannot be dropped, traded or used in crafting; inventory and vault
+moves preserve the original deadline.
+
+Upgrading an existing server requires the `AddItemExpiration` database migration
+and the optional **Add cash shop** configuration update, version 6. Timed buffs
+also require the `AddPurchasedMagicEffects` database migration. The update
+adds missing catalog definitions, repairs product links and adds expiration plugins.
+Keep **Item expiration** enabled; disabling it blocks timed purchases and
+collection.
+
+
+### Repairing existing product links
+
+Version 6 of **Add cash shop** repairs missing product-to-item references for
+script `512.2012.084`, using the same catalog records as fresh initialization.
+It enables repaired packages only when every product is deliverable. Existing
+prices, durations and explicitly assigned items remain unchanged. Talisman rate
+quantities are corrected to match the script's 5% and 10% choices.
+Run this optional configuration update after deploying the updated server.
+Rebuilding the game client alone does not update the server catalog.
+
+Version 5 also registers the new item-drop-rate attribute before creating buff
+bonuses. This repairs the version 4 upgrade failure **Sequence contains no matching
+element** in `StatsExtensions.GetPersistent`. Apply version 5 after deploying the
+corrected server, including if version 4 is already listed as installed.
+
+Version 6 also fills empty bonus definitions when an item already has an effect
+link. Existing nonempty effect configurations are retained. Rejected purchases
+now log the package sale flag, item link, effect bonus count and expiration-plugin
+state, so operators can distinguish delivery failures in the running server.
+
+A rejection can also mean that the package is not for sale, expiration enforcement
+is disabled, an item definition is missing, or its delivery/effect plugin is not
+implemented or active. The admin cash shop catalog lists definition and duration
+issues. In particular, **Product has no item** means the persisted product link
+is missing; checking **For sale** alone cannot repair it. Deploy the updated
+server, apply schema migrations on **Setup**, apply **Add cash shop v6** on
+**Updates** (`/config-updates`), then restart the server. The update repairs all
+four Seal of Wealth price options, not just the selected duration.
+
+Configured seals and scrolls activate directly from shop storage. Their bonuses
+persist through logout and server restart until the purchased UTC deadline.
+Conflicting effects remain in storage instead of being consumed. Gold Channel
+access and Premium Service are unavailable until their server access rules and
+benefits are defined.
+
+Period-item deadlines now retain their UTC instant when a persistence provider returns
+a local timestamp. A 24-hour purchase must not gain the server time-zone offset
+after the item is loaded again. Existing incorrectly saved deadlines are not rewritten.
+
+Seal buffs publish their configured remaining duration to the owning client, including
+experience, master-experience and item-drop bonuses. If a client shows the Seal of
+Wealth name but no countdown, update and restart the game server as well as the
+client: older servers sent these effects only as untimed status updates. The
+countdown uses the restored remaining duration, rather than restarting the
+purchased period at login.
+
+Owner countdowns now apply to every visible timed magic effect, including NPC and
+skill buffs, even when its legacy `SendDuration` flag is disabled or its bonus
+attribute has no item-specific packet mapping. Refreshing an active buff resets
+the displayed countdown along with the server timer. Untimed effects keep their
+status-only notification; duration packets are sent only to the affected player.

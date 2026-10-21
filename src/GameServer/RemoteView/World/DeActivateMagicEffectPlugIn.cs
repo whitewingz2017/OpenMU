@@ -24,6 +24,11 @@ using MUnique.OpenMU.PlugIns;
 [MinimumClient(0, 90, ClientLanguage.Invariant)]
 public class DeActivateMagicEffectPlugIn : IActivateMagicEffectPlugIn, IDeactivateMagicEffectPlugIn
 {
+    /// <summary>
+    /// Attribute hint zero leaves the bonus type unspecified; the client selects the buff by its magic-effect number.
+    /// </summary>
+    private const EffectItemConsumption.EffectType GenericEffectType = 0;
+
     private static readonly ReadOnlyDictionary<AttributeDefinition, EffectItemConsumption.EffectType> EffectTypeMapping = new(
         new Dictionary<AttributeDefinition, EffectItemConsumption.EffectType>
         {
@@ -32,6 +37,10 @@ public class DeActivateMagicEffectPlugIn : IActivateMagicEffectPlugIn, IDeactiva
             { Stats.DefenseBase, EffectItemConsumption.EffectType.Defense },
             { Stats.MaximumHealth, EffectItemConsumption.EffectType.MaximumHealth },
             { Stats.MaximumMana, EffectItemConsumption.EffectType.MaximumMana },
+            { Stats.ExperienceRate, EffectItemConsumption.EffectType.ExperienceRate },
+            { Stats.MasterExperienceRate, EffectItemConsumption.EffectType.ExperienceRate },
+            { Stats.BonusExperienceRate, EffectItemConsumption.EffectType.ExperienceRate },
+            { Stats.ItemDropRate, EffectItemConsumption.EffectType.DropRate },
         });
 
     private readonly RemotePlayer _player;
@@ -45,7 +54,7 @@ public class DeActivateMagicEffectPlugIn : IActivateMagicEffectPlugIn, IDeactiva
     /// <inheritdoc/>
     public ValueTask ActivateMagicEffectAsync(MagicEffect effect, IAttackable affectedObject)
     {
-        return this.SendMagicEffectStatusAsync(effect, affectedObject, true, effect.Definition.SendDuration ? effect.Duration : TimeSpan.Zero);
+        return this.SendMagicEffectStatusAsync(effect, affectedObject, true, effect.Duration);
     }
 
     /// <inheritdoc/>
@@ -66,6 +75,9 @@ public class DeActivateMagicEffectPlugIn : IActivateMagicEffectPlugIn, IDeactiva
         var objectId = affectedObject.GetId(this._player);
         if (isActive && affectedObject == this._player)
         {
+            // SendDuration historically selected an item-specific display path. The owner
+            // needs the runtime lifetime for every timed effect, including NPC and skill buffs.
+            uint remainingSeconds = (uint)Math.Clamp(Math.Ceiling(duration.TotalSeconds), 0, uint.MaxValue);
             foreach (var powerUpDefinition in effect.Definition.PowerUpDefinitions)
             {
                 if (powerUpDefinition.TargetAttribute is { } targetAttribute
@@ -73,9 +85,20 @@ public class DeActivateMagicEffectPlugIn : IActivateMagicEffectPlugIn, IDeactiva
                 {
                     var origin = EffectItemConsumption.EffectOrigin.HalloweenAndCherryBlossomEvent; // Basically, all normal consumable items which add effects
                     var action = EffectItemConsumption.EffectAction.Add;
-                    await this._player.Connection.SendEffectItemConsumptionAsync(origin, effectType, action, (uint)duration.TotalSeconds, (byte)effect.Definition.Number).ConfigureAwait(false);
+                    await this._player.Connection.SendEffectItemConsumptionAsync(origin, effectType, action, remainingSeconds, (byte)effect.Definition.Number).ConfigureAwait(false);
                     effectWasSent = true;
                 }
+            }
+
+            if (!effectWasSent && remainingSeconds > 0)
+            {
+                await this._player.Connection.SendEffectItemConsumptionAsync(
+                    EffectItemConsumption.EffectOrigin.HalloweenAndCherryBlossomEvent,
+                    GenericEffectType,
+                    EffectItemConsumption.EffectAction.Add,
+                    remainingSeconds,
+                    (byte)effect.Definition.Number).ConfigureAwait(false);
+                effectWasSent = true;
             }
         }
 
