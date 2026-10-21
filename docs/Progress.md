@@ -1,4 +1,4 @@
-﻿# Project feature progress
+# Project feature progress
 
 For the progress of the project as a whole, please have a look at the [projects page](https://github.com/MUnique/OpenMU/projects).
 
@@ -80,7 +80,7 @@ complexity and effort). Complexity 0 means we wont implement it.
 | RequestEnterChaosCastle     | 0xAF              | 100%     | 4          |                                               |
 | TargetTeleport              | 0xB0              | 0%       | 3          |                                               |
 | ChangeServerAuth            | 0xB1              | 0%       | 0          |                                               |
-| CastleSiegeGroup            | 0xB1              | 0%       | 10         |                                               |
+| CastleSiegeGroup            | 0xB2              | 95%      | 10         | The status request (0xB200) is missing; guild commands (0xB21D) are implemented |
 | CSRequest_NPC_DB_List       | 0xB3              | 0%       | 3          |                                               |
 | RequestCSRegGuildList       | 0xB4              | 0%       | 2          |                                               |
 | RequestCSAttGuildList       | 0xB5              | 0%       | 2          |                                               |
