@@ -86,7 +86,7 @@ complexity and effort). Complexity 0 means we wont implement it.
 | RequestCSAttGuildList       | 0xB5              | 0%       | 2          |                                               |
 | RequestCSWeaponUse          | 0xB7              | 0%       | 1          |                                               |
 | *LoggedIn*                    | 0xB8              | 100%     | 1          |                                               |
-| RequestGuildMarkCastleOwner | 0xB9              | 0%       | 1          |                                               |
+| *RequestGuildMarkCastleOwner* | 0xB902            | 100%     | 1          | Entering the hunting zone (0xB905) is implemented |
 | *JewelMix*                    | 0xBC              | 100%     | 4          |                                               |
 | *CrywolfGroup*              | 0xBD              | 100%     | 10         |                                               |
 | GuildAssignStatus           | 0xBE              | 0%       | 1          |                                               |
