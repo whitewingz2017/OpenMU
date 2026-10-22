@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
 	<!-- 
 		Microsoft ResX Schema
@@ -794,4 +794,6 @@
   <data name="AddCashShopUpdatePlugIn_Description" xml:space="preserve">
     <value>Dieses Update fügt die Cash-Shop-Konfiguration mit den Paketen des Cash-Shop-Skripts 512.2012.084 des Spielclients hinzu, sowie die Gegenstände, die angewendet werden, wenn sie aus dem Cash-Shop-Lager verwendet werden (Charakterkarten, Tresor- und Inventarerweiterung).</value>
   </data>
+  <data name="ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn_Name" xml:space="preserve"><value>Wachen von Castle Siege konfigurieren</value></data>
+  <data name="ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn_Description" xml:space="preserve"><value>Die Gardisten an der Brücke der Karte von Castle Siege öffnen das Anmeldefenster, und die Wache am Eingang zum Land der Prüfungen wird zu einem passiven NPC, der den Dialog des Landes der Prüfungen öffnet.</value></data>
 </root>

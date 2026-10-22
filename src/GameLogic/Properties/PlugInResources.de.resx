@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1856,5 +1856,17 @@
   </data>
   <data name="DiscordIntegrationFeaturePlugIn_Description" xml:space="preserve">
     <value>Teilt Game-Clients, die danach fragen, mit, wie der Server mit Discord verbunden ist (Einladungslink, Rich-Presence-Anwendung, Kontoverknüpfung, gespiegelte Chats), lässt Spieler ihr Konto im Client verknüpfen und schickt ihnen in Discord geschriebene Nachrichten als solche.</value>
+  </data>
+  <data name="CastleSiegeLandOfTrialsGuardTalkPlugIn_Name" xml:space="preserve">
+    <value>Castle Siege: Wache des Landes der Prüfungen</value>
+  </data>
+  <data name="CastleSiegeLandOfTrialsGuardTalkPlugIn_Description" xml:space="preserve">
+    <value>Zeigt die Verfügbarkeit des Landes der Prüfungen und die geltende Eintrittsgebühr an.</value>
+  </data>
+  <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Name" xml:space="preserve">
+    <value>Castle Siege: Gardist für die Anmeldung</value>
+  </data>
+  <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Description" xml:space="preserve">
+    <value>Öffnet das Anmeldefenster von Castle Siege mit dem aktuellen Status, wenn ein Spieler mit einem Gardisten auf der Karte von Castle Siege spricht.</value>
   </data>
 </root>

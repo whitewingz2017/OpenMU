@@ -1684,4 +1684,16 @@
   <data name="LevelBasedMoneyPlugInConfiguration_BaseZen_Name" xml:space="preserve"><value>Base Zen</value></data>
   <data name="LevelBasedMoneyPlugInConfiguration_ZenPerMonsterLevel_Name" xml:space="preserve"><value>Zen per monster level</value></data>
   <data name="LevelBasedMoneyPlugInConfiguration_MaximumRandomZen_Name" xml:space="preserve"><value>Maximum random Zen (inclusive)</value></data>
+  <data name="CastleSiegeLandOfTrialsGuardTalkPlugIn_Name" xml:space="preserve">
+    <value>Castle Siege Land of Trials guard</value>
+  </data>
+  <data name="CastleSiegeLandOfTrialsGuardTalkPlugIn_Description" xml:space="preserve">
+    <value>Shows Land of Trials availability and its applicable entry fee.</value>
+  </data>
+  <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Name" xml:space="preserve">
+    <value>Castle Siege registration guardsman</value>
+  </data>
+  <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Description" xml:space="preserve">
+    <value>Opens the Castle Siege registration window, which shows the Castle Siege status, when a player talks to a guardsman on the Castle Siege map.</value>
+  </data>
 </root>
