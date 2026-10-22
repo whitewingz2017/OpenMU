@@ -2721,4 +2721,10 @@
   <data name="CastleSiegeOwnerLogoPlugIn_Description" xml:space="preserve">
     <value>Sends the guild logo of the castle owner to the game client.</value>
   </data>
+  <data name="CastleSiegeWeaponExplosionHandlerPlugIn_Name" xml:space="preserve">
+    <value>Castle Siege weapon explosion handler</value>
+  </data>
+  <data name="CastleSiegeWeaponExplosionHandlerPlugIn_Description" xml:space="preserve">
+    <value>Accepts the weapon explosion request of the client. The impact damage of warfare machines is applied by the server when the projectile lands, so the request has no effect.</value>
+  </data>
 </root>
