@@ -3979,4 +3979,46 @@ public class PacketStructureTests
         Assert.That(11 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for DiscordIntegrationInfoRequest.
+    /// </summary>
+    [Test]
+    public void DiscordIntegrationInfoRequest_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 4;
+        var actualLength = DiscordIntegrationInfoRequestRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for DiscordLinkCodeRequest.
+    /// </summary>
+    [Test]
+    public void DiscordLinkCodeRequest_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 4;
+        var actualLength = DiscordLinkCodeRequestRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for DiscordUnlinkRequest.
+    /// </summary>
+    [Test]
+    public void DiscordUnlinkRequest_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 4;
+        var actualLength = DiscordUnlinkRequestRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+    }
 }

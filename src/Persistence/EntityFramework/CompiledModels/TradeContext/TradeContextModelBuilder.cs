@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
     public partial class TradeContextModel
     {
         private TradeContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("612c2ec6-2898-4c30-aedc-1e2f301168e7"), entityTypeCount: 46)
+            : base(skipDetectChanges: false, modelId: new Guid("e8a5b548-cf77-4351-9d08-7f3bae7fe846"), entityTypeCount: 48)
         {
         }
 
@@ -20,6 +20,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
         {
             var account = AccountEntityType.Create(this);
             var accountCharacterClass = AccountCharacterClassEntityType.Create(this);
+            var accountExternalLink = AccountExternalLinkEntityType.Create(this);
             var appearanceData = AppearanceDataEntityType.Create(this);
             var attributeRelationship = AttributeRelationshipEntityType.Create(this);
             var cashShopCoinGrant = CashShopCoinGrantEntityType.Create(this);
@@ -41,6 +42,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             var gameServerConfigurationGameMapDefinition = GameServerConfigurationGameMapDefinitionEntityType.Create(this);
             var gensAbuse = GensAbuseEntityType.Create(this);
             var gensMember = GensMemberEntityType.Create(this);
+            var guildChatBinding = GuildChatBindingEntityType.Create(this);
             var item = ItemEntityType.Create(this);
             var itemAppearance = ItemAppearanceEntityType.Create(this);
             var itemAppearanceItemOptionType = ItemAppearanceItemOptionTypeEntityType.Create(this);
@@ -66,6 +68,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             var statAttribute = StatAttributeEntityType.Create(this);
 
             AccountCharacterClassEntityType.CreateForeignKey1(accountCharacterClass, account);
+            AccountExternalLinkEntityType.CreateForeignKey1(accountExternalLink, account);
             AttributeRelationshipEntityType.CreateForeignKey1(attributeRelationship, powerUpDefinitionValue);
             CashShopCoinGrantEntityType.CreateForeignKey1(cashShopCoinGrant, account);
             CashShopStorageItemEntityType.CreateForeignKey1(cashShopStorageItem, account);
@@ -95,6 +98,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
 
             AccountEntityType.CreateAnnotations(account);
             AccountCharacterClassEntityType.CreateAnnotations(accountCharacterClass);
+            AccountExternalLinkEntityType.CreateAnnotations(accountExternalLink);
             AppearanceDataEntityType.CreateAnnotations(appearanceData);
             AttributeRelationshipEntityType.CreateAnnotations(attributeRelationship);
             CashShopCoinGrantEntityType.CreateAnnotations(cashShopCoinGrant);
@@ -116,6 +120,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             GameServerConfigurationGameMapDefinitionEntityType.CreateAnnotations(gameServerConfigurationGameMapDefinition);
             GensAbuseEntityType.CreateAnnotations(gensAbuse);
             GensMemberEntityType.CreateAnnotations(gensMember);
+            GuildChatBindingEntityType.CreateAnnotations(guildChatBinding);
             ItemEntityType.CreateAnnotations(item);
             ItemAppearanceEntityType.CreateAnnotations(itemAppearance);
             ItemAppearanceItemOptionTypeEntityType.CreateAnnotations(itemAppearanceItemOptionType);

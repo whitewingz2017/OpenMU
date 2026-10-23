@@ -19,7 +19,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -86,7 +86,16 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
                 return ResourceManager.GetString("AccessDeniedDescription", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string Account {
+            get {
+                return ResourceManager.GetString("Account", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Too many failed attempts. Please try again later..
         /// </summary>
@@ -232,6 +241,24 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alliance.
+        /// </summary>
+        public static string Alliance {
+            get {
+                return ResourceManager.GetString("Alliance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All available localizations are in place..
+        /// </summary>
+        public static string AllLocalizationsInPlace {
+            get {
+                return ResourceManager.GetString("AllLocalizationsInPlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analyze the network traffic.
         /// </summary>
         public static string AnalyzeTraffic {
@@ -340,11 +367,38 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} changes have been applied..
+        /// </summary>
+        public static string AppliedCaptionChanges {
+            get {
+                return ResourceManager.GetString("AppliedCaptionChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applying changes ....
+        /// </summary>
+        public static string ApplyingChanges {
+            get {
+                return ResourceManager.GetString("ApplyingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applying updates ....
         /// </summary>
         public static string ApplyingUpdates {
             get {
                 return ResourceManager.GetString("ApplyingUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply selected changes.
+        /// </summary>
+        public static string ApplySelectedChanges {
+            get {
+                return ResourceManager.GetString("ApplySelectedChanges", resourceCulture);
             }
         }
         
@@ -448,6 +502,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bot Players.
+        /// </summary>
+        public static string BotPlayers {
+            get {
+                return ResourceManager.GetString("BotPlayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -480,6 +543,357 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string CantConnectToTheDatabaseProbablyNotCreatedYet {
             get {
                 return ResourceManager.GetString("CantConnectToTheDatabaseProbablyNotCreatedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All kinds of changes.
+        /// </summary>
+        public static string CaptionAllKinds {
+            get {
+                return ResourceManager.GetString("CaptionAllKinds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All languages.
+        /// </summary>
+        public static string CaptionAllLanguages {
+            get {
+                return ResourceManager.GetString("CaptionAllLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string CaptionChange {
+            get {
+                return ResourceManager.GetString("CaptionChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customized.
+        /// </summary>
+        public static string CaptionChangeKind_Customized {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Customized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The configured text differs, because it was changed or its origin is unknown. It&apos;s only overwritten if you select it..
+        /// </summary>
+        public static string CaptionChangeKind_Customized_Description {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Customized_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string CaptionChangeKind_Missing {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A translation is available, but missing in the configuration, or it&apos;s just a copy of the English text..
+        /// </summary>
+        public static string CaptionChangeKind_Missing_Description {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Missing_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed.
+        /// </summary>
+        public static string CaptionChangeKind_Removed {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Removed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The built-in translation doesn&apos;t exist anymore, and the configured text is still the one which was originally taken over..
+        /// </summary>
+        public static string CaptionChangeKind_Removed_Description {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Removed_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated.
+        /// </summary>
+        public static string CaptionChangeKind_Updated {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The built-in text was changed, and the configured text is still the one which was originally taken over..
+        /// </summary>
+        public static string CaptionChangeKind_Updated_Description {
+            get {
+                return ResourceManager.GetString("CaptionChangeKind_Updated_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current text.
+        /// </summary>
+        public static string CaptionCurrentText {
+            get {
+                return ResourceManager.GetString("CaptionCurrentText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string CaptionLanguage {
+            get {
+                return ResourceManager.GetString("CaptionLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1} changes.
+        /// </summary>
+        public static string CaptionLanguageSummary {
+            get {
+                return ResourceManager.GetString("CaptionLanguageSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating the reference configuration (the data initialization is executed in memory).
+        /// </summary>
+        public static string CaptionLinkStep_CreatingReferenceConfiguration {
+            get {
+                return ResourceManager.GetString("CaptionLinkStep_CreatingReferenceConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linking the captions.
+        /// </summary>
+        public static string CaptionLinkStep_LinkingCaptions {
+            get {
+                return ResourceManager.GetString("CaptionLinkStep_LinkingCaptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading the configuration.
+        /// </summary>
+        public static string CaptionLinkStep_LoadingConfiguration {
+            get {
+                return ResourceManager.GetString("CaptionLinkStep_LoadingConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving the changes.
+        /// </summary>
+        public static string CaptionLinkStep_Saving {
+            get {
+                return ResourceManager.GetString("CaptionLinkStep_Saving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neutral (English).
+        /// </summary>
+        public static string CaptionNeutralText {
+            get {
+                return ResourceManager.GetString("CaptionNeutralText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object.
+        /// </summary>
+        public static string CaptionObject {
+            get {
+                return ResourceManager.GetString("CaptionObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property.
+        /// </summary>
+        public static string CaptionProperty {
+            get {
+                return ResourceManager.GetString("CaptionProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Captions.
+        /// </summary>
+        public static string Captions {
+            get {
+                return ResourceManager.GetString("Captions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking for built-in captions which are not linked yet ....
+        /// </summary>
+        public static string CaptionsCheckingLinkable {
+            get {
+                return ResourceManager.GetString("CaptionsCheckingLinkable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compares the captions of the configuration, e.g. the names of maps and monsters, with their built-in sources. New and updated translations are selected; customized texts are only changed if you select them..
+        /// </summary>
+        public static string CaptionsDescription {
+            get {
+                return ResourceManager.GetString("CaptionsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} built-in captions are not linked to their sources yet, so their translations can&apos;t be reviewed here: {1}. That&apos;s usually the case after an update of OpenMU added translations, e.g. for item names. Linking doesn&apos;t change any texts..
+        /// </summary>
+        public static string CaptionsLinkableDescription {
+            get {
+                return ResourceManager.GetString("CaptionsLinkableDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link new built-in captions.
+        /// </summary>
+        public static string CaptionsLinkableTitle {
+            get {
+                return ResourceManager.GetString("CaptionsLinkableTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Links the built-in captions which are not linked yet, for example after configuration updates added new objects. Linked captions and texts are not changed..
+        /// </summary>
+        public static string CaptionsLinkAgainDescription {
+            get {
+                return ResourceManager.GetString("CaptionsLinkAgainDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link captions again.
+        /// </summary>
+        public static string CaptionsLinkAgainTitle {
+            get {
+                return ResourceManager.GetString("CaptionsLinkAgainTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} captions are linked to their sources..
+        /// </summary>
+        public static string CaptionsLinkedCount {
+            get {
+                return ResourceManager.GetString("CaptionsLinkedCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elapsed time: {0}.
+        /// </summary>
+        public static string CaptionsLinkingElapsed {
+            get {
+                return ResourceManager.GetString("CaptionsLinkingElapsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linking can take a while, mainly because the data initialization is executed in memory. Please keep this page open..
+        /// </summary>
+        public static string CaptionsLinkingHint {
+            get {
+                return ResourceManager.GetString("CaptionsLinkingHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comparing the captions with their sources ....
+        /// </summary>
+        public static string CaptionsLoading {
+            get {
+                return ResourceManager.GetString("CaptionsLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review the changes below and apply the selected ones..
+        /// </summary>
+        public static string CaptionsNextStepReview {
+            get {
+                return ResourceManager.GetString("CaptionsNextStepReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The captions of this configuration don&apos;t know their sources yet. That&apos;s the case for configurations which were created with an older version of OpenMU. Linking is required once; afterwards this page shows which translations can be added or updated..
+        /// </summary>
+        public static string CaptionsNotLinkedDescription {
+            get {
+                return ResourceManager.GetString("CaptionsNotLinkedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link the built-in captions.
+        /// </summary>
+        public static string CaptionsNotLinkedTitle {
+            get {
+                return ResourceManager.GetString("CaptionsNotLinkedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New text.
+        /// </summary>
+        public static string CaptionSourceText {
+            get {
+                return ResourceManager.GetString("CaptionSourceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following captions differ from their sources. The recommended changes are already selected. Customized texts are only changed if you select them..
+        /// </summary>
+        public static string CaptionsReviewDescription {
+            get {
+                return ResourceManager.GetString("CaptionsReviewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review and apply the changes.
+        /// </summary>
+        public static string CaptionsReviewTitle {
+            get {
+                return ResourceManager.GetString("CaptionsReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sources of captions are not available in this version, so these captions can&apos;t be compared, e.g. {1}..
+        /// </summary>
+        public static string CaptionsUnresolvedSources {
+            get {
+                return ResourceManager.GetString("CaptionsUnresolvedSources", resourceCulture);
             }
         }
         
@@ -583,7 +997,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The game client shows the packages, names, prices and periods of its own cash shop script. Here you edit the server side of it: which packages are for sale, which items are delivered and which prices are charged. Packages and products are identified by the numbers of the client script, so keep them the same as in the script of the configured version; a different price isn't shown by the client..
+        ///   Looks up a localized string similar to The game client shows the packages, names, prices and periods of its own cash shop script. Here you edit the server side of it: which packages are for sale, which items are delivered and which prices are charged. Packages and products are identified by the numbers of the client script, so keep them the same as in the script of the configured version; a different price isn&apos;t shown by the client..
         /// </summary>
         public static string CashShopCatalogDescription {
             get {
@@ -601,7 +1015,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The account doesn't exist..
+        ///   Looks up a localized string similar to The account doesn&apos;t exist..
         /// </summary>
         public static string CashShopCoinsAccountNotFound {
             get {
@@ -781,7 +1195,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Product {0} is time-limited, which isn't supported yet..
+        ///   Looks up a localized string similar to Product {0} has an unsupported duration or requires a timed-effect delivery plugin..
         /// </summary>
         public static string CashShopIssueTimeLimited {
             get {
@@ -817,7 +1231,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The cash shop isn't configured. Install the configuration update 'Add cash shop' to add the catalog of the game client..
+        ///   Looks up a localized string similar to The cash shop isn&apos;t configured. Install the configuration update &apos;Add cash shop&apos; to add the catalog of the game client..
         /// </summary>
         public static string CashShopNotConfigured {
             get {
@@ -988,6 +1402,672 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Castle Siege.
+        /// </summary>
+        public static string CastleSiege {
+            get {
+                return ResourceManager.GetString("CastleSiege", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alive.
+        /// </summary>
+        public static string CastleSiegeAlive {
+            get {
+                return ResourceManager.GetString("CastleSiegeAlive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege management is available only when the admin panel and a game server run in the same process..
+        /// </summary>
+        public static string CastleSiegeAllInOneHint {
+            get {
+                return ResourceManager.GetString("CastleSiegeAllInOneHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change owner.
+        /// </summary>
+        public static string CastleSiegeChangeOwner {
+            get {
+                return ResourceManager.GetString("CastleSiegeChangeOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changing the owner starts a new tenure and clears the previous taxes, tribute, and Land of Trials access..
+        /// </summary>
+        public static string CastleSiegeChangeOwnerHint {
+            get {
+                return ResourceManager.GetString("CastleSiegeChangeOwnerHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chaos Machine tax.
+        /// </summary>
+        public static string CastleSiegeChaosMachineTax {
+            get {
+                return ResourceManager.GetString("CastleSiegeChaosMachineTax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chaos tax (%).
+        /// </summary>
+        public static string CastleSiegeChaosTaxPercent {
+            get {
+                return ResourceManager.GetString("CastleSiegeChaosTaxPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear tribute.
+        /// </summary>
+        public static string CastleSiegeClearTribute {
+            get {
+                return ResourceManager.GetString("CastleSiegeClearTribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanently clear all accumulated Castle Siege tribute?.
+        /// </summary>
+        public static string CastleSiegeConfirmClearTribute {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmClearTribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Castle Siege tribute?.
+        /// </summary>
+        public static string CastleSiegeConfirmClearTributeTitle {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmClearTributeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign the castle to &apos;{0}&apos;? This clears the previous taxes, tribute, and Land of Trials access..
+        /// </summary>
+        public static string CastleSiegeConfirmOwner {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Castle Siege owner?.
+        /// </summary>
+        public static string CastleSiegeConfirmOwnerTitle {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmOwnerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the Castle Siege registration for &apos;{0}&apos;?.
+        /// </summary>
+        public static string CastleSiegeConfirmRemoveRegistration {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmRemoveRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove guild registration?.
+        /// </summary>
+        public static string CastleSiegeConfirmRemoveRegistrationTitle {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmRemoveRegistrationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all registrations and selected guilds, despawn Castle Siege NPCs, and schedule Idle1?.
+        /// </summary>
+        public static string CastleSiegeConfirmReset {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Castle Siege cycle?.
+        /// </summary>
+        public static string CastleSiegeConfirmResetTitle {
+            get {
+                return ResourceManager.GetString("CastleSiegeConfirmResetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege registrations were cleared and Idle1 was scheduled..
+        /// </summary>
+        public static string CastleSiegeCycleReset {
+            get {
+                return ResourceManager.GetString("CastleSiegeCycleReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Defense.
+        /// </summary>
+        public static string CastleSiegeDefense {
+            get {
+                return ResourceManager.GetString("CastleSiegeDefense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Economy.
+        /// </summary>
+        public static string CastleSiegeEconomy {
+            get {
+                return ResourceManager.GetString("CastleSiegeEconomy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ends (UTC).
+        /// </summary>
+        public static string CastleSiegeEndsUtc {
+            get {
+                return ResourceManager.GetString("CastleSiegeEndsUtc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege management requires an all-in-one game-server deployment..
+        /// </summary>
+        public static string CastleSiegeErrorAllInOneDeploymentRequired {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorAllInOneDeploymentRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changing the owner requires a game-server context..
+        /// </summary>
+        public static string CastleSiegeErrorGameServerContextRequired {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorGameServerContextRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected game server is no longer available..
+        /// </summary>
+        public static string CastleSiegeErrorGameServerUnavailable {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorGameServerUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a guild name..
+        /// </summary>
+        public static string CastleSiegeErrorGuildNameRequired {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorGuildNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The guild was not found..
+        /// </summary>
+        public static string CastleSiegeErrorGuildNotFound {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorGuildNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected Castle Siege state is invalid..
+        /// </summary>
+        public static string CastleSiegeErrorInvalidState {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorInvalidState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege has not initialized on this game server..
+        /// </summary>
+        public static string CastleSiegeErrorNotInitialized {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorNotInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The owner cannot be changed while the siege battle is running..
+        /// </summary>
+        public static string CastleSiegeErrorOwnerChangeDuringBattle {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorOwnerChangeDuringBattle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Castle Siege plug-in is not active on this game server..
+        /// </summary>
+        public static string CastleSiegeErrorPlugInInactive {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorPlugInInactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guild registrations can only be changed during a registration state..
+        /// </summary>
+        public static string CastleSiegeErrorRegistrationChangeOutsideRegistration {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorRegistrationChangeOutsideRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The registration no longer exists..
+        /// </summary>
+        public static string CastleSiegeErrorRegistrationMissing {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorRegistrationMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Castle Siege cycle cannot be reset while siege preparation, battle, or result processing is active..
+        /// </summary>
+        public static string CastleSiegeErrorResetDuringActiveSiege {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorResetDuringActiveSiege", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taxes cannot be changed while the siege battle is running..
+        /// </summary>
+        public static string CastleSiegeErrorTaxChangeDuringBattle {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorTaxChangeDuringBattle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more tax values are outside the supported range..
+        /// </summary>
+        public static string CastleSiegeErrorTaxOutOfRange {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorTaxOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tribute cannot be cleared while the siege battle is running..
+        /// </summary>
+        public static string CastleSiegeErrorTributeClearDuringBattle {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorTributeClearDuringBattle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Castle Siege operation failed unexpectedly. Check the server log for details..
+        /// </summary>
+        public static string CastleSiegeErrorUnexpected {
+            get {
+                return ResourceManager.GetString("CastleSiegeErrorUnexpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force.
+        /// </summary>
+        public static string CastleSiegeForce {
+            get {
+                return ResourceManager.GetString("CastleSiegeForce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force state.
+        /// </summary>
+        public static string CastleSiegeForceState {
+            get {
+                return ResourceManager.GetString("CastleSiegeForceState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The transition is processed by the next Castle Siege timer tick..
+        /// </summary>
+        public static string CastleSiegeForceStateHint {
+            get {
+                return ResourceManager.GetString("CastleSiegeForceStateHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guild deleted.
+        /// </summary>
+        public static string CastleSiegeGuildDeleted {
+            get {
+                return ResourceManager.GetString("CastleSiegeGuildDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guild name.
+        /// </summary>
+        public static string CastleSiegeGuildName {
+            get {
+                return ResourceManager.GetString("CastleSiegeGuildName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HP.
+        /// </summary>
+        public static string CastleSiegeHitPoints {
+            get {
+                return ResourceManager.GetString("CastleSiegeHitPoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hunt fee.
+        /// </summary>
+        public static string CastleSiegeHuntFee {
+            get {
+                return ResourceManager.GetString("CastleSiegeHuntFee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance.
+        /// </summary>
+        public static string CastleSiegeInstance {
+            get {
+                return ResourceManager.GetString("CastleSiegeInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Land of Trials fee.
+        /// </summary>
+        public static string CastleSiegeLandOfTrialsFee {
+            get {
+                return ResourceManager.GetString("CastleSiegeLandOfTrialsFee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Life.
+        /// </summary>
+        public static string CastleSiegeLife {
+            get {
+                return ResourceManager.GetString("CastleSiegeLife", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The page shows a snapshot. Use Refresh to load current Castle Siege state..
+        /// </summary>
+        public static string CastleSiegeManualRefreshHint {
+            get {
+                return ResourceManager.GetString("CastleSiegeManualRefreshHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Marks.
+        /// </summary>
+        public static string CastleSiegeMarks {
+            get {
+                return ResourceManager.GetString("CastleSiegeMarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monster.
+        /// </summary>
+        public static string CastleSiegeMonster {
+            get {
+                return ResourceManager.GetString("CastleSiegeMonster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string CastleSiegeName {
+            get {
+                return ResourceManager.GetString("CastleSiegeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No guilds are registered..
+        /// </summary>
+        public static string CastleSiegeNoRegisteredGuilds {
+            get {
+                return ResourceManager.GetString("CastleSiegeNoRegisteredGuilds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NPC status.
+        /// </summary>
+        public static string CastleSiegeNpcStatus {
+            get {
+                return ResourceManager.GetString("CastleSiegeNpcStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner.
+        /// </summary>
+        public static string CastleSiegeOwner {
+            get {
+                return ResourceManager.GetString("CastleSiegeOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Castle Siege owner has been updated..
+        /// </summary>
+        public static string CastleSiegeOwnerUpdated {
+            get {
+                return ResourceManager.GetString("CastleSiegeOwnerUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persistent.
+        /// </summary>
+        public static string CastleSiegePersistent {
+            get {
+                return ResourceManager.GetString("CastleSiegePersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal store tax.
+        /// </summary>
+        public static string CastleSiegePersonalStoreTax {
+            get {
+                return ResourceManager.GetString("CastleSiegePersonalStoreTax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regeneration.
+        /// </summary>
+        public static string CastleSiegeRegeneration {
+            get {
+                return ResourceManager.GetString("CastleSiegeRegeneration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registered guilds.
+        /// </summary>
+        public static string CastleSiegeRegisteredGuilds {
+            get {
+                return ResourceManager.GetString("CastleSiegeRegisteredGuilds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration order.
+        /// </summary>
+        public static string CastleSiegeRegistrationOrder {
+            get {
+                return ResourceManager.GetString("CastleSiegeRegistrationOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The guild registration has been removed..
+        /// </summary>
+        public static string CastleSiegeRegistrationRemoved {
+            get {
+                return ResourceManager.GetString("CastleSiegeRegistrationRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registrations.
+        /// </summary>
+        public static string CastleSiegeRegistrations {
+            get {
+                return ResourceManager.GetString("CastleSiegeRegistrations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear registrations and reset to Idle1.
+        /// </summary>
+        public static string CastleSiegeResetCycle {
+            get {
+                return ResourceManager.GetString("CastleSiegeResetCycle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save taxes.
+        /// </summary>
+        public static string CastleSiegeSaveTaxes {
+            get {
+                return ResourceManager.GetString("CastleSiegeSaveTaxes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Started (UTC).
+        /// </summary>
+        public static string CastleSiegeStartedUtc {
+            get {
+                return ResourceManager.GetString("CastleSiegeStartedUtc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State.
+        /// </summary>
+        public static string CastleSiegeState {
+            get {
+                return ResourceManager.GetString("CastleSiegeState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State and owner.
+        /// </summary>
+        public static string CastleSiegeStateAndOwner {
+            get {
+                return ResourceManager.GetString("CastleSiegeStateAndOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Castle Siege state transition has been scheduled..
+        /// </summary>
+        public static string CastleSiegeStateScheduled {
+            get {
+                return ResourceManager.GetString("CastleSiegeStateScheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string CastleSiegeStatus {
+            get {
+                return ResourceManager.GetString("CastleSiegeStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store tax (%).
+        /// </summary>
+        public static string CastleSiegeStoreTaxPercent {
+            get {
+                return ResourceManager.GetString("CastleSiegeStoreTaxPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taxes and tribute.
+        /// </summary>
+        public static string CastleSiegeTaxesAndTribute {
+            get {
+                return ResourceManager.GetString("CastleSiegeTaxesAndTribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege taxes have been updated..
+        /// </summary>
+        public static string CastleSiegeTaxesUpdated {
+            get {
+                return ResourceManager.GetString("CastleSiegeTaxesUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tribute.
+        /// </summary>
+        public static string CastleSiegeTribute {
+            get {
+                return ResourceManager.GetString("CastleSiegeTribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Castle Siege tribute has been cleared..
+        /// </summary>
+        public static string CastleSiegeTributeCleared {
+            get {
+                return ResourceManager.GetString("CastleSiegeTributeCleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unoccupied.
+        /// </summary>
+        public static string CastleSiegeUnoccupied {
+            get {
+                return ResourceManager.GetString("CastleSiegeUnoccupied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The chance that this group is selected for a drop, from 0 to 100 %. A chance of 100 % means that the group drops always, in addition to the chance based groups..
         /// </summary>
         public static string ChanceHint {
@@ -1020,6 +2100,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string Character {
             get {
                 return ResourceManager.GetString("Character", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character Class.
+        /// </summary>
+        public static string CharacterClass {
+            get {
+                return ResourceManager.GetString("CharacterClass", resourceCulture);
             }
         }
         
@@ -1092,6 +2181,33 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string CommandUsage {
             get {
                 return ResourceManager.GetString("CommandUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string ConfigurationEntryName {
+            get {
+                return ResourceManager.GetString("ConfigurationEntryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm deletion.
+        /// </summary>
+        public static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to delete &apos;{0}&apos;. Are you sure?.
+        /// </summary>
+        public static string ConfirmDeleteEntry {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteEntry", resourceCulture);
             }
         }
         
@@ -1195,6 +2311,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not save the new entry: {0}.
+        /// </summary>
+        public static string CouldNotSaveEntry {
+            get {
+                return ResourceManager.GetString("CouldNotSaveEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string Create {
@@ -1222,11 +2347,56 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client.
+        /// </summary>
+        public static string CreateConnectServer_Client {
+            get {
+                return ResourceManager.GetString("CreateConnectServer_Client", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string CreateConnectServer_Description {
+            get {
+                return ResourceManager.GetString("CreateConnectServer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Listening Port.
+        /// </summary>
+        public static string CreateConnectServer_NetworkPort {
+            get {
+                return ResourceManager.GetString("CreateConnectServer_NetworkPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server ID.
+        /// </summary>
+        public static string CreateConnectServer_ServerId {
+            get {
+                return ResourceManager.GetString("CreateConnectServer_ServerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New object successfully created..
         /// </summary>
         public static string CreatedSuccessfully {
             get {
                 return ResourceManager.GetString("CreatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create {0}.
+        /// </summary>
+        public static string CreateEntry {
+            get {
+                return ResourceManager.GetString("CreateEntry", resourceCulture);
             }
         }
         
@@ -1245,6 +2415,69 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string CreateGameServer {
             get {
                 return ResourceManager.GetString("CreateGameServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client.
+        /// </summary>
+        public static string CreateGameServer_Client {
+            get {
+                return ResourceManager.GetString("CreateGameServer_Client", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string CreateGameServer_Description {
+            get {
+                return ResourceManager.GetString("CreateGameServer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experience Rate.
+        /// </summary>
+        public static string CreateGameServer_ExperienceRate {
+            get {
+                return ResourceManager.GetString("CreateGameServer_ExperienceRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Listening Port.
+        /// </summary>
+        public static string CreateGameServer_NetworkPort {
+            get {
+                return ResourceManager.GetString("CreateGameServer_NetworkPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable PvP.
+        /// </summary>
+        public static string CreateGameServer_PvpEnabled {
+            get {
+                return ResourceManager.GetString("CreateGameServer_PvpEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Configuration.
+        /// </summary>
+        public static string CreateGameServer_ServerConfiguration {
+            get {
+                return ResourceManager.GetString("CreateGameServer_ServerConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server ID.
+        /// </summary>
+        public static string CreateGameServer_ServerId {
+            get {
+                return ResourceManager.GetString("CreateGameServer_ServerId", resourceCulture);
             }
         }
         
@@ -1357,11 +2590,20 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You're about to delete the drop item group '{0}'. Are you sure?.
+        ///   Looks up a localized string similar to You&apos;re about to delete the drop item group &apos;{0}&apos;. Are you sure?.
         /// </summary>
         public static string DeleteDropItemGroupQuestion {
             get {
                 return ResourceManager.GetString("DeleteDropItemGroupQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted &apos;{0}&apos; successfully..
+        /// </summary>
+        public static string DeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("DeletedSuccessfully", resourceCulture);
             }
         }
         
@@ -1504,7 +2746,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The drop item group '{0}' can't be deleted, because it's still used by: {1}.
+        ///   Looks up a localized string similar to The drop item group &apos;{0}&apos; can&apos;t be deleted, because it&apos;s still used by: {1}.
         /// </summary>
         public static string DropItemGroupStillUsed {
             get {
@@ -1558,6 +2800,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate &apos;{0}&apos;.
+        /// </summary>
+        public static string DuplicateEntry {
+            get {
+                return ResourceManager.GetString("DuplicateEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
         public static string Edit {
@@ -1572,6 +2823,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string EditDetails {
             get {
                 return ResourceManager.GetString("EditDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to —.
+        /// </summary>
+        public static string EmptyValue {
+            get {
+                return ResourceManager.GetString("EmptyValue", resourceCulture);
             }
         }
         
@@ -1653,6 +2913,105 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string ExtensionPoint {
             get {
                 return ResourceManager.GetString("ExtensionPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Appears as.
+        /// </summary>
+        public static string ExternalLinkCharacter {
+            get {
+                return ResourceManager.GetString("ExternalLinkCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linked at.
+        /// </summary>
+        public static string ExternalLinkLinkedAt {
+            get {
+                return ResourceManager.GetString("ExternalLinkLinkedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code valid until {0}.
+        /// </summary>
+        public static string ExternalLinkPending {
+            get {
+                return ResourceManager.GetString("ExternalLinkPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The link was removed..
+        /// </summary>
+        public static string ExternalLinkRemoved {
+            get {
+                return ResourceManager.GetString("ExternalLinkRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Links.
+        /// </summary>
+        public static string ExternalLinks {
+            get {
+                return ResourceManager.GetString("ExternalLinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The account wasn&apos;t found..
+        /// </summary>
+        public static string ExternalLinksAccountNotFound {
+            get {
+                return ResourceManager.GetString("ExternalLinksAccountNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The users of external services, like Discord, which are linked to the account. Players link their account in the game with /discord link..
+        /// </summary>
+        public static string ExternalLinksDescription {
+            get {
+                return ResourceManager.GetString("ExternalLinksDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        public static string ExternalLinkService {
+            get {
+                return ResourceManager.GetString("ExternalLinkService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The account isn&apos;t linked..
+        /// </summary>
+        public static string ExternalLinksNone {
+            get {
+                return ResourceManager.GetString("ExternalLinksNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Links of {0}.
+        /// </summary>
+        public static string ExternalLinksOf {
+            get {
+                return ResourceManager.GetString("ExternalLinksOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string ExternalLinkUser {
+            get {
+                return ResourceManager.GetString("ExternalLinkUser", resourceCulture);
             }
         }
         
@@ -1891,6 +3250,33 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Guild.
+        /// </summary>
+        public static string Guild {
+            get {
+                return ResourceManager.GetString("Guild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The guild was not found. It may have been deleted..
+        /// </summary>
+        public static string GuildNotFound {
+            get {
+                return ResourceManager.GetString("GuildNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Guilds.
+        /// </summary>
+        public static string Guilds {
+            get {
+                return ResourceManager.GetString("Guilds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide entry form.
         /// </summary>
         public static string HideEntryForm {
@@ -1972,11 +3358,29 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installed on {0}..
+        /// </summary>
+        public static string InstalledOn {
+            get {
+                return ResourceManager.GetString("InstalledOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installing, please wait ....
         /// </summary>
         public static string InstallingPleaseWait {
             get {
                 return ResourceManager.GetString("InstallingPleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; must have a Clone method that takes &apos;{1}&apos; and returns &apos;{0}&apos;..
+        /// </summary>
+        public static string InvalidCloneMethod {
+            get {
+                return ResourceManager.GetString("InvalidCloneMethod", resourceCulture);
             }
         }
         
@@ -2152,6 +3556,51 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Level.
+        /// </summary>
+        public static string Level {
+            get {
+                return ResourceManager.GetString("Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Link built-in captions.
+        /// </summary>
+        public static string LinkBuiltInCaptions {
+            get {
+                return ResourceManager.GetString("LinkBuiltInCaptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configurations which were created with an older version don&apos;t know the sources of their built-in captions yet, so they can&apos;t receive new translations. Linking executes the data initialization in memory and links the matching captions to their sources. No texts are changed..
+        /// </summary>
+        public static string LinkBuiltInCaptionsDescription {
+            get {
+                return ResourceManager.GetString("LinkBuiltInCaptionsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} captions have been linked to their sources. {1} captions were skipped because their neutral text was customized..
+        /// </summary>
+        public static string LinkedBuiltInCaptions {
+            get {
+                return ResourceManager.GetString("LinkedBuiltInCaptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linking built-in captions ....
+        /// </summary>
+        public static string LinkingBuiltInCaptions {
+            get {
+                return ResourceManager.GetString("LinkingBuiltInCaptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Live.
         /// </summary>
         public static string Live {
@@ -2224,6 +3673,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error reading log file: {0}.
+        /// </summary>
+        public static string LogReadError {
+            get {
+                return ResourceManager.GetString("LogReadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logs.
         /// </summary>
         public static string Logs {
@@ -2278,7 +3736,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drop groups which apply to monsters on the assigned maps. Groups which are not assigned to any map don't drop..
+        ///   Looks up a localized string similar to Drop groups which apply to monsters on the assigned maps. Groups which are not assigned to any map don&apos;t drop..
         /// </summary>
         public static string MapDropItemGroupsDescription {
             get {
@@ -2292,6 +3750,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string MapEditor {
             get {
                 return ResourceManager.GetString("MapEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master Level.
+        /// </summary>
+        public static string MasterLevel {
+            get {
+                return ResourceManager.GetString("MasterLevel", resourceCulture);
             }
         }
         
@@ -2359,6 +3826,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Members.
+        /// </summary>
+        public static string Members {
+            get {
+                return ResourceManager.GetString("Members", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchants.
         /// </summary>
         public static string Merchants {
@@ -2404,7 +3880,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mini game '{0}'.
+        ///   Looks up a localized string similar to Mini game &apos;{0}&apos;.
         /// </summary>
         public static string MiniGameUsage {
             get {
@@ -2593,15 +4069,6 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installed on {0}..
-        /// </summary>
-        public static string InstalledOn {
-            get {
-                return ResourceManager.GetString("InstalledOn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No API key has been created yet..
         /// </summary>
         public static string NoApiKeys {
@@ -2737,6 +4204,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notice.
+        /// </summary>
+        public static string Notice {
+            get {
+                return ResourceManager.GetString("Notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum item drops.
         /// </summary>
         public static string NumberOfMaximumItemDrops {
@@ -2746,7 +4222,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The maximum number of items which this monster drops when it's killed..
+        ///   Looks up a localized string similar to The maximum number of items which this monster drops when it&apos;s killed..
         /// </summary>
         public static string NumberOfMaximumItemDropsHint {
             get {
@@ -2769,6 +4245,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string ObserveAccountHint {
             get {
                 return ResourceManager.GetString("ObserveAccountHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off-level Players.
+        /// </summary>
+        public static string OffLevelPlayers {
+            get {
+                return ResourceManager.GetString("OffLevelPlayers", resourceCulture);
             }
         }
         
@@ -2818,123 +4303,6 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Guilds.
-        /// </summary>
-        public static string Guilds {
-            get {
-                return ResourceManager.GetString("Guilds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Guild.
-        /// </summary>
-        public static string Guild {
-            get {
-                return ResourceManager.GetString("Guild", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Alliance.
-        /// </summary>
-        public static string Alliance {
-            get {
-                return ResourceManager.GetString("Alliance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Members.
-        /// </summary>
-        public static string Members {
-            get {
-                return ResourceManager.GetString("Members", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Score.
-        /// </summary>
-        public static string Score {
-            get {
-                return ResourceManager.GetString("Score", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notice.
-        /// </summary>
-        public static string Notice {
-            get {
-                return ResourceManager.GetString("Notice", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Position.
-        /// </summary>
-        public static string Position {
-            get {
-                return ResourceManager.GetString("Position", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Character Class.
-        /// </summary>
-        public static string CharacterClass {
-            get {
-                return ResourceManager.GetString("CharacterClass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Level.
-        /// </summary>
-        public static string Level {
-            get {
-                return ResourceManager.GetString("Level", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Master Level.
-        /// </summary>
-        public static string MasterLevel {
-            get {
-                return ResourceManager.GetString("MasterLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Account.
-        /// </summary>
-        public static string Account {
-            get {
-                return ResourceManager.GetString("Account", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The guild was not found. It may have been deleted..
-        /// </summary>
-        public static string GuildNotFound {
-            get {
-                return ResourceManager.GetString("GuildNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Players.
-        /// </summary>
-        public static string Players {
-            get {
-                return ResourceManager.GetString("Players", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Code.
         /// </summary>
         public static string PacketCode {
@@ -2958,6 +4326,24 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string PacketMessage {
             get {
                 return ResourceManager.GetString("PacketMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Found.
+        /// </summary>
+        public static string PageNotFound {
+            get {
+                return ResourceManager.GetString("PageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, the content you are looking for does not exist..
+        /// </summary>
+        public static string PageNotFoundDescription {
+            get {
+                return ResourceManager.GetString("PageNotFoundDescription", resourceCulture);
             }
         }
         
@@ -3003,6 +4389,33 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string ParameterValidValues {
             get {
                 return ResourceManager.GetString("ParameterValidValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Party.
+        /// </summary>
+        public static string Party {
+            get {
+                return ResourceManager.GetString("Party", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Party of {0}: {1} members.
+        /// </summary>
+        public static string PartyBadgeTitle {
+            get {
+                return ResourceManager.GetString("PartyBadgeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Party of {0}: {1} members.
+        /// </summary>
+        public static string PartySummary {
+            get {
+                return ResourceManager.GetString("PartySummary", resourceCulture);
             }
         }
         
@@ -3061,6 +4474,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Players.
+        /// </summary>
+        public static string Players {
+            get {
+                return ResourceManager.GetString("Players", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please, first install the database updates on the setup page..
         /// </summary>
         public static string PleaseFirstInstallTheDatabaseUpdatesOnTheSetupPage {
@@ -3106,6 +4528,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        public static string Position {
+            get {
+                return ResourceManager.GetString("Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Possible items.
         /// </summary>
         public static string PossibleItems {
@@ -3142,7 +4573,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quest '{0}'.
+        ///   Looks up a localized string similar to Quest &apos;{0}&apos;.
         /// </summary>
         public static string QuestUsage {
             get {
@@ -3192,6 +4623,78 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string RawData {
             get {
                 return ResourceManager.GetString("RawData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rejoin. Please retry or reload the page..
+        /// </summary>
+        public static string ReconnectFailed {
+            get {
+                return ResourceManager.GetString("ReconnectFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejoining the server....
+        /// </summary>
+        public static string ReconnectJoining {
+            get {
+                return ResourceManager.GetString("ReconnectJoining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The session has been paused by the server..
+        /// </summary>
+        public static string ReconnectPaused {
+            get {
+                return ResourceManager.GetString("ReconnectPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string ReconnectResume {
+            get {
+                return ResourceManager.GetString("ReconnectResume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to resume the session. Please reload the page..
+        /// </summary>
+        public static string ReconnectResumeFailed {
+            get {
+                return ResourceManager.GetString("ReconnectResumeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        public static string ReconnectRetry {
+            get {
+                return ResourceManager.GetString("ReconnectRetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  seconds..
+        /// </summary>
+        public static string ReconnectRetryAfter {
+            get {
+                return ResourceManager.GetString("ReconnectRetryAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejoin failed... trying again in .
+        /// </summary>
+        public static string ReconnectRetryBefore {
+            get {
+                return ResourceManager.GetString("ReconnectRetryBefore", resourceCulture);
             }
         }
         
@@ -3367,11 +4870,47 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrator.
+        /// </summary>
+        public static string RoleAdministrator {
+            get {
+                return ResourceManager.GetString("RoleAdministrator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cash shop coins only.
+        /// </summary>
+        public static string RoleCashShop {
+            get {
+                return ResourceManager.GetString("RoleCashShop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operator.
+        /// </summary>
+        public static string RoleOperator {
+            get {
+                return ResourceManager.GetString("RoleOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roles.
         /// </summary>
         public static string Roles {
             get {
                 return ResourceManager.GetString("Roles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read only.
+        /// </summary>
+        public static string RoleViewer {
+            get {
+                return ResourceManager.GetString("RoleViewer", resourceCulture);
             }
         }
         
@@ -3421,6 +4960,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Score.
+        /// </summary>
+        public static string Score {
+            get {
+                return ResourceManager.GetString("Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scroll to Bottom.
         /// </summary>
         public static string ScrollToBottom {
@@ -3457,6 +5005,15 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a packet to see its content..
         /// </summary>
         public static string SelectAPacket {
@@ -3471,6 +5028,24 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string SelectedFileIsNoBackup {
             get {
                 return ResourceManager.GetString("SelectedFileIsNoBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select none.
+        /// </summary>
+        public static string SelectNone {
+            get {
+                return ResourceManager.GetString("SelectNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select recommended.
+        /// </summary>
+        public static string SelectRecommended {
+            get {
+                return ResourceManager.GetString("SelectRecommended", resourceCulture);
             }
         }
         
@@ -4119,1271 +5694,6 @@ namespace MUnique.OpenMU.Web.AdminPanel.Properties {
         public static string YesCreateTestAccounts {
             get {
                 return ResourceManager.GetString("YesCreateTestAccounts", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege.
-        /// </summary>
-        public static string CastleSiege {
-            get {
-                return ResourceManager.GetString("CastleSiege", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege management is available only when the admin panel and a game server run in the same process..
-        /// </summary>
-        public static string CastleSiegeAllInOneHint {
-            get {
-                return ResourceManager.GetString("CastleSiegeAllInOneHint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The page shows a snapshot. Use Refresh to load current Castle Siege state..
-        /// </summary>
-        public static string CastleSiegeManualRefreshHint {
-            get {
-                return ResourceManager.GetString("CastleSiegeManualRefreshHint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Status.
-        /// </summary>
-        public static string CastleSiegeStatus {
-            get {
-                return ResourceManager.GetString("CastleSiegeStatus", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to State.
-        /// </summary>
-        public static string CastleSiegeState {
-            get {
-                return ResourceManager.GetString("CastleSiegeState", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Started (UTC).
-        /// </summary>
-        public static string CastleSiegeStartedUtc {
-            get {
-                return ResourceManager.GetString("CastleSiegeStartedUtc", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Ends (UTC).
-        /// </summary>
-        public static string CastleSiegeEndsUtc {
-            get {
-                return ResourceManager.GetString("CastleSiegeEndsUtc", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Owner.
-        /// </summary>
-        public static string CastleSiegeOwner {
-            get {
-                return ResourceManager.GetString("CastleSiegeOwner", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Unoccupied.
-        /// </summary>
-        public static string CastleSiegeUnoccupied {
-            get {
-                return ResourceManager.GetString("CastleSiegeUnoccupied", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Registrations.
-        /// </summary>
-        public static string CastleSiegeRegistrations {
-            get {
-                return ResourceManager.GetString("CastleSiegeRegistrations", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Economy.
-        /// </summary>
-        public static string CastleSiegeEconomy {
-            get {
-                return ResourceManager.GetString("CastleSiegeEconomy", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Chaos Machine tax.
-        /// </summary>
-        public static string CastleSiegeChaosMachineTax {
-            get {
-                return ResourceManager.GetString("CastleSiegeChaosMachineTax", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Personal store tax.
-        /// </summary>
-        public static string CastleSiegePersonalStoreTax {
-            get {
-                return ResourceManager.GetString("CastleSiegePersonalStoreTax", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Land of Trials fee.
-        /// </summary>
-        public static string CastleSiegeLandOfTrialsFee {
-            get {
-                return ResourceManager.GetString("CastleSiegeLandOfTrialsFee", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Tribute.
-        /// </summary>
-        public static string CastleSiegeTribute {
-            get {
-                return ResourceManager.GetString("CastleSiegeTribute", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to State and owner.
-        /// </summary>
-        public static string CastleSiegeStateAndOwner {
-            get {
-                return ResourceManager.GetString("CastleSiegeStateAndOwner", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Force state.
-        /// </summary>
-        public static string CastleSiegeForceState {
-            get {
-                return ResourceManager.GetString("CastleSiegeForceState", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Force.
-        /// </summary>
-        public static string CastleSiegeForce {
-            get {
-                return ResourceManager.GetString("CastleSiegeForce", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The transition is processed by the next Castle Siege timer tick..
-        /// </summary>
-        public static string CastleSiegeForceStateHint {
-            get {
-                return ResourceManager.GetString("CastleSiegeForceStateHint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Change owner.
-        /// </summary>
-        public static string CastleSiegeChangeOwner {
-            get {
-                return ResourceManager.GetString("CastleSiegeChangeOwner", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Guild name.
-        /// </summary>
-        public static string CastleSiegeGuildName {
-            get {
-                return ResourceManager.GetString("CastleSiegeGuildName", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Changing the owner starts a new tenure and clears the previous taxes, tribute, and Land of Trials access..
-        /// </summary>
-        public static string CastleSiegeChangeOwnerHint {
-            get {
-                return ResourceManager.GetString("CastleSiegeChangeOwnerHint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Clear registrations and reset to Idle1.
-        /// </summary>
-        public static string CastleSiegeResetCycle {
-            get {
-                return ResourceManager.GetString("CastleSiegeResetCycle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Taxes and tribute.
-        /// </summary>
-        public static string CastleSiegeTaxesAndTribute {
-            get {
-                return ResourceManager.GetString("CastleSiegeTaxesAndTribute", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Chaos tax (%).
-        /// </summary>
-        public static string CastleSiegeChaosTaxPercent {
-            get {
-                return ResourceManager.GetString("CastleSiegeChaosTaxPercent", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Store tax (%).
-        /// </summary>
-        public static string CastleSiegeStoreTaxPercent {
-            get {
-                return ResourceManager.GetString("CastleSiegeStoreTaxPercent", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Hunt fee.
-        /// </summary>
-        public static string CastleSiegeHuntFee {
-            get {
-                return ResourceManager.GetString("CastleSiegeHuntFee", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Save taxes.
-        /// </summary>
-        public static string CastleSiegeSaveTaxes {
-            get {
-                return ResourceManager.GetString("CastleSiegeSaveTaxes", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Clear tribute.
-        /// </summary>
-        public static string CastleSiegeClearTribute {
-            get {
-                return ResourceManager.GetString("CastleSiegeClearTribute", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Registered guilds.
-        /// </summary>
-        public static string CastleSiegeRegisteredGuilds {
-            get {
-                return ResourceManager.GetString("CastleSiegeRegisteredGuilds", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to No guilds are registered..
-        /// </summary>
-        public static string CastleSiegeNoRegisteredGuilds {
-            get {
-                return ResourceManager.GetString("CastleSiegeNoRegisteredGuilds", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string CastleSiegeName {
-            get {
-                return ResourceManager.GetString("CastleSiegeName", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Guild deleted.
-        /// </summary>
-        public static string CastleSiegeGuildDeleted {
-            get {
-                return ResourceManager.GetString("CastleSiegeGuildDeleted", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Marks.
-        /// </summary>
-        public static string CastleSiegeMarks {
-            get {
-                return ResourceManager.GetString("CastleSiegeMarks", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Registration order.
-        /// </summary>
-        public static string CastleSiegeRegistrationOrder {
-            get {
-                return ResourceManager.GetString("CastleSiegeRegistrationOrder", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to NPC status.
-        /// </summary>
-        public static string CastleSiegeNpcStatus {
-            get {
-                return ResourceManager.GetString("CastleSiegeNpcStatus", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Monster.
-        /// </summary>
-        public static string CastleSiegeMonster {
-            get {
-                return ResourceManager.GetString("CastleSiegeMonster", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Instance.
-        /// </summary>
-        public static string CastleSiegeInstance {
-            get {
-                return ResourceManager.GetString("CastleSiegeInstance", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Defense.
-        /// </summary>
-        public static string CastleSiegeDefense {
-            get {
-                return ResourceManager.GetString("CastleSiegeDefense", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Regeneration.
-        /// </summary>
-        public static string CastleSiegeRegeneration {
-            get {
-                return ResourceManager.GetString("CastleSiegeRegeneration", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Life.
-        /// </summary>
-        public static string CastleSiegeLife {
-            get {
-                return ResourceManager.GetString("CastleSiegeLife", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to HP.
-        /// </summary>
-        public static string CastleSiegeHitPoints {
-            get {
-                return ResourceManager.GetString("CastleSiegeHitPoints", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Alive.
-        /// </summary>
-        public static string CastleSiegeAlive {
-            get {
-                return ResourceManager.GetString("CastleSiegeAlive", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Persistent.
-        /// </summary>
-        public static string CastleSiegePersistent {
-            get {
-                return ResourceManager.GetString("CastleSiegePersistent", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Change Castle Siege owner?.
-        /// </summary>
-        public static string CastleSiegeConfirmOwnerTitle {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmOwnerTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Assign the castle to '{0}'? This clears the previous taxes, tribute, and Land of Trials access..
-        /// </summary>
-        public static string CastleSiegeConfirmOwner {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmOwner", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Reset Castle Siege cycle?.
-        /// </summary>
-        public static string CastleSiegeConfirmResetTitle {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmResetTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Clear all registrations and selected guilds, despawn Castle Siege NPCs, and schedule Idle1?.
-        /// </summary>
-        public static string CastleSiegeConfirmReset {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmReset", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Clear Castle Siege tribute?.
-        /// </summary>
-        public static string CastleSiegeConfirmClearTributeTitle {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmClearTributeTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Permanently clear all accumulated Castle Siege tribute?.
-        /// </summary>
-        public static string CastleSiegeConfirmClearTribute {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmClearTribute", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Remove guild registration?.
-        /// </summary>
-        public static string CastleSiegeConfirmRemoveRegistrationTitle {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmRemoveRegistrationTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Remove the Castle Siege registration for '{0}'?.
-        /// </summary>
-        public static string CastleSiegeConfirmRemoveRegistration {
-            get {
-                return ResourceManager.GetString("CastleSiegeConfirmRemoveRegistration", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Castle Siege state transition has been scheduled..
-        /// </summary>
-        public static string CastleSiegeStateScheduled {
-            get {
-                return ResourceManager.GetString("CastleSiegeStateScheduled", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Castle Siege owner has been updated..
-        /// </summary>
-        public static string CastleSiegeOwnerUpdated {
-            get {
-                return ResourceManager.GetString("CastleSiegeOwnerUpdated", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege registrations were cleared and Idle1 was scheduled..
-        /// </summary>
-        public static string CastleSiegeCycleReset {
-            get {
-                return ResourceManager.GetString("CastleSiegeCycleReset", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege taxes have been updated..
-        /// </summary>
-        public static string CastleSiegeTaxesUpdated {
-            get {
-                return ResourceManager.GetString("CastleSiegeTaxesUpdated", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege tribute has been cleared..
-        /// </summary>
-        public static string CastleSiegeTributeCleared {
-            get {
-                return ResourceManager.GetString("CastleSiegeTributeCleared", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The guild registration has been removed..
-        /// </summary>
-        public static string CastleSiegeRegistrationRemoved {
-            get {
-                return ResourceManager.GetString("CastleSiegeRegistrationRemoved", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The selected Castle Siege state is invalid..
-        /// </summary>
-        public static string CastleSiegeErrorInvalidState {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorInvalidState", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege has not initialized on this game server..
-        /// </summary>
-        public static string CastleSiegeErrorNotInitialized {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorNotInitialized", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a guild name..
-        /// </summary>
-        public static string CastleSiegeErrorGuildNameRequired {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorGuildNameRequired", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Changing the owner requires a game-server context..
-        /// </summary>
-        public static string CastleSiegeErrorGameServerContextRequired {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorGameServerContextRequired", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The guild was not found..
-        /// </summary>
-        public static string CastleSiegeErrorGuildNotFound {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorGuildNotFound", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The owner cannot be changed while the siege battle is running..
-        /// </summary>
-        public static string CastleSiegeErrorOwnerChangeDuringBattle {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorOwnerChangeDuringBattle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Castle Siege cycle cannot be reset while siege preparation, battle, or result processing is active..
-        /// </summary>
-        public static string CastleSiegeErrorResetDuringActiveSiege {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorResetDuringActiveSiege", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to One or more tax values are outside the supported range..
-        /// </summary>
-        public static string CastleSiegeErrorTaxOutOfRange {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorTaxOutOfRange", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Taxes cannot be changed while the siege battle is running..
-        /// </summary>
-        public static string CastleSiegeErrorTaxChangeDuringBattle {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorTaxChangeDuringBattle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Tribute cannot be cleared while the siege battle is running..
-        /// </summary>
-        public static string CastleSiegeErrorTributeClearDuringBattle {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorTributeClearDuringBattle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Guild registrations can only be changed during a registration state..
-        /// </summary>
-        public static string CastleSiegeErrorRegistrationChangeOutsideRegistration {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorRegistrationChangeOutsideRegistration", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The registration no longer exists..
-        /// </summary>
-        public static string CastleSiegeErrorRegistrationMissing {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorRegistrationMissing", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The selected game server is no longer available..
-        /// </summary>
-        public static string CastleSiegeErrorGameServerUnavailable {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorGameServerUnavailable", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Castle Siege management requires an all-in-one game-server deployment..
-        /// </summary>
-        public static string CastleSiegeErrorAllInOneDeploymentRequired {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorAllInOneDeploymentRequired", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Castle Siege plug-in is not active on this game server..
-        /// </summary>
-        public static string CastleSiegeErrorPlugInInactive {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorPlugInInactive", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Castle Siege operation failed unexpectedly. Check the server log for details..
-        /// </summary>
-        public static string CastleSiegeErrorUnexpected {
-            get {
-                return ResourceManager.GetString("CastleSiegeErrorUnexpected", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Off-level Players.
-        /// </summary>
-        public static string OffLevelPlayers {
-            get {
-                return ResourceManager.GetString("OffLevelPlayers", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Bot Players.
-        /// </summary>
-        public static string BotPlayers {
-            get {
-                return ResourceManager.GetString("BotPlayers", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Party.
-        /// </summary>
-        public static string Party {
-            get {
-                return ResourceManager.GetString("Party", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to —.
-        /// </summary>
-        public static string EmptyValue {
-            get {
-                return ResourceManager.GetString("EmptyValue", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Party of {0}: {1} members.
-        /// </summary>
-        public static string PartyBadgeTitle {
-            get {
-                return ResourceManager.GetString("PartyBadgeTitle", resourceCulture);
-            }
-        }
-        /// <summary>Gets the localized CreateGameServer_ServerId text.</summary>
-        public static string CreateGameServer_ServerId => ResourceManager.GetString("CreateGameServer_ServerId", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_Description text.</summary>
-        public static string CreateGameServer_Description => ResourceManager.GetString("CreateGameServer_Description", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_ExperienceRate text.</summary>
-        public static string CreateGameServer_ExperienceRate => ResourceManager.GetString("CreateGameServer_ExperienceRate", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_PvpEnabled text.</summary>
-        public static string CreateGameServer_PvpEnabled => ResourceManager.GetString("CreateGameServer_PvpEnabled", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_ServerConfiguration text.</summary>
-        public static string CreateGameServer_ServerConfiguration => ResourceManager.GetString("CreateGameServer_ServerConfiguration", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_Client text.</summary>
-        public static string CreateGameServer_Client => ResourceManager.GetString("CreateGameServer_Client", resourceCulture);
-
-        /// <summary>Gets the localized CreateGameServer_NetworkPort text.</summary>
-        public static string CreateGameServer_NetworkPort => ResourceManager.GetString("CreateGameServer_NetworkPort", resourceCulture);
-
-        /// <summary>Gets the localized CreateConnectServer_ServerId text.</summary>
-        public static string CreateConnectServer_ServerId => ResourceManager.GetString("CreateConnectServer_ServerId", resourceCulture);
-
-        /// <summary>Gets the localized CreateConnectServer_Description text.</summary>
-        public static string CreateConnectServer_Description => ResourceManager.GetString("CreateConnectServer_Description", resourceCulture);
-
-        /// <summary>Gets the localized CreateConnectServer_Client text.</summary>
-        public static string CreateConnectServer_Client => ResourceManager.GetString("CreateConnectServer_Client", resourceCulture);
-
-        /// <summary>Gets the localized CreateConnectServer_NetworkPort text.</summary>
-        public static string CreateConnectServer_NetworkPort => ResourceManager.GetString("CreateConnectServer_NetworkPort", resourceCulture);
-
-        /// <summary>Gets the localized PageNotFound text.</summary>
-        public static string PageNotFound => ResourceManager.GetString("PageNotFound", resourceCulture);
-
-        /// <summary>Gets the localized PageNotFoundDescription text.</summary>
-        public static string PageNotFoundDescription => ResourceManager.GetString("PageNotFoundDescription", resourceCulture);
-
-        /// <summary>Gets the localized PartySummary text.</summary>
-        public static string PartySummary => ResourceManager.GetString("PartySummary", resourceCulture);
-
-        /// <summary>Gets the localized DeletedSuccessfully text.</summary>
-        public static string DeletedSuccessfully => ResourceManager.GetString("DeletedSuccessfully", resourceCulture);
-
-        /// <summary>Gets the localized InvalidCloneMethod text.</summary>
-        public static string InvalidCloneMethod => ResourceManager.GetString("InvalidCloneMethod", resourceCulture);
-
-        /// <summary>Gets the localized ConfigurationEntryName text.</summary>
-        public static string ConfigurationEntryName => ResourceManager.GetString("ConfigurationEntryName", resourceCulture);
-
-        /// <summary>Gets the localized LogReadError text.</summary>
-        public static string LogReadError => ResourceManager.GetString("LogReadError", resourceCulture);
-
-        /// <summary>Gets the localized CouldNotSaveEntry text.</summary>
-        public static string CouldNotSaveEntry => ResourceManager.GetString("CouldNotSaveEntry", resourceCulture);
-
-        /// <summary>Gets the localized ConfirmDelete text.</summary>
-        public static string ConfirmDelete => ResourceManager.GetString("ConfirmDelete", resourceCulture);
-
-        /// <summary>Gets the localized ConfirmDeleteEntry text.</summary>
-        public static string ConfirmDeleteEntry => ResourceManager.GetString("ConfirmDeleteEntry", resourceCulture);
-
-        /// <summary>Gets the localized CreateEntry text.</summary>
-        public static string CreateEntry => ResourceManager.GetString("CreateEntry", resourceCulture);
-
-        /// <summary>Gets the localized DuplicateEntry text.</summary>
-        public static string DuplicateEntry => ResourceManager.GetString("DuplicateEntry", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectJoining text.</summary>
-        public static string ReconnectJoining => ResourceManager.GetString("ReconnectJoining", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectRetryBefore text.</summary>
-        public static string ReconnectRetryBefore => ResourceManager.GetString("ReconnectRetryBefore", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectRetryAfter text.</summary>
-        public static string ReconnectRetryAfter => ResourceManager.GetString("ReconnectRetryAfter", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectFailed text.</summary>
-        public static string ReconnectFailed => ResourceManager.GetString("ReconnectFailed", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectRetry text.</summary>
-        public static string ReconnectRetry => ResourceManager.GetString("ReconnectRetry", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectPaused text.</summary>
-        public static string ReconnectPaused => ResourceManager.GetString("ReconnectPaused", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectResume text.</summary>
-        public static string ReconnectResume => ResourceManager.GetString("ReconnectResume", resourceCulture);
-
-        /// <summary>Gets the localized ReconnectResumeFailed text.</summary>
-        public static string ReconnectResumeFailed => ResourceManager.GetString("ReconnectResumeFailed", resourceCulture);
-
-        /// <summary>Gets the localized RoleAdministrator text.</summary>
-        public static string RoleAdministrator => ResourceManager.GetString("RoleAdministrator", resourceCulture);
-
-        /// <summary>Gets the localized RoleOperator text.</summary>
-        public static string RoleOperator => ResourceManager.GetString("RoleOperator", resourceCulture);
-
-        /// <summary>Gets the localized RoleViewer text.</summary>
-        public static string RoleViewer => ResourceManager.GetString("RoleViewer", resourceCulture);
-
-        /// <summary>Gets the localized RoleCashShop text.</summary>
-        public static string RoleCashShop => ResourceManager.GetString("RoleCashShop", resourceCulture);
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Captions.
-        /// </summary>
-        public static string Captions {
-            get {
-                return ResourceManager.GetString("Captions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compares the captions of the configuration, e.g. the names of maps and monsters, with their built-in sources. New and updated translations are selected; customized texts are only changed if you select them..
-        /// </summary>
-        public static string CaptionsDescription {
-            get {
-                return ResourceManager.GetString("CaptionsDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All available localizations are in place..
-        /// </summary>
-        public static string AllLocalizationsInPlace {
-            get {
-                return ResourceManager.GetString("AllLocalizationsInPlace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Comparing the captions with their sources ....
-        /// </summary>
-        public static string CaptionsLoading {
-            get {
-                return ResourceManager.GetString("CaptionsLoading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: {1} changes.
-        /// </summary>
-        public static string CaptionLanguageSummary {
-            get {
-                return ResourceManager.GetString("CaptionLanguageSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All languages.
-        /// </summary>
-        public static string CaptionAllLanguages {
-            get {
-                return ResourceManager.GetString("CaptionAllLanguages", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All kinds of changes.
-        /// </summary>
-        public static string CaptionAllKinds {
-            get {
-                return ResourceManager.GetString("CaptionAllKinds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Neutral (English).
-        /// </summary>
-        public static string CaptionNeutralText {
-            get {
-                return ResourceManager.GetString("CaptionNeutralText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Object.
-        /// </summary>
-        public static string CaptionObject {
-            get {
-                return ResourceManager.GetString("CaptionObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Property.
-        /// </summary>
-        public static string CaptionProperty {
-            get {
-                return ResourceManager.GetString("CaptionProperty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language.
-        /// </summary>
-        public static string CaptionLanguage {
-            get {
-                return ResourceManager.GetString("CaptionLanguage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change.
-        /// </summary>
-        public static string CaptionChange {
-            get {
-                return ResourceManager.GetString("CaptionChange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current text.
-        /// </summary>
-        public static string CaptionCurrentText {
-            get {
-                return ResourceManager.GetString("CaptionCurrentText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New text.
-        /// </summary>
-        public static string CaptionSourceText {
-            get {
-                return ResourceManager.GetString("CaptionSourceText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New.
-        /// </summary>
-        public static string CaptionChangeKind_Missing {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Missing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updated.
-        /// </summary>
-        public static string CaptionChangeKind_Updated {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Updated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Removed.
-        /// </summary>
-        public static string CaptionChangeKind_Removed {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Removed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Customized.
-        /// </summary>
-        public static string CaptionChangeKind_Customized {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Customized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select recommended.
-        /// </summary>
-        public static string SelectRecommended {
-            get {
-                return ResourceManager.GetString("SelectRecommended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select all.
-        /// </summary>
-        public static string SelectAll {
-            get {
-                return ResourceManager.GetString("SelectAll", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Select none.
-        /// </summary>
-        public static string SelectNone {
-            get {
-                return ResourceManager.GetString("SelectNone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Apply selected changes.
-        /// </summary>
-        public static string ApplySelectedChanges {
-            get {
-                return ResourceManager.GetString("ApplySelectedChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Applying changes ....
-        /// </summary>
-        public static string ApplyingChanges {
-            get {
-                return ResourceManager.GetString("ApplyingChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} changes have been applied..
-        /// </summary>
-        public static string AppliedCaptionChanges {
-            get {
-                return ResourceManager.GetString("AppliedCaptionChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Link built-in captions.
-        /// </summary>
-        public static string LinkBuiltInCaptions {
-            get {
-                return ResourceManager.GetString("LinkBuiltInCaptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configurations which were created with an older version don't know the sources of their built-in captions yet, so they can't receive new translations. Linking executes the data initialization in memory and links the matching captions to their sources. No texts are changed..
-        /// </summary>
-        public static string LinkBuiltInCaptionsDescription {
-            get {
-                return ResourceManager.GetString("LinkBuiltInCaptionsDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Linking built-in captions ....
-        /// </summary>
-        public static string LinkingBuiltInCaptions {
-            get {
-                return ResourceManager.GetString("LinkingBuiltInCaptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} captions have been linked to their sources. {1} captions were skipped because their neutral text was customized..
-        /// </summary>
-        public static string LinkedBuiltInCaptions {
-            get {
-                return ResourceManager.GetString("LinkedBuiltInCaptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} sources of captions are not available in this version, so these captions can't be compared, e.g. {1}..
-        /// </summary>
-        public static string CaptionsUnresolvedSources {
-            get {
-                return ResourceManager.GetString("CaptionsUnresolvedSources", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Link the built-in captions.
-        /// </summary>
-        public static string CaptionsNotLinkedTitle {
-            get {
-                return ResourceManager.GetString("CaptionsNotLinkedTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The captions of this configuration don't know their sources yet. That's the case for configurations which were created with an older version of OpenMU. Linking is required once; afterwards this page shows which translations can be added or updated..
-        /// </summary>
-        public static string CaptionsNotLinkedDescription {
-            get {
-                return ResourceManager.GetString("CaptionsNotLinkedDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} captions are linked to their sources..
-        /// </summary>
-        public static string CaptionsLinkedCount {
-            get {
-                return ResourceManager.GetString("CaptionsLinkedCount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Review and apply the changes.
-        /// </summary>
-        public static string CaptionsReviewTitle {
-            get {
-                return ResourceManager.GetString("CaptionsReviewTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The following captions differ from their sources. The recommended changes are already selected. Customized texts are only changed if you select them..
-        /// </summary>
-        public static string CaptionsReviewDescription {
-            get {
-                return ResourceManager.GetString("CaptionsReviewDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A translation is available, but missing in the configuration, or it's just a copy of the English text..
-        /// </summary>
-        public static string CaptionChangeKind_Missing_Description {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Missing_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The built-in text was changed, and the configured text is still the one which was originally taken over..
-        /// </summary>
-        public static string CaptionChangeKind_Updated_Description {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Updated_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The built-in translation doesn't exist anymore, and the configured text is still the one which was originally taken over..
-        /// </summary>
-        public static string CaptionChangeKind_Removed_Description {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Removed_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The configured text differs, because it was changed or its origin is unknown. It's only overwritten if you select it..
-        /// </summary>
-        public static string CaptionChangeKind_Customized_Description {
-            get {
-                return ResourceManager.GetString("CaptionChangeKind_Customized_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Link captions again.
-        /// </summary>
-        public static string CaptionsLinkAgainTitle {
-            get {
-                return ResourceManager.GetString("CaptionsLinkAgainTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Links the built-in captions which are not linked yet, for example after configuration updates added new objects. Linked captions and texts are not changed..
-        /// </summary>
-        public static string CaptionsLinkAgainDescription {
-            get {
-                return ResourceManager.GetString("CaptionsLinkAgainDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Review the changes below and apply the selected ones..
-        /// </summary>
-        public static string CaptionsNextStepReview {
-            get {
-                return ResourceManager.GetString("CaptionsNextStepReview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading the configuration.
-        /// </summary>
-        public static string CaptionLinkStep_LoadingConfiguration {
-            get {
-                return ResourceManager.GetString("CaptionLinkStep_LoadingConfiguration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creating the reference configuration (the data initialization is executed in memory).
-        /// </summary>
-        public static string CaptionLinkStep_CreatingReferenceConfiguration {
-            get {
-                return ResourceManager.GetString("CaptionLinkStep_CreatingReferenceConfiguration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Linking the captions.
-        /// </summary>
-        public static string CaptionLinkStep_LinkingCaptions {
-            get {
-                return ResourceManager.GetString("CaptionLinkStep_LinkingCaptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Saving the changes.
-        /// </summary>
-        public static string CaptionLinkStep_Saving {
-            get {
-                return ResourceManager.GetString("CaptionLinkStep_Saving", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Linking can take a while, mainly because the data initialization is executed in memory. Please keep this page open..
-        /// </summary>
-        public static string CaptionsLinkingHint {
-            get {
-                return ResourceManager.GetString("CaptionsLinkingHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Elapsed time: {0}.
-        /// </summary>
-        public static string CaptionsLinkingElapsed {
-            get {
-                return ResourceManager.GetString("CaptionsLinkingElapsed", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Link new built-in captions.
-        /// </summary>
-        public static string CaptionsLinkableTitle {
-            get {
-                return ResourceManager.GetString("CaptionsLinkableTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to {0} built-in captions are not linked to their sources yet, so their translations can't be reviewed here: {1}. That's usually the case after an update of OpenMU added translations, e.g. for item names. Linking doesn't change any texts..
-        /// </summary>
-        public static string CaptionsLinkableDescription {
-            get {
-                return ResourceManager.GetString("CaptionsLinkableDescription", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Checking for built-in captions which are not linked yet ....
-        /// </summary>
-        public static string CaptionsCheckingLinkable {
-            get {
-                return ResourceManager.GetString("CaptionsCheckingLinkable", resourceCulture);
             }
         }
     }

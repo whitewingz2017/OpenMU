@@ -1,4 +1,4 @@
-// <copyright file="CastleSiegeSchedule.cs" company="MUnique">
+﻿// <copyright file="CastleSiegeSchedule.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -132,6 +132,31 @@ internal sealed class CastleSiegeSchedule
         }
 
         return new(state, startUtc, endUtc);
+    }
+
+    /// <summary>
+    /// Gets the next period of a state which starts now or later, e.g. the next battle.
+    /// </summary>
+    /// <param name="state">The state.</param>
+    /// <param name="utcNow">The current time, in UTC.</param>
+    /// <returns>The next period; or <c>null</c>, if the schedule doesn't contain the state.</returns>
+    public CastleSiegeStatePeriod? GetNextPeriod(CastleSiegeState state, DateTime utcNow)
+    {
+        if (!this.ContainsState(state))
+        {
+            return null;
+        }
+
+        utcNow = EnsureUtc(utcNow);
+        var scheduledState = this.GetScheduledState(state);
+        var weekStart = utcNow.Date.AddDays(-(int)utcNow.DayOfWeek);
+        var startUtc = weekStart + scheduledState.StartOfWeek;
+        if (startUtc < utcNow)
+        {
+            startUtc += WeekDuration;
+        }
+
+        return this.CreatePeriod(state, startUtc);
     }
 
     /// <summary>

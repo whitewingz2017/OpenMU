@@ -1,4 +1,4 @@
-// <copyright file="CharacterInitialization.cs" company="MUnique">
+﻿// <copyright file="CharacterInitialization.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameLogic;
 using System.Text.RegularExpressions;
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.Discord;
 using MUnique.OpenMU.Persistence;
 
 /// <summary>
@@ -26,8 +27,9 @@ public static class CharacterInitialization
     /// <returns><c>true</c>, if the name is valid; otherwise, <c>false</c>.</returns>
     public static bool IsValidCharacterName(this GameConfiguration configuration, string name)
     {
-        return string.IsNullOrWhiteSpace(configuration.CharacterNameRegex)
-               || Regex.IsMatch(name, configuration.CharacterNameRegex);
+        return BridgedChatSender.IsAllowedInCharacterName(name)
+               && (string.IsNullOrWhiteSpace(configuration.CharacterNameRegex)
+                   || Regex.IsMatch(name, configuration.CharacterNameRegex));
     }
 
     /// <summary>

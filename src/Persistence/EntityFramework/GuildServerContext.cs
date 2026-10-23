@@ -1,4 +1,4 @@
-// <copyright file="GuildServerContext.cs" company="MUnique">
+﻿// <copyright file="GuildServerContext.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -62,6 +62,12 @@ internal class GuildServerContext : CachingEntityFrameworkContext, IGuildServerC
     }
 
     /// <inheritdoc/>
+    public async ValueTask<GuildMembership?> GetGuildMembershipAsync(string characterName)
+    {
+        return await CreateGuildMembershipQuery(this.Context, characterName).FirstOrDefaultAsync().ConfigureAwait(false);
+    }
+
+    /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<DataModel.Entities.Guild>> GetAlliancesAsync(Guid allianceMasterId)
     {
         return await this.Context.Set<Guild>()
@@ -115,5 +121,20 @@ internal class GuildServerContext : CachingEntityFrameworkContext, IGuildServerC
             .Select(g => g.AllianceGuildId!.Value)
             .Distinct()
             .ToListAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Creates the query for the guild membership of a character.
+    /// </summary>
+    /// <param name="context">The context.</param>
+    /// <param name="characterName">The name of the character.</param>
+    /// <returns>The query.</returns>
+    internal static IQueryable<GuildMembership> CreateGuildMembershipQuery(DbContext context, string characterName)
+    {
+        return from member in context.Set<GuildMember>()
+               join character in context.Set<CharacterName>() on member.Id equals character.Id
+               join guild in context.Set<Guild>() on member.GuildId equals guild.Id
+               where character.Name == characterName
+               select new GuildMembership(member.Id, member.GuildId, member.Status, guild.AllianceGuildId);
     }
 }

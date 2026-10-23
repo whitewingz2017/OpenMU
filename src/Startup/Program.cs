@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.ChatServer;
 using MUnique.OpenMU.ConnectServer;
 using MUnique.OpenMU.DataModel.Configuration;
+using MUnique.OpenMU.Discord;
 using MUnique.OpenMU.FriendServer;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.TestActors;
@@ -344,6 +345,7 @@ internal sealed class Program : IDisposable
             .AddSingleton<ILoginServer, LoginServer>()
             .AddSingleton<IGuildServer, GuildServer>()
             .AddSingleton<IFriendServer, FriendServer>()
+            .AddDiscord(builder.Configuration.GetSection(DiscordSettings.SectionName).Get<DiscordSettings>() ?? new DiscordSettings(), () => ServerTimeZone)
             .AddSingleton<ChatServer>()
             .AddSingleton<IChatServer>(s => s.GetService<ChatServer>()!)
             .AddSingleton<ConnectServerFactory>()
@@ -351,6 +353,7 @@ internal sealed class Program : IDisposable
             .AddSingleton<IConnectServerInstanceManager>(provider => provider.GetService<ConnectServerContainer>()!)
             .AddSingleton<GameServerContainer>()
             .AddSingleton<IGameServerInstanceManager>(provider => provider.GetService<GameServerContainer>()!)
+            .AddSingleton<IEventPublisher>(provider => provider.GetRequiredService<GameServerContainer>().EventPublisher)
             .AddScoped<IMapFactory, JavascriptMapFactory>()
             .AddSingleton<SetupService>()
             .AddSingleton<IEnumerable<IConnectServer>>(provider => provider.GetService<ConnectServerContainer>() ?? throw new Exception($"{nameof(ConnectServerContainer)} not registered."))
@@ -395,6 +398,12 @@ internal sealed class Program : IDisposable
 
         var host = builder.Build();
         await this.ApplyRequestedConfigurationUpdateAsync(host.Services, builder.Configuration).ConfigureAwait(false);
+
+        // The bot is listed with the other servers, e.g. in the admin panel.
+        if (host.Services.GetService<DiscordBot>() is { } discordBot)
+        {
+            this._servers.Add(discordBot);
+        }
 
         // NpgsqlLoggingConfiguration.InitializeLogging(host.Services.GetRequiredService<ILoggerFactory>())
         this._logger.Information("Host created");

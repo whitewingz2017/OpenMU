@@ -545,6 +545,7 @@ public class SpeedHackAntiCheatTests
         characterMock.Setup(c => c.LearnedSkills).Returns(new List<SkillEntry>());
         characterMock.Setup(c => c.Attributes).Returns(new List<StatAttribute>());
         characterMock.Setup(c => c.DropItemGroups).Returns(new List<DropItemGroup>());
+        characterMock.Setup(c => c.PurchasedEffects).Returns(new List<CharacterMagicEffect>());
 
         var inventoryMock = new Mock<ItemStorage>();
         inventoryMock.SetupAllProperties();
