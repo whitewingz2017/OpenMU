@@ -51,7 +51,21 @@ A monster then rolls up to its **maximum item drops** times:
 What exactly drops for a selected group depends on its *possible items* and its
 *type*: if the group has possible items, one of them drops. Otherwise, it's a
 random item which fits to the monster level, a random excellent or ancient item,
-or money — the amount of money is the experience the monster gave, plus 7.
+or money. With the **Level-based monster Zen** plugin active, the total money for
+a kill is `Base Zen + monster level × Zen per monster level + random(0, Maximum random Zen)`.
+The random upper bound is inclusive. Defaults are 200 base, 75 per monster level,
+and up to 100 random Zen: Budge Dragons (level 4) give 500–600, Elite Yetis
+(level 36) give 2,900–3,000, and level-100 monsters give 7,700–7,800 before bonuses.
+This is a test balance curve calibrated to those low-level reference amounts,
+not a reproduction of another server's formula. Higher monsters scale linearly.
+The amount is independent of character level, EXP rates and party size. Existing
+drop chances still apply.
+
+Adjust these three values in the plugin's custom configuration in the admin panel.
+The amount is calculated before either ground drops or direct payouts. Parties
+share it in proportion to their calculated EXP, and each recipient's own Zen
+bonus applies at payout. Boxes and fixed money rewards are unaffected. Disabling
+the plugin restores the original calculated EXP plus 7 formula.
 
 ## Sections
 

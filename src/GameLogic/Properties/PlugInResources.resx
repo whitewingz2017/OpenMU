@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1679,4 +1679,9 @@
   </data>
   <data name="JewelDropStatistics_Name" xml:space="preserve"><value>Jewel drop statistics</value></data>
   <data name="JewelDropStatistics_Description" xml:space="preserve"><value>Counts newly generated monster-ground jewels persistently for server statistics. Player drops and trades are not counted.</value></data>
+  <data name="LevelBasedMoneyPlugIn_Name" xml:space="preserve"><value>Level-based monster Zen</value></data>
+  <data name="LevelBasedMoneyPlugIn_Description" xml:space="preserve"><value>Replaces experience-based monster money with a random range per monster level before party sharing and player Zen bonuses. Applies to ground drops and direct payouts.</value></data>
+  <data name="LevelBasedMoneyPlugInConfiguration_BaseZen_Name" xml:space="preserve"><value>Base Zen</value></data>
+  <data name="LevelBasedMoneyPlugInConfiguration_ZenPerMonsterLevel_Name" xml:space="preserve"><value>Zen per monster level</value></data>
+  <data name="LevelBasedMoneyPlugInConfiguration_MaximumRandomZen_Name" xml:space="preserve"><value>Maximum random Zen (inclusive)</value></data>
 </root>

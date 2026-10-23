@@ -2210,7 +2210,7 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("ItemRegistrationConfiguration_Rules_Name", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Counts newly generated monster-ground jewels persistently for server statistics. Player drops and trades are not counted..
         /// </summary>
@@ -2219,7 +2219,7 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("JewelDropStatistics_Description", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Jewel drop statistics.
         /// </summary>
@@ -2415,6 +2415,51 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         public static string LearnablesConsumeHandlerPlugIn_Name {
             get {
                 return ResourceManager.GetString("LearnablesConsumeHandlerPlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replaces experience-based monster money with a random range per monster level before party sharing and player Zen bonuses. Applies to ground drops and direct payouts..
+        /// </summary>
+        public static string LevelBasedMoneyPlugIn_Description {
+            get {
+                return ResourceManager.GetString("LevelBasedMoneyPlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Level-based monster Zen.
+        /// </summary>
+        public static string LevelBasedMoneyPlugIn_Name {
+            get {
+                return ResourceManager.GetString("LevelBasedMoneyPlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Base Zen.
+        /// </summary>
+        public static string LevelBasedMoneyPlugInConfiguration_BaseZen_Name {
+            get {
+                return ResourceManager.GetString("LevelBasedMoneyPlugInConfiguration_BaseZen_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum random Zen (inclusive).
+        /// </summary>
+        public static string LevelBasedMoneyPlugInConfiguration_MaximumRandomZen_Name {
+            get {
+                return ResourceManager.GetString("LevelBasedMoneyPlugInConfiguration_MaximumRandomZen_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zen per monster level.
+        /// </summary>
+        public static string LevelBasedMoneyPlugInConfiguration_ZenPerMonsterLevel_Name {
+            get {
+                return ResourceManager.GetString("LevelBasedMoneyPlugInConfiguration_ZenPerMonsterLevel_Name", resourceCulture);
             }
         }
         

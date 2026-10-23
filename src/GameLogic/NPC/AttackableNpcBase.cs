@@ -438,8 +438,19 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
 
     private async ValueTask HandleMoneyDropAsync(uint amount, Player killer, IReadOnlyList<ExperienceShare> experienceShares)
     {
-        // Each player gets the part of the money which matches the experience they gained from the kill,
-        // so that money follows the same distribution as the experience it is derived from.
+        if (killer.GameContext.PlugInManager.GetPlugInPoint<IMonsterMoneyAmountPlugIn>() is { } plugInPoint)
+        {
+            var args = new MonsterMoneyAmountArgs(this.Definition, amount);
+            await plugInPoint.CalculateMoneyAmountAsync(args).ConfigureAwait(false);
+            amount = args.Amount;
+        }
+
+        if (amount == 0)
+        {
+            return;
+        }
+
+        // Preserve each player's EXP proportion, even when a plugin replaces the total money amount.
         var shares = MoneyDistribution.CreateShares(amount, experienceShares);
 
         // We don't drop money in Devil Square, etc.
