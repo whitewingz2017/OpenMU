@@ -34,17 +34,19 @@ internal partial class PlayerContext
         await using var configuration = new ConfigurationContext();
         var singles = await configuration.Set<ItemDefinition>().AsNoTracking()
             .Where(item => itemCodes.Contains((item.Group * 512) + item.Number))
-            .Select(item => new { item.Id, Code = (item.Group * 512) + item.Number }).ToListAsync().ConfigureAwait(false);
+            .Select(item => new { item.Id, item.Group, item.Number }).ToListAsync().ConfigureAwait(false);
         var bundles = await configuration.Set<JewelMix>().AsNoTracking()
             .Where(mix => itemCodes.Contains((mix.RawSingleJewel.Group * 512) + mix.RawSingleJewel.Number))
-            .Select(mix => new { Id = mix.RawMixedJewel.Id, Code = (mix.RawSingleJewel.Group * 512) + mix.RawSingleJewel.Number })
+            .Select(mix => new { Id = mix.RawMixedJewel.Id, mix.RawSingleJewel.Group, mix.RawSingleJewel.Number })
             .Distinct().ToListAsync().ConfigureAwait(false);
-        var units = singles.ToDictionary(item => (item.Id, Level: 0), item => new JewelAmount(item.Code, 1));
+
+        // Compute codes in CLR int arithmetic; a PostgreSQL arithmetic projection can inherit the byte Group mapping.
+        var units = singles.ToDictionary(item => (item.Id, Level: 0), item => new JewelAmount((item.Group * 512) + item.Number, 1));
         foreach (var bundle in bundles)
         {
             for (var level = 0; level <= 2; level++)
             {
-                units.TryAdd((bundle.Id, level), new JewelAmount(bundle.Code, (level + 1) * 10));
+                units.TryAdd((bundle.Id, level), new JewelAmount((bundle.Group * 512) + bundle.Number, (level + 1) * 10));
             }
         }
 
