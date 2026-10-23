@@ -57,4 +57,11 @@ public interface IPeriodicMiniGameStartPlugIn : IStrategyPlugIn<MiniGameType>, I
     /// </summary>
     /// <param name="gameContext">The game context.</param>
     ValueTask DisposeRunningGamesAsync(IGameContext gameContext);
+
+    /// <summary>Gets the next entrance opening, including a pending manual start.</summary>
+    /// <param name="gameContext">The hosting game context.</param>
+    /// <param name="utcNow">The reference time.</param>
+    /// <returns>The opening time, or null when no opening is scheduled.</returns>
+    DateTime? GetNextEntranceUtc(IGameContext gameContext, DateTime utcNow)
+        => this.IsEnabledOn(gameContext) && this is IScheduledPlugIn scheduled ? scheduled.GetNextStartUtc(utcNow, gameContext.ServerTimeZone) : null;
 }

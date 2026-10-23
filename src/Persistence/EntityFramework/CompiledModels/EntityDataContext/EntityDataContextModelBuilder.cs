@@ -12,12 +12,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("55e76c9b-4473-4fb5-845f-6a2ea2912e2f"), entityTypeCount: 124)
+            : base(skipDetectChanges: false, modelId: new Guid("d1a62dfe-4080-4878-9ade-3298b73689f9"), entityTypeCount: 125)
         {
         }
 
         partial void Initialize()
         {
+            var jewelDropTotal = JewelDropTotalEntityType.Create(this);
             var account = AccountEntityType.Create(this);
             var accountCharacterClass = AccountCharacterClassEntityType.Create(this);
             var accountExternalLink = AccountExternalLinkEntityType.Create(this);
@@ -386,6 +387,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             WarpInfoEntityType.CreateForeignKey1(warpInfo, gameConfiguration);
             WarpInfoEntityType.CreateForeignKey2(warpInfo, exitGate);
 
+            JewelDropTotalEntityType.CreateAnnotations(jewelDropTotal);
             AccountEntityType.CreateAnnotations(account);
             AccountCharacterClassEntityType.CreateAnnotations(accountCharacterClass);
             AccountExternalLinkEntityType.CreateAnnotations(accountExternalLink);

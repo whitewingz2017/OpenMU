@@ -1677,4 +1677,6 @@
   <data name="DiscordIntegrationFeaturePlugIn_Description" xml:space="preserve">
     <value>Tells game clients which ask for it how the server is connected to Discord (invite link, Rich Presence application, account link, mirrored chats), lets players link their account from the client, and sends them messages written in Discord as such.</value>
   </data>
+  <data name="JewelDropStatistics_Name" xml:space="preserve"><value>Jewel drop statistics</value></data>
+  <data name="JewelDropStatistics_Description" xml:space="preserve"><value>Counts newly generated monster-ground jewels persistently for server statistics. Player drops and trades are not counted.</value></data>
 </root>

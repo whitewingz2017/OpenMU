@@ -22,6 +22,22 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.JewelDropTotal", b =>
+                {
+                    b.Property<int>("ItemCode")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("Total")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("TrackingSinceUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ItemCode");
+
+                    b.ToTable("JewelDropTotal", "data");
+                });
+
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.Account", b =>
                 {
                     b.Property<Guid>("Id")

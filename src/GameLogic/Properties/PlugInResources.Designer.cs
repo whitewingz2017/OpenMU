@@ -2210,6 +2210,24 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("ItemRegistrationConfiguration_Rules_Name", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Counts newly generated monster-ground jewels persistently for server statistics. Player drops and trades are not counted..
+        /// </summary>
+        public static string JewelDropStatistics_Description {
+            get {
+                return ResourceManager.GetString("JewelDropStatistics_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Jewel drop statistics.
+        /// </summary>
+        public static string JewelDropStatistics_Name {
+            get {
+                return ResourceManager.GetString("JewelDropStatistics_Name", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Handles the Kanturu Gateway Machine NPC for event entry..

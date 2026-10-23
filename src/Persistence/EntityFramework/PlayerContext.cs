@@ -13,7 +13,7 @@ using MUnique.OpenMU.Persistence.EntityFramework.Model;
 /// <summary>
 /// Persistence context which is used by in-game players.
 /// </summary>
-internal class PlayerContext : CachingEntityFrameworkContext, IPlayerContext
+internal partial class PlayerContext : CachingEntityFrameworkContext, IPlayerContext
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="PlayerContext" /> class.

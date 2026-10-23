@@ -26,6 +26,20 @@ public abstract class MiniGameStartBasePlugIn<TConfiguration, TGameState> : Peri
     public abstract object CreateDefaultConfig();
 
     /// <inheritdoc />
+    public DateTime? GetNextEntranceUtc(IGameContext gameContext, DateTime utcNow)
+    {
+        var state = this.GetStateByGameContext(gameContext);
+        if (state.State == PeriodicTaskState.Prepared)
+        {
+            return state.NextRunUtc;
+        }
+
+        return this.IsEnabledOnContext(gameContext) && this.Configuration is { } configuration
+            ? configuration.GetNextStartUtc(utcNow, gameContext.ServerTimeZone)?.Add(configuration.PreStartMessageDelay)
+            : null;
+    }
+
+    /// <inheritdoc />
     public bool IsEventActive(IGameContext gameContext)
     {
         return gameContext.MiniGames.GetRunningMiniGames(this.Key).Any(IsActive);

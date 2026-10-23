@@ -14,9 +14,10 @@ using MUnique.OpenMU.PlugIns;
 
 /// <summary>
 /// Provides the data of the game for the Discord bot, through the interfaces of the servers and the database.
-/// It works in-process and with the servers in separate processes.
+/// Core summaries work in-process and with servers in separate processes.
+/// Live inventory overlays and running mini-game timers require in-process game contexts.
 /// </summary>
-public sealed class DiscordGameDataProvider : IDiscordGameDataProvider
+public sealed partial class DiscordGameDataProvider : IDiscordGameDataProvider
 {
     /// <summary>
     /// The time span in which the upcoming events are shown.

@@ -345,4 +345,16 @@ public interface IPlayerContext : IContext
         Guid masterLevelAttributeId,
         Guid resetsAttributeId,
         CancellationToken cancellationToken = default);
+    /// <summary>Atomically adds newly generated monster jewels to the lifetime total.</summary>
+    /// <param name="itemCode">The single jewel type.</param>
+    /// <param name="amount">The nonnegative quantity.</param>
+    /// <param name="utcNow">The time of the drop.</param>
+    /// <returns>The completion.</returns>
+    ValueTask RecordJewelDropAsync(int itemCode, long amount, DateTime utcNow);
+
+    /// <summary>Reads all owned inventories, vaults, banks and cumulative monster drops.</summary>
+    /// <param name="itemCodes">The single jewel types.</param>
+    /// <returns>The persisted statistics.</returns>
+    ValueTask<JewelStatisticsSnapshot> GetJewelStatisticsAsync(int[] itemCodes);
+
 }

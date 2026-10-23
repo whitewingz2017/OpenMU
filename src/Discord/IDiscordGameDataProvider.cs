@@ -44,4 +44,12 @@ public interface IDiscordGameDataProvider
     /// <param name="count">The maximum number of characters.</param>
     /// <returns>The best characters.</returns>
     ValueTask<IReadOnlyList<CharacterInfo>> GetRankingAsync(int count);
+
+    /// <summary>Gets jewel totals, without exposing player identities.</summary>
+    /// <returns>The totals, or null when the provider does not supply them.</returns>
+    ValueTask<DiscordEconomyStatus?> GetEconomyStatusAsync() => ValueTask.FromResult<DiscordEconomyStatus?>(null);
+
+    /// <summary>Gets scheduled and running event countdowns.</summary>
+    /// <returns>The live timers.</returns>
+    ValueTask<IReadOnlyList<DiscordEventTimer>> GetEventTimersAsync() => ValueTask.FromResult<IReadOnlyList<DiscordEventTimer>>([]);
 }

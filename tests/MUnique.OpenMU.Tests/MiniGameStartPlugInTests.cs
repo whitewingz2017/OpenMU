@@ -1,4 +1,4 @@
-// <copyright file="MiniGameStartPlugInTests.cs" company="MUnique">
+﻿// <copyright file="MiniGameStartPlugInTests.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -51,6 +51,43 @@ public class MiniGameStartPlugInTests
         foreach (var game in this._gamesToDispose)
         {
             await game.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>Countdowns follow a pending manual opening instead of the normal timetable.</summary>
+    [Test]
+    public async Task StatusUsesPendingManualOpeningAsync()
+    {
+        var context = this.CreateGameContextMock();
+        try
+        {
+            var state = this._plugIn.GetStateForTest(context.Object);
+            state.State = PeriodicTaskState.Prepared;
+            state.NextRunUtc = DateTime.UtcNow.AddSeconds(3);
+            Assert.That(this._plugIn.GetNextEntranceUtc(context.Object, DateTime.UtcNow), Is.EqualTo(state.NextRunUtc));
+        }
+        finally
+        {
+            await context.Object.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>Countdowns use the server time zone and wrap to the next local day.</summary>
+    [Test]
+    public async Task StatusUsesServerTimeZoneAndNextDayAsync()
+    {
+        var context = this.CreateGameContextMock();
+        try
+        {
+            context.Object.ServerTimeZone = TimeZoneInfo.CreateCustomTimeZone("UTC+8", TimeSpan.FromHours(8), "UTC+8", "UTC+8");
+            this._configuration.Timetable = new List<TimeOnly> { new(20, 0) };
+            var now = new DateTime(2026, 10, 23, 13, 0, 0, DateTimeKind.Utc);
+            Assert.That(this._plugIn.GetNextEntranceUtc(context.Object, now),
+                Is.EqualTo(new DateTime(2026, 10, 24, 12, 0, 3, DateTimeKind.Utc)));
+        }
+        finally
+        {
+            await context.Object.DisposeAsync().ConfigureAwait(false);
         }
     }
 

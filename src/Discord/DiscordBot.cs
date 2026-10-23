@@ -569,7 +569,20 @@ public sealed partial class DiscordBot : IManageableServer, IDiscordMessenger, I
             if (this._routing.StatusChannelId is { } channelId
                 && await this.GetMessageChannelAsync(channelId).ConfigureAwait(false) is { } channel)
             {
-                var embed = ToDiscordEmbed(this._statusFormatter.CreateStatus(servers, DateTime.UtcNow));
+                DiscordEconomyStatus? economy = null;
+                var statisticsUnavailable = false;
+                try
+                {
+                    economy = await this._data.GetEconomyStatusAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    statisticsUnavailable = true;
+                    this._logger.LogWarning(ex, "Jewel statistics could not be read. Check that the jewel statistics migration has been applied.");
+                }
+
+                var timers = await this._data.GetEventTimersAsync().ConfigureAwait(false);
+                var embed = ToDiscordEmbed(this._statusFormatter.CreateStatus(servers, DateTime.UtcNow, economy, timers, statisticsUnavailable));
                 if (await this.FindStatusMessageAsync(client, channel).ConfigureAwait(false) is { } message)
                 {
                     await message.ModifyAsync(properties => properties.Embed = embed).ConfigureAwait(false);

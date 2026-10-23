@@ -112,6 +112,12 @@ public class EntityDataContext : ExtendedTypeContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<JewelDropTotal>(entity =>
+        {
+            entity.ToTable("JewelDropTotal", SchemaNames.AccountData);
+            entity.HasKey(total => total.ItemCode);
+            entity.Property(total => total.ItemCode).ValueGeneratedNever();
+        });
         modelBuilder.Entity<AppearanceData>(o => o.Ignore(p => p.CharacterStatus)); // todo
         modelBuilder.Ignore<ConstantElement>();
         modelBuilder.Ignore<SimpleElement>();

@@ -12,12 +12,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
     public partial class TradeContextModel
     {
         private TradeContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("e8a5b548-cf77-4351-9d08-7f3bae7fe846"), entityTypeCount: 48)
+            : base(skipDetectChanges: false, modelId: new Guid("caa18a00-5edb-4b8d-a815-40bee50a476a"), entityTypeCount: 49)
         {
         }
 
         partial void Initialize()
         {
+            var jewelDropTotal = JewelDropTotalEntityType.Create(this);
             var account = AccountEntityType.Create(this);
             var accountCharacterClass = AccountCharacterClassEntityType.Create(this);
             var accountExternalLink = AccountExternalLinkEntityType.Create(this);
@@ -96,6 +97,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             StatAttributeEntityType.CreateForeignKey1(statAttribute, account);
             StatAttributeEntityType.CreateForeignKey2(statAttribute, character);
 
+            JewelDropTotalEntityType.CreateAnnotations(jewelDropTotal);
             AccountEntityType.CreateAnnotations(account);
             AccountCharacterClassEntityType.CreateAnnotations(accountCharacterClass);
             AccountExternalLinkEntityType.CreateAnnotations(accountExternalLink);

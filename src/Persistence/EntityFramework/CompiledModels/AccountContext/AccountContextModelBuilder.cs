@@ -12,12 +12,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
     public partial class AccountContextModel
     {
         private AccountContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("3ee8aa5c-4701-4b12-b7bf-d34fd4654f6f"), entityTypeCount: 49)
+            : base(skipDetectChanges: false, modelId: new Guid("549133e9-eb7b-4066-bc08-a137a42aeee0"), entityTypeCount: 50)
         {
         }
 
         partial void Initialize()
         {
+            var jewelDropTotal = JewelDropTotalEntityType.Create(this);
             var account = AccountEntityType.Create(this);
             var accountCharacterClass = AccountCharacterClassEntityType.Create(this);
             var accountExternalLink = AccountExternalLinkEntityType.Create(this);
@@ -100,6 +101,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
             StatAttributeEntityType.CreateForeignKey1(statAttribute, account);
             StatAttributeEntityType.CreateForeignKey2(statAttribute, character);
 
+            JewelDropTotalEntityType.CreateAnnotations(jewelDropTotal);
             AccountEntityType.CreateAnnotations(account);
             AccountCharacterClassEntityType.CreateAnnotations(accountCharacterClass);
             AccountExternalLinkEntityType.CreateAnnotations(accountExternalLink);

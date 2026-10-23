@@ -1258,6 +1258,105 @@ namespace MUnique.OpenMU.Discord.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In progress.
+        /// </summary>
+        public static string Status_EventActive {
+            get {
+                return ResourceManager.GetString("Status_EventActive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to entrance closes in {0} ({1}).
+        /// </summary>
+        public static string Status_EventCloses {
+            get {
+                return ResourceManager.GetString("Status_EventCloses", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to opens in {0} ({1}).
+        /// </summary>
+        public static string Status_EventOpens {
+            get {
+                return ResourceManager.GetString("Status_EventOpens", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Event Timers.
+        /// </summary>
+        public static string Status_EventTimers {
+            get {
+                return ResourceManager.GetString("Status_EventTimers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chaos.
+        /// </summary>
+        public static string Status_Jewel_6159 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_6159", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bless.
+        /// </summary>
+        public static string Status_Jewel_7181 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7181", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Soul.
+        /// </summary>
+        public static string Status_Jewel_7182 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7182", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Life.
+        /// </summary>
+        public static string Status_Jewel_7184 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7184", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Creation.
+        /// </summary>
+        public static string Status_Jewel_7190 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7190", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Guardian.
+        /// </summary>
+        public static string Status_Jewel_7199 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7199", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Harmony.
+        /// </summary>
+        public static string Status_Jewel_7210 {
+            get {
+                return ResourceManager.GetString("Status_Jewel_7210", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No game server is running..
         /// </summary>
         public static string Status_NoServers {
@@ -1285,11 +1384,119 @@ namespace MUnique.OpenMU.Discord.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Players Jewels.
+        /// </summary>
+        public static string Status_PlayerJewels {
+            get {
+                return ResourceManager.GetString("Status_PlayerJewels", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Server Jewels.
+        /// </summary>
+        public static string Status_ServerJewels {
+            get {
+                return ResourceManager.GetString("Status_ServerJewels", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Jewel statistics are currently unavailable..
+        /// </summary>
+        public static string Status_StatisticsUnavailable {
+            get {
+                return ResourceManager.GetString("Status_StatisticsUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Blood Castle.
+        /// </summary>
+        public static string Status_Timer_BloodCastle {
+            get {
+                return ResourceManager.GetString("Status_Timer_BloodCastle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chaos Castle.
+        /// </summary>
+        public static string Status_Timer_ChaosCastle {
+            get {
+                return ResourceManager.GetString("Status_Timer_ChaosCastle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Devil Square.
+        /// </summary>
+        public static string Status_Timer_DevilSquare {
+            get {
+                return ResourceManager.GetString("Status_Timer_DevilSquare", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Doppelganger.
+        /// </summary>
+        public static string Status_Timer_Doppelganger {
+            get {
+                return ResourceManager.GetString("Status_Timer_Doppelganger", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Illusion Temple.
+        /// </summary>
+        public static string Status_Timer_IllusionTemple {
+            get {
+                return ResourceManager.GetString("Status_Timer_IllusionTemple", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial Guardian.
+        /// </summary>
+        public static string Status_Timer_ImperialGuardian {
+            get {
+                return ResourceManager.GetString("Status_Timer_ImperialGuardian", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kanturu.
+        /// </summary>
+        public static string Status_Timer_Kanturu {
+            get {
+                return ResourceManager.GetString("Status_Timer_Kanturu", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} [Server {1}]: {2}.
+        /// </summary>
+        public static string Status_TimerLine {
+            get {
+                return ResourceManager.GetString("Status_TimerLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Server status.
         /// </summary>
         public static string Status_Title {
             get {
                 return ResourceManager.GetString("Status_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Server Jewels counts new monster-ground drops since tracking began; earlier drops are not included..
+        /// </summary>
+        public static string Status_TrackingNote {
+            get {
+                return ResourceManager.GetString("Status_TrackingNote", resourceCulture);
             }
         }
         

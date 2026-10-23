@@ -13,7 +13,7 @@ using Nito.AsyncEx;
 /// <summary>
 /// In-memory context implementation for <see cref="IPlayerContext"/>.
 /// </summary>
-public class PlayerInMemoryContext : InMemoryContext, IPlayerContext
+public partial class PlayerInMemoryContext : InMemoryContext, IPlayerContext
 {
     // All contexts of one in-memory database share this lock.
     private static readonly ConditionalWeakTable<InMemoryRepositoryProvider, AsyncLock> LinkLocks = new();

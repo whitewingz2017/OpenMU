@@ -513,4 +513,27 @@
     <value>Test message</value>
   </data>
   <data name="Setup_PrivateRolesMissing" xml:space="preserve"><value>Private channels were skipped because their required roles are missing.</value></data>
+  <data name="Status_ServerJewels" xml:space="preserve"><value>Server Jewels</value></data>
+  <data name="Status_PlayerJewels" xml:space="preserve"><value>Players Jewels</value></data>
+  <data name="Status_EventTimers" xml:space="preserve"><value>Event Timers</value></data>
+  <data name="Status_StatisticsUnavailable" xml:space="preserve"><value>Jewel statistics are currently unavailable.</value></data>
+  <data name="Status_TrackingNote" xml:space="preserve"><value>Server Jewels counts new monster-ground drops since tracking began; earlier drops are not included.</value></data>
+  <data name="Status_EventActive" xml:space="preserve"><value>In progress</value></data>
+  <data name="Status_EventOpens" xml:space="preserve"><value>opens in {0} ({1})</value></data>
+  <data name="Status_EventCloses" xml:space="preserve"><value>entrance closes in {0} ({1})</value></data>
+  <data name="Status_TimerLine" xml:space="preserve"><value>{0} [Server {1}]: {2}</value></data>
+  <data name="Status_Jewel_7181" xml:space="preserve"><value>Bless</value></data>
+  <data name="Status_Jewel_7182" xml:space="preserve"><value>Soul</value></data>
+  <data name="Status_Jewel_6159" xml:space="preserve"><value>Chaos</value></data>
+  <data name="Status_Jewel_7184" xml:space="preserve"><value>Life</value></data>
+  <data name="Status_Jewel_7190" xml:space="preserve"><value>Creation</value></data>
+  <data name="Status_Jewel_7199" xml:space="preserve"><value>Guardian</value></data>
+  <data name="Status_Jewel_7210" xml:space="preserve"><value>Harmony</value></data>
+  <data name="Status_Timer_ChaosCastle" xml:space="preserve"><value>Chaos Castle</value></data>
+  <data name="Status_Timer_BloodCastle" xml:space="preserve"><value>Blood Castle</value></data>
+  <data name="Status_Timer_DevilSquare" xml:space="preserve"><value>Devil Square</value></data>
+  <data name="Status_Timer_IllusionTemple" xml:space="preserve"><value>Illusion Temple</value></data>
+  <data name="Status_Timer_Kanturu" xml:space="preserve"><value>Kanturu</value></data>
+  <data name="Status_Timer_Doppelganger" xml:space="preserve"><value>Doppelganger</value></data>
+  <data name="Status_Timer_ImperialGuardian" xml:space="preserve"><value>Imperial Guardian</value></data>
 </root>
