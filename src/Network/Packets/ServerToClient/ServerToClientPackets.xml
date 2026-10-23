@@ -15231,6 +15231,7 @@
         <Field><Index>8</Index><Type>IntegerLittleEndian</Type><Name>ExpiresAt</Name></Field>
       </Fields>
     </Packet>
+    <Packet><HeaderType>C2HeaderWithSubCode</HeaderType><Code>FB</Code><SubCode>21</SubCode><Name>EventTimerResponseExtended</Name><Direction>ServerToClient</Direction><SentWhen>The custom client requests its event timer.</SentWhen><CausedReaction>The client displays countdowns using the UTF-8 JSON RequestId, ServerUtc and Rows containing Name and StartsAtUtc. Dates are UTC. Only configured events on this server are included, in chronological order.</CausedReaction><Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields></Packet>
   </Packets>
   <Enums>
     <Enum>

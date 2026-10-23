@@ -34,6 +34,31 @@ public abstract class PeriodicTaskBasePlugIn<TConfiguration, TState> : IPeriodic
         return this.Configuration?.GetNextStartUtc(utcNow, serverTimeZone);
     }
 
+    /// <inheritdoc />
+    public DateTime? GetNextStartUtc(IGameContext gameContext, DateTime utcNow)
+    {
+        if (this.Configuration is null)
+        {
+            return null;
+        }
+
+        if (this is IPeriodicMiniGameStartPlugIn miniGame)
+        {
+            return miniGame.GetNextEntranceUtc(gameContext, utcNow);
+        }
+
+        // Schedule reads must not initialize tasks which have never run on this server.
+        if (States.TryGetValue(this.GetType(), out var contexts)
+            && contexts.TryGetValue(gameContext, out var state) && state.State == PeriodicTaskState.Prepared)
+        {
+            return state.NextRunUtc;
+        }
+
+        return this.IsEnabledOnContext(gameContext)
+            ? this.GetNextStartUtc(utcNow, gameContext.ServerTimeZone)?.Add(this.Configuration.PreStartMessageDelay)
+            : null;
+    }
+
     /// <summary>
     /// Forces the task to start on the next start check of the game server which
     /// owns this plug-in instance: every game server runs its own instance, so a

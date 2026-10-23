@@ -39,6 +39,15 @@ These settings can also be given as
 [start parameters or environment variables](../deployment/startup-parameters.md),
 which take precedence over what is configured here.
 
+The custom C# client's **Event Timer** (main menu or **H**) displays the next
+scheduled events for the connected game server. It uses the active periodic
+plugins' timetables, preparation delays, and allowed server lists. Empty
+timetables and events restricted to other servers are omitted. The window
+refreshes every 15 seconds while open and counts down using the server's UTC
+reference time, so changing the device clock does not change the timers.
+Install the updated server and client together; an older server cannot answer
+the new timer request.
+
 ## Game clients
 
 Route `edit-config-grid/…GameClientDefinition/`

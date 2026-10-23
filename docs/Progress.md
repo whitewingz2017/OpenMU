@@ -5,6 +5,11 @@ For the progress of the project as a whole, please have a look at the [projects 
 In this document we track the progress of the packet handlers.
 Each packet handler requires some game logic behind it.
 
+The custom C# client's Event Timer is implemented through `C1 FB 20` (request)
+and `C2 FB 21` (schedule snapshot). It reads active periodic event schedules on
+the player's game server, including the server time zone, server restrictions,
+and pending prepared starts. Original clients receive no additional packets.
+
 The complexity is a number between 1 (low complexity and effort) and 10 (high
 complexity and effort). Complexity 0 means we wont implement it.
 

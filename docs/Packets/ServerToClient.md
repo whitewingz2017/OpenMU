@@ -335,3 +335,4 @@
   * [C1 F8 0A - GensRewardResponse (by server)](C1-F8-0A-GensRewardResponse_by-server.md)
   * [C3 F9 01 - OpenNpcDialog (by server)](C3-F9-01-OpenNpcDialog_by-server.md)
   * [C2 FA 19 - JewelBankResponseExtended (by server)](C2-FA-19-JewelBankResponseExtended_by-server.md)
+  * [C2 FB 21 - EventTimerResponseExtended (by server)](C2-FB-21-EventTimerResponseExtended_by-server.md)

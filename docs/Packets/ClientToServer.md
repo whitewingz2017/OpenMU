@@ -200,3 +200,4 @@
   * [C1 F8 09 - GensRewardRequest (by client)](C1-F8-09-GensRewardRequest_by-client.md)
   * [C1 F8 0B - GensRankingRequest (by client)](C1-F8-0B-GensRankingRequest_by-client.md)
   * [C1 FA 20 - JewelBankRequestExtended (by client)](C1-FA-20-JewelBankRequestExtended_by-client.md)
+  * [C1 FB 20 - EventTimerRequestExtended (by client)](C1-FB-20-EventTimerRequestExtended_by-client.md)

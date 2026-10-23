@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2675,4 +2675,8 @@
   <data name="DiscordIntegrationViewPlugIn_Description" xml:space="preserve">
     <value>Sends the Discord integration info, the link code and the messages written in Discord to the game client.</value>
   </data>
+  <data name="EventTimerRequestHandler_Name" xml:space="preserve"><value>Event Timer Request</value></data>
+  <data name="EventTimerRequestHandler_Description" xml:space="preserve"><value>Returns configured event schedules to requesting custom clients.</value></data>
+  <data name="EventTimerView_Name" xml:space="preserve"><value>Event Timer View</value></data>
+  <data name="EventTimerView_Description" xml:space="preserve"><value>Displays server event schedules in the custom client.</value></data>
 </root>

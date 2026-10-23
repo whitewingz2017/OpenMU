@@ -8992,4 +8992,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="EventTimerResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: The custom client requests its event timer.
+    /// Causes reaction on client side: The client displays countdowns using the UTF-8 JSON RequestId, ServerUtc and Rows containing Name and StartsAtUtc. Dates are UTC. Only configured events on this server are included, in chronological order.
+    /// </remarks>
+    public static async ValueTask SendEventTimerResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = EventTimerResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new EventTimerResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

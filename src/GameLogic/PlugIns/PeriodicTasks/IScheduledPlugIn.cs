@@ -16,4 +16,11 @@ public interface IScheduledPlugIn
     /// <param name="serverTimeZone">The time zone of the server, in which the schedule is defined.</param>
     /// <returns>The next start time, in UTC; or <see langword="null"/>, if there is none.</returns>
     DateTime? GetNextStartUtc(DateTime utcNow, TimeZoneInfo serverTimeZone);
+
+    /// <summary>Gets the next start on the player's game server.</summary>
+    /// <param name="gameContext">The hosting game context.</param>
+    /// <param name="utcNow">The reference time.</param>
+    /// <returns>The next start, or null when disabled on this server.</returns>
+    DateTime? GetNextStartUtc(IGameContext gameContext, DateTime utcNow)
+        => this.GetNextStartUtc(utcNow, gameContext.ServerTimeZone);
 }

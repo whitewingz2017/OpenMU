@@ -5715,4 +5715,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="EventTimerRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client opens or refreshes its event timer.
+    /// Causes reaction on server side: The server returns upcoming configured events for the current game server.
+    /// </remarks>
+    public static async ValueTask SendEventTimerRequestExtendedAsync(this IConnection? connection, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = EventTimerRequestExtendedRef.Length;
+            var packet = new EventTimerRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

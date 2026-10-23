@@ -8751,4 +8751,20 @@ public class PacketStructureTests
         Assert.That(8 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'ExpiresAt' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for EventTimerResponseExtended.
+    /// </summary>
+    [Test]
+    public void EventTimerResponseExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = EventTimerResponseExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 5;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
 }

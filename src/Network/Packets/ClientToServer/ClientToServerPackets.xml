@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <PacketDefinitions xmlns="http://www.munique.net/OpenMU/PacketDefinitions">
   <Description>This file contains all packet definitions for packets which are sent from game client to the game server.</Description>
   <Structures>
@@ -4339,6 +4339,7 @@
       <CausedReaction>The server removes the link and sends an updated DiscordIntegrationInfo message.</CausedReaction>
       <Fields />
     </Packet>
+    <Packet><HeaderType>C1HeaderWithSubCode</HeaderType><Code>FB</Code><SubCode>20</SubCode><Name>EventTimerRequestExtended</Name><Length>8</Length><Direction>ClientToServer</Direction><SentWhen>The custom client opens or refreshes its event timer.</SentWhen><CausedReaction>The server returns upcoming configured events for the current game server.</CausedReaction><Fields><Field><Index>4</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field></Fields></Packet>
   </Packets>
   <Enums>
     <Enum>

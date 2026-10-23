@@ -6,6 +6,8 @@ namespace MUnique.OpenMU.Tests;
 
 using System.Globalization;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
+using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.PlugIns.InvasionEvents;
 using MUnique.OpenMU.GameLogic.PlugIns.PeriodicTasks;
@@ -90,6 +92,24 @@ public class UpcomingEventsTest
         var events = UpcomingEvents.Get(plugInManager, Now, TimeZoneInfo.Utc, TimeSpan.FromHours(1), CultureInfo.InvariantCulture);
 
         Assert.That(events, Is.Empty);
+    }
+
+    /// <summary>The game client only sees events allowed on its server, including the preparation delay.</summary>
+    [Test]
+    public void ClientScheduleRespectsServerScopeAndPreparation()
+    {
+        var manager = new PlugInManager([], NullLoggerFactory.Instance, null, null);
+        var configuration = CreateInvasionConfiguration(new TimeOnly(18, 0));
+        configuration.AllowedServerIds = new List<byte> { 2 };
+        configuration.PreStartMessageDelay = TimeSpan.FromSeconds(30);
+        manager.RegisterPlugInAtPlugInPoint<IPeriodicTaskPlugIn>(new GoldenInvasionPlugIn { Configuration = configuration });
+        var context = new Mock<IGameServerContext>();
+        context.SetupGet(c => c.Id).Returns(1);
+        context.SetupGet(c => c.ServerTimeZone).Returns(TimeZoneInfo.Utc);
+        Assert.That(UpcomingEvents.Get(manager, Now, TimeZoneInfo.Utc, TimeSpan.FromDays(2), CultureInfo.InvariantCulture, context.Object), Is.Empty);
+        context.SetupGet(c => c.Id).Returns(2);
+        var events = UpcomingEvents.Get(manager, Now, TimeZoneInfo.Utc, TimeSpan.FromDays(2), CultureInfo.InvariantCulture, context.Object);
+        Assert.That(events.Single().StartsAtUtc, Is.EqualTo(new DateTime(2026, 10, 8, 18, 0, 30, DateTimeKind.Utc)));
     }
 
     private static PeriodicTaskConfiguration CreateConfiguration(params TimeOnly[] times)

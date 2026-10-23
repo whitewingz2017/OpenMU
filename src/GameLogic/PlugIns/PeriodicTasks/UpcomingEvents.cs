@@ -1,4 +1,4 @@
-﻿// <copyright file="UpcomingEvents.cs" company="MUnique">
+// <copyright file="UpcomingEvents.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -22,17 +22,19 @@ public static class UpcomingEvents
     /// <param name="serverTimeZone">The time zone of the server, in which the schedules are defined.</param>
     /// <param name="timeSpan">The time span from now, in which the events have to start.</param>
     /// <param name="culture">The culture of the names.</param>
+    /// <param name="gameContext">Optional server context to filter schedules and include pending manual starts.</param>
     /// <returns>The names and start times of the events.</returns>
     public static IReadOnlyList<(string Name, DateTime StartsAtUtc)> Get(
         PlugInManager plugInManager,
         DateTime utcNow,
         TimeZoneInfo serverTimeZone,
         TimeSpan timeSpan,
-        CultureInfo culture)
+        CultureInfo culture,
+        IGameContext? gameContext = null)
     {
         return plugInManager.GetActivePlugInsOf<IPeriodicTaskPlugIn>()
             .OfType<IScheduledPlugIn>()
-            .Select(plugIn => (Name: GetName(plugIn.GetType(), culture), StartsAtUtc: plugIn.GetNextStartUtc(utcNow, serverTimeZone)))
+            .Select(plugIn => (Name: GetName(plugIn.GetType(), culture), StartsAtUtc: gameContext is null ? plugIn.GetNextStartUtc(utcNow, serverTimeZone) : plugIn.GetNextStartUtc(gameContext, utcNow)))
             .Where(e => e.StartsAtUtc is { } start && start - utcNow <= timeSpan)
             .Select(e => (e.Name, e.StartsAtUtc!.Value))
             .OrderBy(e => e.Value)
