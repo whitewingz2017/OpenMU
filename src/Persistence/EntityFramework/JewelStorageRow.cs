@@ -10,8 +10,11 @@ internal sealed class JewelStorageRow
     /// <summary>Gets or sets the storage identifier.</summary>
     public Guid OwnerId { get; set; }
 
-    /// <summary>Gets or sets the single jewel code.</summary>
-    public int ItemCode { get; set; }
+    /// <summary>Gets or sets the physical item definition identifier.</summary>
+    public Guid DefinitionId { get; set; }
+
+    /// <summary>Gets or sets the physical item level.</summary>
+    public int Level { get; set; }
 
     /// <summary>Gets or sets the quantity.</summary>
     public long Amount { get; set; }

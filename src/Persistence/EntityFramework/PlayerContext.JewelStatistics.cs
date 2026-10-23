@@ -29,28 +29,41 @@ internal partial class PlayerContext
     public async ValueTask<JewelStatisticsSnapshot> GetJewelStatisticsAsync(int[] itemCodes)
     {
         using var l = await this.LockAsync(default).ConfigureAwait(false);
+
+        // Account connections deliberately cannot read config; resolve definitions with the read-only configuration role.
+        await using var configuration = new ConfigurationContext();
+        var singles = await configuration.Set<ItemDefinition>().AsNoTracking()
+            .Where(item => itemCodes.Contains((item.Group * 512) + item.Number))
+            .Select(item => new { item.Id, Code = (item.Group * 512) + item.Number }).ToListAsync().ConfigureAwait(false);
+        var bundles = await configuration.Set<JewelMix>().AsNoTracking()
+            .Where(mix => itemCodes.Contains((mix.RawSingleJewel.Group * 512) + mix.RawSingleJewel.Number))
+            .Select(mix => new { Id = mix.RawMixedJewel.Id, Code = (mix.RawSingleJewel.Group * 512) + mix.RawSingleJewel.Number })
+            .Distinct().ToListAsync().ConfigureAwait(false);
+        var units = singles.ToDictionary(item => (item.Id, Level: 0), item => new JewelAmount(item.Code, 1));
+        foreach (var bundle in bundles)
+        {
+            for (var level = 0; level <= 2; level++)
+            {
+                units.TryAdd((bundle.Id, level), new JewelAmount(bundle.Code, (level + 1) * 10));
+            }
+        }
+
+        var definitionIds = units.Keys.Select(key => key.Id).Distinct().ToArray();
         var rows = await this.Context.Database.SqlQuery<JewelStorageRow>($"""
-            WITH mixes AS (
-                SELECT DISTINCT "MixedJewelId", "SingleJewelId" FROM config."JewelMix"
-            ), owned AS (
+            WITH owned AS (
                 SELECT "VaultId" AS id FROM data."Account" WHERE "VaultId" IS NOT NULL
                 UNION SELECT "InventoryId" FROM data."Character" WHERE "InventoryId" IS NOT NULL
             )
-            SELECT i."ItemStorageId" AS "OwnerId",
-                   CASE WHEN s."Id" IS NULL THEN d."Group" * 512 + d."Number"
-                        ELSE s."Group" * 512 + s."Number" END AS "ItemCode",
-                   SUM(CASE WHEN s."Id" IS NULL THEN 1::bigint ELSE (i."Level" + 1) * 10::bigint END)::bigint AS "Amount"
+            SELECT i."ItemStorageId" AS "OwnerId", i."DefinitionId", i."Level"::integer AS "Level", COUNT(*) AS "Amount"
             FROM data."Item" i JOIN owned o ON o.id = i."ItemStorageId"
-            JOIN config."ItemDefinition" d ON d."Id" = i."DefinitionId"
-            LEFT JOIN mixes m ON m."MixedJewelId" = d."Id"
-            LEFT JOIN config."ItemDefinition" s ON s."Id" = m."SingleJewelId"
             WHERE (i."ExpiresAtUtc" IS NULL OR i."ExpiresAtUtc" > {DateTime.UtcNow})
-              AND ((s."Id" IS NULL AND i."Level" = 0 AND d."Group" * 512 + d."Number" = ANY({itemCodes}))
-                OR (s."Group" * 512 + s."Number" = ANY({itemCodes}) AND i."Level" BETWEEN 0 AND 2))
-            GROUP BY i."ItemStorageId", "ItemCode"
+              AND i."DefinitionId" = ANY({definitionIds}) AND i."Level" BETWEEN 0 AND 2
+            GROUP BY i."ItemStorageId", i."DefinitionId", i."Level"
             """).ToListAsync().ConfigureAwait(false);
-        var owners = rows.GroupBy(row => row.OwnerId)
-            .Select(group => new JewelOwnerSnapshot(group.Key, false, group.Select(row => new JewelAmount(row.ItemCode, row.Amount)).ToList())).ToList();
+        var owners = rows.Where(row => units.ContainsKey((row.DefinitionId, row.Level))).GroupBy(row => row.OwnerId)
+            .Select(group => new JewelOwnerSnapshot(group.Key, false, group
+                .Select(row => new JewelAmount(units[(row.DefinitionId, row.Level)].ItemCode, row.Amount * units[(row.DefinitionId, row.Level)].Amount))
+                .GroupBy(amount => amount.ItemCode).Select(amounts => new JewelAmount(amounts.Key, amounts.Sum(amount => amount.Amount))).ToList())).ToList();
         var banks = await this.Context.Set<Account>().AsNoTracking()
             .Select(account => new { account.Id, account.JewelBankBalances }).ToListAsync().ConfigureAwait(false);
         owners.AddRange(banks.Select(bank => new JewelOwnerSnapshot(bank.Id, true, JewelBankLedger.Read(bank.JewelBankBalances, itemCodes))));
