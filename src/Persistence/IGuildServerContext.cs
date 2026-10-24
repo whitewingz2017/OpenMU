@@ -81,4 +81,17 @@ public interface IGuildServerContext : IContext
     /// <param name="guildIds">The guild identifiers to check. Kept small (e.g. one page) to avoid a full table scan.</param>
     /// <returns>The subset of <paramref name="guildIds"/> which are alliance masters.</returns>
     ValueTask<IReadOnlyCollection<Guid>> GetAllianceMasterIdsAsync(IReadOnlyCollection<Guid> guildIds);
+
+    /// <summary>Counts guilds matching a case-insensitive name search.</summary>
+    /// <param name="text">The search term.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The number of matches.</returns>
+    ValueTask<int> CountGuildsAsync(string text, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets statistics about the guilds.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The statistics about the guilds.</returns>
+    ValueTask<GuildStatistics> GetGuildStatisticsAsync(CancellationToken cancellationToken = default);
 }

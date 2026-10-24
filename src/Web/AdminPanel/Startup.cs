@@ -1,4 +1,4 @@
-﻿// <copyright file="Startup.cs" company="MUnique">
+// <copyright file="Startup.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.Web.AdminPanel.Auth;
 using MUnique.OpenMU.Web.AdminPanel.Components;
+using MUnique.OpenMU.Web.AdminPanel.Operations;
 using MUnique.OpenMU.Web.AdminPanel.Services;
 using MUnique.OpenMU.Web.Shared;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
@@ -68,6 +69,10 @@ public class Startup
 
         services.AddSingleton<ILookupController, PersistentObjectsLookupController>();
         services.AddSingleton<ConfigurationSearchIndexCache>();
+        services.AddSingleton<OnlinePlayerHistory>();
+        services.AddHostedService(provider => provider.GetRequiredService<OnlinePlayerHistory>());
+        services.AddScoped<IAdminReadModel, AdminReadModel>();
+        services.AddAdminReadOperations();
 
         services.AddScoped<AccountService>();
         services.AddScoped<IDataService<Account>>(serviceProvider => serviceProvider.GetService<AccountService>()!);

@@ -41,6 +41,7 @@ using MUnique.OpenMU.Startup.TestActors;
 using MUnique.OpenMU.Telemetry;
 using MUnique.OpenMU.Web.AdminPanel;
 using MUnique.OpenMU.Web.AdminPanel.API;
+using MUnique.OpenMU.Web.AdminPanel.Mcp;
 using MUnique.OpenMU.Web.Map;
 using MUnique.OpenMU.Web.Map.Map;
 using MUnique.OpenMU.Web.Shared;
@@ -323,6 +324,7 @@ internal sealed class Program : IDisposable
             }
 
             builder.AddAdminPanel(includeMapApp: true);
+            builder.Services.AddAdminMcp(builder.Configuration);
         }
 
         builder.Services.AddSingleton(this._servers)
@@ -409,7 +411,9 @@ internal sealed class Program : IDisposable
 
         if (addAdminPanel)
         {
+            host.UseAdminMcpProtection();
             host.ConfigureAdminPanel();
+            host.MapAdminMcp();
         }
 
         // When the server is started with an uninitialized database, the plugin configurations

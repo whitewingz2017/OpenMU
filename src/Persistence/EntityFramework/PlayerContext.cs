@@ -1,4 +1,4 @@
-﻿// <copyright file="PlayerContext.cs" company="MUnique">
+// <copyright file="PlayerContext.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -178,6 +178,38 @@ internal partial class PlayerContext : CachingEntityFrameworkContext, IPlayerCon
                 .Skip(skip)
                 .Take(count)
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<(IReadOnlyList<DataModel.Entities.Account> Accounts, int Total)> SearchAccountPageAsync(string text, DataModel.Entities.AccountState? state, int offset, int limit, CancellationToken cancellationToken = default)
+    {
+        using var l = await this.LockAsync(cancellationToken).ConfigureAwait(false);
+        using var scope = this.RepositoryProvider.ContextStack.UseContext(this);
+        var term = text.ToLowerInvariant();
+        var query = this.Context.Set<Account>().AsNoTracking()
+            .Where(a => (state == null || a.State == state)
+                && (a.LoginName.ToLower().Contains(term) || a.EMail.ToLower().Contains(term)
+                    || a.RawCharacters.Any(c => c.Name.ToLower().Contains(term))));
+        var total = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+        var accounts = await query.OrderBy(a => a.LoginName).ThenBy(a => a.Id).Skip(offset).Take(limit).ToListAsync(cancellationToken).ConfigureAwait(false);
+        return (accounts, total);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<AccountStatistics> GetAccountStatisticsAsync(DateTime registeredSince, CancellationToken cancellationToken = default)
+    {
+        using var l = await this.LockAsync(cancellationToken).ConfigureAwait(false);
+        using (this.RepositoryProvider.ContextStack.UseContext(this))
+        {
+            var accounts = this.Context.Set<Account>().AsNoTracking().Where(a => !a.IsTemplate && !a.IsBot);
+            var accountCount = await accounts.CountAsync(cancellationToken).ConfigureAwait(false);
+            var newAccountCount = await accounts.CountAsync(a => a.RegistrationDate >= registeredSince, cancellationToken).ConfigureAwait(false);
+            var bannedAccountCount = await accounts
+                .CountAsync(a => a.State == DataModel.Entities.AccountState.Banned || a.State == DataModel.Entities.AccountState.TemporarilyBanned, cancellationToken)
+                .ConfigureAwait(false);
+            var characterCount = await accounts.SelectMany(a => a.RawCharacters).CountAsync(cancellationToken).ConfigureAwait(false);
+            return new AccountStatistics(accountCount, newAccountCount, bannedAccountCount, characterCount);
         }
     }
 

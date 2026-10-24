@@ -105,6 +105,13 @@ public class GuildServerInMemoryContext : InMemoryContext, IGuildServerContext
             .ToList();
     }
 
+    /// <inheritdoc />
+    public async ValueTask<int> CountGuildsAsync(string text, CancellationToken cancellationToken = default)
+    {
+        var guilds = await this.Provider.GetRepository<DataModel.Entities.Guild>().GetAllAsync(cancellationToken).ConfigureAwait(false);
+        return guilds.Count(g => g.Name?.Contains(text, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyCollection<Guid>> GetAllianceMasterIdsAsync(IReadOnlyCollection<Guid> guildIds)
     {
@@ -120,5 +127,16 @@ public class GuildServerInMemoryContext : InMemoryContext, IGuildServerContext
             .Select(g => g.AllianceGuild!.GetId())
             .Distinct()
             .ToList();
+    }
+    /// <inheritdoc/>
+    public async ValueTask<GuildStatistics> GetGuildStatisticsAsync(CancellationToken cancellationToken = default)
+    {
+        var allGuilds = (await this.Provider.GetRepository<DataModel.Entities.Guild>().GetAllAsync(cancellationToken).ConfigureAwait(false)).ToList();
+        var allianceCount = allGuilds
+            .Where(g => g.AllianceGuild is not null)
+            .Select(g => g.AllianceGuild!.GetId())
+            .Distinct()
+            .Count();
+        return new GuildStatistics(allGuilds.Count, allianceCount);
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="GuildServerContext.cs" company="MUnique">
+// <copyright file="GuildServerContext.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -100,11 +100,20 @@ internal class GuildServerContext : CachingEntityFrameworkContext, IGuildServerC
             .AsNoTracking()
             .Include(g => g.RawMembers)
             .Include(g => g.RawAllianceGuild)
+            .Include(g => g.RawHostility)
             .Where(g => g.Name != null && g.Name.ToLower().Contains(term))
             .OrderBy(g => g.Name)
             .Skip(skip)
             .Take(count)
             .ToListAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async ValueTask<int> CountGuildsAsync(string text, CancellationToken cancellationToken = default)
+    {
+        var term = text.ToLowerInvariant();
+        return await this.Context.Set<Guild>().AsNoTracking()
+            .CountAsync(g => g.Name != null && g.Name.ToLower().Contains(term), cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -136,5 +145,18 @@ internal class GuildServerContext : CachingEntityFrameworkContext, IGuildServerC
                join guild in context.Set<Guild>() on member.GuildId equals guild.Id
                where character.Name == characterName
                select new GuildMembership(member.Id, member.GuildId, member.Status, guild.AllianceGuildId);
+    }
+    /// <inheritdoc/>
+    public async ValueTask<GuildStatistics> GetGuildStatisticsAsync(CancellationToken cancellationToken = default)
+    {
+        var guilds = this.Context.Set<Guild>().AsNoTracking();
+        var guildCount = await guilds.CountAsync(cancellationToken).ConfigureAwait(false);
+        var allianceCount = await guilds
+            .Where(g => g.AllianceGuildId != null)
+            .Select(g => g.AllianceGuildId)
+            .Distinct()
+            .CountAsync(cancellationToken)
+            .ConfigureAwait(false);
+        return new GuildStatistics(guildCount, allianceCount);
     }
 }
