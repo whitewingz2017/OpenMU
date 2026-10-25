@@ -18,6 +18,12 @@ public class LogoutAction
     /// <param name="logoutType">Type of the logout.</param>
     public async ValueTask LogoutAsync(Player player, LogoutType logoutType)
     {
+        // An intentional logout ends membership; only connection loss reserves a reconnect slot.
+        if (player.Party is { } party)
+        {
+            await party.KickMySelfAsync(player).ConfigureAwait(false);
+        }
+
         await player.RemoveFromGameAsync().ConfigureAwait(false);
 
         if (logoutType == LogoutType.CloseGame)

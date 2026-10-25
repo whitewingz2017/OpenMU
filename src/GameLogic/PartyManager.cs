@@ -32,6 +32,7 @@ public sealed class PartyManager : IPartyManager
     /// <inheritdoc />
     public async ValueTask OnMemberReconnectedAsync(IPartyMember member)
     {
+        await this.RemoveOtherCharactersAsync(member).ConfigureAwait(false);
         if (!this._partyByCharacterName.TryGetValue(member.Name, out var party))
         {
             return;
@@ -50,6 +51,25 @@ public sealed class PartyManager : IPartyManager
         // Send the full party state to the rejoined player since they missed updates while offline.
         await member.InvokeViewPlugInAsync<IUpdatePartyListPlugIn>(p => p.UpdatePartyListAsync()).ConfigureAwait(false);
         await member.InvokeViewPlugInAsync<IPartyHealthViewPlugIn>(p => p.UpdatePartyHealthAsync()).ConfigureAwait(false);
+    }
+
+    private async ValueTask RemoveOtherCharactersAsync(IPartyMember member)
+    {
+        if (member is not Player { Account: { } account } || string.IsNullOrEmpty(account.LoginName))
+        {
+            return;
+        }
+
+        foreach (var party in this._partyByCharacterName.Values.Distinct().ToArray())
+        {
+            var obsolete = party.PartyList.OfType<OfflinePartyMember>()
+                .Where(m => m.Name != member.Name && string.Equals(m.AccountName, account.LoginName, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            foreach (var snapshot in obsolete)
+            {
+                await party.KickMySelfAsync(snapshot).ConfigureAwait(false);
+            }
+        }
     }
 
     /// <inheritdoc />

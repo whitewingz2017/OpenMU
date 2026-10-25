@@ -173,6 +173,27 @@ public class PartyManagerTest
         Assert.That(member1.Party, Is.Null);
     }
 
+    /// <summary>
+    /// A different character releases an offline reservation only for its own account.
+    /// </summary>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async ValueTask CharacterSwitchRemovesOnlyOwnOfflineReservationAsync(bool sameAccount)
+    {
+        var (party, oldCharacter, _) = await this.CreatePartyWithTwoMembersAsync().ConfigureAwait(false);
+        oldCharacter.Account!.LoginName = "switch-account";
+        var oldName = oldCharacter.Name;
+        await party.LeaveTemporarilyAsync(oldCharacter).ConfigureAwait(false);
+        var otherCharacter = await this.CreatePartyMemberAsync().ConfigureAwait(false);
+        otherCharacter.Account!.LoginName = sameAccount ? "switch-account" : "another-account";
+        otherCharacter.SelectedCharacter!.Name = "OtherChar";
+
+        await this._partyManager.OnMemberReconnectedAsync(otherCharacter).ConfigureAwait(false);
+
+        Assert.That(party.PartyList.Any(m => m.Name == oldName), Is.EqualTo(!sameAccount));
+        Assert.That(otherCharacter.Party, Is.Null);
+    }
+
     private async ValueTask<(Party Party, Player Member1, Player Member2)> CreatePartyWithTwoMembersAsync()
     {
         var member1 = await this.CreatePartyMemberAsync().ConfigureAwait(false);

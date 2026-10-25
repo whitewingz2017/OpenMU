@@ -18,6 +18,25 @@ using MUnique.OpenMU.GameLogic.Views.World;
 public class ReEnterWorldAfterLogoutTest
 {
     /// <summary>
+    /// Explicit character selection leaves no offline party reservation behind.
+    /// </summary>
+    [Test]
+    public async ValueTask IntentionalLogoutEndsPartyMembershipAsync()
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var companion = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var oldName = player.Name;
+        var party = player.GameContext.PartyManager.CreateParty();
+        await party.AddAsync(player).ConfigureAwait(false);
+        await party.AddAsync(companion).ConfigureAwait(false);
+
+        await new LogoutAction().LogoutAsync(player, LogoutType.BackToCharacterSelection).ConfigureAwait(false);
+
+        Assert.That(player.Party, Is.Null);
+        Assert.That(party.PartyList.Any(m => m.Name == oldName), Is.False);
+    }
+
+    /// <summary>
     /// The player always observes itself, so it was never removed from its own list of observed
     /// objects when it left the map. After a logout back to the character selection, entering the
     /// world again didn't send the player to itself as "new player in scope", and clients which

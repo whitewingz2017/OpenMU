@@ -21,6 +21,7 @@ public sealed class OfflinePartyMember : IPartyMember
     /// <param name="player">The player.</param>
     public OfflinePartyMember(IPartyMember player)
     {
+        this.AccountName = (player as Player)?.Account?.LoginName ?? (player as OfflinePartyMember)?.AccountName;
         this.Name = player.Name;
         this.Id = player.Id;
         this.CurrentHealth = player.CurrentHealth;
@@ -35,6 +36,11 @@ public sealed class OfflinePartyMember : IPartyMember
     /// Gets the member disconnected time.
     /// </summary>
     public DateTime DisconnectedAtUtc { get; }
+
+    /// <summary>
+    /// Gets the account which owns the reserved character, for character-switch cleanup.
+    /// </summary>
+    public string? AccountName { get; }
 
     /// <inheritdoc />
     public Party? Party { get; set; }
