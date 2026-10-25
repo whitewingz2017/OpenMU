@@ -52,6 +52,7 @@ with `-adminpanel:disabled`.
 | [Servers](servers.md) | Start/stop listeners, player counts, add servers, global messages |
 | [Accounts](accounts.md) | Search, create, ban and edit accounts |
 | [Online accounts](online-accounts.md) | Who is logged in, disconnect players, offline sessions |
+| [Leaderboards](#leaderboards) | Mini game character rankings |
 | [Game configuration](game-configuration.md) | Everything about the game world: system settings, items, monsters, skills, maps, drops, … |
 | [Plugins](plugins.md) | Activate, deactivate and configure plugins |
 | [Chat commands](chat-commands.md) | Which in-game commands exist and who may use them |
@@ -111,3 +112,21 @@ The panel grows with the server. Ideas which are not implemented yet:
   know the game rules instead of showing the raw data model
 * Expanding a server in the list to see the players who are playing on it
 * More game master functions on the [live map](live-map.md)
+
+## Leaderboards
+
+The *Leaderboards* page ranks the characters by their results in the mini games,
+like Blood Castle, Devil Square and Chaos Castle. There is a tab for each mini
+game type, and all levels of a type (e.g. Blood Castle 1 to 8) are combined.
+
+For each character it shows the sum of the scores, the best score of a single
+game and the number of played games, ordered by the sum of the scores. The
+period can be limited to the last 7 or 30 days. The 100 best characters are
+shown; characters of bots and template accounts are not ranked.
+
+A mini game only has a leaderboard when it saves its results: enable
+*Save Ranking Statistics* of the mini game definition in the
+[game configuration](game-configuration.md). In a freshly initialized database,
+this is the case for Blood Castle, Devil Square and Chaos Castle. Agents read
+the same leaderboards with the `minigames_leaderboard` [MCP tool](mcp.md).
+

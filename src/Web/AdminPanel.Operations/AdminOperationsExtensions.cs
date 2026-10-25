@@ -19,6 +19,7 @@ public static class AdminOperationsExtensions
         services.AddScoped<GuildReadOperations>();
         services.AddScoped<ConfigurationReadOperations>();
         services.AddScoped<PluginReadOperations>();
+        services.AddScoped<MiniGameReadOperations>();
         return services;
     }
 }

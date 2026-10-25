@@ -145,6 +145,7 @@ OAuth are planned for a later phase; an API key is required today.
 | Accounts and characters | `accounts_search`, `accounts_get`, `characters_get` |
 | Online players | `players_list` |
 | Guilds | `guilds_search`, `guilds_get` |
+| Mini games | `minigames_leaderboard` |
 | Plugins | `plugins_list` |
 | Configuration | `config_types`, `config_describe`, `config_search`, `config_query`, `config_get` |
 
