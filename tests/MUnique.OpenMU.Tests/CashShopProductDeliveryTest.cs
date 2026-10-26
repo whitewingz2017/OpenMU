@@ -17,6 +17,8 @@ using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.PlayerActions.CashShop;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.CashShop;
+using MUnique.OpenMU.GameLogic.Views.Character;
+using MUnique.OpenMU.GameLogic.Views.World;
 using MUnique.OpenMU.Persistence;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
@@ -343,7 +345,22 @@ public class CashShopProductDeliveryTest
         await player.MagicEffectList.ClearAllEffectsAsync().ConfigureAwait(false);
         await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
         Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
-        player.SelectedCharacter.PurchasedEffects.Single().ExpiresAtUtc = DateTime.UtcNow.AddSeconds(-1);
+        var character = player.SelectedCharacter;
+        var deadline = character.PurchasedEffects.Single().ExpiresAtUtc;
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<IActivateMagicEffectPlugIn>()!);
+        var initialized = false;
+        var activationAfterInitialization = false;
+        Mock.Get(player.ViewPlugIns.GetPlugIn<IUpdateCharacterStatsPlugIn>()!)
+            .Setup(v => v.UpdateCharacterStatsAsync()).Callback(() => initialized = true).Returns(ValueTask.CompletedTask);
+        view.Setup(v => v.ActivateMagicEffectAsync(It.IsAny<MagicEffect>(), player))
+            .Callback<MagicEffect, IAttackable>((_, _) => activationAfterInitialization |= initialized)
+            .Returns(ValueTask.CompletedTask);
+        await player.RemoveFromGameAsync().ConfigureAwait(false);
+        await player.SetSelectedCharacterAsync(character).ConfigureAwait(false);
+        Assert.That(activationAfterInitialization, Is.True, "Restored purchase must reach the client after character initialization.");
+        Assert.That(player.Attributes![Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
+        Assert.That(character.PurchasedEffects.Single().ExpiresAtUtc, Is.EqualTo(deadline));
+        character.PurchasedEffects.Single().ExpiresAtUtc = DateTime.UtcNow.AddSeconds(-1);
         await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
         Assert.That(player.SelectedCharacter.PurchasedEffects, Is.Empty);
         Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original));

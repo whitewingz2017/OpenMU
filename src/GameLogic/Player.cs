@@ -1,4 +1,4 @@
-﻿// <copyright file="Player.cs" company="MUnique">
+// <copyright file="Player.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -1975,6 +1975,23 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
     }
 
+    private async ValueTask RefreshPurchasedEffectViewsAsync()
+    {
+        if (this.SelectedCharacter is not { } character)
+        {
+            return;
+        }
+
+        // CharacterInformation resets the client hero, so repeat restored icons after initialization.
+        foreach (var entry in character.PurchasedEffects.Where(entry => entry.ExpiresAtUtc > DateTime.UtcNow))
+        {
+            if (entry.Definition is { } definition && this.MagicEffectList.TryGetEffect(definition.Number, out var effect))
+            {
+                await this.InvokeViewPlugInAsync<IActivateMagicEffectPlugIn>(p => p.ActivateMagicEffectAsync(effect, this)).ConfigureAwait(false);
+            }
+        }
+    }
+
     private async ValueTask OnPlayerEnteredWorldAsync()
     {
         if (this.SelectedCharacter is not { } selectedCharacter)
@@ -2035,6 +2052,7 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
 
         await this.ClientReadyAfterMapChangeAsync().ConfigureAwait(false);
+        await this.RefreshPurchasedEffectViewsAsync().ConfigureAwait(false);
         this.LimitHeroStateRemainingTime();
         this._lastRegenerate = DateTime.UtcNow;
         this._heroStateSecondsRemainder = 0;
