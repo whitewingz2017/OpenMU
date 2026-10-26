@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameServer.RemoteView.MiniGames;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.GameLogic.MiniGames;
 using MUnique.OpenMU.Network.Packets.ServerToClient;
+using MUnique.OpenMU.Network.PlugIns;
 using MUnique.OpenMU.PlugIns;
 using MiniGameType = MUnique.OpenMU.DataModel.Configuration.MiniGameType;
 
@@ -19,6 +20,7 @@ using MiniGameType = MUnique.OpenMU.DataModel.Configuration.MiniGameType;
 public class UpdateMiniGameStateViewViewPlugIn : IUpdateMiniGameStateViewPlugIn
 {
     private readonly RemotePlayer _player;
+    private DevilSquareContext? _progressGame;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpdateMiniGameStateViewViewPlugIn"/> class.
@@ -29,6 +31,14 @@ public class UpdateMiniGameStateViewViewPlugIn : IUpdateMiniGameStateViewPlugIn
     /// <inheritdoc />
     public async ValueTask UpdateStateAsync(MiniGameType type, MiniGameState state)
     {
+        if (type == MiniGameType.DevilSquare && state == MiniGameState.Playing
+            && this._player.ClientVersion.CompareTo(new ClientVersion(106, 3, ClientLanguage.Invariant)) >= 0
+            && this._player.CurrentMiniGame is DevilSquareContext game && !ReferenceEquals(this._progressGame, game))
+        {
+            this._progressGame = game;
+            _ = DevilSquareProgressView.StreamAsync(this._player, game);
+        }
+
         if (TryGetState(type, state, out var miniGameState))
         {
             await this._player.Connection.SendUpdateMiniGameStateAsync(miniGameState).ConfigureAwait(false);

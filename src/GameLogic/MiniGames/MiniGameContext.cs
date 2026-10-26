@@ -179,6 +179,9 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     /// </summary>
     protected virtual TimeSpan RemainingTime => TimeSpan.Zero;
 
+    /// <summary>Gets elapsed running time for live event progress.</summary>
+    protected TimeSpan ElapsedGameTime => this._elapsedTimeSinceStart?.Elapsed ?? TimeSpan.Zero;
+
     /// <summary>
     /// Gets a value indicating whether a winner is existing.
     /// </summary>
@@ -205,6 +208,9 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     /// no next event.
     /// </summary>
     protected int NextEventActualKills => this._changeEvents.Current?.ActualKills ?? 0;
+
+    /// <summary>Gets the configured objective currently awaiting completion.</summary>
+    protected MiniGameChangeEvent? NextEventDefinition => this._changeEvents.Current?.Definition;
 
     /// <summary>
     /// Gets or sets the drop generator which should be used during the mini game.

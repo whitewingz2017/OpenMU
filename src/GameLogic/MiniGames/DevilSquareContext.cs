@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.MiniGames;
 
 using System.Collections.Concurrent;
 using System.Threading;
+using MUnique.OpenMU.Interfaces;
 using Nito.Disposables.Internals;
 
 /// <summary>
@@ -27,6 +28,29 @@ public sealed class DevilSquareContext : MiniGameContext
     public DevilSquareContext(MiniGameMapKey key, MiniGameDefinition definition, IGameContext gameContext, IMapInitializer mapInitializer)
         : base(key, definition, gameContext, mapInitializer)
     {
+    }
+
+    /// <summary>Gets live progress using the configured wave schedule and recorded player scores.</summary>
+    /// <param name="player">The participant viewing the journal.</param>
+    /// <returns>The current event progress.</returns>
+    public DevilSquareProgress GetProgress(Player player)
+    {
+        var elapsed = this.ElapsedGameTime;
+        var scores = this._gameStates.Values.OrderByDescending(s => s.Score).ThenBy(s => s.Player.Name, StringComparer.Ordinal).ToList();
+        var mine = scores.FindIndex(s => s.Player.Name == player.Name);
+        var waves = this.Definition.SpawnWaves.OrderBy(w => w.StartTime).Take(8)
+            .Select(w => new DevilSquareProgress.Wave(
+                w.WaveNumber,
+                this.IsSpawnWaveActive(w.WaveNumber) ? (byte)1 : elapsed >= w.EndTime ? (byte)2 : (byte)0,
+                w.StartTime - elapsed,
+                w.EndTime - elapsed)).ToArray();
+        return new(
+            this.Definition.GameLevel,
+            this.Definition.GameDuration - elapsed,
+            mine < 0 ? 0 : scores[mine].Score,
+            (byte)(mine + 1),
+            (byte)scores.Count,
+            waves);
     }
 
     /// <inheritdoc />
@@ -51,6 +75,17 @@ public sealed class DevilSquareContext : MiniGameContext
         }
 
         await base.OnGameStartAsync(players).ConfigureAwait(false);
+        await this.ForEachPlayerAsync(player => player.InvokeViewPlugInAsync<IUpdateMiniGameStateViewPlugIn>(view => view.UpdateStateAsync(this.Definition.Type, this.State)).AsTask()).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    protected override async ValueTask OnObjectAddedToMapAsync((GameMap Map, ILocateable Object) args)
+    {
+        await base.OnObjectAddedToMapAsync(args).ConfigureAwait(false);
+        if (args.Object is Player player && ReferenceEquals(player.CurrentMiniGame, this) && this.State == MiniGameState.Playing)
+        {
+            await player.InvokeViewPlugInAsync<IUpdateMiniGameStateViewPlugIn>(view => view.UpdateStateAsync(this.Definition.Type, this.State)).ConfigureAwait(false);
+        }
     }
 
     /// <inheritdoc />

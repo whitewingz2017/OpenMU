@@ -9020,4 +9020,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="MiniGameProgressExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A Devil Square participant receives a live event progress snapshot once per second.
+    /// Causes reaction on client side: The mobile event journal displays the server timer, configured wave progress, score and rank. Data is version 1: version byte, event byte (1 Devil Square), level byte, ended byte, remaining seconds UInt16 LE, points Int32 LE, rank byte, participants byte, wave count byte. Each wave contains number byte, state byte (0 pending, 1 active, 2 completed), starts-in UInt16 LE and ends-in UInt16 LE. At most eight waves are sent.
+    /// </remarks>
+    public static async ValueTask SendMiniGameProgressExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MiniGameProgressExtendedRef.GetRequiredSize(data.Length);
+            var packet = new MiniGameProgressExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

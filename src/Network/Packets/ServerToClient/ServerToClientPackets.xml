@@ -15232,6 +15232,7 @@
       </Fields>
     </Packet>
     <Packet><HeaderType>C2HeaderWithSubCode</HeaderType><Code>FB</Code><SubCode>21</SubCode><Name>EventTimerResponseExtended</Name><Direction>ServerToClient</Direction><SentWhen>The custom client requests its event timer.</SentWhen><CausedReaction>The client displays countdowns using the UTF-8 JSON RequestId, ServerUtc and Rows containing Name and StartsAtUtc. Dates are UTC. Only configured events on this server are included, in chronological order.</CausedReaction><Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields></Packet>
+    <Packet><HeaderType>C2HeaderWithSubCode</HeaderType><Code>FA</Code><SubCode>30</SubCode><Name>MiniGameProgressExtended</Name><Direction>ServerToClient</Direction><SentWhen>A Devil Square participant receives a live event progress snapshot once per second.</SentWhen><CausedReaction>The mobile event journal displays the server timer, configured wave progress, score and rank. Data is version 1: version byte, event byte (1 Devil Square), level byte, ended byte, remaining seconds UInt16 LE, points Int32 LE, rank byte, participants byte, wave count byte. Each wave contains number byte, state byte (0 pending, 1 active, 2 completed), starts-in UInt16 LE and ends-in UInt16 LE. At most eight waves are sent.</CausedReaction><Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields></Packet>
   </Packets>
   <Enums>
     <Enum>

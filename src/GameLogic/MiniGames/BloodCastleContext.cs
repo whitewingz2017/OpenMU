@@ -62,6 +62,7 @@ public sealed class BloodCastleContext : MiniGameContext
     private TimeSpan _remainingTime;
 
     private bool _gateDestroyed;
+    private int _bridgeMonsterGoal;
 
     private Player? _winner;
     private Player? _questItemOwner;
@@ -202,8 +203,9 @@ public sealed class BloodCastleContext : MiniGameContext
             this._gameStates.TryAdd(player.Name, new PlayerGameState(player));
         }
 
-        _ = Task.Run(async () => await this.ShowRemainingTimeLoopAsync(this.GameEndedToken).ConfigureAwait(false), this.GameEndedToken);
         await base.OnGameStartAsync(players).ConfigureAwait(false);
+        this._bridgeMonsterGoal = this.NextEventRequiredKills;
+        _ = Task.Run(async () => await this.ShowRemainingTimeLoopAsync(this.GameEndedToken).ConfigureAwait(false), this.GameEndedToken);
     }
 
     /// <inheritdoc />
@@ -306,13 +308,15 @@ public sealed class BloodCastleContext : MiniGameContext
 
     private ValueTask UpdateStateAsync(BloodCastleStatus status, Player player)
     {
+        // The gate's one required destruction is not a monster counter.
+        var gateObjective = !this._gateDestroyed && this.NextEventDefinition?.TargetDefinition?.Number == CastleGateNumber;
         return player.InvokeViewPlugInAsync<IBloodCastleStateViewPlugin>(
             p =>
                 p.UpdateStateAsync(
                     status,
                     this._remainingTime,
-                    this.NextEventRequiredKills,
-                    this.NextEventActualKills,
+                    gateObjective ? this._bridgeMonsterGoal : this.NextEventRequiredKills,
+                    gateObjective ? this._bridgeMonsterGoal : this.NextEventActualKills,
                     this._questItemOwner,
                     this._questItem));
     }

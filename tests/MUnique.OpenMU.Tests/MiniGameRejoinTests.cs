@@ -166,12 +166,28 @@ public class MiniGameRejoinTests
 
         var definition = CreateDefinition(gameContext, MiniGameType.DevilSquare);
         definition.Rewards.Add(new MiniGameReward { RewardType = MiniGameRewardType.Money, RewardAmount = 1000 });
+        definition.GameLevel = 3;
+        definition.SpawnWaves.Add(new MiniGameSpawnWave { WaveNumber = 1, StartTime = TimeSpan.Zero, EndTime = TimeSpan.FromMinutes(2) });
+        definition.SpawnWaves.Add(new MiniGameSpawnWave { WaveNumber = 10, StartTime = TimeSpan.FromMinutes(3), EndTime = TimeSpan.FromMinutes(5) });
         var game = new DevilSquareContext(new MiniGameMapKey(0, 0, string.Empty), definition, gameContext, CreateMapInitializer());
         this._gamesToDispose.Add(game);
         game.EnsureGameLoopRunning();
         await EnterAsync(game, remainingPlayer).ConfigureAwait(false);
         await EnterAsync(game, player).ConfigureAwait(false);
         await SkipUntilPlayingAsync(game).ConfigureAwait(false);
+
+        Mock.Get(player.ViewPlugIns.GetPlugIn<IUpdateMiniGameStateViewPlugIn>()!)
+            .Verify(view => view.UpdateStateAsync(MiniGameType.DevilSquare, MiniGameState.Playing), Times.Once);
+        var progress = game.GetProgress(player);
+        Assert.That(progress.Level, Is.EqualTo(3));
+        Assert.That(progress.Points, Is.Zero);
+        Assert.That(progress.Players, Is.EqualTo(2));
+        Assert.That(progress.Rank, Is.EqualTo(1));
+        Assert.That(progress.Remaining, Is.InRange(TimeSpan.FromMinutes(4), TimeSpan.FromMinutes(5)));
+        Assert.That(progress.Waves.Select(w => w.Number), Is.EqualTo(new byte[] { 1, 10 }));
+        Assert.That(progress.Waves[1].State, Is.Zero);
+        Assert.That(progress.Waves[1].StartsIn, Is.InRange(TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(3)));
+        Assert.That(game.GetProgress(remainingPlayer).Rank, Is.EqualTo(2));
 
         player.IsAlive = true;
         await game.Map.AddAsync(player).ConfigureAwait(false);
@@ -182,6 +198,12 @@ public class MiniGameRejoinTests
         reconnected.SelectedCharacter!.Name = player.SelectedCharacter.Name;
         Assert.That(await game.TryRejoinAsync(reconnected).ConfigureAwait(false), Is.True);
 
+        await game.Map.AddAsync(reconnected).ConfigureAwait(false);
+        Mock.Get(reconnected.ViewPlugIns.GetPlugIn<IUpdateMiniGameStateViewPlugIn>()!)
+            .Verify(view => view.UpdateStateAsync(MiniGameType.DevilSquare, MiniGameState.Playing), Times.Once);
+        Assert.That(game.GetProgress(reconnected).Rank, Is.EqualTo(1));
+        Assert.That(game.GetProgress(reconnected).Players, Is.EqualTo(2));
+
         // The game duration can't be skipped, so the game is finished like a game master would do it.
         typeof(MiniGameContext).GetMethod("FinishEvent", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(game, null);
         await WaitUntilAsync(() => reconnected.Money > 0).ConfigureAwait(false);
@@ -189,6 +211,29 @@ public class MiniGameRejoinTests
         Assert.That(reconnected.Money, Is.EqualTo(1000));
         Assert.That(player.Money, Is.EqualTo(0));
         Assert.That(remainingPlayer.Money, Is.EqualTo(1000));
+    }
+
+    /// <summary>The gate objective preserves the completed monster total instead of displaying zero of one monster.</summary>
+    [Test]
+    public async Task BloodCastleGateKeepsCompletedMonsterCounterAsync()
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var monsters = new MiniGameChangeEvent { Index = 1, Target = KillTarget.AnyMonster, NumberOfKills = 40 };
+        var gate = new MiniGameChangeEvent { Index = 2, Target = KillTarget.Specific, NumberOfKills = 1, TargetDefinition = new MonsterDefinition { Number = 131 } };
+        var definition = CreateDefinition(player.GameContext, MiniGameType.BloodCastle, monsters, gate);
+        var game = new BloodCastleContext(new MiniGameMapKey(0, 0, string.Empty), definition, player.GameContext, CreateMapInitializer());
+        this._gamesToDispose.Add(game);
+        await EnterAsync(game, player).ConfigureAwait(false);
+        await ((ValueTask)typeof(MiniGameContext).GetMethod("StartAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(game, null)!).ConfigureAwait(false);
+        var processor = typeof(MiniGameContext).GetField("_changeEvents", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(game)!;
+        processor.GetType().GetProperty("Current")!.SetValue(processor, new ChangeEventContext(gate, 1));
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<IBloodCastleStateViewPlugin>()!);
+        view.Invocations.Clear();
+        await ((ValueTask)typeof(BloodCastleContext).GetMethod("UpdateStateAsync", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .Invoke(game, new object[] { BloodCastleStatus.GateNotDestroyed, player })!).ConfigureAwait(false);
+        var update = view.Invocations.Last(i => i.Method.Name == "UpdateStateAsync");
+        Assert.That(update.Arguments[2], Is.EqualTo(40));
+        Assert.That(update.Arguments[3], Is.EqualTo(40));
     }
 
     private static MiniGameDefinition CreateDefinition(IGameContext gameContext, MiniGameType type, params MiniGameChangeEvent[] changeEvents)
