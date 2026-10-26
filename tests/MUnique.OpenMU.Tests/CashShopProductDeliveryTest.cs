@@ -342,6 +342,10 @@ public class CashShopProductDeliveryTest
         Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Has.Count.EqualTo(1));
         Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
 
+        effect.StopByDeath = true;
+        await player.MagicEffectList.ClearEffectsAfterDeathAsync().ConfigureAwait(false);
+        Assert.That(player.MagicEffectList.HasEffect(effect), Is.True, "An unexpired purchased seal survives death.");
+        Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));
         await player.MagicEffectList.ClearAllEffectsAsync().ConfigureAwait(false);
         await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
         Assert.That(player.Attributes[Stats.ExperienceRate], Is.EqualTo(original + 0.5f));

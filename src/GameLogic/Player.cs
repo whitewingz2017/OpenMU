@@ -1975,7 +1975,7 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
     }
 
-    private async ValueTask RefreshPurchasedEffectViewsAsync()
+    internal async ValueTask RefreshPurchasedEffectViewsAsync()
     {
         if (this.SelectedCharacter is not { } character)
         {
@@ -2052,7 +2052,6 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
 
         await this.ClientReadyAfterMapChangeAsync().ConfigureAwait(false);
-        await this.RefreshPurchasedEffectViewsAsync().ConfigureAwait(false);
         this.LimitHeroStateRemainingTime();
         this._lastRegenerate = DateTime.UtcNow;
         this._heroStateSecondsRemainder = 0;

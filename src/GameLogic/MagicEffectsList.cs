@@ -1,4 +1,4 @@
-﻿// <copyright file="MagicEffectsList.cs" company="MUnique">
+// <copyright file="MagicEffectsList.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -273,7 +273,11 @@ public class MagicEffectsList : AsyncDisposable
     /// </summary>
     public async ValueTask ClearEffectsAfterDeathAsync()
     {
-        var effectsToRemove = this.GetActiveEffectsSnapshot().Where(effect => effect.Definition.StopByDeath).ToList();
+        var purchasedDefinitions = this._owner is Player { SelectedCharacter: { } character }
+            ? character.PurchasedEffects.Where(entry => entry.ExpiresAtUtc > DateTime.UtcNow).Select(entry => entry.Definition).ToHashSet()
+            : null;
+        var effectsToRemove = this.GetActiveEffectsSnapshot()
+            .Where(effect => effect.Definition.StopByDeath && purchasedDefinitions?.Contains(effect.Definition) != true).ToList();
         foreach (var effect in effectsToRemove)
         {
             await effect.DisposeAsync().ConfigureAwait(false);
@@ -306,7 +310,7 @@ public class MagicEffectsList : AsyncDisposable
         {
             // Identity-aware: the entry may have been replaced since this
             // effect started expiring (see UpdateEffect). Only tear down
-            // what is ours — a replacement owns the id now, its power-ups
+            // what is ours � a replacement owns the id now, its power-ups
             // stay applied, and no deactivate is sent for it. Whoever
             // replaced or force-removed the entry already did its cleanup.
             if (!this._activeEffects.TryGetValue(effect.Id, out var current) || !ReferenceEquals(current, effect))

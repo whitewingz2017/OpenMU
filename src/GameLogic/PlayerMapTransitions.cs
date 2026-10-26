@@ -201,6 +201,7 @@ internal sealed class PlayerMapTransitions
             await player.PlayerState.TryAdvanceToAsync(GameLogic.PlayerState.EnteredWorld).ConfigureAwait(false);
             player.IsAlive = true;
             await player.CurrentMap!.AddAsync(player).ConfigureAwait(false);
+            await player.RefreshPurchasedEffectViewsAsync().ConfigureAwait(false);
         }
         else
         {
@@ -270,6 +271,7 @@ internal sealed class PlayerMapTransitions
         }
 
         await this._summon.AddToMapAsync(player.CurrentMap).ConfigureAwait(false);
+        await player.RefreshPurchasedEffectViewsAsync().ConfigureAwait(false);
     }
 
     /// <summary>
