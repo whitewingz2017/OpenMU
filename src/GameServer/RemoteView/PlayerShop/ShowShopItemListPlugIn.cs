@@ -1,4 +1,4 @@
-﻿// <copyright file="ShowShopItemListPlugIn.cs" company="MUnique">
+// <copyright file="ShowShopItemListPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -42,7 +42,7 @@ public class ShowShopItemListPlugIn : IShowShopItemListPlugIn
 
         var itemSerializer = this._player.ItemSerializer;
         var playerId = requestedPlayer.GetId(this._player);
-        var items = requestedPlayer.ShopStorage.Items.ToList();
+        var items = requestedPlayer.ShopStorage.Items.Where(item => item.StorePriceItemType == 0).ToList();
         int Write()
         {
             var size = PlayerShopItemListRef.GetRequiredSize(items.Count);

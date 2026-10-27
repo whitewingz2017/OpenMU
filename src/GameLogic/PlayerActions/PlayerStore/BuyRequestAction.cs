@@ -1,9 +1,10 @@
-﻿// <copyright file="BuyRequestAction.cs" company="MUnique">
+// <copyright file="BuyRequestAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.PlayerStore;
 
+using System.Threading;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
@@ -23,6 +24,27 @@ public class BuyRequestAction
     /// <param name="requestedPlayer">The requested player.</param>
     /// <param name="slot">The slot.</param>
     public async ValueTask BuyItemAsync(Player player, Player requestedPlayer, byte slot)
+    {
+        if (ReferenceEquals(player, requestedPlayer))
+        {
+            return;
+        }
+
+        // Packet processing already owns the buyer lock. Do not wait indefinitely for a seller
+        // who may be buying from this buyer on another request.
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+        try
+        {
+            await player.RunPersistenceExclusiveAsync(() => requestedPlayer.RunPersistenceExclusiveAsync(
+                () => this.BuyItemCoreAsync(player, requestedPlayer, slot), timeout.Token)).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested)
+        {
+            await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(requestedPlayer, ItemBuyResult.NotAvailable, null)).ConfigureAwait(false);
+        }
+    }
+
+    private async ValueTask BuyItemCoreAsync(Player player, Player requestedPlayer, byte slot)
     {
         using var loggerScope = player.Logger.BeginScope(this.GetType());
         if (requestedPlayer.IsTemplatePlayer || player.IsTemplatePlayer)
@@ -67,6 +89,12 @@ public class BuyRequestAction
             return;
         }
 
+        if (item.StorePriceItemType != 0)
+        {
+            await new StoreCurrencyPurchase().BuyAsync(player, requestedPlayer, slot).ConfigureAwait(false);
+            return;
+        }
+
         var itemPrice = item.StorePrice.Value;
 
         if (player.Money < itemPrice)
@@ -95,9 +123,15 @@ public class BuyRequestAction
             }
 
             item = requestedPlayer.ShopStorage.GetItem(slot);
-            if (item is null)
+            if (item is null || item.StorePrice is null || item.StorePriceItemType != 0)
             {
                 await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(requestedPlayer, ItemBuyResult.InvalidShopSlot, null)).ConfigureAwait(false);
+                return;
+            }
+
+            itemPrice = item.StorePrice.Value;
+            if (itemPrice <= 0)
+            {
                 return;
             }
 

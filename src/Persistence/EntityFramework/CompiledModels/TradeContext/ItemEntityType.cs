@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Item",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Item),
                 baseEntityType,
-                propertyCount: 11,
+                propertyCount: 12,
                 navigationCount: 2,
                 keyCount: 1);
 
@@ -115,6 +115,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Item).GetField("<StorePrice>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             storePrice.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var storePriceItemType = runtimeEntityType.AddProperty(
+                "StorePriceItemType",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Item).GetProperty("StorePriceItemType", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Item).GetField("<StorePriceItemType>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            storePriceItemType.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });

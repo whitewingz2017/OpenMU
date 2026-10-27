@@ -1,4 +1,4 @@
-﻿// <copyright file="SetItemPriceAction.cs" company="MUnique">
+// <copyright file="SetItemPriceAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -18,10 +18,16 @@ public class SetItemPriceAction
     /// <param name="player">The player.</param>
     /// <param name="slot">The slot of the item in the store (0 to 31).</param>
     /// <param name="price">The price.</param>
-    public async ValueTask SetPriceAsync(Player player, byte slot, int price)
+    /// <param name="currency">The packed payment type, or zero for Zen.</param>
+    public async ValueTask SetPriceAsync(Player player, byte slot, int price, int currency = 0)
     {
         ItemPriceResult result;
-        if (player.ShopStorage?.StoreOpen ?? false)
+        if (slot < InventoryConstants.FirstStoreItemSlotIndex || slot >= InventoryConstants.FirstStoreItemSlotIndex + InventoryConstants.StoreSize
+            || (player.ShopStorage?.StoreOpen ?? false))
+        {
+            result = ItemPriceResult.Failed;
+        }
+        else if (currency != 0 && !StoreCurrency.IsValid(currency, price, StoreCurrencyFeaturePlugIn.GetSettings(player.GameContext)))
         {
             result = ItemPriceResult.Failed;
         }
@@ -37,6 +43,7 @@ public class SetItemPriceAction
             if (item != null)
             {
                 item.StorePrice = price > 0 ? price : (int?)null;
+                item.StorePriceItemType = price > 0 ? currency : 0;
                 result = price >= 0 ? ItemPriceResult.Success : ItemPriceResult.PriceNegative;
             }
         }

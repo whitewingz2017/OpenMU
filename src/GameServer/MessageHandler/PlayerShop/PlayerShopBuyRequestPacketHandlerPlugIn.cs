@@ -1,4 +1,4 @@
-﻿// <copyright file="PlayerShopBuyRequestPacketHandlerPlugIn.cs" company="MUnique">
+// <copyright file="PlayerShopBuyRequestPacketHandlerPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -11,7 +11,9 @@ using MUnique.OpenMU.GameLogic.PlayerActions.PlayerStore;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.Interfaces;
+using MUnique.OpenMU.GameServer.RemoteView;
 using MUnique.OpenMU.Network.Packets.ClientToServer;
+using MUnique.OpenMU.Network.PlugIns;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
@@ -48,6 +50,13 @@ internal class PlayerShopBuyRequestPacketHandlerPlugIn : ISubPacketHandlerPlugIn
         {
             player.Logger.LogDebug("Player Names don't match: {0} != {1}", message.PlayerName, requestedPlayer.SelectedCharacter?.Name);
             await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(null, ItemBuyResult.NameMismatchOrPriceMissing, null)).ConfigureAwait(false);
+            return;
+        }
+
+        if (requestedPlayer.ShopStorage?.GetItem(message.ItemSlot)?.StorePriceItemType != 0
+            && player is RemotePlayer remote && remote.ClientVersion < new ClientVersion(106, 3, ClientLanguage.Invariant))
+        {
+            await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(requestedPlayer, ItemBuyResult.NotAvailable, null)).ConfigureAwait(false);
             return;
         }
 

@@ -2288,6 +2288,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int?>("StorePrice")
                         .HasColumnType("integer");
 
+                    b.Property<int>("StorePriceItemType")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefinitionId");

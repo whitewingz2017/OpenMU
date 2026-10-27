@@ -1,4 +1,4 @@
-﻿// <copyright file="Item.cs" company="MUnique">
+// <copyright file="Item.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -79,6 +79,9 @@ public partial class Item
     /// Gets or sets the price which was set by the player for his personal store.
     /// </summary>
     public int? StorePrice { get; set; }
+
+    /// <summary>Gets or sets the extended personal-store currency: zero for Zen, a packed jewel type, or an account-coin code.</summary>
+    public int StorePriceItemType { get; set; }
 
     /// <summary>
     /// Gets or sets the pet experience.

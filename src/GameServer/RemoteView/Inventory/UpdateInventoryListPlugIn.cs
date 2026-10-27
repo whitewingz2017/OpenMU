@@ -1,4 +1,4 @@
-﻿// <copyright file="UpdateInventoryListPlugIn.cs" company="MUnique">
+// <copyright file="UpdateInventoryListPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -32,6 +32,7 @@ public class UpdateInventoryListPlugIn : IUpdateInventoryListPlugIn
     /// <inheritdoc/>
     public async ValueTask UpdateInventoryListAsync()
     {
+        await PlayerShop.StorePriceTypes.SendAsync(this._player).ConfigureAwait(false);
         var connection = this._player.Connection;
         if (connection is null)
         {

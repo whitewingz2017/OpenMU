@@ -1,4 +1,4 @@
-﻿// <copyright file="ShowShopItemListExtendedPlugIn.cs" company="MUnique">
+// <copyright file="ShowShopItemListExtendedPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -42,6 +42,7 @@ public class ShowShopItemListExtendedPlugIn : IShowShopItemListPlugIn
             return;
         }
 
+        await StorePriceTypes.SendAsync(this._player).ConfigureAwait(false);
         var itemSerializer = this._player.ItemSerializer;
         var playerId = requestedPlayer.GetId(this._player);
         var items = requestedPlayer.ShopStorage.Items.ToList();
@@ -67,9 +68,17 @@ public class ShowShopItemListExtendedPlugIn : IShowShopItemListPlugIn
             {
                 var itemBlock = new PlayerShopItemExtendedRef(span[actualSize..]);
                 itemBlock.ItemSlot = item.ItemSlot;
-                itemBlock.MoneyPrice = (uint)(item.StorePrice ?? 0);
-
-                // todo: when we can define a price in items, set PriceItemType and RequiredItemAmount
+                itemBlock.PriceItemType = (ushort)item.StorePriceItemType;
+                if (item.StorePriceItemType != 0 && !GameLogic.PlayerActions.PlayerStore.StoreCurrency.IsCoin(item.StorePriceItemType))
+                {
+                    itemBlock.RequiredItemAmount = (ushort)(item.StorePrice ?? 0);
+                    itemBlock.MoneyPrice = 0;
+                }
+                else
+                {
+                    itemBlock.MoneyPrice = (uint)(item.StorePrice ?? 0);
+                    itemBlock.RequiredItemAmount = 0;
+                }
                 var itemSize = itemSerializer.SerializeItem(itemBlock.ItemData, item);
                 actualSize += PlayerShopItemExtendedRef.GetRequiredSize(itemSize);
                 i++;
