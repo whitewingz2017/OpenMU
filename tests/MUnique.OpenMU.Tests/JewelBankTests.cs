@@ -126,6 +126,17 @@ public class JewelBankTests
         Assert.That(json.RootElement.GetProperty("Rows")[0].GetProperty("Balance").GetInt32(), Is.EqualTo(42));
     }
 
+    /// <summary>Ledger labels contain only the neutral jewel name, not serialized translations.</summary>
+    [Test]
+    public async Task SnapshotUsesOnlyNeutralJewelNameAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        player.GameContext.Configuration.Items.First().Name = new MUnique.OpenMU.Interfaces.LocalizedString("Jewel of Bless||de=Segen||@src=ItemNames/JewelOfBless");
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<IJewelBankView>()!);
+        await new JewelBankActions().ExecuteAsync(player, Configuration, 1, 0, 0, 0).ConfigureAwait(false);
+        view.Verify(v => v.ShowAsync(1, It.IsAny<string>(), It.Is<IReadOnlyList<MUnique.OpenMU.GameLogic.JewelBank.JewelBankRow>>(rows => rows.Count == 1 && rows[0].Name == "Jewel of Bless")), Times.Once);
+    }
+
     private static int Balance(Player player)
     {
         var ledger = JsonSerializer.Deserialize<Dictionary<string, int>>(player.Account!.JewelBankBalances)!;

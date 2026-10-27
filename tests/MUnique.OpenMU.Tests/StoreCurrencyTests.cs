@@ -175,6 +175,25 @@ public class StoreCurrencyTests
         Assert.That(seller.Account.WCoinC, Is.EqualTo(sellerBefore));
     }
 
+    /// <summary>The existing client prices an inventory source before moving it into the store.</summary>
+    [Test]
+    public async Task PriceBeforeStoreMoveIsPreservedAsync()
+    {
+        var (buyer, seller, _) = await SetupAsync(Bless, 1).ConfigureAwait(false);
+        buyer.Attributes![MUnique.OpenMU.GameLogic.Attributes.Stats.Level] = 109;
+        var item = await AddJewelAsync(buyer).ConfigureAwait(false);
+        var source = item.ItemSlot;
+        await new SetItemPriceAction().SetPriceAsync(buyer, source, 1, (14 << 12) | 14).ConfigureAwait(false);
+        Assert.That(item.StorePrice, Is.EqualTo(1));
+        Assert.That(item.StorePriceItemType, Is.EqualTo((14 << 12) | 14));
+        await buyer.Inventory!.RemoveItemAsync(item).ConfigureAwait(false);
+        await buyer.ShopStorage!.AddItemAsync(InventoryConstants.FirstStoreItemSlotIndex, item).ConfigureAwait(false);
+        Assert.That(item.StorePrice, Is.EqualTo(1));
+        await new SetItemPriceAction().SetPriceAsync(buyer, item.ItemSlot, 2, Bless).ConfigureAwait(false);
+        Assert.That(item.StorePrice, Is.EqualTo(2));
+        Assert.That(item.StorePriceItemType, Is.EqualTo(Bless));
+    }
+
     private static async Task<(Player Buyer, Player Seller, Item Item)> SetupAsync(int currency, int amount)
     {
         var buyer = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);

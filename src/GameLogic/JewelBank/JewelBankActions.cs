@@ -71,7 +71,7 @@ public sealed class JewelBankActions
             }
 
             ledger.TryGetValue(Key(id), out var balance);
-            rows.Add(new(id, definition.Name, balance, DepositItems(player, definition).Sum(i => i.Count), configuration.MaximumBalance));
+            rows.Add(new(id, definition.Name.ValueInNeutralLanguage, balance, DepositItems(player, definition).Sum(i => i.Count), configuration.MaximumBalance));
         }
 
         await player.InvokeViewPlugInAsync<IJewelBankView>(p => p.ShowAsync(request, status, rows)).ConfigureAwait(false);

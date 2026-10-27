@@ -22,7 +22,8 @@ public class SetItemPriceAction
     public async ValueTask SetPriceAsync(Player player, byte slot, int price, int currency = 0)
     {
         ItemPriceResult result;
-        if (slot < InventoryConstants.FirstStoreItemSlotIndex || slot >= InventoryConstants.FirstStoreItemSlotIndex + InventoryConstants.StoreSize
+        // The client prices the source inventory slot before moving the item into its store.
+        if (slot < InventoryConstants.EquippableSlotsCount || slot >= InventoryConstants.FirstStoreItemSlotIndex + InventoryConstants.StoreSize
             || (player.ShopStorage?.StoreOpen ?? false))
         {
             result = ItemPriceResult.Failed;
