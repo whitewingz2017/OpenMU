@@ -42,23 +42,27 @@ INSERT INTO config."ItemDefinition"
 ("Id","ItemSlotId","GameConfigurationId","Number","Width","Height","DropsFromMonsters","IsAmmunition",
  "IsBoundToCharacter","Name","DropLevel","MaximumItemLevel","Durability","Group","Value","MaximumSockets",
  "IsDroppable","IsPersonalStoreSellable","IsRepairable","IsSellableToNpc","IsStorable","IsTradable")
-SELECT s.definition_id,s.slot_id,t."GameConfigurationId",315,1,1,false,false,false,
+SELECT s.definition_id,s.slot_id,t."GameConfigurationId",315,2,CASE WHEN s.part=1 THEN 3 ELSE 2 END,false,false,false,
        'Set 315 Skin '||s.name,0,0,1,s.item_group,0,0,false,true,false,false,true,true
 FROM skin_definitions s CROSS JOIN skin_target t ON CONFLICT ("Id") DO NOTHING;
 DO $$
 DECLARE target_inventory uuid; skin record; free_slot smallint;
 BEGIN
     SELECT "InventoryId" INTO STRICT target_inventory FROM skin_target;
-    FOR skin IN SELECT * FROM skin_definitions ORDER BY part LOOP
+    FOR skin IN SELECT s.*,d."Width" AS width,d."Height" AS height FROM skin_definitions s JOIN config."ItemDefinition" d ON d."Id"=s.definition_id ORDER BY s.part LOOP
         IF EXISTS (SELECT 1 FROM data."Item" WHERE "ItemStorageId"=target_inventory AND "DefinitionId"=skin.definition_id) THEN
             CONTINUE;
         END IF;
         SELECT candidate::smallint INTO free_slot FROM generate_series(12,75) candidate
-        WHERE NOT EXISTS (
+        WHERE (candidate-12)%8+skin.width <= 8
+          AND (candidate-12)/8+skin.height <= 8
+          AND NOT EXISTS (
             SELECT 1 FROM data."Item" i JOIN config."ItemDefinition" d ON d."Id"=i."DefinitionId"
             WHERE i."ItemStorageId"=target_inventory AND i."ItemSlot" BETWEEN 12 AND 75
-              AND (candidate-12)%8 BETWEEN (i."ItemSlot"-12)%8 AND (i."ItemSlot"-12)%8+d."Width"-1
-              AND (candidate-12)/8 BETWEEN (i."ItemSlot"-12)/8 AND (i."ItemSlot"-12)/8+d."Height"-1
+              AND (candidate-12)%8 < (i."ItemSlot"-12)%8+d."Width"
+              AND (candidate-12)%8+skin.width > (i."ItemSlot"-12)%8
+              AND (candidate-12)/8 < (i."ItemSlot"-12)/8+d."Height"
+              AND (candidate-12)/8+skin.height > (i."ItemSlot"-12)/8
         ) ORDER BY candidate LIMIT 1;
         IF free_slot IS NULL THEN RAISE EXCEPTION 'Not enough free bag cells; entire grant rolled back'; END IF;
         INSERT INTO data."Item" ("Id","ItemStorageId","DefinitionId","ItemSlot","Durability","Level","HasSkill","SocketCount","PetExperience")

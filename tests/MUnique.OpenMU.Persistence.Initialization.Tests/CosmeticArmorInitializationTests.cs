@@ -70,6 +70,6 @@ internal class CosmeticArmorInitializationTests
         Assert.That(skins.All(i => i.IsTradable && i.IsStorable && i.IsPersonalStoreSellable), Is.True);
         Assert.That(skins.All(i => !i.IsSellableToNpc && !i.IsDroppable && !i.IsRepairable), Is.True);
         Assert.That(skins.All(i => i.BasePowerUpAttributes.Count == 0 && i.PossibleItemOptions.Count == 0), Is.True);
-        Assert.That(skins.All(i => i.Width == 1 && i.Height == 1 && i.ItemSlot!.ItemSlots.Single() == 240 + i.Group - 7), Is.True);
+        Assert.That(skins.All(i => i.Width == 2 && i.Height == (i.Group == 8 ? 3 : 2) && i.ItemSlot!.ItemSlots.Single() == 240 + i.Group - 7), Is.True);
     }
 }

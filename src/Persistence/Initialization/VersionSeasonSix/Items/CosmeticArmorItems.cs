@@ -78,8 +78,6 @@ public static class CosmeticArmorItems
             definition.Number = number;
             definition.Name = name;
             definition.ItemSlot = slot;
-            definition.Width = 1;
-            definition.Height = 1;
             definition.Durability = 1;
             definition.IsTradable = true;
             definition.IsStorable = true;
@@ -89,6 +87,8 @@ public static class CosmeticArmorItems
             definition.IsRepairable = false;
             configuration.Items.Add(definition);
         }
+
+        (definition.Width, definition.Height) = CosmeticItemDimensions.Get(group, name);
 
         if (female)
         {

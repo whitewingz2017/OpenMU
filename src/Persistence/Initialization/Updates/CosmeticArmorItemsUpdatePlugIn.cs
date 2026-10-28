@@ -14,17 +14,31 @@ using MUnique.OpenMU.PlugIns;
 [Guid("190050c7-3e97-4e7b-9ccb-0cbfe839a4e1")]
 public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
 {
+    /// <inheritdoc />
     public override string DataInitializationKey => VersionSeasonSix.DataInitialization.Id;
+
+    /// <inheritdoc />
     public override string Name => "Set 315 Cosmetic Armor";
-    public override string Description => "Adds permanent tradable cosmetic skins, including 176 readable FinalMU weapon, wing and pet models; Set 315 remains restricted to female classes.";
+
+    /// <inheritdoc />
+    public override string Description => "Restores normal skin inventory footprints and repacks affected pages safely. Apply while players are offline; free space if a page cannot fit the resized items.";
+
+    /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
-    public override int Version => 3;
+
+    /// <inheritdoc />
+    public override int Version => 4;
+
+    /// <inheritdoc />
     public override DateTime UpdatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
     public override bool IsMandatory => false;
 
-    protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
+    /// <inheritdoc />
+    protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         VersionSeasonSix.Items.CosmeticArmorItems.Ensure(context, gameConfiguration);
-        return ValueTask.CompletedTask;
+        await CosmeticStorageResize.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
     }
 }
