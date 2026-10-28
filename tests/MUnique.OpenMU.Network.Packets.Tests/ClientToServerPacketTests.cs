@@ -4057,4 +4057,34 @@ public class PacketStructureTests
         Assert.That(4 + 32, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'CodeText' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for CosmeticArmorRequestExtended.
+    /// </summary>
+    [Test]
+    public void CosmeticArmorRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 11;
+        var actualLength = CosmeticArmorRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'InventorySlot' boundary
+        Assert.That(5 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'InventorySlot' exceeds packet boundary");
+        
+        // Validate field 'Part' boundary
+        Assert.That(6 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Part' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

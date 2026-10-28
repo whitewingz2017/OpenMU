@@ -202,3 +202,4 @@
   * [C1 FA 20 - JewelBankRequestExtended (by client)](C1-FA-20-JewelBankRequestExtended_by-client.md)
   * [C1 FB 20 - EventTimerRequestExtended (by client)](C1-FB-20-EventTimerRequestExtended_by-client.md)
   * [C1 FC 01 - RedeemCodeRequestExtended (by client)](C1-FC-01-RedeemCodeRequestExtended_by-client.md)
+  * [C1 FD 01 - CosmeticArmorRequestExtended (by client)](C1-FD-01-CosmeticArmorRequestExtended_by-client.md)

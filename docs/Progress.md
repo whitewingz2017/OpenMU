@@ -131,3 +131,5 @@ complexity and effort). Complexity 0 means we wont implement it.
 
 Custom client: **Jewel Bank** (C1 FA 20 / C2 FA 19) implemented with persistent
 account balances, atomic inventory transfers, bundle deposits and confirmed snapshots.
+
+Custom client: **Cosmetic Armor** (C1 FD 01 / C2 FD 01) supports owned skin-item equip and unequip, persistent cosmetic slots, zero-stat appearance overrides and confirmed snapshots. Set 315 skins can be traded after unequipping.

@@ -1,4 +1,4 @@
-﻿// <copyright file="GameConfigurationInitializer.cs" company="MUnique">
+// <copyright file="GameConfigurationInitializer.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -67,6 +67,7 @@ public class GameConfigurationInitializer : GameConfigurationInitializerBase
         new HarmonyOptions(this.Context, this.GameConfiguration).Initialize();
         new GuardianOptions(this.Context, this.GameConfiguration).Initialize();
         new Armors(this.Context, this.GameConfiguration).Initialize();
+        CosmeticArmorItems.Ensure(this.Context, this.GameConfiguration);
         new Weapons(this.Context, this.GameConfiguration).Initialize();
         new Potions(this.Context, this.GameConfiguration).Initialize();
         new Jewels(this.Context, this.GameConfiguration).Initialize();

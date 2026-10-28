@@ -337,3 +337,4 @@
   * [C2 FA 19 - JewelBankResponseExtended (by server)](C2-FA-19-JewelBankResponseExtended_by-server.md)
   * [C2 FA 30 - MiniGameProgressExtended (by server)](C2-FA-30-MiniGameProgressExtended_by-server.md)
   * [C2 FB 21 - EventTimerResponseExtended (by server)](C2-FB-21-EventTimerResponseExtended_by-server.md)
+  * [C2 FD 01 - CosmeticArmorResponseExtended (by server)](C2-FD-01-CosmeticArmorResponseExtended_by-server.md)

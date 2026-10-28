@@ -5771,4 +5771,38 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="CosmeticArmorRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="inventorySlot">The inventory slot.</param>
+    /// <param name="part">The part.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client opens its Skin page or equips or unequips an owned cosmetic item.
+    /// Causes reaction on server side: The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 0 helmet through 4 boots.
+    /// </remarks>
+    public static async ValueTask SendCosmeticArmorRequestExtendedAsync(this IConnection? connection, byte @operation, byte @inventorySlot, byte @part, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = CosmeticArmorRequestExtendedRef.Length;
+            var packet = new CosmeticArmorRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.InventorySlot = @inventorySlot;
+            packet.Part = @part;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

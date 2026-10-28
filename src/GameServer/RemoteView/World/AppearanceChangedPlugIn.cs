@@ -1,4 +1,4 @@
-﻿// <copyright file="AppearanceChangedPlugIn.cs" company="MUnique">
+// <copyright file="AppearanceChangedPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -49,9 +49,10 @@ public class AppearanceChangedPlugIn : IAppearanceChangedPlugIn
                 ChangedPlayerId = changedPlayer.GetId(this._player),
             };
 
-            if (inventory!.EquippedItems.Contains(item))
+            var visible = MUnique.OpenMU.GameLogic.Cosmetics.CosmeticArmorRules.VisibleEquipment(changedPlayer).FirstOrDefault(i => i.ItemSlot == item.ItemSlot);
+            if (visible is not null)
             {
-                itemSerializer.SerializeItem(packet.ItemData, item);
+                itemSerializer.SerializeItem(packet.ItemData, visible);
             }
             else
             {
@@ -63,7 +64,7 @@ public class AppearanceChangedPlugIn : IAppearanceChangedPlugIn
             // In the available space, the item position is serialized.
             // To summarize: The 4 higher bits hold the item position, the 4 lower bits hold the "glow" level
             packet.ItemData[1] = (byte)(item.ItemSlot << 4);
-            packet.ItemData[1] |= item.GetGlowLevel();
+            packet.ItemData[1] |= visible?.GetGlowLevel() ?? 0;
 
             // We could also continue to dumb down information here as this packet reveals all of the options of an item to
             // other players - something that is probably not in the interest of the players.
