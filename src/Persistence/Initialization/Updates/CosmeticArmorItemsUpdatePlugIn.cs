@@ -16,9 +16,9 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
 {
     public override string DataInitializationKey => VersionSeasonSix.DataInitialization.Id;
     public override string Name => "Set 315 Cosmetic Armor";
-    public override string Description => "Adds permanent tradable armor, weapon, wing and pet skins; restricts Set 315 to Elf and Summoner.";
+    public override string Description => "Adds permanent tradable cosmetic skins, including 176 readable FinalMU weapon, wing and pet models; Set 315 remains restricted to female classes.";
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
-    public override int Version => 2;
+    public override int Version => 3;
     public override DateTime UpdatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
     public override bool IsMandatory => false;
 

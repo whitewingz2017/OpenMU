@@ -56,3 +56,6 @@ reuses IDs from its other gear, so its wing-specific files are used for wing
 Server transformations and Chaos Castle appearances take precedence. Check fit,
 animation, effects and mobile performance in game before distributing the
 client. Run `python tools/test_cosmetic_armor.py` for asset and item-data checks.
+
+The [partial FinalMU import](finalmu-skins.md) adds 176 weapon/shield, wing and pet skins
+with separate GM commands and requires configuration update version 3.

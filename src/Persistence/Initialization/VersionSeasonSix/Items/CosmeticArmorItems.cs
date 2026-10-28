@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 
+using System.Text.Json;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Interfaces;
@@ -33,10 +34,24 @@ public static class CosmeticArmorItems
         EnsureItem(context, configuration, 12, 210, "Wing 210 Skin", 7);
         EnsureItem(context, configuration, 12, 213, "Cape 213 Skin", 7);
         EnsureItem(context, configuration, 13, 200, "Pet 208 Skin", 8);
+        using var catalog = typeof(CosmeticArmorItems).Assembly.GetManifestResourceStream("FinalMuCosmeticSkins.json")
+            ?? throw new InvalidOperationException("The FinalMU cosmetic catalog is missing.");
+        var imports = JsonSerializer.Deserialize<FinalMuSkin[]>(catalog)
+            ?? throw new InvalidOperationException("The FinalMU cosmetic catalog is invalid.");
+        foreach (var skin in imports)
+        {
+            EnsureItem(context, configuration, skin.Group, skin.Number, skin.Name, skin.Part);
+        }
     }
 
-    private static void EnsureItem(IContext context, GameConfiguration configuration, byte group, short number,
-        string name, int part, bool female = false)
+    private static void EnsureItem(
+        IContext context,
+        GameConfiguration configuration,
+        byte group,
+        short number,
+        string name,
+        int part,
+        bool female = false)
     {
         var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == number);
         if (definition is not null && definition.Name.ValueInNeutralLanguage != name)
@@ -84,4 +99,6 @@ public static class CosmeticArmorItems
             }
         }
     }
+
+    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part);
 }
