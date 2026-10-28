@@ -13,10 +13,29 @@ public static class CosmeticArmorRules
     public const byte FirstSlot = 240;
 
     /// <summary>The five armor parts supported by the custom client.</summary>
-    public const byte SlotCount = 5;
+    public const byte SlotCount = 9;
 
     /// <summary>The normal helmet position, followed by armor, pants, gloves and boots.</summary>
     public const byte FirstGearSlot = 2;
+
+    /// <summary>Maps a cosmetic part to its visible gear slot.</summary>
+    public static byte GearSlot(int part) => part < 5 ? (byte)(part + FirstGearSlot)
+        : part == 5 ? (byte)0 : part == 6 ? (byte)1 : part == 7 ? (byte)7 : (byte)8;
+
+    /// <summary>Checks the configured class restrictions; Set 315 always requires a female class.</summary>
+    public static bool CanEquip(Player player, ItemDefinition? definition)
+    {
+        if (definition is null || player.SelectedCharacter?.CharacterClass is not { } characterClass)
+        {
+            return false;
+        }
+        if (definition.Group is >= 7 and <= 11 && definition.Number == 315)
+        {
+            return characterClass.Number is 8 or 10 or 11 or 20 or 22 or 23;
+        }
+
+        return definition.QualifiedCharacters.Count == 0 || definition.QualifiedCharacters.Contains(characterClass);
+    }
 
     /// <summary>Gets the configured cosmetic slot, or null for ordinary items.</summary>
     public static byte? GetSlot(ItemDefinition? definition)
@@ -39,7 +58,7 @@ public static class CosmeticArmorRules
     /// <summary>Gets visible equipment without changing the items supplying combat attributes.</summary>
     public static IEnumerable<Item> VisibleEquipment(Player player)
     {
-        var skins = Equipped(player).ToDictionary(i => (byte)(i.ItemSlot - FirstSlot + FirstGearSlot));
+        var skins = Equipped(player).Where(i => CanEquip(player, i.Definition)).ToDictionary(i => GearSlot(i.ItemSlot - FirstSlot));
         foreach (var item in player.Inventory?.EquippedItems ?? [])
         {
             if (!skins.ContainsKey(item.ItemSlot))

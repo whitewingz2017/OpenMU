@@ -8,40 +8,59 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Interfaces;
 
-/// <summary>Initializes tradable, zero-stat Set 315 skins for the custom client.</summary>
+/// <summary>Initializes permanent tradable cosmetic items for the custom client.</summary>
 public static class CosmeticArmorItems
 {
-    /// <summary>Ensures the five item definitions exist; refuses to overwrite unrelated items.</summary>
+    /// <summary>Ensures skin definitions exist without overwriting unrelated items.</summary>
+    /// <param name="context">The configuration context.</param>
+    /// <param name="configuration">The target game configuration.</param>
     public static void Ensure(IContext context, GameConfiguration configuration)
     {
         string[] parts = ["Helm", "Armor", "Pants", "Gloves", "Boots"];
-        const short setNumber = 315;
-        const byte firstArmorGroup = 7;
-        const int firstSkinSlot = 240;
         for (var part = 0; part < parts.Length; part++)
         {
-            var group = (byte)(firstArmorGroup + part);
-            var name = $"Set 315 Skin {parts[part]}";
-            var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == setNumber);
-            if (definition is not null)
-            {
-                if (definition.Name.ValueInNeutralLanguage != name)
-                {
-                    throw new InvalidOperationException($"Item {group}/{setNumber} is already used. Cosmetic armor cannot replace it.");
-                }
+            EnsureItem(context, configuration, (byte)(7 + part), 315, $"Set 315 Skin {parts[part]}", part, true);
+            EnsureItem(context, configuration, (byte)(7 + part), 100, $"Set 100 {parts[part]} Skin", part);
+        }
 
-                continue;
-            }
+        EnsureItem(context, configuration, 0, 100, "Sword Skin", 5);
+        EnsureItem(context, configuration, 2, 100, "Mace Skin", 5);
+        EnsureItem(context, configuration, 4, 100, "Bow Skin", 6);
+        EnsureItem(context, configuration, 5, 100, "Staff Skin", 5);
+        EnsureItem(context, configuration, 6, 100, "Shield Skin", 6);
+        EnsureItem(context, configuration, 12, 180, "Cape Skin", 7);
+        EnsureItem(context, configuration, 12, 200, "Wing Skin", 7);
+        EnsureItem(context, configuration, 12, 210, "Wing 210 Skin", 7);
+        EnsureItem(context, configuration, 12, 213, "Cape 213 Skin", 7);
+        EnsureItem(context, configuration, 13, 200, "Pet 208 Skin", 8);
+    }
 
-            var slot = context.CreateNew<ItemSlotType>();
-            slot.SetGuid((short)(firstSkinSlot + part));
-            slot.Description = name;
-            slot.ItemSlots.Add(firstSkinSlot + part);
+    private static void EnsureItem(IContext context, GameConfiguration configuration, byte group, short number,
+        string name, int part, bool female = false)
+    {
+        var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == number);
+        if (definition is not null && definition.Name.ValueInNeutralLanguage != name)
+        {
+            throw new InvalidOperationException($"Item {group}/{number} is already used. Cosmetic items cannot replace it.");
+        }
+
+        var slotNumber = 240 + part;
+        var slot = configuration.ItemSlotTypes.SingleOrDefault(s => s.ItemSlots.Count == 1 && s.ItemSlots.Single() == slotNumber);
+        if (slot is null)
+        {
+            slot = context.CreateNew<ItemSlotType>();
+            slot.SetGuid((short)slotNumber);
+            slot.Description = $"Cosmetic slot {part}";
+            slot.ItemSlots.Add(slotNumber);
             configuration.ItemSlotTypes.Add(slot);
+        }
+
+        if (definition is null)
+        {
             definition = context.CreateNew<ItemDefinition>();
-            definition.SetGuid(group, setNumber);
+            definition.SetGuid(group, number);
             definition.Group = group;
-            definition.Number = setNumber;
+            definition.Number = number;
             definition.Name = name;
             definition.ItemSlot = slot;
             definition.Width = 1;
@@ -54,6 +73,15 @@ public static class CosmeticArmorItems
             definition.IsDroppable = false;
             definition.IsRepairable = false;
             configuration.Items.Add(definition);
+        }
+
+        if (female)
+        {
+            definition.QualifiedCharacters.Clear();
+            foreach (var characterClass in configuration.CharacterClasses.Where(c => c.Number is 8 or 10 or 11 or 20 or 22 or 23))
+            {
+                definition.QualifiedCharacters.Add(characterClass);
+            }
         }
     }
 }

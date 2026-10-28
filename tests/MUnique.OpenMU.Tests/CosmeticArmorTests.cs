@@ -111,13 +111,76 @@ public class CosmeticArmorTests
         Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
     }
 
+    [TestCase(0, 100, 5)]
+    [TestCase(6, 100, 6)]
+    [TestCase(12, 210, 7)]
+    [TestCase(13, 200, 8)]
+    public async Task ExtraSkinSlotsPersistAndUnequipAsync(byte group, short number, byte part)
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Definition!.Group = group;
+        item.Definition.Number = number;
+        item.Definition.ItemSlot!.ItemSlots.Clear();
+        item.Definition.ItemSlot.ItemSlots.Add(CosmeticArmorRules.FirstSlot + part);
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, part).ConfigureAwait(false);
+        Assert.That(item.ItemSlot, Is.EqualTo(CosmeticArmorRules.FirstSlot + part));
+        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single().ItemSlot, Is.EqualTo(CosmeticArmorRules.GearSlot(part)));
+        await actions.ExecuteAsync(player, 2, 2, 0, part).ConfigureAwait(false);
+        Assert.That(CosmeticArmorRules.Equipped(player), Is.Empty);
+        Assert.That(player.Inventory!.Items, Does.Contain(item));
+    }
+
+    [Test]
+    public async Task IncompatibleEquippedSkinRemainsRemovableAsync()
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Definition!.Number = 315;
+        player.SelectedCharacter!.CharacterClass = new BasicModel.CharacterClass { Number = 8 };
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        player.SelectedCharacter.CharacterClass = new BasicModel.CharacterClass { Number = 4 };
+        Assert.That(CosmeticArmorRules.Equipped(player), Does.Contain(item));
+        Assert.That(CosmeticArmorRules.VisibleEquipment(player), Is.Empty);
+        await actions.ExecuteAsync(player, 2, 2, 0, 0).ConfigureAwait(false);
+        Assert.That(player.Inventory!.Items, Does.Contain(item));
+    }
+
+    [TestCase(0, false)]
+    [TestCase(4, false)]
+    [TestCase(12, false)]
+    [TestCase(16, false)]
+    [TestCase(24, false)]
+    [TestCase(8, true)]
+    [TestCase(11, true)]
+    [TestCase(20, true)]
+    [TestCase(23, true)]
+    public async Task FemaleArmorRequiresElfOrSummonerAsync(byte classNumber, bool allowed)
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Definition!.Number = 315;
+        player.SelectedCharacter!.CharacterClass = new BasicModel.CharacterClass { Number = classNumber };
+        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        Assert.That(CosmeticArmorRules.Equipped(player).Any(), Is.EqualTo(allowed));
+        Assert.That(player.Inventory!.Items.Contains(item), Is.EqualTo(!allowed));
+    }
+
+    [TestCase(0, 2)]
+    [TestCase(4, 6)]
+    [TestCase(5, 0)]
+    [TestCase(6, 1)]
+    [TestCase(7, 7)]
+    [TestCase(8, 8)]
+    public void CosmeticPartsMapToGearSlots(int part, byte expected)
+        => Assert.That(CosmeticArmorRules.GearSlot(part), Is.EqualTo(expected));
+
     private static async Task<(Player Player, Item Item)> CreateAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
         await player.PlayerState.TryAdvanceToAsync(PlayerState.EnteredWorld).ConfigureAwait(false);
         var slot = new BasicModel.ItemSlotType();
         slot.ItemSlots.Add(CosmeticArmorRules.FirstSlot);
-        var definition = new BasicModel.ItemDefinition { Group = 7, Number = 315, Width = 2, Height = 2, ItemSlot = slot, Name = "Set 315 Skin Helm" };
+        var definition = new BasicModel.ItemDefinition { Group = 7, Number = 100, Width = 2, Height = 2, ItemSlot = slot, Name = "Set 100 Helm Skin" };
         var item = player.PersistenceContext.CreateNew<Item>();
         item.Definition = definition;
         item.Durability = 1;

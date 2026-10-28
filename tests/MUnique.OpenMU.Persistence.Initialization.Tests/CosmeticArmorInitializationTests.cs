@@ -23,6 +23,7 @@ internal class CosmeticArmorInitializationTests
         using var context = provider.CreateNewContext();
         var configuration = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).First();
         AssertSkins(configuration);
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(20));
     }
 
     [Test]
@@ -35,7 +36,8 @@ internal class CosmeticArmorInitializationTests
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         AssertSkins(configuration);
-        Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(5));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(20));
+        Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(9));
         var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
         Assert.Multiple(() =>
         {

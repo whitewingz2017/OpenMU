@@ -1,64 +1,58 @@
-# Cosmetic armor
+# Cosmetic skins
 
-Open inventory and use the left/right arrows in its header to switch between
-**Gear** and **Skin**. The bag stays visible on both pages. Gear shows actual
-equipment; Skin shows the five cosmetic armor slots.
+Open inventory and use the header arrows to switch between **Gear** and **Skin**.
+The Skin page has nine positions: five armor parts, right weapon, left weapon or
+shield, wing/cape, and pet. The bag stays visible on either page.
 
-Set 315 has five permanent, tradable items: helmet, armor, pants, gloves and
-boots. Each occupies one bag cell. On mobile, select a piece and choose **Use**
-to equip it in its matching Skin slot. You can also drag a piece onto that slot.
-Tap an occupied Skin slot to return its item to the bag; make room first. Unequip
-a piece before trading it, putting it in the warehouse, or selling it in a
-personal store. Skins cannot be dropped or sold to NPCs.
+Select an owned skin item and choose **Use**, or drag it onto its matching Skin
+slot. Tap an occupied Skin slot to return the item to the bag; make room first.
+Unequip skins before trading, storing them, or listing them in a personal store.
+Skins are permanent, tradable, and have no combat attributes. They cannot be
+sold to NPCs or dropped by players. GM creation can place them on the ground.
+The cosmetic pet follows the character without adding pet combat bonuses.
+Cosmetic wings do not grant flight or movement benefits.
 
-After installing the item definitions and restarting the server, a Game Master
-can create each piece with the existing `/item` command:
+Set 315 (the female set) is restricted to **Elf and Summoner**, including their
+promotions. DK, WZ, MG, DL and RF cannot equip it. Set 100 remains unrestricted.
+An incompatible skin equipped before the restriction was added stays removable
+from the Skin page, but its appearance is suppressed.
 
-```text
-/item 7 315
-/item 8 315
-/item 9 315
-/item 10 315
-/item 11 315
-```
+After applying configuration update **Set 315 Cosmetic Armor**, version 2, and
+restarting the server, use these commands on a GM character:
 
-These create the helmet, armor, pants, gloves and boots, respectively, on the
-ground near the GM. Pick them up, then equip them on the Skin page. Leave the
-optional level, luck, skill, excellent, ancient and option arguments at their
-defaults; these are cosmetic items without combat options. Player ground drops
-remain disabled; GM creation uses a separate path.
+- Set 100 armor: `/item 7 100`, `/item 8 100`, `/item 9 100`, `/item 10 100`, `/item 11 100`.
+- Set 315 armor: `/item 7 315`, `/item 8 315`, `/item 9 315`, `/item 10 315`, `/item 11 315`.
+- Sword: `/item 0 100`; mace/scepter: `/item 2 100`; staff: `/item 5 100`.
+- Bow: `/item 4 100`; shield: `/item 6 100` (both use the left skin slot).
+- First pack cape: `/item 12 180`; first pack wing: `/item 12 200`.
+- Second pack wing: `/item 12 210`; second pack cape: `/item 12 213`.
+- Second pack pet (folder Pet208): `/item 13 200`.
 
-Skins change appearance without changing equipment or combat stats. Each piece
-can be equipped separately. The server saves the items and equipped skin slots,
-and tells nearby players about the appearance. Server transformations and
-Chaos Castle appearances take precedence on your own character.
+Enter each command separately. Pick up the resulting item near your GM.
+Leave level, skill, luck, excellent, ancient and option arguments at defaults.
+The source filenames do not determine item IDs: the first pack's `Sword140.bmd`
+and `Arco37.bmd` use group 2/number 100 and group 4/number 100, respectively.
 
-The previous free, local set selector has been replaced by item ownership. The
-Set 315 models and texture ship under `Data/Custom/Skins/Set315`; item definitions
-and models are in `Data/Items/Group07_Helm.json` through `Group11_Boots.json` and
-their corresponding `Models` files. The Android build copies these with the
-other game data. An existing installation needs the updated game data too.
+Both the updated mobile client and matching OpenMU server are required. Deploy
+the server source in `C:\OpenMU\OpenMU`, apply the version 2 configuration
+update in the admin panel, and restart. The older
+`deploy/sql/cosmetic-armor-set315.sql` script grants only the original five
+Set 315 pieces; it does not install the complete pack. Building an APK does not
+deploy server changes to the VPS.
 
-Both the updated mobile client and the matching OpenMU server are required.
-In `C:\OpenMU\OpenMU`, apply the **Set 315 Cosmetic Armor** configuration update
-for an existing database, or use the transactional
-`deploy/sql/cosmetic-armor-set315.sql` script while the local server is stopped.
-That script also grants one of each piece to the named test character and safely
-skips pieces already owned. Example:
+Models and textures live under `Data/Custom/Skins`. The first pack includes
+Set100, Set315, SWORD, MACE, BOW, STAFF, SHIELD, WING and CAPA. The second pack
+adds Wing210, wing213 and Pet208. Its other gear has not been imported.
+The original effect files are retained there. Static sprites and pet mesh glow
+are stored with their model definitions under `Data/Items/Models`.
 
-```powershell
-Get-Content -Raw deploy/sql/cosmetic-armor-set315.sql |
-    docker exec -i database psql -U postgres -d openmu -v ON_ERROR_STOP=1 -v skin_character=testgmDK
-```
+The supplied combined first-pack effects include sword 101 without a matching
+model, and some mace bone indices beyond the supplied model's bone count.
+Those rows are retained in the original file; unmatched items are not invented
+and invalid bone accesses are skipped. The second pack's combined effect file
+reuses IDs from its other gear, so its wing-specific files are used for wing
+210 and cape 213. Pet208 uses its supplied mesh-glow colors and flags.
 
-For the VPS, deploy the server code and updated database together. A database
-transfer alone does not install the cosmetic equip handler. Older clients do
-not have the new Skin page or Set 315 assets. No VPS deployment is performed by
-building the mobile app.
-
-The pack's weapon, wing, cape, dye and custom particle-effect files are not
-part of this armor-only version.
-
-Run `python tools/test_cosmetic_armor.py` to check the armor assets against the
-player's bone palette and confirm their textures are present. Check fit and
-animation in game for each class before distributing the client.
+Server transformations and Chaos Castle appearances take precedence. Check fit,
+animation, effects and mobile performance in game before distributing the
+client. Run `python tools/test_cosmetic_armor.py` for asset and item-data checks.
