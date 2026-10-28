@@ -48,4 +48,43 @@ public class RedeemCodesPageTests
         Assert.That(gift.Id, Is.EqualTo(RedeemCodeRules.Key(gift.Code)));
         Assert.That(typeof(RedeemCodes).GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Any(a => a.Policy == "OpenMU.Administrator"), Is.True);
     }
+    /// <summary>Adding and editing an item reward renders without breaking the Blazor circuit.</summary>
+    [Test]
+    public async Task AddItemAndSaveRewardAsync()
+    {
+        using var context = new BunitContext();
+        var persistence = new InMemoryPersistenceContextProvider();
+        var config = new Mock<GameConfiguration>();
+        config.Setup(c => c.Items).Returns(new List<MUnique.OpenMU.DataModel.Configuration.Items.ItemDefinition>
+        {
+            new()
+            {
+            Group = 14,
+            Number = 13,
+            Name = "Jewel of Bless",
+            },
+        });
+        var source = new Mock<IDataSource<GameConfiguration>>();
+        source.Setup(s => s.GetOwnerAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(config.Object);
+        context.Services.AddSingleton<IPersistenceContextProvider>(persistence);
+        context.Services.AddSingleton(source.Object);
+        context.Services.AddSingleton(Mock.Of<ILogger<RedeemCodes>>());
+        context.ComponentFactories.AddStub<MUnique.OpenMU.Web.Shared.Components.Breadcrumb>();
+        var cut = context.Render<RedeemCodes>();
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll("form").Count, Is.EqualTo(1)));
+        cut.FindAll("button").Single(b => b.TextContent == "Add item").Click();
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll("select").Count, Is.EqualTo(1)));
+        cut.Find("#redeem-code").Change("ITEM-GIFT");
+        cut.FindAll("input[type=number]")[4].Change("2");
+        cut.FindAll("input[type=number]")[5].Change("3");
+        cut.Find("form").Submit();
+        cut.WaitForAssertion(() => Assert.That(cut.Markup, Does.Contain("Code saved.")));
+        using var db = persistence.CreateNewContext();
+        var gift = (await db.GetAsync<RedeemCode>().ConfigureAwait(false)).Single();
+        var reward = System.Text.Json.JsonSerializer.Deserialize<List<RedeemItemReward>>(gift.ItemsJson)!.Single();
+        Assert.That(reward.ItemCode, Is.EqualTo(7181));
+        Assert.That(reward.Level, Is.EqualTo(2));
+        Assert.That(reward.Count, Is.EqualTo(3));
+    }
+
 }

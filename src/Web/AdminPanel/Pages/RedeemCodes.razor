@@ -36,7 +36,7 @@ else
         {
             <div class="row mb-2" @key="reward">
                 <label class="col-6">Item<select class="form-select" @bind="reward.ItemCode">@foreach (var item in this._availableItems) { <option value="@(item.Group * 512 + item.Number)">@item.Name.ValueInNeutralLanguage (@item.Group / @item.Number)</option> }</select></label>
-                <label class="col">Level<InputNumber class="form-control" @bind-Value="reward.Level" min="0" max="15" /></label>
+                <label class="col">Level<input type="number" class="form-control" @bind="reward.Level" min="0" max="15" /></label>
                 <label class="col">Count<InputNumber class="form-control" @bind-Value="reward.Count" min="1" max="64" /></label>
                 <button type="button" class="btn btn-secondary col-auto" @onclick="() => this._items.Remove(reward)">Remove</button>
             </div>
