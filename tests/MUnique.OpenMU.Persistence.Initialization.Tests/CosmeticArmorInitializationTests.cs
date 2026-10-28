@@ -36,6 +36,13 @@ internal class CosmeticArmorInitializationTests
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         AssertSkins(configuration);
         Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(5));
+        var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
+        Assert.Multiple(() =>
+        {
+            Assert.That(entry.CreatedAt?.Kind, Is.EqualTo(DateTimeKind.Utc));
+            Assert.That(entry.UpdatedAt?.Kind, Is.EqualTo(DateTimeKind.Utc));
+            Assert.That(entry.InstalledAt?.Kind, Is.EqualTo(DateTimeKind.Utc));
+        });
     }
 
     [Test]

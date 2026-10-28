@@ -17,7 +17,7 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override string DataInitializationKey => VersionSeasonSix.DataInitialization.Id;
     public override string Name => "Set 315 Cosmetic Armor";
     public override string Description => "Adds five permanent, tradable cosmetic armor items for the custom client.";
-    public override DateTime CreatedAt => new(2026, 10, 28);
+    public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
     public override bool IsMandatory => false;
 
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)

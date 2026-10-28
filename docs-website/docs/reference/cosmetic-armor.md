@@ -11,6 +11,23 @@ Tap an occupied Skin slot to return its item to the bag; make room first. Unequi
 a piece before trading it, putting it in the warehouse, or selling it in a
 personal store. Skins cannot be dropped or sold to NPCs.
 
+After installing the item definitions and restarting the server, a Game Master
+can create each piece with the existing `/item` command:
+
+```text
+/item 7 315
+/item 8 315
+/item 9 315
+/item 10 315
+/item 11 315
+```
+
+These create the helmet, armor, pants, gloves and boots, respectively, on the
+ground near the GM. Pick them up, then equip them on the Skin page. Leave the
+optional level, luck, skill, excellent, ancient and option arguments at their
+defaults; these are cosmetic items without combat options. Player ground drops
+remain disabled; GM creation uses a separate path.
+
 Skins change appearance without changing equipment or combat stats. Each piece
 can be equipped separately. The server saves the items and equipped skin slots,
 and tells nearby players about the appearance. Server transformations and
