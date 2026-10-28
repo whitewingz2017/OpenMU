@@ -147,6 +147,8 @@ public class EntityDataContext : ExtendedTypeContext
         modelBuilder.Entity<CastleSiegeNpcState>().Apply();
         modelBuilder.Entity<CashShopStorageItem>().Apply();
         modelBuilder.Entity<CashShopCoinGrant>().Apply();
+        modelBuilder.Entity<RedeemCode>();
+        modelBuilder.Entity<RedeemCodeClaim>();
         modelBuilder.Entity<AccountExternalLink>().Apply();
         modelBuilder.Entity<GuildChatBinding>().Apply();
         modelBuilder.Entity<DropItemGroup>().Apply();

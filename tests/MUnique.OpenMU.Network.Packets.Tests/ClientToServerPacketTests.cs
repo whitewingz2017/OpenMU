@@ -4039,4 +4039,22 @@ public class PacketStructureTests
         Assert.That(4 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for RedeemCodeRequestExtended.
+    /// </summary>
+    [Test]
+    public void RedeemCodeRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 36;
+        var actualLength = RedeemCodeRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'CodeText' boundary
+        Assert.That(4 + 32, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'CodeText' exceeds packet boundary");
+    }
 }

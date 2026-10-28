@@ -5743,4 +5743,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="RedeemCodeRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="codeText">The code text.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom mobile client submits a gift code.
+    /// Causes reaction on server side: The server validates usage and expiry, saves rewards and a receipt atomically, and returns a system message.
+    /// </remarks>
+    public static async ValueTask SendRedeemCodeRequestExtendedAsync(this IConnection? connection, string @codeText)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = RedeemCodeRequestExtendedRef.Length;
+            var packet = new RedeemCodeRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.CodeText = @codeText;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

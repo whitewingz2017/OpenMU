@@ -1,0 +1,55 @@
+@page "/redeem-codes"
+@attribute [Authorize(Policy = AdminPolicies.Administrator)]
+@using MUnique.OpenMU.DataModel.Entities
+@using MUnique.OpenMU.Persistence
+
+<PageTitle>OpenMU: Redeem Codes</PageTitle>
+<Breadcrumb Caption="Redeem Codes" />
+<h1>Redeem Codes</h1>
+<p>Create gift codes with plain item rewards and/or cash shop coins. Every reward and its receipt is saved together. Times below are UTC.</p>
+@if (!string.IsNullOrEmpty(this._status)) { <p role="status" class="alert alert-info">@this._status</p> }
+@if (this._busy) { <p>Loading...</p> }
+else
+{
+    <button class="btn btn-secondary mb-3" @onclick="this.NewCode">New code</button>
+    <table class="table table-striped"><thead><tr><th>Code</th><th>Enabled</th><th>Claims</th><th>Expires (UTC)</th><th></th></tr></thead><tbody>
+    @foreach (var gift in this._codes)
+    {
+        <tr><td>@gift.Code</td><td>@gift.Enabled</td><td>@gift.UsedCount / @(gift.MaximumUses == 0 ? "Unlimited" : gift.MaximumUses.ToString())</td><td>@gift.ExpiresAt</td><td><button class="btn btn-sm btn-secondary" @onclick="() => this.Edit(gift)">Edit</button></td></tr>
+    }
+    </tbody></table>
+    <EditForm Model="this._input" OnSubmit="this.SaveAsync">
+        <fieldset disabled="@this._saving"><legend>@(this._editingId == null ? "New code" : "Edit code")</legend>
+        <div class="mb-2"><label>Code (4–32 letters, digits or hyphens)<InputText id="redeem-code" class="form-control" @bind-Value="this._input.Code" disabled="@(this._editingId != null)" maxlength="32" /></label></div>
+        <div class="mb-2"><label>Description<InputText class="form-control" @bind-Value="this._input.Description" /></label></div>
+        <div class="mb-2"><label><InputCheckbox @bind-Value="this._input.Enabled" /> Enabled</label></div>
+        <div class="mb-2"><label>Expiry (UTC; blank means no expiry)<input class="form-control" type="datetime-local" @bind="this._input.ExpiresAt" /></label></div>
+        <div class="mb-2"><label>Total claims (0 = unlimited)<InputNumber class="form-control" @bind-Value="this._input.MaximumUses" min="0" /></label></div>
+        <div class="mb-2"><label><InputCheckbox @bind-Value="this._input.PerCharacter" disabled="@(this._editingId != null)" /> Once per character (unchecked = once per account; fixed after creation)</label></div>
+        <div class="row mb-2">
+            <label class="col">WCoin C<InputNumber id="redeem-wcoinc" class="form-control" @bind-Value="this._input.WCoinC" min="0" /></label>
+            <label class="col">WCoin P<InputNumber class="form-control" @bind-Value="this._input.WCoinP" min="0" /></label>
+            <label class="col">Goblin Points<InputNumber class="form-control" @bind-Value="this._input.GoblinPoints" min="0" /></label>
+        </div>
+        <h3>Item rewards</h3><p>Plain items, with the selected level; maximum 64 items per redemption. Leave empty for a points-only code.</p>
+        @foreach (var reward in this._items)
+        {
+            <div class="row mb-2" @key="reward">
+                <label class="col-6">Item<select class="form-select" @bind="reward.ItemCode">@foreach (var item in this._availableItems) { <option value="@(item.Group * 512 + item.Number)">@item.Name.ValueInNeutralLanguage (@item.Group / @item.Number)</option> }</select></label>
+                <label class="col">Level<InputNumber class="form-control" @bind-Value="reward.Level" min="0" max="15" /></label>
+                <label class="col">Count<InputNumber class="form-control" @bind-Value="reward.Count" min="1" max="64" /></label>
+                <button type="button" class="btn btn-secondary col-auto" @onclick="() => this._items.Remove(reward)">Remove</button>
+            </div>
+        }
+        <button type="button" class="btn btn-secondary" @onclick="this.AddItem">Add item</button>
+        <button type="submit" class="btn btn-primary">Save code</button>
+        </fieldset>
+    </EditForm>
+    <h2 class="mt-4">Latest 100 redemptions</h2>
+    <table class="table"><thead><tr><th>UTC</th><th>Code</th><th>Character</th><th>Account ID</th></tr></thead><tbody>
+    @foreach (var claim in this._claims)
+    {
+        <tr><td>@claim.RedeemedAt</td><td>@(this._codes.FirstOrDefault(c => c.Id == claim.CodeId)?.Code)</td><td>@claim.CharacterName</td><td>@claim.AccountId</td></tr>
+    }
+    </tbody></table>
+}

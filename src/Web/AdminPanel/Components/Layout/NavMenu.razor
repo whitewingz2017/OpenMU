@@ -11,6 +11,9 @@
     <!-- Hiding it programmatically is not a good idea here, because we want to hide it based on the width of the device/window. -->
     <div class="@NavMenuCssClass">
         <ul class="nav flex-column">
+            <AuthorizeView Policy="@AdminPolicies.Administrator"><Authorized>
+                <li class="nav-item px-3"><NavLink class="nav-link" href="redeem-codes">Redeem Codes</NavLink></li>
+            </Authorized></AuthorizeView>
             @if (this._isLoadingConfig)
             {
                 <li class="nav-item px-3">

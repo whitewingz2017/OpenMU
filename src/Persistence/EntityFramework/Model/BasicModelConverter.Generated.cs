@@ -143,6 +143,9 @@ internal sealed class BasicModelConverter
             QuestMonsterKillRequirementState value => this.Convert(value),
             QuestReward value => this.Convert(value),
             Rectangle value => this.Convert(value),
+            RedeemCode value => this.Convert(value),
+            RedeemCodeClaim value => this.Convert(value),
+            RedeemItemReward value => this.Convert(value),
             SimpleCraftingSettings value => this.Convert(value),
             Skill value => this.Convert(value),
             SkillComboDefinition value => this.Convert(value),
@@ -1785,6 +1788,7 @@ internal sealed class BasicModelConverter
 
         target.SocketCount = source.SocketCount;
         target.StorePrice = source.StorePrice;
+        target.StorePriceItemType = source.StorePriceItemType;
         target.PetExperience = source.PetExperience;
         return target;
     }
@@ -2884,6 +2888,65 @@ internal sealed class BasicModelConverter
         target.Y1 = source.Y1;
         target.X2 = source.X2;
         target.Y2 = source.Y2;
+        return target;
+    }
+
+    private BasicModel.RedeemCode Convert(RedeemCode source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.RedeemCode)converted;
+        }
+
+        var target = new BasicModel.RedeemCode();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.Code = source.Code;
+        target.Description = source.Description;
+        target.Enabled = source.Enabled;
+        target.ExpiresAt = source.ExpiresAt;
+        target.MaximumUses = source.MaximumUses;
+        target.UsedCount = source.UsedCount;
+        target.PerCharacter = source.PerCharacter;
+        target.ItemsJson = source.ItemsJson;
+        target.WCoinC = source.WCoinC;
+        target.WCoinP = source.WCoinP;
+        target.GoblinPoints = source.GoblinPoints;
+        target.Revision = source.Revision;
+        return target;
+    }
+
+    private BasicModel.RedeemCodeClaim Convert(RedeemCodeClaim source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.RedeemCodeClaim)converted;
+        }
+
+        var target = new BasicModel.RedeemCodeClaim();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.CodeId = source.CodeId;
+        target.AccountId = source.AccountId;
+        target.CharacterId = source.CharacterId;
+        target.CharacterName = source.CharacterName;
+        target.RedeemedAt = source.RedeemedAt;
+        return target;
+    }
+
+    private BasicModel.RedeemItemReward Convert(RedeemItemReward source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.RedeemItemReward)converted;
+        }
+
+        var target = new BasicModel.RedeemItemReward();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.ItemCode = source.ItemCode;
+        target.Level = source.Level;
+        target.Count = source.Count;
         return target;
     }
 

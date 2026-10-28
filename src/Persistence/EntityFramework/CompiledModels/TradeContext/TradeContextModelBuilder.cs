@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
     public partial class TradeContextModel
     {
         private TradeContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("03f40d09-f880-40e8-9bc2-57a13d9ef6b8"), entityTypeCount: 49)
+            : base(skipDetectChanges: false, modelId: new Guid("707c17d4-e2e9-461b-af50-d9bd1ef92984"), entityTypeCount: 51)
         {
         }
 
@@ -64,6 +64,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             var powerUpDefinition = PowerUpDefinitionEntityType.Create(this);
             var powerUpDefinitionValue = PowerUpDefinitionValueEntityType.Create(this);
             var questMonsterKillRequirementState = QuestMonsterKillRequirementStateEntityType.Create(this);
+            var redeemCode = RedeemCodeEntityType.Create(this);
+            var redeemCodeClaim = RedeemCodeClaimEntityType.Create(this);
             var skillCharacterClass = SkillCharacterClassEntityType.Create(this);
             var skillEntry = SkillEntryEntityType.Create(this);
             var statAttribute = StatAttributeEntityType.Create(this);
@@ -143,6 +145,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             PowerUpDefinitionEntityType.CreateAnnotations(powerUpDefinition);
             PowerUpDefinitionValueEntityType.CreateAnnotations(powerUpDefinitionValue);
             QuestMonsterKillRequirementStateEntityType.CreateAnnotations(questMonsterKillRequirementState);
+            RedeemCodeEntityType.CreateAnnotations(redeemCode);
+            RedeemCodeClaimEntityType.CreateAnnotations(redeemCodeClaim);
             SkillCharacterClassEntityType.CreateAnnotations(skillCharacterClass);
             SkillEntryEntityType.CreateAnnotations(skillEntry);
             StatAttributeEntityType.CreateAnnotations(statAttribute);

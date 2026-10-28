@@ -50,6 +50,9 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.ItemStorage>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.LetterBody>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.QuestMonsterKillRequirementState>();
+        modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.RedeemCode>();
+        modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.RedeemCodeClaim>();
+        modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.RedeemItemReward>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.SkillEntry>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Configuration.AreaSkillSettings>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Configuration.BattleZoneDefinition>();

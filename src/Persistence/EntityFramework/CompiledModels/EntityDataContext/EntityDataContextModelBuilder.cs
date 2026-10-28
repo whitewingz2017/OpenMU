@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("ebeb9420-cb0b-4e5e-8803-eb61df5298a0"), entityTypeCount: 125)
+            : base(skipDetectChanges: false, modelId: new Guid("a21887cd-4e96-4b6d-82dc-e18c2268e971"), entityTypeCount: 127)
         {
         }
 
@@ -133,6 +133,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var questMonsterKillRequirementState = QuestMonsterKillRequirementStateEntityType.Create(this);
             var questReward = QuestRewardEntityType.Create(this);
             var rectangle = RectangleEntityType.Create(this);
+            var redeemCode = RedeemCodeEntityType.Create(this);
+            var redeemCodeClaim = RedeemCodeClaimEntityType.Create(this);
             var simpleCraftingSettings = SimpleCraftingSettingsEntityType.Create(this);
             var skill = SkillEntityType.Create(this);
             var skillCharacterClass = SkillCharacterClassEntityType.Create(this);
@@ -502,6 +504,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             QuestMonsterKillRequirementStateEntityType.CreateAnnotations(questMonsterKillRequirementState);
             QuestRewardEntityType.CreateAnnotations(questReward);
             RectangleEntityType.CreateAnnotations(rectangle);
+            RedeemCodeEntityType.CreateAnnotations(redeemCode);
+            RedeemCodeClaimEntityType.CreateAnnotations(redeemCodeClaim);
             SimpleCraftingSettingsEntityType.CreateAnnotations(simpleCraftingSettings);
             SkillEntityType.CreateAnnotations(skill);
             SkillCharacterClassEntityType.CreateAnnotations(skillCharacterClass);
