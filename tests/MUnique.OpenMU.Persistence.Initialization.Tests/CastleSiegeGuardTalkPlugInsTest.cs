@@ -84,6 +84,7 @@ internal class CastleSiegeGuardTalkPlugInsTest
     public void UpdateIsSeason6Only()
     {
         Assert.That(new ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn().DataInitializationKey, Is.EqualTo(VersionSeasonSix.DataInitialization.Id));
+        Assert.That(new ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn().IsMandatory, Is.False);
     }
 
     private static void AssertConfiguredNpcs(GameConfiguration gameConfiguration)

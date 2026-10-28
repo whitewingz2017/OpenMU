@@ -47,7 +47,8 @@ public class ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn : UpdatePlugInBase
     public override string DataInitializationKey => VersionSeasonSix.DataInitialization.Id;
 
     /// <inheritdoc />
-    public override bool IsMandatory => true;
+    // Keep this optional because applying it resets owner-customized NPC and talk settings.
+    public override bool IsMandatory => false;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 21, 18, 0, 0, DateTimeKind.Utc);

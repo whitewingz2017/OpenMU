@@ -27,3 +27,7 @@ position (`B6`), NPC position (`BB`), and guild command (`B2:1D`) packets. Withi
 each update, the player packet replaces the position layer and the NPC packet
 adds structures afterward. The commander position is already known locally;
 the existing position packet has no separate commander-identity field.
+
+## Existing customized installations
+
+The **Configure Castle Siege guards** configuration update is optional in this fork. It changes NPC 220 to a passive guard and resets the two guard talk-plugin configurations. Review those settings before selecting the update if you customized the guards. New installations initialize the registration guardsman and Land of Trials guard directly.
