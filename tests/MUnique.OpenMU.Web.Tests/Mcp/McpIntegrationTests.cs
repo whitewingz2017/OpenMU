@@ -183,7 +183,7 @@ public sealed class McpIntegrationTests : System.IDisposable
     {
         await using var client = await this.ConnectAsync().ConfigureAwait(false);
         var tools = await client.ListToolsAsync().ConfigureAwait(false);
-        Assert.That(tools.Count, Is.EqualTo(15));
+        Assert.That(tools.Count, Is.EqualTo(16));
         var arguments = new Dictionary<string, Dictionary<string, object?>>
         {
             ["accounts_get"] = new() { ["loginName"] = "tester" },
