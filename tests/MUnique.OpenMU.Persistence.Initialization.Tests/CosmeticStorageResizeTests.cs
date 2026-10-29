@@ -16,10 +16,10 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 internal class CosmeticStorageResizeTests
 {
     [Test]
-    public void EnlargedWingMovesAroundExistingItemsWithoutMutatingOriginals()
+    public async Task EnlargedWingMovesAroundExistingItemsWithoutMutatingOriginalsAsync()
     {
         var (storage, wing, normal, skins) = Create();
-        var plan = CosmeticStorageResize.Plan(storage, 64, 12, skins);
+        var plan = await CosmeticStorageResize.PlanAsync(storage, 64, 12, skins).ConfigureAwait(false);
         Assert.That(plan.Single().Item, Is.SameAs(wing));
         Assert.That(plan.Single().Slot, Is.EqualTo(14));
         Assert.That(wing.ItemSlot, Is.EqualTo(12));
@@ -36,17 +36,52 @@ internal class CosmeticStorageResizeTests
             storage.Items.Add(new BasicModel.Item { Id = Guid.NewGuid(), ItemSlot = slot, Definition = normal.Definition });
         }
 
-        Assert.Throws<InvalidOperationException>(() => CosmeticStorageResize.Plan(storage, 64, 12, skins));
+        var error = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await CosmeticStorageResize.PlanAsync(storage, 64, 12, skins, "Character 'testgmDk': main inventory").ConfigureAwait(false));
+        Assert.That(error!.Message, Does.Contain("testgmDk").And.Contain("main inventory").And.Contain("64 cells").And.Contain("5x3"));
         Assert.That(wing.ItemSlot, Is.EqualTo(12));
         Assert.That(storage.Items, Has.Count.EqualTo(64));
     }
 
     [Test]
-    public void EquippedSkinsRemainOutsideTheBagPlan()
+    public async Task FragmentedPageRepackagesOrdinaryItemsWithoutChangingOriginalsAsync()
+    {
+        var (storage, wing, normal, skins) = Create();
+        storage.Items.Clear();
+        storage.Items.Add(wing);
+        for (byte slot = 16; slot < 76; slot += 8)
+        {
+            storage.Items.Add(new BasicModel.Item { Id = Guid.NewGuid(), ItemSlot = slot, Definition = normal.Definition });
+        }
+
+        var originalSlots = storage.Items.Select(i => i.ItemSlot).ToArray();
+        var plan = await CosmeticStorageResize.PlanAsync(storage, 64, 12, skins).ConfigureAwait(false);
+        Assert.That(plan.Any(p => p.Item != wing), Is.True);
+        Assert.That(storage.Items.Select(i => i.ItemSlot), Is.EqualTo(originalSlots));
+        var occupied = new HashSet<int>();
+        foreach (var item in storage.Items)
+        {
+            var position = plan.Any(p => p.Item == item) ? plan.Single(p => p.Item == item).Slot : item.ItemSlot;
+            var column = (position - 12) % 8;
+            var row = (position - 12) / 8;
+            Assert.That(column + item.Definition!.Width, Is.LessThanOrEqualTo(8));
+            Assert.That(row + item.Definition.Height, Is.LessThanOrEqualTo(8));
+            for (var y = 0; y < item.Definition.Height; y++)
+            {
+                for (var x = 0; x < item.Definition.Width; x++)
+                {
+                    Assert.That(occupied.Add(((row + y) * 8) + column + x), Is.True);
+                }
+            }
+        }
+    }
+
+    [Test]
+    public async Task EquippedSkinsRemainOutsideTheBagPlanAsync()
     {
         var (storage, wing, _, skins) = Create();
         wing.ItemSlot = 247;
-        Assert.That(CosmeticStorageResize.Plan(storage, 64, 12, skins), Is.Empty);
+        Assert.That(await CosmeticStorageResize.PlanAsync(storage, 64, 12, skins).ConfigureAwait(false), Is.Empty);
         Assert.That(wing.ItemSlot, Is.EqualTo(247));
     }
 
@@ -97,7 +132,7 @@ internal class CosmeticStorageResizeTests
     private static (ItemStorage Storage, Item Wing, Item Normal, IReadOnlyDictionary<Guid, ItemDefinition> Skins) Create()
     {
         var storage = new BasicModel.ItemStorage();
-        var definition = new BasicModel.ItemDefinition { Id = Guid.NewGuid(), Width = 5, Height = 3 };
+        var definition = new BasicModel.ItemDefinition { Id = Guid.NewGuid(), Name = "Wing Skin", Width = 5, Height = 3 };
         var wing = new BasicModel.Item { Id = Guid.NewGuid(), Definition = definition, ItemSlot = 12 };
         var normal = new BasicModel.Item { Id = Guid.NewGuid(), Definition = new BasicModel.ItemDefinition { Id = Guid.NewGuid(), Width = 1, Height = 1 }, ItemSlot = 13 };
         storage.Items.Add(wing);

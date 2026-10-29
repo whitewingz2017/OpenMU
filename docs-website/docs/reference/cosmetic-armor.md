@@ -17,7 +17,7 @@ promotions. DK, WZ, MG, DL and RF cannot equip it. Set 100 remains unrestricted.
 An incompatible skin equipped before the restriction was added stays removable
 from the Skin page, but its appearance is suppressed.
 
-After applying configuration update **Set 315 Cosmetic Armor**, version 4, and
+After applying configuration update **Set 315 Cosmetic Armor**, version 5, and
 restarting the server, use these commands on a GM character:
 
 - Set 100 armor: `/item 7 100`, `/item 8 100`, `/item 9 100`, `/item 10 100`, `/item 11 100`.
@@ -34,7 +34,7 @@ The source filenames do not determine item IDs: the first pack's `Sword140.bmd`
 and `Arco37.bmd` use group 2/number 100 and group 4/number 100, respectively.
 
 Both the updated mobile client and matching OpenMU server are required. Deploy
-the server source in `C:\OpenMU\OpenMU`, apply the version 4 configuration
+the server source in `C:\OpenMU\OpenMU`, apply the version 5 configuration
 update in the admin panel, and restart. The older
 `deploy/sql/cosmetic-armor-set315.sql` script grants only the original five
 Set 315 pieces; it does not install the complete pack. Building an APK does not
@@ -58,12 +58,12 @@ animation, effects and mobile performance in game before distributing the
 client. Run `python tools/test_cosmetic_armor.py` for asset and item-data checks.
 
 The [partial FinalMU import](finalmu-skins.md) adds 176 weapon/shield, wing and pet skins
-with separate GM commands and requires configuration update version 4.
+with separate GM commands and requires configuration update version 5.
 
 Skin footprints now match normal item categories: large weapons use their normal
 weapon rectangles, armor uses 2x2 or 2x3, shields 2x3, wings 5x3, capes 2x3 and
 pets 1x1. Existing skin item IDs and ownership are preserved. Apply configuration
-update version 4 while players are offline, then restart and use the matching
+update version 5 while players are offline, then restart and use the matching
 client data. The update plans bag, extension, personal-store and warehouse pages
 before moving any saved items. If a page has insufficient space, it refuses the
 update; free space using the previous client/server data and retry. A client-only
@@ -72,3 +72,13 @@ size change would disagree with server inventory validation.
 Cosmetic pets face their direction of travel. Cosmetic wings use the normal
 idle/flight frame rates instead of the faster fixed clock. These animation fixes
 require rebuilding the client; no APK is built automatically by these changes.
+
+Version 5 first tries to preserve ordinary item positions. If a resized skin is
+blocked by scattered items, it retries by repacking the whole affected page,
+placing larger items first. A successful fallback can move ordinary items within
+that page. It does not transfer items between characters, storage pages, or
+accounts. If fitting still fails, the error names the character or account and
+the exact inventory, extension, store or warehouse page. It also reports the
+required cells, page capacity and skin sizes. Move some items off that page and
+retry; wide items need a contiguous rectangle even when the total free-cell
+count looks sufficient. Failed preflight never commits saved item positions.

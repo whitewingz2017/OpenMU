@@ -19,8 +19,9 @@ public static class CosmeticStorageResize
     /// <param name="size">The page size.</param>
     /// <param name="offset">The page's first slot.</param>
     /// <param name="skins">The resized definitions by identifier.</param>
+    /// <param name="location">The character/account and storage page shown if resizing fails.</param>
     /// <returns>The item positions to commit after every page passes.</returns>
-    public static IReadOnlyList<(Item Item, byte Slot)> Plan(ItemStorage storage, int size, int offset, IReadOnlyDictionary<Guid, ItemDefinition> skins)
+    public static async ValueTask<IReadOnlyList<(Item Item, byte Slot)>> PlanAsync(ItemStorage storage, int size, int offset, IReadOnlyDictionary<Guid, ItemDefinition> skins, string? location = null)
     {
         var originals = storage.Items.Where(i => i.ItemSlot >= offset && i.ItemSlot < offset + size && i.Definition is not null).ToArray();
         if (!originals.Any(i => skins.ContainsKey(i.Definition!.GetId())))
@@ -45,9 +46,18 @@ public static class CosmeticStorageResize
         {
             _ = new Storage(size, 0, offset, detached);
         }
-        catch (ArgumentException exception)
+        catch (ArgumentException)
         {
-            throw new InvalidOperationException("The enlarged skin items do not fit. Free space in this bag, store or warehouse page before retrying the configuration update.", exception);
+            detached.Items.Clear();
+            var repacked = new Storage(size, 0, offset, detached);
+            foreach (var entry in copies.OrderByDescending(e => e.Copy.Definition!.Width * e.Copy.Definition.Height)
+                         .ThenByDescending(e => e.Copy.Definition!.Height).ThenBy(e => e.Original.ItemSlot))
+            {
+                if (!await repacked.AddItemAsync(entry.Copy).ConfigureAwait(false))
+                {
+                    throw NotEnoughSpace(location ?? $"Storage slots {offset}-{offset + size - 1}", size, copies.Select(e => e.Copy), skins);
+                }
+            }
         }
 
         return copies.Where(e => e.Original.ItemSlot != e.Copy.ItemSlot).Select(e => (e.Original, e.Copy.ItemSlot)).ToArray();
@@ -68,14 +78,14 @@ public static class CosmeticStorageResize
                 continue;
             }
 
-            plan.AddRange(Plan(inventory, InventoryConstants.InventoryRows * InventoryConstants.RowSize, InventoryConstants.EquippableSlotsCount, skins));
+            plan.AddRange(await PlanAsync(inventory, InventoryConstants.InventoryRows * InventoryConstants.RowSize, InventoryConstants.EquippableSlotsCount, skins, $"Character '{character.Name}': main inventory").ConfigureAwait(false));
             for (var extension = 0; extension < Math.Clamp(character.InventoryExtensions, 0, InventoryConstants.MaximumNumberOfExtensions); extension++)
             {
                 var size = InventoryConstants.RowsOfOneExtension * InventoryConstants.RowSize;
-                plan.AddRange(Plan(inventory, size, InventoryConstants.FirstExtensionItemSlotIndex + (extension * size), skins));
+                plan.AddRange(await PlanAsync(inventory, size, InventoryConstants.FirstExtensionItemSlotIndex + (extension * size), skins, $"Character '{character.Name}': inventory extension {extension + 1}").ConfigureAwait(false));
             }
 
-            plan.AddRange(Plan(inventory, InventoryConstants.StoreSize, InventoryConstants.FirstStoreItemSlotIndex, skins));
+            plan.AddRange(await PlanAsync(inventory, InventoryConstants.StoreSize, InventoryConstants.FirstStoreItemSlotIndex, skins, $"Character '{character.Name}': personal store").ConfigureAwait(false));
         }
 
         foreach (var account in await context.GetAsync<Account>().ConfigureAwait(false))
@@ -85,10 +95,10 @@ public static class CosmeticStorageResize
                 continue;
             }
 
-            plan.AddRange(Plan(vault, InventoryConstants.WarehouseSize, 0, skins));
+            plan.AddRange(await PlanAsync(vault, InventoryConstants.WarehouseSize, 0, skins, $"Account '{account.LoginName}': warehouse page 1").ConfigureAwait(false));
             if (account.IsVaultExtended)
             {
-                plan.AddRange(Plan(vault, InventoryConstants.WarehouseSize, InventoryConstants.WarehouseSize, skins));
+                plan.AddRange(await PlanAsync(vault, InventoryConstants.WarehouseSize, InventoryConstants.WarehouseSize, skins, $"Account '{account.LoginName}': warehouse page 2").ConfigureAwait(false));
             }
         }
 
@@ -96,5 +106,18 @@ public static class CosmeticStorageResize
         {
             entry.Item.ItemSlot = entry.Slot;
         }
+    }
+
+    private static InvalidOperationException NotEnoughSpace(string location, int capacity, IEnumerable<Item> items, IReadOnlyDictionary<Guid, ItemDefinition> skins)
+    {
+        var entries = items.ToArray();
+        var required = entries.Sum(i => i.Definition!.Width * i.Definition.Height);
+        var summary = string.Join(", ", entries.Where(i => skins.ContainsKey(i.Definition!.GetId()))
+            .GroupBy(i => i.Definition!.GetId()).Select(group =>
+            {
+                var definition = group.First().Definition!;
+                return $"{definition.Name.ValueInNeutralLanguage} x{group.Count()} ({definition.Width}x{definition.Height})";
+            }));
+        return new InvalidOperationException($"{location}: enlarged skins cannot fit after repacking. Items require {required} cells; page capacity is {capacity} cells. Skins: {summary}. Move some items to another storage page and retry. No saved item positions were changed.");
     }
 }

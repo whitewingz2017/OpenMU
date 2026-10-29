@@ -12,7 +12,7 @@ tables. Another 158 sprite references targeted absent bones and were excluded.
 Windows DLL-only effect programs have not been reproduced.
 
 Deploy the matching OpenMU server source, apply **Set 315 Cosmetic Armor version
-4**, and restart before creating these items. Existing skins continue to use
+5**, and restart before creating these items. Existing skins continue to use
 their original commands. Enter each command below separately on a GM character,
 pick up the item, and use it to equip the corresponding Skin slot.
 
