@@ -49,9 +49,15 @@ public static class CosmeticArmorRules
         return slot is 241 or >= 245 and <= 248 ? (byte)slot : null;
     }
 
+    /// <summary>Accepts right-hand weapon skins in either hand; other skins keep their configured slot.</summary>
+    /// <param name="definition">The cosmetic item definition.</param>
+    /// <param name="slot">The destination inventory slot.</param>
+    public static bool FitsSlot(ItemDefinition? definition, byte slot)
+        => GetSlot(definition) is { } configured && (configured == slot || (configured == 245 && slot == 246));
+
     /// <summary>Gets valid equipped skins from the complete persisted inventory.</summary>
     public static IEnumerable<Item> Equipped(Player player)
-        => player.SelectedCharacter?.Inventory?.Items.Where(i => GetSlot(i.Definition) == i.ItemSlot
+        => player.SelectedCharacter?.Inventory?.Items.Where(i => FitsSlot(i.Definition, i.ItemSlot)
             && i.ItemSlot >= FirstSlot && i.ItemSlot < FirstSlot + SlotCount
             && (i.ExpiresAtUtc is null || i.ExpiresAtUtc > DateTime.UtcNow)) ?? [];
 

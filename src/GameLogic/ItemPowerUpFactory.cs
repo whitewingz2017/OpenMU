@@ -52,7 +52,7 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
             yield break;
         }
 
-        if (Cosmetics.CosmeticArmorRules.GetSlot(item.Definition) == item.ItemSlot)
+        if (Cosmetics.CosmeticArmorRules.FitsSlot(item.Definition, item.ItemSlot))
         {
             if (Cosmetics.SkinBonuses.IsValid(item))
             {

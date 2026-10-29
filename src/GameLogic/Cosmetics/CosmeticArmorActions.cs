@@ -53,7 +53,7 @@ public sealed class CosmeticArmorActions
         var item = operation == 1 ? inventory.GetItem(source) : persisted.Items.SingleOrDefault(i => i.ItemSlot == skinSlot);
         if (item is null || (operation == 1 && !CosmeticArmorRules.CanEquip(player, item.Definition))
             || (operation == 1 && !SkinBonuses.IsValid(item))
-            || CosmeticArmorRules.GetSlot(item.Definition) != skinSlot
+            || !CosmeticArmorRules.FitsSlot(item.Definition, skinSlot)
             || (operation == 1 && (source <= MUnique.OpenMU.DataModel.InventoryConstants.LastEquippableItemSlotIndex
                 || persisted.Items.Any(i => i.ItemSlot == skinSlot)))
             || (item.ExpiresAtUtc is { } expires && expires <= DateTime.UtcNow))

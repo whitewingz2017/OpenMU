@@ -174,6 +174,43 @@ public class CosmeticArmorTests
     public void CosmeticPartsMapToGearSlots(int part, byte expected)
         => Assert.That(CosmeticArmorRules.GearSlot(part), Is.EqualTo(expected));
 
+    [TestCase(5)]
+    [TestCase(6)]
+    public async Task WeaponSkinFitsEitherHandAndSurvivesReloadAsync(byte part)
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Definition!.Group = 0;
+        item.Definition.ItemSlot!.ItemSlots.Clear();
+        item.Definition.ItemSlot.ItemSlots.Add(245);
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, part).ConfigureAwait(false);
+        Assert.That(item.ItemSlot, Is.EqualTo(CosmeticArmorRules.FirstSlot + part));
+        Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
+        var visible = CosmeticArmorRules.VisibleEquipment(player).Single();
+        Assert.That(visible.ItemSlot, Is.EqualTo(CosmeticArmorRules.GearSlot(part)));
+        Assert.That(visible.Definition, Is.SameAs(item.Definition));
+        _ = new InventoryStorage(player, player.GameContext);
+        Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
+        await actions.ExecuteAsync(player, 2, 2, 0, part).ConfigureAwait(false);
+        Assert.That(CosmeticArmorRules.Equipped(player), Is.Empty);
+        Assert.That(player.Inventory!.Items, Does.Contain(item));
+    }
+
+    [TestCase(245, 246, true)]
+    [TestCase(246, 245, false)]
+    [TestCase(248, 246, false)]
+    [TestCase(241, 246, false)]
+    [TestCase(0, 246, false)]
+    [TestCase(245, 12, false)]
+    public void OnlyWeaponSkinsGainAnAlternativeSlot(int configured, byte destination, bool accepted)
+    {
+        var slots = new BasicModel.ItemSlotType();
+        slots.ItemSlots.Add(configured);
+        var definition = new BasicModel.ItemDefinition { ItemSlot = slots };
+        Assert.That(CosmeticArmorRules.FitsSlot(definition, destination), Is.EqualTo(accepted));
+        Assert.That(CosmeticArmorRules.FitsSlot(null, destination), Is.False);
+    }
+
     private static async Task<(Player Player, Item Item)> CreateAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);

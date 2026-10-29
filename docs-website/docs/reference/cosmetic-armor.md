@@ -2,7 +2,9 @@
 
 Open inventory and use the header arrows to switch between **Gear** and **Skin**.
 The Skin page has a **full-set armor** slot, right weapon, left weapon/shield,
-wing/cape, and pet. The bag stays visible on both pages.
+wing/cape, and pet. Right-hand weapon skins can also be placed in the left-hand
+slot, including while another weapon skin is in the right hand. Class restrictions
+still apply. The bag stays visible on both pages.
 
 One armor skin changes the appearance of the helmet, armor, pants, gloves and
 boots together. Wings, weapons, shields and pets remain separate items. Real
@@ -19,7 +21,9 @@ Skins are permanent and tradable. Players cannot drop them or sell them to NPCs.
 On the Skin page, tap **Skin Shop**. The window has three columns: categories
 on the left, actual item models in the middle, and your character preview on
 the right. The larger preview starts with your character wearing no equipment
-and shows only the selected skin. Use its arrows to rotate the character.
+and shows only the selected skin. Use its arrows to rotate the character, and
+the **Preview +** minus/plus buttons to view enhancement levels +0 through +15.
+This changes the preview only; purchased skins remain +0.
 Choose one bonus from the dropdown below the preview frame, review the price,
 then tap **Buy**. Close or Escape ends the preview. It never changes the character
 in the game world, equips an item, or grants attributes. The purchased item and its chosen bonus arrive together

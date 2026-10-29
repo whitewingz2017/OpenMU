@@ -141,6 +141,33 @@ public class SkinShopTests
         Assert.That(player.Inventory!.Items.Count, Is.EqualTo(allowed ? 1 : 0));
     }
 
+    /// <summary>A left-hand weapon skin retains its chosen option without supplying base weapon damage.</summary>
+    [Test]
+    public async Task LeftWeaponSkinAppliesOnlyItsChosenBonusAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var definition = player.GameContext.Configuration.Items.Single();
+        definition.Group = 0;
+        definition.ItemSlot!.ItemSlots.Clear();
+        definition.ItemSlot.ItemSlots.Add(245);
+        definition.BasePowerUpAttributes.Add(new BasicModel.ItemBasePowerUpDefinition
+        {
+            TargetAttribute = Stats.MinimumPhysBaseDmgByWeapon,
+            BaseValue = 123,
+        });
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 100, 4, 100).ConfigureAwait(false);
+        var item = player.Inventory!.Items.Single();
+        var baseDamage = player.Attributes![Stats.MinimumPhysBaseDmgByWeapon];
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 6).ConfigureAwait(false);
+        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage));
+        _ = new InventoryStorage(player, player.GameContext);
+        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        await actions.ExecuteAsync(player, 2, 2, 0, 6).ConfigureAwait(false);
+        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.Zero);
+    }
+
     private static async Task<Player> CreateAsync(int price = 100)
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
