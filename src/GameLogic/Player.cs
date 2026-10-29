@@ -2271,7 +2271,8 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
 
         float itemDurationIncrease;
-        var identifier = new ItemIdentifier(pet.Definition.Number, pet.Definition.Group);
+        var identifier = Cosmetics.FenrirMountRules.IsFenrir(pet.Definition)
+            ? ItemConstants.Fenrir : new ItemIdentifier(pet.Definition.Number, pet.Definition.Group);
         if (identifier == ItemConstants.DarkHorse)
         {
             itemDurationIncrease = attributes[Stats.TrainablePetDurationIncrease];

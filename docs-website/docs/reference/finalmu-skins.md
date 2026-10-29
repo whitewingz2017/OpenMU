@@ -1,20 +1,23 @@
 # FinalMU cosmetic import
 
 This is a partial import of the supplied FinalMU Season6 x1000 v2 client pack.
-It adds 24 readable weapon/shield models, 82 readable custom wings, and 70 readable pets as permanent,
-tradable cosmetics. Original IDs are recorded in
+It adds 24 readable weapon/shield models, 82 readable custom wings, 57 readable followers, and 13 rideable Fenrir mounts.
+The items are permanent and tradable. Original IDs are recorded in
 `Data/Custom/Skins/FinalMU/catalog.json`; the new IDs avoid all existing items.
-The pet models use a cosmetic following behavior. They do not grant mount
-movement, attacks, item collection, stats, or other FinalMU gameplay benefits.
+Followers use cosmetic following behavior and grant no gameplay benefits.
+The 13 models configured as Fenrir in the source pet table are standalone mounts
+in the Gear helper slot with normal Fenrir riding, requirements, skill and durability.
+Their shop previews include the rider; their price is configured by `MountPrice`.
 Portable mesh-glow settings from the pet table are included where present.
 The import also includes 212 static light sprites from the readable effect
 tables. Another 158 sprite references targeted absent bones and were excluded.
 Windows DLL-only effect programs have not been reproduced.
 
 Deploy the matching OpenMU server source, apply **Set 315 Cosmetic Armor version
-6**, and restart before creating these items. Existing skins continue to use
+7**, and restart before creating these items. Existing skins continue to use
 their original commands. Enter each command below separately on a GM character,
-pick up the item, and use it to equip the corresponding Skin slot. Non-pet skins
+pick up the item, and use it to equip the corresponding Skin slot. Mounts instead
+equip the Gear helper slot and cannot occupy the Skin pet slot. Non-pet skins
 receive one default standard bonus; add a single usual excellent flag as the
 fourth command argument to choose another. The [Skin Shop](cosmetic-armor.md)
 provides previews and a selectable bonus for 100 WCoinC per item by default.
@@ -27,8 +30,12 @@ active class restrictions are in an unreadable item table. Completing the
 entire pack requires unprotected assets or a compatible decoder and the class
 and effect definitions. No existing client files or IDs were replaced.
 
-The separate Skin slot visibility and normal wing animation fixes are included
-in the mobile client. Neither requires a server data change.
+Custom wing and follower playback is interpolated in the client. Wings with fewer
+BMD keys retain the same flap cycle duration. All 82 imported wings and 70 pet/mount
+models were checked for action keys: Wing204 contains only one key and stays static.
+Mount actions use the normal Fenrir cycle timing; missing actions use safe poses.
+Existing imported mesh glow and light settings remain active. The client animation
+changes need no database update; converting Fenrir items requires version 7.
 
 - `hs_blueeyeknightA Skin`: `/item 0 300`
 - `blue_eye_magicsword01 Skin`: `/item 0 301`
@@ -54,19 +61,19 @@ in the mobile client. Neither requires a server data change.
 - `blueeye_summoner Skin`: `/item 5 302`
 - `sd_SoulWizardStaff01_max7 Skin`: `/item 5 303`
 - `sd_soulsummoner Skin`: `/item 5 304`
-- `Fenrir1 Skin`: `/item 13 300`
-- `Fenrir2 Skin`: `/item 13 301`
-- `Fenrir3 Skin`: `/item 13 302`
-- `Fenrir4 Skin`: `/item 13 303`
-- `Fenrir5 Skin`: `/item 13 304`
-- `Fenrir6 Skin`: `/item 13 305`
-- `Fenrir7 Skin`: `/item 13 306`
-- `Fenrir8 Skin`: `/item 13 307`
-- `Fenrir9 Skin`: `/item 13 308`
+- `Fenrir1 Mount`: `/item 13 300`
+- `Fenrir2 Mount`: `/item 13 301`
+- `Fenrir3 Mount`: `/item 13 302`
+- `Fenrir4 Mount`: `/item 13 303`
+- `Fenrir5 Mount`: `/item 13 304`
+- `Fenrir6 Mount`: `/item 13 305`
+- `Fenrir7 Mount`: `/item 13 306`
+- `Fenrir8 Mount`: `/item 13 307`
+- `Fenrir9 Mount`: `/item 13 308`
 - `ghost_horse Skin`: `/item 13 309`
-- `AwayFenrirBlue Skin`: `/item 13 310`
-- `IceDragonSteel Skin`: `/item 13 311`
-- `soi Skin`: `/item 13 312`
+- `AwayFenrirBlue Mount`: `/item 13 310`
+- `IceDragonSteel Mount`: `/item 13 311`
+- `soi Mount`: `/item 13 312`
 - `fighterpet_evol Skin`: `/item 13 313`
 - `ripieoup Skin`: `/item 13 314`
 - `satanpet_evol Skin`: `/item 13 315`
@@ -122,7 +129,7 @@ in the mobile client. Neither requires a server data change.
 - `Collos3 Skin`: `/item 13 365`
 - `Collos2 Skin`: `/item 13 366`
 - `IceQueen Skin`: `/item 13 367`
-- `fiercelionR Skin`: `/item 13 368`
+- `fiercelionR Mount`: `/item 13 368`
 - `Horse10 Skin`: `/item 13 369`
 
 - `GuncrasherWing3rd Wing Skin`: `/item 12 300`

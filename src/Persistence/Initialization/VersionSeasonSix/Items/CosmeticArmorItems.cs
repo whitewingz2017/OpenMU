@@ -41,6 +41,10 @@ public static class CosmeticArmorItems
         foreach (var skin in imports)
         {
             EnsureItem(context, configuration, skin.Group, skin.Number, skin.Name, skin.Part);
+            if (skin.Mount)
+            {
+                FenrirMountItems.Ensure(context, configuration, skin.Group, skin.Number);
+            }
         }
     }
 
@@ -56,6 +60,11 @@ public static class CosmeticArmorItems
         var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == number);
         if (definition is not null && definition.Name.ValueInNeutralLanguage != name
             && !(part == 1 && definition.Name.ValueInNeutralLanguage == $"Set {number} Skin")
+            && !(name.EndsWith(" Mount", StringComparison.Ordinal)
+                && definition.Name.ValueInNeutralLanguage is { } previousName
+                && (previousName == name.Replace(" Mount", " Skin", StringComparison.Ordinal)
+                    || previousName == $"FinalMU {name.Replace(" Mount", " Skin", StringComparison.Ordinal)}")
+                && definition.ItemSlot?.ItemSlots.SingleOrDefault() == 248)
             && !(definition.Name.ValueInNeutralLanguage == $"FinalMU {name}"
                 && definition.ItemSlot?.ItemSlots is { Count: 1 } legacySlots && legacySlots.Single() == 240 + part))
         {
@@ -123,5 +132,5 @@ public static class CosmeticArmorItems
         }
     }
 
-    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part);
+    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false);
 }

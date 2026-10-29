@@ -98,6 +98,33 @@ public class SkinShopTests
         Assert.That(SkinBonuses.FromFlags(definition, flags) is not null, Is.EqualTo(accepted));
     }
 
+    /// <summary>A standalone mount is bought with its riding skill and no cosmetic bonus.</summary>
+    [TestCase(0, true)]
+    [TestCase(1, false)]
+    public async Task MountPurchaseUsesHelperSlotAsync(byte bonus, bool accepted)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var slot = new BasicModel.ItemSlotType();
+        slot.ItemSlots.Add(8);
+        var mount = new BasicModel.ItemDefinition
+        {
+            Group = 13, Number = 300, Name = "Fenrir1 Mount", Width = 2, Height = 2, Durability = 255,
+            ItemSlot = slot, Skill = new BasicModel.Skill { DamageType = MUnique.OpenMU.DataModel.Configuration.DamageType.Fenrir },
+        };
+        player.GameContext.Configuration.Items.Add(mount);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, (13 * 512) + 300, bonus, 100).ConfigureAwait(false);
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 400 : 500));
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
+        if (accepted)
+        {
+            var item = player.Inventory.Items.Single();
+            Assert.That(item.HasSkill, Is.True);
+            Assert.That(item.Durability, Is.EqualTo(255));
+            Assert.That(item.ItemOptions, Is.Empty);
+            Assert.That(CosmeticArmorRules.GetSlot(item.Definition), Is.Null);
+        }
+    }
+
     private static async Task<Player> CreateAsync(int price = 100)
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);

@@ -7,7 +7,8 @@
     "SourceGroup": 0,
     "SourceNumber": 100,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -17,7 +18,8 @@
     "SourceGroup": 0,
     "SourceNumber": 101,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -27,7 +29,8 @@
     "SourceGroup": 0,
     "SourceNumber": 102,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -37,7 +40,8 @@
     "SourceGroup": 0,
     "SourceNumber": 103,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -47,7 +51,8 @@
     "SourceGroup": 0,
     "SourceNumber": 104,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -57,7 +62,8 @@
     "SourceGroup": 0,
     "SourceNumber": 105,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -67,7 +73,8 @@
     "SourceGroup": 0,
     "SourceNumber": 106,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -77,7 +84,8 @@
     "SourceGroup": 0,
     "SourceNumber": 107,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -87,7 +95,8 @@
     "SourceGroup": 0,
     "SourceNumber": 112,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -97,7 +106,8 @@
     "SourceGroup": 0,
     "SourceNumber": 114,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 0,
@@ -107,7 +117,8 @@
     "SourceGroup": 0,
     "SourceNumber": 115,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 2,
@@ -117,7 +128,8 @@
     "SourceGroup": 2,
     "SourceNumber": 100,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 2,
@@ -127,7 +139,8 @@
     "SourceGroup": 2,
     "SourceNumber": 101,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 2,
@@ -137,7 +150,8 @@
     "SourceGroup": 2,
     "SourceNumber": 104,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 2,
@@ -147,7 +161,8 @@
     "SourceGroup": 2,
     "SourceNumber": 105,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 3,
@@ -157,7 +172,8 @@
     "SourceGroup": 3,
     "SourceNumber": 100,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 3,
@@ -167,7 +183,8 @@
     "SourceGroup": 3,
     "SourceNumber": 101,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 4,
@@ -177,7 +194,8 @@
     "SourceGroup": 4,
     "SourceNumber": 100,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 4,
@@ -187,7 +205,8 @@
     "SourceGroup": 4,
     "SourceNumber": 101,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 5,
@@ -197,7 +216,8 @@
     "SourceGroup": 5,
     "SourceNumber": 100,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 5,
@@ -207,7 +227,8 @@
     "SourceGroup": 5,
     "SourceNumber": 101,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 5,
@@ -217,7 +238,8 @@
     "SourceGroup": 5,
     "SourceNumber": 102,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 5,
@@ -227,7 +249,8 @@
     "SourceGroup": 5,
     "SourceNumber": 103,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 5,
@@ -237,97 +260,116 @@
     "SourceGroup": 5,
     "SourceNumber": 104,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 13,
     "Number": 300,
     "Part": 8,
-    "Name": "Fenrir1 Skin",
+    "Name": "Fenrir1 Mount",
     "SourceGroup": 13,
     "SourceNumber": 147,
     "Scale": 1.15,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 301,
     "Part": 8,
-    "Name": "Fenrir2 Skin",
+    "Name": "Fenrir2 Mount",
     "SourceGroup": 13,
     "SourceNumber": 148,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 302,
     "Part": 8,
-    "Name": "Fenrir3 Skin",
+    "Name": "Fenrir3 Mount",
     "SourceGroup": 13,
     "SourceNumber": 149,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 303,
     "Part": 8,
-    "Name": "Fenrir4 Skin",
+    "Name": "Fenrir4 Mount",
     "SourceGroup": 13,
     "SourceNumber": 150,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 304,
     "Part": 8,
-    "Name": "Fenrir5 Skin",
+    "Name": "Fenrir5 Mount",
     "SourceGroup": 13,
     "SourceNumber": 151,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 305,
     "Part": 8,
-    "Name": "Fenrir6 Skin",
+    "Name": "Fenrir6 Mount",
     "SourceGroup": 13,
     "SourceNumber": 152,
     "Scale": 1.15,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 306,
     "Part": 8,
-    "Name": "Fenrir7 Skin",
+    "Name": "Fenrir7 Mount",
     "SourceGroup": 13,
     "SourceNumber": 153,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 307,
     "Part": 8,
-    "Name": "Fenrir8 Skin",
+    "Name": "Fenrir8 Mount",
     "SourceGroup": 13,
     "SourceNumber": 154,
     "Scale": 1.15,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 308,
     "Part": 8,
-    "Name": "Fenrir9 Skin",
+    "Name": "Fenrir9 Mount",
     "SourceGroup": 13,
     "SourceNumber": 155,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
@@ -337,37 +379,45 @@
     "SourceGroup": 13,
     "SourceNumber": 166,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 6
   },
   {
     "Group": 13,
     "Number": 310,
     "Part": 8,
-    "Name": "AwayFenrirBlue Skin",
+    "Name": "AwayFenrirBlue Mount",
     "SourceGroup": 13,
     "SourceNumber": 167,
     "Scale": 0.8,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 311,
     "Part": 8,
-    "Name": "IceDragonSteel Skin",
+    "Name": "IceDragonSteel Mount",
     "SourceGroup": 13,
     "SourceNumber": 168,
     "Scale": 0.9,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
     "Number": 312,
     "Part": 8,
-    "Name": "soi Skin",
+    "Name": "soi Mount",
     "SourceGroup": 13,
     "SourceNumber": 169,
     "Scale": 0.9,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
@@ -377,7 +427,9 @@
     "SourceGroup": 13,
     "SourceNumber": 170,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -387,7 +439,9 @@
     "SourceGroup": 13,
     "SourceNumber": 171,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -397,7 +451,9 @@
     "SourceGroup": 13,
     "SourceNumber": 172,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -407,7 +463,9 @@
     "SourceGroup": 13,
     "SourceNumber": 173,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -417,7 +475,9 @@
     "SourceGroup": 13,
     "SourceNumber": 174,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -427,7 +487,9 @@
     "SourceGroup": 13,
     "SourceNumber": 175,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -437,7 +499,9 @@
     "SourceGroup": 13,
     "SourceNumber": 176,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -447,7 +511,9 @@
     "SourceGroup": 13,
     "SourceNumber": 177,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -457,7 +523,9 @@
     "SourceGroup": 13,
     "SourceNumber": 178,
     "Scale": 0.8,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -467,7 +535,9 @@
     "SourceGroup": 13,
     "SourceNumber": 179,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -477,7 +547,9 @@
     "SourceGroup": 13,
     "SourceNumber": 180,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -487,7 +559,9 @@
     "SourceGroup": 13,
     "SourceNumber": 181,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -497,7 +571,9 @@
     "SourceGroup": 13,
     "SourceNumber": 182,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -507,7 +583,9 @@
     "SourceGroup": 13,
     "SourceNumber": 183,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -517,7 +595,9 @@
     "SourceGroup": 13,
     "SourceNumber": 184,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -527,7 +607,9 @@
     "SourceGroup": 13,
     "SourceNumber": 185,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -537,7 +619,9 @@
     "SourceGroup": 13,
     "SourceNumber": 186,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -547,7 +631,9 @@
     "SourceGroup": 13,
     "SourceNumber": 187,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -557,7 +643,9 @@
     "SourceGroup": 13,
     "SourceNumber": 188,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -567,7 +655,9 @@
     "SourceGroup": 13,
     "SourceNumber": 189,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -577,7 +667,9 @@
     "SourceGroup": 13,
     "SourceNumber": 190,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -587,7 +679,9 @@
     "SourceGroup": 13,
     "SourceNumber": 191,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -597,7 +691,9 @@
     "SourceGroup": 13,
     "SourceNumber": 192,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -607,7 +703,9 @@
     "SourceGroup": 13,
     "SourceNumber": 193,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -617,7 +715,9 @@
     "SourceGroup": 13,
     "SourceNumber": 194,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -627,7 +727,9 @@
     "SourceGroup": 13,
     "SourceNumber": 195,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -637,7 +739,9 @@
     "SourceGroup": 13,
     "SourceNumber": 196,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -647,7 +751,9 @@
     "SourceGroup": 13,
     "SourceNumber": 197,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -657,7 +763,9 @@
     "SourceGroup": 13,
     "SourceNumber": 198,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -667,7 +775,9 @@
     "SourceGroup": 13,
     "SourceNumber": 199,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -677,7 +787,9 @@
     "SourceGroup": 13,
     "SourceNumber": 200,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -687,7 +799,9 @@
     "SourceGroup": 13,
     "SourceNumber": 201,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -697,7 +811,9 @@
     "SourceGroup": 13,
     "SourceNumber": 202,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -707,7 +823,9 @@
     "SourceGroup": 13,
     "SourceNumber": 203,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -717,7 +835,9 @@
     "SourceGroup": 13,
     "SourceNumber": 204,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -727,7 +847,9 @@
     "SourceGroup": 13,
     "SourceNumber": 205,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -737,7 +859,9 @@
     "SourceGroup": 13,
     "SourceNumber": 206,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -747,7 +871,9 @@
     "SourceGroup": 13,
     "SourceNumber": 207,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -757,7 +883,9 @@
     "SourceGroup": 13,
     "SourceNumber": 208,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -767,7 +895,9 @@
     "SourceGroup": 13,
     "SourceNumber": 209,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -777,7 +907,9 @@
     "SourceGroup": 13,
     "SourceNumber": 210,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -787,7 +919,9 @@
     "SourceGroup": 13,
     "SourceNumber": 211,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -797,7 +931,9 @@
     "SourceGroup": 13,
     "SourceNumber": 212,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -807,7 +943,9 @@
     "SourceGroup": 13,
     "SourceNumber": 213,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -817,7 +955,9 @@
     "SourceGroup": 13,
     "SourceNumber": 214,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -827,7 +967,9 @@
     "SourceGroup": 13,
     "SourceNumber": 215,
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -837,7 +979,9 @@
     "SourceGroup": 13,
     "SourceNumber": 216,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -847,7 +991,9 @@
     "SourceGroup": 13,
     "SourceNumber": 217,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -857,7 +1003,9 @@
     "SourceGroup": 13,
     "SourceNumber": 218,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -867,7 +1015,9 @@
     "SourceGroup": 13,
     "SourceNumber": 219,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -877,7 +1027,9 @@
     "SourceGroup": 13,
     "SourceNumber": 220,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -887,7 +1039,9 @@
     "SourceGroup": 13,
     "SourceNumber": 221,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -897,7 +1051,9 @@
     "SourceGroup": 13,
     "SourceNumber": 233,
     "Scale": 0.8,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -907,7 +1063,9 @@
     "SourceGroup": 13,
     "SourceNumber": 234,
     "Scale": 0.6,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
@@ -917,17 +1075,21 @@
     "SourceGroup": 13,
     "SourceNumber": 245,
     "Scale": 0.4,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 8
   },
   {
     "Group": 13,
     "Number": 368,
     "Part": 8,
-    "Name": "fiercelionR Skin",
+    "Name": "fiercelionR Mount",
     "SourceGroup": 13,
     "SourceNumber": 252,
     "Scale": 0.95,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": true,
+    "Behavior": 5
   },
   {
     "Group": 13,
@@ -937,7 +1099,9 @@
     "SourceGroup": 13,
     "SourceNumber": 253,
     "Scale": 1.0,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false,
+    "Behavior": 6
   },
   {
     "Group": 12,
@@ -948,7 +1112,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\GuncrasherWing3rd.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -959,7 +1124,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\GuncrasherWing4th.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -970,7 +1136,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\KCW_WingP.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -981,7 +1148,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\KCW_WingR.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -992,7 +1160,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\MJS_wing_12.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1003,7 +1172,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing1000.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1014,7 +1184,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\wing1100.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1025,7 +1196,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing1300.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1036,7 +1208,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing1400.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1047,7 +1220,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\wing180.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1058,7 +1232,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing204.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1069,7 +1244,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing52.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1080,7 +1256,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing53.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1091,7 +1268,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing54.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1102,7 +1280,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wing55.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1113,7 +1292,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\wing7mg.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1124,7 +1304,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\WingElf7.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1135,7 +1316,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings1.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1146,7 +1328,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings10.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1157,7 +1340,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings11-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1168,7 +1352,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings11.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1179,7 +1364,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings12.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1190,7 +1376,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings13.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1201,7 +1388,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings14.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1212,7 +1400,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings15.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1223,7 +1412,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings16.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1234,7 +1424,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings17.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1245,7 +1436,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings18.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1256,7 +1448,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings19.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1267,7 +1460,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings2.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1278,7 +1472,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings20.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1289,7 +1484,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings21-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1300,7 +1496,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings21.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1311,7 +1508,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings22-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1322,7 +1520,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings22.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1333,7 +1532,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings23.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1344,7 +1544,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings24.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1355,7 +1556,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings25.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1366,7 +1568,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings26-coy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1377,7 +1580,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings26.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1388,7 +1592,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings27.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1399,7 +1604,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings28-new.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1410,7 +1616,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings28.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1421,7 +1628,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings29.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1432,7 +1640,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings3-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1443,7 +1652,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings3.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1454,7 +1664,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings30-new.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1465,7 +1676,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings30.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1476,7 +1688,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings31.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1487,7 +1700,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings32.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1498,7 +1712,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings4-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1509,7 +1724,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings4.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1520,7 +1736,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1531,7 +1748,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings7.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1542,7 +1760,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings77.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1553,7 +1772,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings8-copy.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1564,7 +1784,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings8.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1575,7 +1796,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\Wings9.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1586,7 +1808,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Item\\WingsOfPower.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1597,7 +1820,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\DK_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1608,7 +1832,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\DL_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1619,7 +1844,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\DW_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1630,7 +1856,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\Elf_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1641,7 +1868,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\MG_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1652,7 +1880,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\MG_Wings5_2.BMD",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1663,7 +1892,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\SCF_WINGS211.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1674,7 +1904,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\Sum_Wings5.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1685,7 +1916,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing-Pawi.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1696,7 +1928,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1707,7 +1940,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing03.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1718,7 +1952,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing118.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1729,7 +1964,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing183.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1740,7 +1976,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing200.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1751,7 +1988,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing2222.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1762,7 +2000,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing223.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1773,7 +2012,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\Wing408.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1784,7 +2024,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\WingBlack.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1795,7 +2036,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\WingofGhost.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1806,7 +2048,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\WingsOfPower.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1817,7 +2060,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Models\\wingtest2\\WingWhite.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1828,7 +2072,8 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Wings\\angel_devil_wing.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   },
   {
     "Group": 12,
@@ -1839,6 +2084,7 @@
     "SourceNumber": null,
     "SourceFile": "Data\\Custom\\Wings\\ConquerorWing.bmd",
     "Scale": 0.5,
-    "Height": 70.0
+    "Height": 70.0,
+    "Mount": false
   }
 ]

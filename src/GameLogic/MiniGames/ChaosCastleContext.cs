@@ -1,4 +1,4 @@
-﻿// <copyright file="ChaosCastleContext.cs" company="MUnique">
+// <copyright file="ChaosCastleContext.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -102,7 +102,7 @@ public sealed class ChaosCastleContext : MiniGameContext
         var identifier = new ItemIdentifier(definition.Number, definition.Group);
         if (identifier == ItemConstants.Uniria
             || identifier == ItemConstants.Dinorant
-            || identifier == ItemConstants.Fenrir
+            || Cosmetics.FenrirMountRules.IsFenrir(item.Definition)
             || item.IsTransformationRing())
         {
             return false;

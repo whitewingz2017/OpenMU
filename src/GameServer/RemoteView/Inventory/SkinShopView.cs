@@ -36,14 +36,14 @@ public sealed class SkinShopView : ISkinShopView
 
         var settings = SkinShopFeaturePlugIn.GetSettings(this._player.GameContext);
         var items = includeCatalog && settings is not null
-            ? this._player.GameContext.Configuration.Items.Where(d => CosmeticArmorRules.GetSlot(d) is not null).OrderBy(d => d.Group).ThenBy(d => d.Number).ToArray()
+            ? this._player.GameContext.Configuration.Items.Where(FenrirMountRules.IsShopItem).OrderBy(d => d.Group).ThenBy(d => d.Number).ToArray()
             : [];
         var data = JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
             Status = status,
             Balance = this._player.Account?.WCoinC ?? 0,
-            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), Eligible = CosmeticArmorRules.CanEquip(this._player, d), Pool = Pool(d) }),
+            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), Eligible = CosmeticArmorRules.CanEquip(this._player, d), Pool = Pool(d) }),
             Pools = items.GroupBy(Pool).Select(group => new { Pool = group.Key, Bonuses = SkinBonuses.Choices(group.First()).OrderBy(o => o.Number).Select(o => new { Number = o.Number, Label = BonusLabel(o) }) }),
         });
         await connection.SendAsync(() =>

@@ -56,7 +56,7 @@ public sealed class SkinShopActions
     private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, int itemType, byte bonus, int quotedPrice)
     {
         var definition = player.GameContext.Configuration.Items.SingleOrDefault(d => (d.Group * 512) + d.Number == itemType);
-        if (definition is null || CosmeticArmorRules.GetSlot(definition) is null || !CosmeticArmorRules.CanEquip(player, definition))
+        if (definition is null || !FenrirMountRules.IsShopItem(definition) || !CosmeticArmorRules.CanEquip(player, definition))
         {
             return "This skin is unavailable for your character class.";
         }
@@ -84,6 +84,7 @@ public sealed class SkinShopActions
         var item = player.PersistenceContext.CreateNew<Item>();
         item.Definition = definition;
         item.Durability = definition.Durability;
+        item.HasSkill = FenrirMountRules.IsCustom(definition) && definition.Skill is not null;
         ItemOptionLink? link = null;
         var committed = false;
         try

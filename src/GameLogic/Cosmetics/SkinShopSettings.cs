@@ -27,8 +27,12 @@ public sealed class SkinShopSettings
     [Range(0, int.MaxValue)]
     public int PetPrice { get; set; } = 100;
 
+    /// <summary>Gets or sets the price of a standalone Fenrir mount.</summary>
+    [Range(0, int.MaxValue)]
+    public int MountPrice { get; set; } = 100;
+
     /// <summary>Gets the configured price for a cosmetic definition.</summary>
     /// <param name="definition">The skin definition.</param>
     public int Price(MUnique.OpenMU.DataModel.Configuration.Items.ItemDefinition definition)
-        => definition.Group switch { 8 => this.ArmorPrice, 6 => this.ShieldPrice, 12 => this.WingPrice, 13 => this.PetPrice, _ => this.WeaponPrice };
+        => FenrirMountRules.IsCustom(definition) ? this.MountPrice : definition.Group switch { 8 => this.ArmorPrice, 6 => this.ShieldPrice, 12 => this.WingPrice, 13 => this.PetPrice, _ => this.WeaponPrice };
 }

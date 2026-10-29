@@ -103,6 +103,7 @@ public class ItemChatCommandPlugIn : ChatCommandPlugInBase<ItemChatCommandArgs>
         AddLuckOption(item, arguments);
         AddExcellentOptions(item, arguments);
         AddAncientBonusOption(item, arguments);
+        item.HasSkill |= FenrirMountRules.IsCustom(itemDefinition);
 
         return item;
     }

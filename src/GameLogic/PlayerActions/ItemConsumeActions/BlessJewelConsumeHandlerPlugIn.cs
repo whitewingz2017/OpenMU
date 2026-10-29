@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="BlessJewelConsumeHandlerPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -37,7 +37,10 @@ public class BlessJewelConsumeHandlerPlugIn : UpgradeItemLevelJewelConsumeHandle
     /// <inheritdoc/>
     protected override bool ModifyItem(Item item, IContext persistenceContext)
     {
-        if (this.Configuration?.RepairTargetItems.Contains(item.Definition!) is true
+        var repairTargets = this.Configuration?.RepairTargetItems;
+        if ((repairTargets?.Contains(item.Definition!) == true
+            || (Cosmetics.FenrirMountRules.IsCustom(item.Definition)
+                && repairTargets?.Any(Cosmetics.FenrirMountRules.IsFenrir) == true))
             && item.Durability < item.GetMaximumDurabilityOfOnePiece())
         {
             item.Durability = item.GetMaximumDurabilityOfOnePiece();

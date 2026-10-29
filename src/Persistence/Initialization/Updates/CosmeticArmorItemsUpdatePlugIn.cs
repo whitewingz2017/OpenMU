@@ -21,13 +21,13 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Set 315 Cosmetic Armor";
 
     /// <inheritdoc />
-    public override string Description => "Converts each old armor skin piece into a full-set item, adds normal item bonuses and enables Skin Shop settings. Apply with all players offline; free storage space if conversion cannot fit.";
+    public override string Description => "Converts old armor skins to full sets and custom Fenrir followers to standalone rideable mounts; installs normal skin bonuses and shop settings. Apply with all players offline; free storage space if conversion cannot fit.";
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override int Version => 6;
+    public override int Version => 7;
 
     /// <inheritdoc />
     public override DateTime UpdatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);

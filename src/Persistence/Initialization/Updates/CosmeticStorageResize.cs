@@ -69,7 +69,7 @@ public static class CosmeticStorageResize
     /// <returns>A task representing the operation.</returns>
     public static async ValueTask ApplyAsync(IContext context, GameConfiguration configuration)
     {
-        var skins = configuration.Items.Where(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true).ToDictionary(i => i.GetId());
+        var skins = configuration.Items.Where(i => (i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true || GameLogic.Cosmetics.FenrirMountRules.IsCustom(i))).ToDictionary(i => i.GetId());
         var plan = new List<(Item Item, byte Slot)>();
         foreach (var character in await context.GetAsync<Character>().ConfigureAwait(false))
         {

@@ -26,10 +26,30 @@ in your inventory. The bonus stays on that item when traded or stored.
 
 All categories initially cost **100 WCoinC** each. In the server admin panel,
 open the **Skin Shop** feature plugin configuration to edit `ArmorPrice`,
-`WeaponPrice`, `ShieldPrice`, `WingPrice`, and `PetPrice` separately. A zero price
+`WeaponPrice`, `ShieldPrice`, `WingPrice`, `PetPrice`, and `MountPrice` separately. A zero price
 allows preview but disables purchases for that category. Disabling the plugin
 closes the shop. Prices and bonus choices come from the server. A changed price,
 full bag, invalid bonus or insufficient balance cannot spend WCoinC.
+
+## Standalone mounts and animation
+
+The Mounts category contains 13 imported Fenrir models. These are actual riding
+items, equipped in the **Gear helper** slot, with the normal Fenrir level/class
+requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cells.
+They have no selectable skin bonus. A cosmetic pet can remain in its separate Skin
+slot while riding. Previewing a mount also previews the rider in the shop window.
+
+Apply **Set 315 Cosmetic Armor version 7** while players are offline and restart.
+Existing floating Fenrir items keep their identities and become mounts; items in
+the Skin pet slot return to the bag. Free bag space if the update reports it cannot
+fit. Existing real helper equipment is not replaced.
+
+Custom wings and followers use forward, interpolated playback independent of
+render FPS. Wing cycle length is normalized across different BMD key counts.
+Mount actions follow the normal Fenrir riding actions; models missing a skill or
+damage action use their attack or standing pose. Imported light and mesh-glow
+settings remain active. Wing204 has a single-key BMD and stays static; it needs
+a replacement animated model to flap. DLL-only source effects are unavailable.
 
 ## Bonuses
 
@@ -53,7 +73,7 @@ Normal jewels and gear upgrades are not a skin-bonus reroll system.
 ## Existing items and server deployment
 
 Deploy the matching OpenMU source, take all players offline, apply **Set 315
-Cosmetic Armor version 6** in the admin panel, and restart. Use the matching
+Cosmetic Armor version 7** in the admin panel, and restart. Use the matching
 client data and rebuild your client. No APK is built by this change.
 
 Every old Set 100/315 helmet, pants, gloves or boots skin becomes a separate

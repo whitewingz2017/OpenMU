@@ -34,7 +34,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(4));
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).All(o => o.OptionType == ItemOptionTypes.Wing), Is.True);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(configuration.Items.Single(d => d.Group == 13 && d.Number == 200)), Is.Empty);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(196));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(183));
     }
 
     [Test]
@@ -43,12 +43,13 @@ internal class CosmeticArmorInitializationTests
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
         var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
         var update = new CosmeticArmorItemsUpdatePlugIn();
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         AssertSkins(configuration);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(196));
-        Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(9));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(183));
+        Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(10));
         var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
         Assert.Multiple(() =>
         {
@@ -81,6 +82,7 @@ internal class CosmeticArmorInitializationTests
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
         var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
         CosmeticArmorItems.Ensure(context, configuration);
         var imported = configuration.Items.First(d => d.Number >= 300 && d.Group == 12);
         var originalName = imported.Name.ValueInNeutralLanguage;
@@ -94,6 +96,22 @@ internal class CosmeticArmorInitializationTests
 
     private static void AssertSkins(GameConfiguration configuration)
     {
+        var original = configuration.Items.Single(d => d.Group == 13 && d.Number == 37);
+        var mounts = configuration.Items.Where(GameLogic.Cosmetics.FenrirMountRules.IsCustom).ToArray();
+        Assert.That(mounts, Has.Length.EqualTo(13));
+        foreach (var mount in mounts)
+        {
+            Assert.That(mount.ItemSlot, Is.SameAs(original.ItemSlot));
+            Assert.That(mount.Skill, Is.SameAs(original.Skill));
+            Assert.That(mount.Width, Is.EqualTo(2));
+            Assert.That(mount.Height, Is.EqualTo(2));
+            Assert.That(mount.Durability, Is.EqualTo(255));
+            Assert.That(mount.Requirements.Select(q => (q.Attribute, q.MinimumValue)), Is.EquivalentTo(original.Requirements.Select(q => (q.Attribute, q.MinimumValue))));
+            Assert.That(mount.BasePowerUpAttributes.Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType)), Is.EquivalentTo(original.BasePowerUpAttributes.Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType))));
+            Assert.That(mount.BasePowerUpAttributes.Intersect(original.BasePowerUpAttributes), Is.Empty);
+            Assert.That(mount.Requirements.Intersect(original.Requirements), Is.Empty);
+        }
+
         var skins = configuration.Items.Where(i => i.Number == 315 && i.Group >= 7 && i.Group <= 11).ToArray();
         Assert.That(skins, Has.Length.EqualTo(5));
         Assert.That(skins.All(i => i.IsTradable && i.IsStorable && i.IsPersonalStoreSellable), Is.True);

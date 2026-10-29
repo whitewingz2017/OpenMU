@@ -17,9 +17,9 @@ public static class CosmeticSetConversion
     /// <param name="configuration">The target configuration.</param>
     public static async ValueTask ApplyAsync(IContext context, GameConfiguration configuration)
     {
-        var changes = new List<(Item Item, ItemDefinition Definition, byte Slot)>();
+        var changes = new List<(Item Item, ItemDefinition Definition, byte Slot, double Durability, bool HasSkill)>();
         var addedOptions = new List<(Item Item, ItemOptionLink Link)>();
-        var definitions = configuration.Items.Where(d => d.ItemSlot?.ItemSlots.Any(slot => slot is >= 240 and <= 248) == true).ToDictionary(d => d.GetId());
+        var definitions = configuration.Items.Where(d => (d.ItemSlot?.ItemSlots.Any(slot => slot is >= 240 and <= 248) == true || FenrirMountRules.IsCustom(d))).ToDictionary(d => d.GetId());
         try
         {
             foreach (var item in await context.GetAsync<Item>().ConfigureAwait(false))
@@ -29,10 +29,20 @@ public static class CosmeticSetConversion
                     continue;
                 }
 
-                changes.Add((item, definition, item.ItemSlot));
+                changes.Add((item, definition, item.ItemSlot, item.Durability, item.HasSkill));
                 item.Definition = definition.Group is >= 7 and <= 11 && definition.Number is 100 or 315
                     ? configuration.Items.Single(d => d.Group == 8 && d.Number == definition.Number)
                     : configuredDefinition;
+
+                if (FenrirMountRules.IsCustom(item.Definition))
+                {
+                    if (!item.HasSkill || item.ItemSlot == 248 || definition.ItemSlot?.ItemSlots.Contains(248) == true)
+                    {
+                        item.Durability = item.Definition.Durability;
+                    }
+
+                    item.HasSkill = true;
+                }
 
                 if (item.ItemOptions.Count == 0 && SkinBonuses.Choices(item.Definition).OrderBy(o => o.Number).FirstOrDefault() is { } option)
                 {
@@ -52,6 +62,11 @@ public static class CosmeticSetConversion
                     continue;
                 }
 
+                foreach (var mount in inventory.Where(i => i.ItemSlot == 248 && FenrirMountRules.IsCustom(i.Definition)).ToArray())
+                {
+                    mount.ItemSlot = DataModel.InventoryConstants.EquippableSlotsCount;
+                }
+
                 // Retired body slots return to the bag. Existing armor keeps the full-set slot.
                 foreach (var item in inventory.Where(i => i.ItemSlot is 240 or 242 or 243 or 244
                     && i.Definition?.Group == 8 && i.Definition.Number is 100 or 315).ToArray())
@@ -68,6 +83,8 @@ public static class CosmeticSetConversion
             {
                 change.Item.Definition = change.Definition;
                 change.Item.ItemSlot = change.Slot;
+                change.Item.Durability = change.Durability;
+                change.Item.HasSkill = change.HasSkill;
             }
 
             foreach (var added in addedOptions)

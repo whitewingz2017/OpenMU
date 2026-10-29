@@ -23,6 +23,7 @@ internal class CosmeticSetConversionTests
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
         var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
         CosmeticArmorItems.Ensure(context, configuration);
         var character = context.CreateNew<Character>();
         character.Inventory = context.CreateNew<ItemStorage>();
@@ -62,6 +63,7 @@ internal class CosmeticSetConversionTests
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
         var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
         CosmeticArmorItems.Ensure(context, configuration);
         var definition = configuration.Items.Single(d => d.Group == 0 && d.Number == 100);
         var options = context.CreateNew<ItemOptionDefinition>();
@@ -85,6 +87,41 @@ internal class CosmeticSetConversionTests
         Assert.That(item.ItemOptions.Single().ItemOption, Is.SameAs(option));
     }
 
+    /// <summary>Legacy floating Fenrirs become rideable items without replacing gear or their identifiers.</summary>
+    [TestCase(248)]
+    [TestCase(12)]
+    public async Task LegacyMountLeavesSkinSlotAndKeepsIdentityAsync(byte slot)
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        using var context = provider.CreateNewContext();
+        var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
+        CosmeticArmorItems.Ensure(context, configuration);
+        var character = context.CreateNew<Character>();
+        character.Inventory = context.CreateNew<ItemStorage>();
+        var definition = configuration.Items.Single(d => d.Group == 13 && d.Number == 300);
+        var item = context.CreateNew<Item>();
+        item.Definition = definition;
+        item.ItemSlot = slot;
+        item.Durability = 1;
+        character.Inventory.Items.Add(item);
+        var gear = context.CreateNew<Item>();
+        gear.Definition = configuration.Items.Single(d => d.Group == 13 && d.Number == 37);
+        gear.ItemSlot = 8;
+        character.Inventory.Items.Add(gear);
+        var id = item.GetId();
+        await CosmeticSetConversion.ApplyAsync(context, configuration).ConfigureAwait(false);
+        Assert.That(item.GetId(), Is.EqualTo(id));
+        Assert.That(item.ItemSlot, Is.InRange(12, 75));
+        Assert.That(item.Durability, Is.EqualTo(255));
+        Assert.That(item.HasSkill, Is.True);
+        Assert.That(gear.ItemSlot, Is.EqualTo(8));
+        item.Durability = 200;
+        await CosmeticSetConversion.ApplyAsync(context, configuration).ConfigureAwait(false);
+        Assert.That(item.Durability, Is.EqualTo(200));
+        _ = new MUnique.OpenMU.GameLogic.Storage(64, 0, 12, character.Inventory);
+    }
+
     /// <summary>Insufficient bag space restores the original definition and equipped position.</summary>
     [Test]
     public void FullBagRollsBackEveryConvertedItem()
@@ -92,6 +129,7 @@ internal class CosmeticSetConversionTests
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
         var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
         CosmeticArmorItems.Ensure(context, configuration);
         var character = context.CreateNew<Character>();
         character.Inventory = context.CreateNew<ItemStorage>();
@@ -100,6 +138,11 @@ internal class CosmeticSetConversionTests
         item.ItemSlot = 240;
         character.Inventory.Items.Add(item);
         var originalDefinition = item.Definition;
+        var mount = context.CreateNew<Item>();
+        mount.Definition = configuration.Items.Single(d => d.Group == 13 && d.Number == 300);
+        mount.ItemSlot = 248;
+        mount.Durability = 1;
+        character.Inventory.Items.Add(mount);
         var ordinary = context.CreateNew<ItemDefinition>();
         ordinary.Width = 1;
         ordinary.Height = 1;
@@ -114,6 +157,9 @@ internal class CosmeticSetConversionTests
         Assert.ThrowsAsync<InvalidOperationException>(async () => await CosmeticSetConversion.ApplyAsync(context, configuration).ConfigureAwait(false));
         Assert.That(item.Definition, Is.SameAs(originalDefinition));
         Assert.That(item.ItemSlot, Is.EqualTo(240));
-        Assert.That(character.Inventory.Items, Has.Count.EqualTo(65));
+        Assert.That(character.Inventory.Items, Has.Count.EqualTo(66));
+        Assert.That(mount.ItemSlot, Is.EqualTo(248));
+        Assert.That(mount.Durability, Is.EqualTo(1));
+        Assert.That(mount.HasSkill, Is.False);
     }
 }
