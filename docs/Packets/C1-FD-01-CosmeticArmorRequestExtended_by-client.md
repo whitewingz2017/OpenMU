@@ -6,7 +6,7 @@ The custom client opens its Skin page or equips or unequips an owned cosmetic it
 
 ## Causes the following actions on the server side
 
-The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 0 helmet through 4 boots.
+The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 1 full armor set, 5 right weapon, 6 left weapon or shield, 7 wing, 8 pet. Other part numbers are reserved.
 
 ## Structure
 

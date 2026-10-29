@@ -5783,7 +5783,7 @@ public static class ConnectionExtensions
     /// <param name="requestId">The request id.</param>
     /// <remarks>
     /// Is sent by the client when: The custom client opens its Skin page or equips or unequips an owned cosmetic item.
-    /// Causes reaction on server side: The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 0 helmet through 4 boots.
+    /// Causes reaction on server side: The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 1 full armor set, 5 right weapon, 6 left weapon or shield, 7 wing, 8 pet. Other part numbers are reserved.
     /// </remarks>
     public static async ValueTask SendCosmeticArmorRequestExtendedAsync(this IConnection? connection, byte @operation, byte @inventorySlot, byte @part, uint @requestId)
     {
@@ -5799,6 +5799,42 @@ public static class ConnectionExtensions
             packet.Operation = @operation;
             packet.InventorySlot = @inventorySlot;
             packet.Part = @part;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="SkinShopRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="itemType">The item type.</param>
+    /// <param name="bonus">The bonus.</param>
+    /// <param name="quotedPrice">The quoted price.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client requests the skin catalog (0) or buys one skin with a chosen bonus (1).
+    /// Causes reaction on server side: The server validates the configured WCoinC price, bonus, class, ownership storage and replay sequence, saves the purchase atomically and returns the catalog or result.
+    /// </remarks>
+    public static async ValueTask SendSkinShopRequestExtendedAsync(this IConnection? connection, byte @operation, ushort @itemType, byte @bonus, uint @quotedPrice, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = SkinShopRequestExtendedRef.Length;
+            var packet = new SkinShopRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.ItemType = @itemType;
+            packet.Bonus = @bonus;
+            packet.QuotedPrice = @quotedPrice;
             packet.RequestId = @requestId;
 
             return packet.Header.Length;

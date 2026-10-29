@@ -1,4 +1,4 @@
-﻿// <copyright file="ItemChatCommandPlugIn.cs" company="MUnique">
+// <copyright file="ItemChatCommandPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.PlugIns.ChatCommands;
 
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.PlugIns.ChatCommands.Arguments;
 using MUnique.OpenMU.PlugIns;
 
@@ -62,6 +63,20 @@ public class ItemChatCommandPlugIn : ChatCommandPlugInBase<ItemChatCommandArgs>
             return (false, null);
         }
 
+        if (itemDefinition.ItemSlot?.ItemSlots.Any(slot => slot is 240 or 242 or 243 or 244) == true)
+        {
+            await gameMaster.ShowBlueMessageAsync("Armor skins are full sets now. Use /item 8 100 or /item 8 315.").ConfigureAwait(false);
+            return (false, null);
+        }
+
+        if (CosmeticArmorRules.GetSlot(itemDefinition) is not null
+            && (arguments.Skill || arguments.Luck || arguments.Opt != 0 || arguments.Ancient != 0
+                || (SkinBonuses.Choices(itemDefinition).Any() ? SkinBonuses.FromFlags(itemDefinition, arguments.ExcellentNumber) is null : arguments.ExcellentNumber != 0)))
+        {
+            await gameMaster.ShowBlueMessageAsync("A skin accepts one normal excellent bonus flag only. Omit the flag for its default bonus; pets have no bonus.").ConfigureAwait(false);
+            return (false, null);
+        }
+
         return (true, itemDefinition);
     }
 
@@ -73,6 +88,16 @@ public class ItemChatCommandPlugIn : ChatCommandPlugInBase<ItemChatCommandArgs>
         item.HasSkill = item.Definition.Skill != null && arguments.Skill;
         item.Level = arguments.Level;
         item.SocketCount = item.Definition.MaximumSockets;
+
+        if (CosmeticArmorRules.GetSlot(itemDefinition) is not null)
+        {
+            if (SkinBonuses.FromFlags(itemDefinition, arguments.ExcellentNumber) is { } bonus)
+            {
+                item.ItemOptions.Add(new ItemOptionLink { ItemOption = bonus, Level = 1 });
+            }
+
+            return item;
+        }
 
         AddOption(item, arguments);
         AddLuckOption(item, arguments);

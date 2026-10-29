@@ -10,7 +10,7 @@ using MUnique.OpenMU.PlugIns;
 
 /// <summary>Adds optional cosmetic armor item definitions to existing Season 6 configurations.</summary>
 [PlugIn]
-[Display(Name = "Set 315 Cosmetic Armor", Description = "Adds five tradable skin items and custom cosmetic slots, without combat bonuses.")]
+[Display(Name = "Set 315 Cosmetic Armor", Description = "Full-set skins, normal item bonuses and the WCoinC Skin Shop.")]
 [Guid("190050c7-3e97-4e7b-9ccb-0cbfe839a4e1")]
 public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
 {
@@ -21,13 +21,13 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Set 315 Cosmetic Armor";
 
     /// <inheritdoc />
-    public override string Description => "Restores normal skin inventory footprints and repacks affected pages safely. Apply while players are offline; free space if a page cannot fit the resized items.";
+    public override string Description => "Converts each old armor skin piece into a full-set item, adds normal item bonuses and enables Skin Shop settings. Apply with all players offline; free storage space if conversion cannot fit.";
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override int Version => 5;
+    public override int Version => 6;
 
     /// <inheritdoc />
     public override DateTime UpdatedAt => new(2026, 10, 29, 0, 0, 0, DateTimeKind.Utc);
@@ -39,6 +39,14 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         VersionSeasonSix.Items.CosmeticArmorItems.Ensure(context, gameConfiguration);
-        await CosmeticStorageResize.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
+        if (gameConfiguration.PlugInConfigurations.All(p => p.TypeId != typeof(GameLogic.Cosmetics.SkinShopFeaturePlugIn).GUID))
+        {
+            var feature = context.CreateNew<MUnique.OpenMU.PlugIns.PlugInConfiguration>();
+            feature.TypeId = typeof(GameLogic.Cosmetics.SkinShopFeaturePlugIn).GUID;
+            feature.CustomConfiguration = System.Text.Json.JsonSerializer.Serialize(new GameLogic.Cosmetics.SkinShopSettings());
+            feature.IsActive = true;
+            gameConfiguration.PlugInConfigurations.Add(feature);
+        }
+        await CosmeticSetConversion.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
     }
 }

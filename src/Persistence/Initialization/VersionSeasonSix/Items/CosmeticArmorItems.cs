@@ -54,7 +54,10 @@ public static class CosmeticArmorItems
         bool female = false)
     {
         var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == number);
-        if (definition is not null && definition.Name.ValueInNeutralLanguage != name)
+        if (definition is not null && definition.Name.ValueInNeutralLanguage != name
+            && !(part == 1 && definition.Name.ValueInNeutralLanguage == $"Set {number} Skin")
+            && !(definition.Name.ValueInNeutralLanguage == $"FinalMU {name}"
+                && definition.ItemSlot?.ItemSlots is { Count: 1 } legacySlots && legacySlots.Single() == 240 + part))
         {
             throw new InvalidOperationException($"Item {group}/{number} is already used. Cosmetic items cannot replace it.");
         }
@@ -89,6 +92,9 @@ public static class CosmeticArmorItems
         }
 
         (definition.Width, definition.Height) = CosmeticItemDimensions.Get(group, name);
+        definition.Name = part == 1 ? $"Set {number} Skin" : name;
+
+        EnsureBonuses(configuration, definition, part);
 
         if (female)
         {
@@ -97,6 +103,23 @@ public static class CosmeticArmorItems
             {
                 definition.QualifiedCharacters.Add(characterClass);
             }
+        }
+    }
+
+    private static void EnsureBonuses(GameConfiguration configuration, ItemDefinition definition, int part)
+    {
+        if (part is 0 or 2 or 3 or 4 or 8)
+        {
+            return;
+        }
+
+        var number = part == 7 ? ItemOptionDefinitionNumbers.Wing3rd
+            : definition.Group is 6 or 8 ? ItemOptionDefinitionNumbers.ExcellentDefense
+            : definition.Group == 5 ? ItemOptionDefinitionNumbers.ExcellentWizardry : ItemOptionDefinitionNumbers.ExcellentPhysical;
+        var options = configuration.ItemOptions.SingleOrDefault(option => option.GetId() == GuidHelper.CreateGuid<ItemOptionDefinition>((short)number));
+        if (options is not null && !definition.PossibleItemOptions.Contains(options))
+        {
+            definition.PossibleItemOptions.Add(options);
         }
     }
 

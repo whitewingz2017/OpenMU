@@ -12,16 +12,29 @@ using MUnique.OpenMU.PlugIns;
 
 /// <summary>Handles opt-in cosmetic armor requests from custom clients.</summary>
 [PlugIn]
-[Display(Name = "Cosmetic Armor", Description = "Equips tradable cosmetic armor without combat bonuses.")]
+[Display(Name = "Cosmetic Armor", Description = "Equips persistent skins and handles WCoinC skin shop requests.")]
 [Guid("ad3f89d8-120a-4142-ac35-e6a833d04377")]
 internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
 {
     private readonly CosmeticArmorActions _actions = new();
+    private readonly SkinShopActions _shop = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
+        if (packet.Length == SkinShopRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == SkinShopRequestExtended.SubCode)
+        {
+            SkinShopRequestExtended shop = packet;
+            if (shop.QuotedPrice > int.MaxValue)
+            {
+                return;
+            }
+
+            await this._shop.ExecuteAsync(player, shop.RequestId, shop.Operation, shop.ItemType, shop.Bonus, (int)shop.QuotedPrice).ConfigureAwait(false);
+            return;
+        }
+
         if (packet.Length != CosmeticArmorRequestExtended.Length || packet.Span[0] != 0xC1
             || packet.Span[3] != CosmeticArmorRequestExtended.SubCode)
         {

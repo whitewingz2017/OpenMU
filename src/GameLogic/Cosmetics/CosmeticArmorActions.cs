@@ -52,6 +52,7 @@ public sealed class CosmeticArmorActions
         var skinSlot = (byte)(CosmeticArmorRules.FirstSlot + part);
         var item = operation == 1 ? inventory.GetItem(source) : persisted.Items.SingleOrDefault(i => i.ItemSlot == skinSlot);
         if (item is null || (operation == 1 && !CosmeticArmorRules.CanEquip(player, item.Definition))
+            || (operation == 1 && !SkinBonuses.IsValid(item))
             || CosmeticArmorRules.GetSlot(item.Definition) != skinSlot
             || (operation == 1 && (source <= MUnique.OpenMU.DataModel.InventoryConstants.LastEquippableItemSlotIndex
                 || persisted.Items.Any(i => i.ItemSlot == skinSlot)))
@@ -110,9 +111,14 @@ public sealed class CosmeticArmorActions
             }
         }
 
+        (inventory as InventoryStorage)?.RefreshCosmeticPowerUps();
         player.OnAppearanceChanged();
-        var changed = new TemporaryItem { ItemSlot = CosmeticArmorRules.GearSlot(part) };
-        await player.ForEachWorldObserverAsync<IAppearanceChangedPlugIn>(v => v.AppearanceChangedAsync(player, changed, true), false).ConfigureAwait(false);
+        var slots = part == 1 ? Enumerable.Range(2, 5).Select(slot => (byte)slot) : [CosmeticArmorRules.GearSlot(part)];
+        foreach (var slot in slots)
+        {
+            var changed = new TemporaryItem { ItemSlot = slot };
+            await player.ForEachWorldObserverAsync<IAppearanceChangedPlugIn>(v => v.AppearanceChangedAsync(player, changed, true), false).ConfigureAwait(false);
+        }
         await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(v => v.UpdateInventoryListAsync()).ConfigureAwait(false);
         await ShowAsync(player, request, operation == 1 ? "Skin equipped." : "Skin returned to inventory.").ConfigureAwait(false);
     }

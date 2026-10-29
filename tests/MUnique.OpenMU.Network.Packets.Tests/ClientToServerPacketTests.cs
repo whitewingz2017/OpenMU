@@ -4087,4 +4087,38 @@ public class PacketStructureTests
         Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for SkinShopRequestExtended.
+    /// </summary>
+    [Test]
+    public void SkinShopRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 16;
+        var actualLength = SkinShopRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'ItemType' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'ItemType' exceeds packet boundary");
+        
+        // Validate field 'Bonus' boundary
+        Assert.That(7 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Bonus' exceeds packet boundary");
+        
+        // Validate field 'QuotedPrice' boundary
+        Assert.That(8 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'QuotedPrice' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(12 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

@@ -20,15 +20,15 @@ public class CosmeticArmorTests
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         var originalSlot = item.ItemSlot;
         var action = new CosmeticArmorActions();
-        await action.ExecuteAsync(player, 1, 1, originalSlot, 0).ConfigureAwait(false);
-        await action.ExecuteAsync(player, 1, 1, originalSlot, 0).ConfigureAwait(false);
-        Assert.That(item.ItemSlot, Is.EqualTo(CosmeticArmorRules.FirstSlot));
+        await action.ExecuteAsync(player, 1, 1, originalSlot, 1).ConfigureAwait(false);
+        await action.ExecuteAsync(player, 1, 1, originalSlot, 1).ConfigureAwait(false);
+        Assert.That(item.ItemSlot, Is.EqualTo(CosmeticArmorRules.FirstSlot + 1));
         Assert.That(player.Inventory!.Items, Does.Not.Contain(item));
         Assert.That(player.Inventory.EquippedItems, Does.Not.Contain(item));
         Assert.That(player.SelectedCharacter!.Inventory!.Items.Count(i => i == item), Is.EqualTo(1));
-        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single().ItemSlot, Is.EqualTo(2));
-        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single().Definition, Is.SameAs(item.Definition));
-        await action.ExecuteAsync(player, 2, 2, 0, 0).ConfigureAwait(false);
+        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Select(i => i.ItemSlot), Is.EquivalentTo(new byte[] { 2, 3, 4, 5, 6 }));
+        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single(i => i.ItemSlot == 3).Definition, Is.SameAs(item.Definition));
+        await action.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false);
         Assert.That(player.Inventory.Items.Single(), Is.SameAs(item));
         Assert.That(CosmeticArmorRules.Equipped(player), Is.Empty);
     }
@@ -39,8 +39,8 @@ public class CosmeticArmorTests
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         var originalSlot = item.ItemSlot;
         var action = new CosmeticArmorActions();
-        await action.ExecuteAsync(player, 1, 1, originalSlot, 1).ConfigureAwait(false);
-        await action.ExecuteAsync(player, 2, 1, byte.MaxValue, 0).ConfigureAwait(false);
+        await action.ExecuteAsync(player, 1, 1, originalSlot, 0).ConfigureAwait(false);
+        await action.ExecuteAsync(player, 2, 1, byte.MaxValue, 1).ConfigureAwait(false);
         Assert.That(item.ItemSlot, Is.EqualTo(originalSlot));
         Assert.That(player.Inventory!.Items.Single(), Is.SameAs(item));
     }
@@ -50,7 +50,7 @@ public class CosmeticArmorTests
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         await player.PlayerState.TryAdvanceToAsync(PlayerState.TradeRequested).ConfigureAwait(false);
-        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         Assert.That(player.Inventory!.Items.Single(), Is.SameAs(item));
     }
 
@@ -61,7 +61,7 @@ public class CosmeticArmorTests
         var slot = item.ItemSlot;
         CashShopActionsTest.SaveFailingContext.Install(player, () => true);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, slot, 0).ConfigureAwait(false));
+            await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, slot, 1).ConfigureAwait(false));
         Assert.That(player.Inventory!.GetItem(slot), Is.SameAs(item));
         Assert.That(CosmeticArmorRules.Equipped(player), Is.Empty);
     }
@@ -72,10 +72,10 @@ public class CosmeticArmorTests
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         var actions = new CosmeticArmorActions();
-        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         CashShopActionsTest.SaveFailingContext.Install(player, () => true);
         Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await actions.ExecuteAsync(player, 2, 2, 0, 0).ConfigureAwait(false));
+            await actions.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false));
         Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
         Assert.That(player.Inventory!.Items, Does.Not.Contain(item));
         Assert.That(player.SelectedCharacter!.Inventory!.Items.Count(i => i == item), Is.EqualTo(1));
@@ -86,7 +86,7 @@ public class CosmeticArmorTests
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         var action = new CosmeticArmorActions();
-        await action.ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await action.ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         var ordinary = new BasicModel.ItemDefinition { Width = 1, Height = 1, Name = "Bag item" };
         foreach (var slot in player.Inventory!.FreeSlots.ToArray())
         {
@@ -95,7 +95,7 @@ public class CosmeticArmorTests
             Assert.That(await player.Inventory.AddItemAsync(slot, filler).ConfigureAwait(false), Is.True);
         }
 
-        await action.ExecuteAsync(player, 2, 2, 0, 0).ConfigureAwait(false);
+        await action.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false);
         Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
         Assert.That(player.SelectedCharacter!.Inventory!.Items.Count(i => i == item), Is.EqualTo(1));
     }
@@ -104,7 +104,7 @@ public class CosmeticArmorTests
     public async Task CosmeticSlotsSurviveInventoryReconstructionAsync()
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);
-        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         var reloaded = new InventoryStorage(player, player.GameContext);
         Assert.That(reloaded.Items, Does.Not.Contain(item));
         Assert.That(player.SelectedCharacter!.Inventory!.Items, Does.Contain(item));
@@ -138,11 +138,11 @@ public class CosmeticArmorTests
         item.Definition!.Number = 315;
         player.SelectedCharacter!.CharacterClass = new BasicModel.CharacterClass { Number = 8 };
         var actions = new CosmeticArmorActions();
-        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         player.SelectedCharacter.CharacterClass = new BasicModel.CharacterClass { Number = 4 };
         Assert.That(CosmeticArmorRules.Equipped(player), Does.Contain(item));
         Assert.That(CosmeticArmorRules.VisibleEquipment(player), Is.Empty);
-        await actions.ExecuteAsync(player, 2, 2, 0, 0).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false);
         Assert.That(player.Inventory!.Items, Does.Contain(item));
     }
 
@@ -160,7 +160,7 @@ public class CosmeticArmorTests
         var (player, item) = await CreateAsync().ConfigureAwait(false);
         item.Definition!.Number = 315;
         player.SelectedCharacter!.CharacterClass = new BasicModel.CharacterClass { Number = classNumber };
-        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 0).ConfigureAwait(false);
+        await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         Assert.That(CosmeticArmorRules.Equipped(player).Any(), Is.EqualTo(allowed));
         Assert.That(player.Inventory!.Items.Contains(item), Is.EqualTo(!allowed));
     }
@@ -179,8 +179,14 @@ public class CosmeticArmorTests
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
         await player.PlayerState.TryAdvanceToAsync(PlayerState.EnteredWorld).ConfigureAwait(false);
         var slot = new BasicModel.ItemSlotType();
-        slot.ItemSlots.Add(CosmeticArmorRules.FirstSlot);
-        var definition = new BasicModel.ItemDefinition { Group = 7, Number = 100, Width = 2, Height = 2, ItemSlot = slot, Name = "Set 100 Helm Skin" };
+        slot.ItemSlots.Add(CosmeticArmorRules.FirstSlot + 1);
+        var definition = new BasicModel.ItemDefinition { Group = 8, Number = 100, Width = 2, Height = 3, ItemSlot = slot, Name = "Set 100 Helm Skin" };
+        player.GameContext.Configuration.Items.Add(definition);
+        foreach (var group in new byte[] { 7, 9, 10, 11 })
+        {
+            player.GameContext.Configuration.Items.Add(new BasicModel.ItemDefinition { Group = group, Number = 100 });
+        }
+
         var item = player.PersistenceContext.CreateNew<Item>();
         item.Definition = definition;
         item.Durability = 1;

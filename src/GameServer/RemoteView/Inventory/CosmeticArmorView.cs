@@ -32,7 +32,7 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
         {
             RequestId = requestId,
             Status = status,
-            Skins = CosmeticArmorRules.Equipped(this._player).Select(i => new { Part = i.ItemSlot - CosmeticArmorRules.FirstSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number }),
+            Skins = CosmeticArmorRules.Equipped(this._player).Select(i => new { Part = i.ItemSlot - CosmeticArmorRules.FirstSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),
         });
         await connection.SendAsync(() =>
         {

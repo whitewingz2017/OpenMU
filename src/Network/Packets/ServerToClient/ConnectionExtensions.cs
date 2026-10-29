@@ -9057,7 +9057,7 @@ public static class ConnectionExtensions
     /// <param name="data">The data.</param>
     /// <remarks>
     /// Is sent by the server when: A cosmetic armor request was processed.
-    /// Causes reaction on client side: The custom client replaces its cosmetic slots using the UTF-8 JSON snapshot containing RequestId, Status and Skins entries with Part and ItemType. It never changes combat equipment.
+    /// Causes reaction on client side: The custom client replaces its cosmetic slots using the UTF-8 JSON snapshot containing RequestId, Status and Skins entries with Part, ItemType and ordinary excellent/wing BonusFlags. It never changes combat equipment.
     /// </remarks>
     public static async ValueTask SendCosmeticArmorResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
     {
@@ -9070,6 +9070,34 @@ public static class ConnectionExtensions
         {
             var length = CosmeticArmorResponseExtendedRef.GetRequiredSize(data.Length);
             var packet = new CosmeticArmorResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="SkinShopResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A skin shop catalog or purchase request was processed.
+    /// Causes reaction on client side: The custom client displays UTF-8 JSON with RequestId, Status, Balance, Items (ItemType, Name, Part, Price, Eligible, Pool) and shared Pools of standard Bonuses (Number, Label). Preview changes only the local character appearance.
+    /// </remarks>
+    public static async ValueTask SendSkinShopResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = SkinShopResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new SkinShopResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
             @data.Span.CopyTo(packet.Data);
 
             return packet.Header.Length;

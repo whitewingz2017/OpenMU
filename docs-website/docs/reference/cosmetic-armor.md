@@ -1,44 +1,88 @@
-# Cosmetic skins
+# Skins and Skin Shop
 
 Open inventory and use the header arrows to switch between **Gear** and **Skin**.
-The Skin page has nine positions: five armor parts, right weapon, left weapon or
-shield, wing/cape, and pet. The bag stays visible on either page.
+The Skin page has a **full-set armor** slot, right weapon, left weapon/shield,
+wing/cape, and pet. The bag stays visible on both pages.
 
-Select an owned skin item and choose **Use**, or drag it onto its matching Skin
-slot. Tap an occupied Skin slot to return the item to the bag; make room first.
-Unequip skins before trading, storing them, or listing them in a personal store.
-Skins are permanent, tradable, and have no combat attributes. They cannot be
-sold to NPCs or dropped by players. GM creation can place them on the ground.
-The cosmetic pet follows the character without adding pet combat bonuses.
-Cosmetic wings do not grant flight or movement benefits.
+One armor skin changes the appearance of the helmet, armor, pants, gloves and
+boots together. Wings, weapons, shields and pets remain separate items. Real
+combat equipment stays equipped underneath the skins. Set 315 is restricted to
+Elf and Summoner, including their promotions; Set 100 is unrestricted.
 
-Set 315 (the female set) is restricted to **Elf and Summoner**, including their
-promotions. DK, WZ, MG, DL and RF cannot equip it. Set 100 remains unrestricted.
-An incompatible skin equipped before the restriction was added stays removable
-from the Skin page, but its appearance is suppressed.
+Select an owned skin and choose **Use**, or drag it onto its matching Skin slot.
+Tap an occupied Skin slot to return the item to the bag; make room first.
+Unequip skins before trading, warehousing or listing them in a personal store.
+Skins are permanent and tradable. Players cannot drop them or sell them to NPCs.
 
-After applying configuration update **Set 315 Cosmetic Armor**, version 5, and
-restarting the server, use these commands on a GM character:
+## Buying and previewing
 
-- Set 100 armor: `/item 7 100`, `/item 8 100`, `/item 9 100`, `/item 10 100`, `/item 11 100`.
-- Set 315 armor: `/item 7 315`, `/item 8 315`, `/item 9 315`, `/item 10 315`, `/item 11 315`.
-- Sword: `/item 0 100`; mace/scepter: `/item 2 100`; staff: `/item 5 100`.
-- Bow: `/item 4 100`; shield: `/item 6 100` (both use the left skin slot).
-- First pack cape: `/item 12 180`; first pack wing: `/item 12 200`.
-- Second pack wing: `/item 12 210`; second pack cape: `/item 12 213`.
-- Second pack pet (folder Pet208): `/item 13 200`.
+On the Skin page, tap **Skin Shop**. The window has three columns: categories
+on the left, actual item models in the middle, and your character preview on
+the right. Select an item to see your character wearing it in that preview pane.
+Use its arrows to rotate the character. Choose one bonus, review the price,
+then tap **Buy**. Close or Escape ends the preview. It never changes the character
+in the game world, equips an item, or grants attributes. The purchased item and its chosen bonus arrive together
+in your inventory. The bonus stays on that item when traded or stored.
 
-Enter each command separately. Pick up the resulting item near your GM.
-Leave level, skill, luck, excellent, ancient and option arguments at defaults.
-The source filenames do not determine item IDs: the first pack's `Sword140.bmd`
-and `Arco37.bmd` use group 2/number 100 and group 4/number 100, respectively.
+All categories initially cost **100 WCoinC** each. In the server admin panel,
+open the **Skin Shop** feature plugin configuration to edit `ArmorPrice`,
+`WeaponPrice`, `ShieldPrice`, `WingPrice`, and `PetPrice` separately. A zero price
+allows preview but disables purchases for that category. Disabling the plugin
+closes the shop. Prices and bonus choices come from the server. A changed price,
+full bag, invalid bonus or insufficient balance cannot spend WCoinC.
 
-Both the updated mobile client and matching OpenMU server are required. Deploy
-the server source in `C:\OpenMU\OpenMU`, apply the version 5 configuration
-update in the admin panel, and restart. The older
-`deploy/sql/cosmetic-armor-set315.sql` script grants only the original five
-Set 315 pieces; it does not install the complete pack. Building an APK does not
-deploy server changes to the VPS.
+## Bonuses
+
+A full-set armor skin has **one standard excellent defense option**, applied
+once for the whole set. Weapon skins offer the normal physical or wizardry
+excellent options for their type. Shields use normal excellent defense options.
+Wing and cape skins offer the normal third-wing options: 5% ignore defense,
+5% complete damage reflection, 5% full HP recovery, or 5% full MP recovery.
+These are the server's existing item options and normal values; no custom
+percentage bonuses are invented. Administrators can edit those option
+definitions in the normal game configuration.
+
+Each non-pet skin carries one selected option. Its bonus applies only while
+validly equipped in Skin, in addition to the real gear's attributes. It stops
+applying when unequipped and returns after relogging with the skin equipped.
+The skin grants no base weapon damage, armor defense, wing absorption, flight,
+movement benefit or ordinary gear set-completion bonus. Pet skins remain
+cosmetic followers without combat bonuses, attacks, mounts or item collection.
+Normal jewels and gear upgrades are not a skin-bonus reroll system.
+
+## Existing items and server deployment
+
+Deploy the matching OpenMU source, take all players offline, apply **Set 315
+Cosmetic Armor version 6** in the admin panel, and restart. Use the matching
+client data and rebuild your client. No APK is built by this change.
+
+Every old Set 100/315 helmet, pants, gloves or boots skin becomes a separate
+copy of its corresponding full-set armor item. Existing armor skins become
+full-set items too. Item identities and ownership are preserved: five old
+pieces become five full-set items. The armor already in Skin stays there;
+retired body-slot items return to the bag. Old skins without an option receive
+the first configured normal bonus for their type; pets keep no bonus.
+
+The update preflights all bag, extension, personal-store and warehouse pages
+before committing positions. Larger full-set items can require more space.
+If a page cannot fit, the error names the character/account and page. Move
+items to another page using the previous version, then retry. The failed
+conversion restores definitions, options and positions; no owned items are
+deleted. Successful repacking may rearrange items within that page. It does not
+transfer items between pages, characters or accounts.
+
+The previous SQL five-piece installer is retired. Use the shop or GM commands.
+GM examples: `/item 8 100` or `/item 8 315` creates a full-set item with its
+default bonus; `/item 8 100 0 8` selects the normal damage-decrease excellent
+flag. The usual excellent flag is the fourth argument: choose exactly one
+of 1, 2, 4, 8, 16, 32 where that item's pool supports it. Wings use 1, 2, 4, 8.
+Omit skill, luck, normal-option and ancient arguments for skins. Pets accept no
+bonus. Retired body-piece commands are rejected with a full-set command hint.
+
+Other original commands remain: sword `/item 0 100`, mace `/item 2 100`, bow
+`/item 4 100`, staff `/item 5 100`, shield `/item 6 100`, capes `/item 12 180`
+and `/item 12 213`, wings `/item 12 200` and `/item 12 210`, pet `/item 13 200`.
+The [partial FinalMU import](finalmu-skins.md) lists its additional item IDs.
 
 Models and textures live under `Data/Custom/Skins`. The first pack includes
 Set100, Set315, SWORD, MACE, BOW, STAFF, SHIELD, WING and CAPA. The second pack
@@ -55,30 +99,7 @@ reuses IDs from its other gear, so its wing-specific files are used for wing
 
 Server transformations and Chaos Castle appearances take precedence. Check fit,
 animation, effects and mobile performance in game before distributing the
-client. Run `python tools/test_cosmetic_armor.py` for asset and item-data checks.
-
-The [partial FinalMU import](finalmu-skins.md) adds 176 weapon/shield, wing and pet skins
-with separate GM commands and requires configuration update version 5.
-
-Skin footprints now match normal item categories: large weapons use their normal
-weapon rectangles, armor uses 2x2 or 2x3, shields 2x3, wings 5x3, capes 2x3 and
-pets 1x1. Existing skin item IDs and ownership are preserved. Apply configuration
-update version 5 while players are offline, then restart and use the matching
-client data. The update plans bag, extension, personal-store and warehouse pages
-before moving any saved items. If a page has insufficient space, it refuses the
-update; free space using the previous client/server data and retry. A client-only
-size change would disagree with server inventory validation.
-
-Cosmetic pets face their direction of travel. Cosmetic wings use the normal
-idle/flight frame rates instead of the faster fixed clock. These animation fixes
-require rebuilding the client; no APK is built automatically by these changes.
-
-Version 5 first tries to preserve ordinary item positions. If a resized skin is
-blocked by scattered items, it retries by repacking the whole affected page,
-placing larger items first. A successful fallback can move ordinary items within
-that page. It does not transfer items between characters, storage pages, or
-accounts. If fitting still fails, the error names the character or account and
-the exact inventory, extension, store or warehouse page. It also reports the
-required cells, page capacity and skin sizes. Move some items off that page and
-retry; wide items need a contiguous rectangle even when the total free-cell
-count looks sufficient. Failed preflight never commits saved item positions.
+client. Cosmetic pets face their travel direction; cosmetic wings use the
+normal idle and flight frame rates. Run `python tools/test_cosmetic_armor.py`
+for asset checks and the inventory/shop layout scripts under `android/` for
+native RmlUi checks.

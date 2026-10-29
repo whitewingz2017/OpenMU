@@ -1,4 +1,4 @@
-﻿// <copyright file="ItemPowerUpFactory.cs" company="MUnique">
+// <copyright file="ItemPowerUpFactory.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -49,6 +49,19 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
 
         if (item.Durability <= 0)
         {
+            yield break;
+        }
+
+        if (Cosmetics.CosmeticArmorRules.GetSlot(item.Definition) == item.ItemSlot)
+        {
+            if (Cosmetics.SkinBonuses.IsValid(item))
+            {
+                foreach (var powerUp in this.GetPowerUpsOfItemOptions(item, attributeHolder))
+                {
+                    yield return powerUp;
+                }
+            }
+
             yield break;
         }
 
@@ -327,6 +340,11 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
     // TODO: Make this more generic and configurable?
     private IEnumerable<PowerUpWrapper> CreateExcellentAndAncientBasePowerUpWrappers(Item item, AttributeSystem attributeHolder)
     {
+        if (Cosmetics.CosmeticArmorRules.GetSlot(item.Definition) is not null)
+        {
+            yield break;
+        }
+
         var itemIsExcellent = item.IsExcellent();
         var itemIsAncient = item.IsAncient();
 

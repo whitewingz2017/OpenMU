@@ -1,4 +1,4 @@
-﻿// <copyright file="InventoryStorage.cs" company="MUnique">
+// <copyright file="InventoryStorage.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -141,6 +141,30 @@ public class InventoryStorage : Storage, IInventoryStorage
         return this.EquippedItemsChanged?.Invoke(new ItemEventArgs(item, isEquipped, hasDurabilityFactorChanged)) ?? ValueTask.CompletedTask;
     }
 
+    /// <summary>Replaces skin power-ups after a committed cosmetic equipment change.</summary>
+    public void RefreshCosmeticPowerUps()
+    {
+        if (this._player.Attributes is not { } attributes)
+        {
+            return;
+        }
+
+        foreach (var item in attributes.ItemPowerUps.Keys.Where(i => Cosmetics.CosmeticArmorRules.GetSlot(i.Definition) is not null).ToArray())
+        {
+            foreach (var powerUp in attributes.ItemPowerUps[item])
+            {
+                powerUp.Dispose();
+            }
+
+            attributes.ItemPowerUps.Remove(item);
+        }
+
+        foreach (var item in Cosmetics.CosmeticArmorRules.Equipped(this._player).Where(i => Cosmetics.CosmeticArmorRules.CanEquip(this._player, i.Definition)))
+        {
+            attributes.ItemPowerUps[item] = this._gameContext.ItemPowerUpFactory.GetPowerUps(item, attributes).ToList();
+        }
+    }
+
     private bool IsWearingSlot(int slot)
     {
         return slot >= FirstEquippableItemSlotIndex && slot <= LastEquippableItemSlotIndex;
@@ -195,6 +219,7 @@ public class InventoryStorage : Storage, IInventoryStorage
             powerUp.Dispose();
         }
 
+        this._player.Attributes.ItemPowerUps.Clear();
         var factory = this._gameContext?.ItemPowerUpFactory;
         if (factory != null)
         {
@@ -204,6 +229,7 @@ public class InventoryStorage : Storage, IInventoryStorage
             }
 
             this.UpdateSetPowerUps();
+            this.RefreshCosmeticPowerUps();
         }
         else
         {

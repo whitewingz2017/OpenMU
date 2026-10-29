@@ -6,7 +6,7 @@ A cosmetic armor request was processed.
 
 ## Causes the following actions on the client side
 
-The custom client replaces its cosmetic slots using the UTF-8 JSON snapshot containing RequestId, Status and Skins entries with Part and ItemType. It never changes combat equipment.
+The custom client replaces its cosmetic slots using the UTF-8 JSON snapshot containing RequestId, Status and Skins entries with Part, ItemType and ordinary excellent/wing BonusFlags. It never changes combat equipment.
 
 ## Structure
 

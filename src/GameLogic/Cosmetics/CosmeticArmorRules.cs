@@ -9,10 +9,10 @@ using MUnique.OpenMU.DataModel.Configuration.Items;
 /// <summary>Reserved Season 6 inventory positions for cosmetic armor, outside all gear, bag and shop slots.</summary>
 public static class CosmeticArmorRules
 {
-    /// <summary>The custom client reserves five positions after the last personal-store position (235).</summary>
+    /// <summary>The custom client reserves nine positions after the last personal-store position (235).</summary>
     public const byte FirstSlot = 240;
 
-    /// <summary>The five armor parts supported by the custom client.</summary>
+    /// <summary>The protocol slot count, including retired body-piece positions.</summary>
     public const byte SlotCount = 9;
 
     /// <summary>The normal helmet position, followed by armor, pants, gloves and boots.</summary>
@@ -46,7 +46,7 @@ public static class CosmeticArmorRules
         }
 
         var slot = slots.Single();
-        return slot >= FirstSlot && slot < FirstSlot + SlotCount ? (byte)slot : null;
+        return slot is 241 or >= 245 and <= 248 ? (byte)slot : null;
     }
 
     /// <summary>Gets valid equipped skins from the complete persisted inventory.</summary>
@@ -58,7 +58,22 @@ public static class CosmeticArmorRules
     /// <summary>Gets visible equipment without changing the items supplying combat attributes.</summary>
     public static IEnumerable<Item> VisibleEquipment(Player player)
     {
-        var skins = Equipped(player).Where(i => CanEquip(player, i.Definition)).ToDictionary(i => GearSlot(i.ItemSlot - FirstSlot));
+        var skins = new Dictionary<byte, ItemDefinition>();
+        foreach (var item in Equipped(player).Where(i => CanEquip(player, i.Definition)))
+        {
+            if (item.Definition!.Group == 8)
+            {
+                foreach (var definition in player.GameContext.Configuration.Items.Where(d => d.Group is >= 7 and <= 11 && d.Number == item.Definition.Number))
+                {
+                    skins[(byte)(definition.Group - 5)] = definition;
+                }
+            }
+            else
+            {
+                skins[GearSlot(item.ItemSlot - FirstSlot)] = item.Definition;
+            }
+        }
+
         foreach (var item in player.Inventory?.EquippedItems ?? [])
         {
             if (!skins.ContainsKey(item.ItemSlot))
@@ -69,7 +84,7 @@ public static class CosmeticArmorRules
 
         foreach (var entry in skins)
         {
-            yield return new TemporaryItem { Definition = entry.Value.Definition, ItemSlot = entry.Key };
+            yield return new TemporaryItem { Definition = entry.Value, ItemSlot = entry.Key };
         }
     }
 }
