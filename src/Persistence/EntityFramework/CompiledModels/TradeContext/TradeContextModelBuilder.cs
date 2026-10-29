@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
     public partial class TradeContextModel
     {
         private TradeContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("707c17d4-e2e9-461b-af50-d9bd1ef92984"), entityTypeCount: 51)
+            : base(skipDetectChanges: false, modelId: new Guid("51d5f349-4197-4df4-8cc8-a669e410b873"), entityTypeCount: 51)
         {
         }
 
@@ -89,8 +89,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
             ItemAppearanceItemOptionTypeEntityType.CreateForeignKey1(itemAppearanceItemOptionType, itemAppearance);
             ItemItemOfItemSetEntityType.CreateForeignKey1(itemItemOfItemSet, item);
             ItemOptionLinkEntityType.CreateForeignKey1(itemOptionLink, item);
-            LetterBodyEntityType.CreateForeignKey1(letterBody, letterHeader);
-            LetterBodyEntityType.CreateForeignKey2(letterBody, appearanceData);
+            LetterBodyEntityType.CreateForeignKey1(letterBody, item);
+            LetterBodyEntityType.CreateForeignKey2(letterBody, letterHeader);
+            LetterBodyEntityType.CreateForeignKey3(letterBody, appearanceData);
             LetterHeaderEntityType.CreateForeignKey1(letterHeader, character);
             MiniGameRankingEntryEntityType.CreateForeignKey1(miniGameRankingEntry, character);
             PowerUpDefinitionEntityType.CreateForeignKey1(powerUpDefinition, powerUpDefinitionValue);

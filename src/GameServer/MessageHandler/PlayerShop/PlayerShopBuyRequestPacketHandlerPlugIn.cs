@@ -60,6 +60,13 @@ internal class PlayerShopBuyRequestPacketHandlerPlugIn : ISubPacketHandlerPlugIn
             return;
         }
 
+        // Combined prices require the updated confirmation and mail-delivery request.
+        if (!string.IsNullOrEmpty(requestedPlayer.ShopStorage?.GetItem(message.ItemSlot)?.StorePricesJson))
+        {
+            await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(requestedPlayer, ItemBuyResult.NotAvailable, null)).ConfigureAwait(false);
+            return;
+        }
+
         await this._buyAction.BuyItemAsync(player, requestedPlayer, message.ItemSlot).ConfigureAwait(false);
     }
 }

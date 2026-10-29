@@ -125,6 +125,22 @@ public class SkinShopTests
         }
     }
 
+    /// <summary>The server rechecks configured weapon class limits even if a client sends a hidden item.</summary>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task WeaponPurchaseChecksClassBeforeSpendingAsync(bool allowed)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var weapon = player.GameContext.Configuration.Items.Single();
+        weapon.Group = 4;
+        weapon.ItemSlot = new BasicModel.ItemSlotType();
+        weapon.ItemSlot.ItemSlots.Add(246);
+        weapon.QualifiedCharacters.Add(allowed ? player.SelectedCharacter!.CharacterClass! : new BasicModel.CharacterClass { Id = Guid.NewGuid(), Number = 8 });
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, (4 * 512) + 100, 4, 100).ConfigureAwait(false);
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(allowed ? 400 : 500));
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(allowed ? 1 : 0));
+    }
+
     private static async Task<Player> CreateAsync(int price = 100)
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);

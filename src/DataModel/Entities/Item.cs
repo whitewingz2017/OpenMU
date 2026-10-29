@@ -83,6 +83,9 @@ public partial class Item
     /// <summary>Gets or sets the extended personal-store currency: zero for Zen, a packed jewel type, or an account-coin code.</summary>
     public int StorePriceItemType { get; set; }
 
+    /// <summary>Gets or sets the combined personal-store price, paid in full at purchase.</summary>
+    public string StorePricesJson { get; set; } = string.Empty;
+
     /// <summary>
     /// Gets or sets the pet experience.
     /// Only applies, if this item is actually a trainable pet.

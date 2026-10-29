@@ -43,6 +43,7 @@ public class SetItemPriceAction
             var item = player.SelectedCharacter?.Inventory?.Items?.FirstOrDefault(i => i.ItemSlot == slot);
             if (item != null)
             {
+                item.StorePricesJson = string.Empty;
                 item.StorePrice = price > 0 ? price : (int?)null;
                 item.StorePriceItemType = price > 0 ? currency : 0;
                 result = price >= 0 ? ItemPriceResult.Success : ItemPriceResult.PriceNegative;

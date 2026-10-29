@@ -18,11 +18,21 @@ Skins are permanent and tradable. Players cannot drop them or sell them to NPCs.
 
 On the Skin page, tap **Skin Shop**. The window has three columns: categories
 on the left, actual item models in the middle, and your character preview on
-the right. Select an item to see your character wearing it in that preview pane.
-Use its arrows to rotate the character. Choose one bonus, review the price,
+the right. The larger preview starts with your character wearing no equipment
+and shows only the selected skin. Use its arrows to rotate the character.
+Choose one bonus from the dropdown below the preview frame, review the price,
 then tap **Buy**. Close or Escape ends the preview. It never changes the character
 in the game world, equips an item, or grants attributes. The purchased item and its chosen bonus arrive together
 in your inventory. The bonus stays on that item when traded or stored.
+
+The Weapons category has a type filter for swords, maces, spears, bows,
+staffs/sticks, scepters, books and RF gloves. Weapons that your class cannot
+equip are hidden from the item list. The server checks these restrictions
+again when buying or equipping.
+
+The shop opens above the inventory and HUD. Confirmations and tooltips remain
+above the shop. Install the matching client UI assets with each client update;
+the shop's shared stylesheet provides its three-column layout in both themes.
 
 All categories initially cost **100 WCoinC** each. In the server admin panel,
 open the **Skin Shop** feature plugin configuration to edit `ArmorPrice`,
@@ -39,7 +49,7 @@ requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cell
 They have no selectable skin bonus. A cosmetic pet can remain in its separate Skin
 slot while riding. Previewing a mount also previews the rider in the shop window.
 
-Apply **Set 315 Cosmetic Armor version 7** while players are offline and restart.
+Apply **Set 315 Cosmetic Armor version 8** while players are offline and restart.
 Existing floating Fenrir items keep their identities and become mounts; items in
 the Skin pet slot return to the bag. Free bag space if the update reports it cannot
 fit. Existing real helper equipment is not replaced.
@@ -51,7 +61,15 @@ damage action use their attack or standing pose. Imported light and mesh-glow
 settings remain active. Wing204 has a single-key BMD and stays static; it needs
 a replacement animated model to flap. DLL-only source effects are unavailable.
 
+Walking pets follow beside the character at ground height rather than orbiting
+in the air. Flying/magical followers retain their configured hover animation.
+The preview uses the same model height and displays ground pets standing.
+
 ## Bonuses
+
+A chosen excellent option changes the skin bonus only. It does not add an
+Excellent name prefix, a green name, or excellent mesh tint. Normal model glow
+and imported effects remain unchanged.
 
 A full-set armor skin has **one standard excellent defense option**, applied
 once for the whole set. Weapon skins offer the normal physical or wizardry
@@ -73,7 +91,7 @@ Normal jewels and gear upgrades are not a skin-bonus reroll system.
 ## Existing items and server deployment
 
 Deploy the matching OpenMU source, take all players offline, apply **Set 315
-Cosmetic Armor version 7** in the admin panel, and restart. Use the matching
+Cosmetic Armor version 8** in the admin panel, and restart. Use the matching
 client data and rebuild your client. No APK is built by this change.
 
 Every old Set 100/315 helmet, pants, gloves or boots skin becomes a separate
@@ -98,6 +116,20 @@ flag. The usual excellent flag is the fourth argument: choose exactly one
 of 1, 2, 4, 8, 16, 32 where that item's pool supports it. Wings use 1, 2, 4, 8.
 Omit skill, luck, normal-option and ancient arguments for skins. Pets accept no
 bonus. Retired body-piece commands are rejected with a full-set command hint.
+
+Version 8 adds `/item 2 101` (Battle Scepter Skin, DL), `/item 5 101`
+(Summoner Book Skin), and `/item 0 101` (Sacred Glove Skin, RF). These three
+variants reuse existing Season 6 models because matching readable custom models
+were unavailable. The supplied custom bow, staff and summoner sticks remain in
+the Weapons list for their eligible classes. Season 6 books use the normal
+excellent wizardry options.
+
+Version 8 also applies weapon class limits: swords/spears for DK and MG,
+maces for DK/MG/DL/RF, bows for Elf, wizard staffs for WZ/MG, summoner sticks
+and books for Summoner, scepters for DL and gloves for RF, including promotions.
+Incompatible equipped skins return to the bag without losing their identity or
+bonus. Make space before updating if the conversion cannot fit. Apply offline
+and restart the server.
 
 Other original commands remain: sword `/item 0 100`, mace `/item 2 100`, bow
 `/item 4 100`, staff `/item 5 100`, shield `/item 6 100`, capes `/item 12 180`

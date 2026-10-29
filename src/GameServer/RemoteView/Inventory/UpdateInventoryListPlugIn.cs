@@ -89,6 +89,7 @@ public class UpdateInventoryListPlugIn : IUpdateInventoryListPlugIn
         }
 
         await connection.SendAsync(Write).ConfigureAwait(false);
+        await PlayerShop.CombinedStorePrices.SendAsync(this._player, this._player).ConfigureAwait(false);
         await this._player.InvokeViewPlugInAsync<IItemExpirationViewPlugIn>(p => p.ShowItemExpirationsAsync()).ConfigureAwait(false);
     }
 }

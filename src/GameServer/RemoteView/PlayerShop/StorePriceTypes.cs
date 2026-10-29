@@ -20,7 +20,8 @@ internal static class StorePriceTypes
             return;
         }
 
-        var types = StoreCurrency.AllowedTypes(StoreCurrencyFeaturePlugIn.GetSettings(player.GameContext));
+        var settings = StoreCurrencyFeaturePlugIn.GetSettings(player.GameContext);
+        var types = StoreCurrency.AllowedTypes(settings).Concat(settings is null ? Array.Empty<ushort>() : new ushort[] { CombinedStorePrice.Marker }).ToArray();
         await connection.SendAsync(() =>
         {
             var size = PlayerShopPriceTypesExtendedRef.GetRequiredSize(types.Length);

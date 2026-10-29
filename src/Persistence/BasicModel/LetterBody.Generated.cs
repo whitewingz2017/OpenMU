@@ -41,6 +41,24 @@ public partial class LetterBody : MUnique.OpenMU.DataModel.Entities.LetterBody, 
     }
 
     /// <summary>
+    /// Gets the raw object of <see cref="Attachment" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("attachment")]
+    public Item RawAttachment
+    {
+        get => base.Attachment as Item;
+        set => base.Attachment = value;
+    }
+
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override MUnique.OpenMU.DataModel.Entities.Item Attachment
+    {
+        get => base.Attachment;
+        set => base.Attachment = value;
+    }
+
+    /// <summary>
     /// Gets the raw object of <see cref="SenderAppearance" />.
     /// </summary>
     [System.Text.Json.Serialization.JsonPropertyName("senderAppearance")]

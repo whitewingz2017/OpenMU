@@ -1,4 +1,4 @@
-﻿// <copyright file="LetterReadRequestAction.cs" company="MUnique">
+// <copyright file="LetterReadRequestAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -19,9 +19,9 @@ public class LetterReadRequestAction
     public async ValueTask ReadRequestAsync(Player player, ushort letterIndex)
     {
         using var loggerScope = player.Logger.BeginScope(this.GetType());
-        if (player.SelectedCharacter?.Letters.Count < letterIndex)
+        if (player.SelectedCharacter is null || player.SelectedCharacter.Letters.Count <= letterIndex)
         {
-            player.Logger.LogWarning("Player {0} requested non-existing letter, id {1}", player.SelectedCharacter.Name, letterIndex);
+            player.Logger.LogWarning("Player {0} requested non-existing letter, id {1}", player.SelectedCharacter?.Name, letterIndex);
             return;
         }
 
@@ -31,6 +31,7 @@ public class LetterReadRequestAction
             var letterBody = await player.PersistenceContext.GetLetterBodyByHeaderIdAsync(letter.Id).ConfigureAwait(false);
             if (letterBody is not null)
             {
+                await player.InvokeViewPlugInAsync<IStoreMailAttachmentPlugIn>(v => v.ShowAttachmentAsync(letterIndex, letterBody.Attachment is not null)).ConfigureAwait(false);
                 letter.ReadFlag = true;
                 await player.InvokeViewPlugInAsync<IShowLetterPlugIn>(p => p.ShowLetterAsync(letterBody)).ConfigureAwait(false);
             }

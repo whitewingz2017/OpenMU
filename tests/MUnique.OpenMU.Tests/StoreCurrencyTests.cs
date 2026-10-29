@@ -144,8 +144,8 @@ public class StoreCurrencyTests
         }
 
         MUnique.OpenMU.Network.Packets.ServerToClient.PlayerShopPriceTypesExtendedRef packet = data.AsSpan();
-        Assert.That(data[..4], Is.EqualTo(new byte[] { 0xC1, 25, 0x3F, 0x0A }));
-        Assert.That(packet.Count, Is.EqualTo(10));
+        Assert.That(data[..4], Is.EqualTo(new byte[] { 0xC1, 27, 0x3F, 0x0A }));
+        Assert.That(packet.Count, Is.EqualTo(11));
         Assert.That(Enumerable.Range(0, packet.Count).Select(i => BitConverter.ToUInt16(data, 5 + (2 * i))),
             Does.Contain((ushort)Bless).And.Contain((ushort)0xFFF0).And.Contain((ushort)0xFFF1).And.Contain((ushort)0xFFF2));
     }

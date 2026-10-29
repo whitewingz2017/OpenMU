@@ -204,3 +204,6 @@
   * [C1 FC 01 - RedeemCodeRequestExtended (by client)](C1-FC-01-RedeemCodeRequestExtended_by-client.md)
   * [C1 FD 01 - CosmeticArmorRequestExtended (by client)](C1-FD-01-CosmeticArmorRequestExtended_by-client.md)
   * [C1 FD 02 - SkinShopRequestExtended (by client)](C1-FD-02-SkinShopRequestExtended_by-client.md)
+  * [C1 FE 01 - StoreCombinedPriceRequest (by client)](C1-FE-01-StoreCombinedPriceRequest_by-client.md)
+  * [C1 FE 02 - StoreMailClaimRequest (by client)](C1-FE-02-StoreMailClaimRequest_by-client.md)
+  * [C1 FE 03 - StoreMailBuyRequest (by client)](C1-FE-03-StoreMailBuyRequest_by-client.md)

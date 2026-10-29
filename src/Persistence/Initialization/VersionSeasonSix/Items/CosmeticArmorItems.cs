@@ -8,6 +8,7 @@ using System.Text.Json;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Interfaces;
+using MUnique.OpenMU.Persistence.Initialization.CharacterClasses;
 
 /// <summary>Initializes permanent tradable cosmetic items for the custom client.</summary>
 public static class CosmeticArmorItems
@@ -29,6 +30,9 @@ public static class CosmeticArmorItems
         EnsureItem(context, configuration, 4, 100, "Bow Skin", 6);
         EnsureItem(context, configuration, 5, 100, "Staff Skin", 5);
         EnsureItem(context, configuration, 6, 100, "Shield Skin", 6);
+        EnsureItem(context, configuration, 0, 101, "Sacred Glove Skin", 5);
+        EnsureItem(context, configuration, 2, 101, "Battle Scepter Skin", 5);
+        EnsureItem(context, configuration, 5, 101, "Summoner Book Skin", 6);
         EnsureItem(context, configuration, 12, 180, "Cape Skin", 7);
         EnsureItem(context, configuration, 12, 200, "Wing Skin", 7);
         EnsureItem(context, configuration, 12, 210, "Wing 210 Skin", 7);
@@ -44,6 +48,35 @@ public static class CosmeticArmorItems
             if (skin.Mount)
             {
                 FenrirMountItems.Ensure(context, configuration, skin.Group, skin.Number);
+            }
+        }
+
+        RestrictWeaponClasses(configuration, imports);
+    }
+
+    private static void RestrictWeaponClasses(GameConfiguration configuration, FinalMuSkin[] imports)
+    {
+        var importedIds = imports.Select(s => (s.Group, s.Number)).ToHashSet();
+        var weapons = configuration.Items.Where(d => d.Group <= 5
+            && (importedIds.Contains((d.Group, d.Number))
+                || (d.Number == 100 && d.Group is 0 or 2 or 4 or 5)
+                || (d.Number == 101 && d.Group is 0 or 2 or 5)));
+        foreach (var definition in weapons)
+        {
+            var classes = (definition.Group, definition.Number) switch
+            {
+                (0, 101) => CharacterClasses.AllFighters,
+                (2, 101) => CharacterClasses.AllLords,
+                (5, 101 or 302 or 304) => CharacterClasses.AllSummoners,
+                (0 or 3, _) => CharacterClasses.AllKnights | CharacterClasses.AllMGs,
+                (2, _) => CharacterClasses.AllKnightsLordsAndMGs | CharacterClasses.AllFighters,
+                (4, _) => CharacterClasses.AllElfs,
+                _ => CharacterClasses.AllMagicians,
+            };
+            definition.QualifiedCharacters.Clear();
+            foreach (var characterClass in configuration.DetermineCharacterClasses(classes))
+            {
+                definition.QualifiedCharacters.Add(characterClass);
             }
         }
     }

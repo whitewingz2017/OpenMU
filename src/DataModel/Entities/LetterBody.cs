@@ -1,4 +1,4 @@
-﻿// <copyright file="LetterBody.cs" company="MUnique">
+// <copyright file="LetterBody.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -32,6 +32,14 @@ public class LetterBody
     /// Gets or sets the rotation of the sender character.
     /// </summary>
     public byte Rotation { get; set; }
+
+    /// <summary>Gets or sets a purchased item awaiting collection by this letter's recipient.</summary>
+    [MemberOfAggregate]
+    public virtual Item? Attachment { get; set; }
+
+    /// <summary>Gets or sets the optimistic token preventing duplicate attachment claims.</summary>
+    [ConcurrencyCheck]
+    public Guid ClaimRevision { get; set; }
 
     /// <summary>
     /// Gets or sets the animation of the sender character.

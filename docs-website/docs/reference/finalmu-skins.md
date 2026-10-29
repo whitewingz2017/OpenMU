@@ -4,7 +4,10 @@ This is a partial import of the supplied FinalMU Season6 x1000 v2 client pack.
 It adds 24 readable weapon/shield models, 82 readable custom wings, 57 readable followers, and 13 rideable Fenrir mounts.
 The items are permanent and tradable. Original IDs are recorded in
 `Data/Custom/Skins/FinalMU/catalog.json`; the new IDs avoid all existing items.
-Followers use cosmetic following behavior and grant no gameplay benefits.
+Followers grant no gameplay benefits. Ground-based models follow beside the
+character at terrain height; configured flying/magical models hover. Weapon
+skins use the class limits described in [Skin Shop](cosmetic-armor.md) and are
+hidden from the shop list for incompatible classes.
 The 13 models configured as Fenrir in the source pet table are standalone mounts
 in the Gear helper slot with normal Fenrir riding, requirements, skill and durability.
 Their shop previews include the rider; their price is configured by `MountPrice`.
@@ -14,7 +17,7 @@ tables. Another 158 sprite references targeted absent bones and were excluded.
 Windows DLL-only effect programs have not been reproduced.
 
 Deploy the matching OpenMU server source, apply **Set 315 Cosmetic Armor version
-7**, and restart before creating these items. Existing skins continue to use
+8**, and restart before creating these items. Existing skins continue to use
 their original commands. Enter each command below separately on a GM character,
 pick up the item, and use it to equip the corresponding Skin slot. Mounts instead
 equip the Gear helper slot and cannot occupy the Skin pet slot. Non-pet skins
@@ -35,7 +38,7 @@ BMD keys retain the same flap cycle duration. All 82 imported wings and 70 pet/m
 models were checked for action keys: Wing204 contains only one key and stays static.
 Mount actions use the normal Fenrir cycle timing; missing actions use safe poses.
 Existing imported mesh glow and light settings remain active. The client animation
-changes need no database update; converting Fenrir items requires version 7.
+changes need no database update; converting Fenrir items requires version 8.
 
 - `hs_blueeyeknightA Skin`: `/item 0 300`
 - `blue_eye_magicsword01 Skin`: `/item 0 301`

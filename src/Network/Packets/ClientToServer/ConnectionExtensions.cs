@@ -5841,4 +5841,96 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="StoreCombinedPriceRequest" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="slot">The slot.</param>
+    /// <param name="count">The count.</param>
+    /// <param name="components">The components.</param>
+    /// <remarks>
+    /// Is sent by the client when: A TwinMU personal-store or mail operation is requested.
+    /// Causes reaction on server side: The server validates ownership and all payment components.
+    /// </remarks>
+    public static async ValueTask SendStoreCombinedPriceRequestAsync(this IConnection? connection, byte @slot, byte @count, Memory<byte> @components)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = StoreCombinedPriceRequestRef.Length;
+            var packet = new StoreCombinedPriceRequestRef(connection.Output.GetSpan(length)[..length]);
+            packet.Slot = @slot;
+            packet.Count = @count;
+            @components.Span.CopyTo(packet.Components);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="StoreMailClaimRequest" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="letterIndex">The letter index.</param>
+    /// <remarks>
+    /// Is sent by the client when: A TwinMU personal-store or mail operation is requested.
+    /// Causes reaction on server side: The server validates ownership and all payment components.
+    /// </remarks>
+    public static async ValueTask SendStoreMailClaimRequestAsync(this IConnection? connection, ushort @letterIndex)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = StoreMailClaimRequestRef.Length;
+            var packet = new StoreMailClaimRequestRef(connection.Output.GetSpan(length)[..length]);
+            packet.LetterIndex = @letterIndex;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="StoreMailBuyRequest" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="playerId">The player id.</param>
+    /// <param name="playerName">The player name.</param>
+    /// <param name="slot">The slot.</param>
+    /// <remarks>
+    /// Is sent by the client when: The buyer confirms a personal-store purchase for mail delivery.
+    /// Causes reaction on server side: All required currencies are charged and the exact item is attached to buyer mail atomically.
+    /// </remarks>
+    public static async ValueTask SendStoreMailBuyRequestAsync(this IConnection? connection, ushort @playerId, string @playerName, byte @slot)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = StoreMailBuyRequestRef.Length;
+            var packet = new StoreMailBuyRequestRef(connection.Output.GetSpan(length)[..length]);
+            packet.PlayerId = @playerId;
+            packet.PlayerName = @playerName;
+            packet.Slot = @slot;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

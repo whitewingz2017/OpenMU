@@ -22,10 +22,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody),
                 baseEntityType,
-                propertyCount: 6,
-                navigationCount: 2,
-                foreignKeyCount: 2,
-                unnamedIndexCount: 2,
+                propertyCount: 8,
+                navigationCount: 3,
+                foreignKeyCount: 3,
+                unnamedIndexCount: 3,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -46,6 +46,23 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetField("<Animation>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: (byte)0);
             animation.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var attachmentId = runtimeEntityType.AddProperty(
+                "AttachmentId",
+                typeof(Guid?),
+                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody).GetProperty("AttachmentId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody).GetField("<AttachmentId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            attachmentId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var claimRevision = runtimeEntityType.AddProperty(
+                "ClaimRevision",
+                typeof(Guid),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetProperty("ClaimRevision", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetField("<ClaimRevision>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                concurrencyToken: true,
+                sentinel: new Guid("00000000-0000-0000-0000-000000000000"));
+            claimRevision.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var headerId = runtimeEntityType.AddProperty(
                 "HeaderId",
@@ -83,9 +100,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             runtimeEntityType.SetPrimaryKey(key);
 
             var index = runtimeEntityType.AddIndex(
-                new[] { headerId });
+                new[] { attachmentId },
+                unique: true);
 
             var index0 = runtimeEntityType.AddIndex(
+                new[] { headerId });
+
+            var index1 = runtimeEntityType.AddIndex(
                 new[] { senderAppearanceId },
                 unique: true);
 
@@ -93,6 +114,23 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
         }
 
         public static RuntimeForeignKey CreateForeignKey1(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
+        {
+            var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("AttachmentId") },
+                principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
+                principalEntityType,
+                deleteBehavior: DeleteBehavior.Cascade,
+                unique: true);
+
+            var rawAttachment = declaringEntityType.AddNavigation("RawAttachment",
+                runtimeForeignKey,
+                onDependent: true,
+                typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Item),
+                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody).GetProperty("RawAttachment", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+
+            return runtimeForeignKey;
+        }
+
+        public static RuntimeForeignKey CreateForeignKey2(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
         {
             var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("HeaderId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),
@@ -107,7 +145,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             return runtimeForeignKey;
         }
 
-        public static RuntimeForeignKey CreateForeignKey2(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
+        public static RuntimeForeignKey CreateForeignKey3(RuntimeEntityType declaringEntityType, RuntimeEntityType principalEntityType)
         {
             var runtimeForeignKey = declaringEntityType.AddForeignKey(new[] { declaringEntityType.FindProperty("SenderAppearanceId") },
                 principalEntityType.FindKey(new[] { principalEntityType.FindProperty("Id") }),

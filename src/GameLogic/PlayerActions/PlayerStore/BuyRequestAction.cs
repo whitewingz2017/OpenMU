@@ -23,7 +23,7 @@ public class BuyRequestAction
     /// <param name="player">The player.</param>
     /// <param name="requestedPlayer">The requested player.</param>
     /// <param name="slot">The slot.</param>
-    public async ValueTask BuyItemAsync(Player player, Player requestedPlayer, byte slot)
+    public async ValueTask BuyItemAsync(Player player, Player requestedPlayer, byte slot, bool deliverByMail = false)
     {
         if (ReferenceEquals(player, requestedPlayer))
         {
@@ -36,7 +36,7 @@ public class BuyRequestAction
         try
         {
             await player.RunPersistenceExclusiveAsync(() => requestedPlayer.RunPersistenceExclusiveAsync(
-                () => this.BuyItemCoreAsync(player, requestedPlayer, slot), timeout.Token)).ConfigureAwait(false);
+                () => this.BuyItemCoreAsync(player, requestedPlayer, slot, deliverByMail), timeout.Token)).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (timeout.IsCancellationRequested)
         {
@@ -44,7 +44,7 @@ public class BuyRequestAction
         }
     }
 
-    private async ValueTask BuyItemCoreAsync(Player player, Player requestedPlayer, byte slot)
+    private async ValueTask BuyItemCoreAsync(Player player, Player requestedPlayer, byte slot, bool deliverByMail = false)
     {
         using var loggerScope = player.Logger.BeginScope(this.GetType());
         if (requestedPlayer.IsTemplatePlayer || player.IsTemplatePlayer)
@@ -86,6 +86,12 @@ public class BuyRequestAction
                 requestedPlayer);
             await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.ItemCannotBeSoldInPersonalStore)).ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(requestedPlayer, ItemBuyResult.ItemBlock, null)).ConfigureAwait(false);
+            return;
+        }
+
+        if (deliverByMail || !string.IsNullOrEmpty(item.StorePricesJson))
+        {
+            await new StoreMailPurchase().BuyAsync(player, requestedPlayer, slot).ConfigureAwait(false);
             return;
         }
 

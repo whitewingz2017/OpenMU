@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 {
-    [DbContext(typeof(MUnique.OpenMU.Persistence.EntityFramework.EntityDataContext))]
+    [DbContext(typeof(EntityDataContext))]
     partial class EntityDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -2291,6 +2291,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int>("StorePriceItemType")
                         .HasColumnType("integer");
 
+                    b.Property<string>("StorePricesJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DefinitionId");
@@ -3088,6 +3092,13 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<byte>("Animation")
                         .HasColumnType("smallint");
 
+                    b.Property<Guid?>("AttachmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClaimRevision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("HeaderId")
                         .HasColumnType("uuid");
 
@@ -3102,6 +3113,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AttachmentId")
+                        .IsUnique();
 
                     b.HasIndex("HeaderId");
 
@@ -5734,6 +5748,11 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody", b =>
                 {
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.Item", "RawAttachment")
+                        .WithOne()
+                        .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody", "AttachmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.LetterHeader", "RawHeader")
                         .WithMany()
                         .HasForeignKey("HeaderId");
@@ -5742,6 +5761,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .WithOne()
                         .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody", "SenderAppearanceId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("RawAttachment");
 
                     b.Navigation("RawHeader");
 

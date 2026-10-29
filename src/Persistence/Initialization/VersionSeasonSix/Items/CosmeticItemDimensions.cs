@@ -14,6 +14,9 @@ public static class CosmeticItemDimensions
     public static (byte Width, byte Height) Get(byte group, string name)
         => group switch
         {
+            0 when name == "Sacred Glove Skin" => (1, 2),
+            2 when name == "Battle Scepter Skin" => (1, 3),
+            5 when name == "Summoner Book Skin" => (1, 2),
             0 or 3 or 4 => (2, 4),
             1 or 6 or 8 => (2, 3),
             2 or 5 => (1, 4),

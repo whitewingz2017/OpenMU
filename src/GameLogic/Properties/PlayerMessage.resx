@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1060,4 +1060,15 @@ Inventory Extensions: {18}</value>
   <data name="DiscordNotifications" xml:space="preserve">
     <value>Direct messages in Discord about: {0}. Turn them on or off with /discord notify login, letter or friend.</value>
   </data>
+<data name="StorePurchaseReceipt" xml:space="preserve"><value>Personal store purchase</value></data>
+<data name="StoreSaleReceipt" xml:space="preserve"><value>Personal store sale</value></data>
+<data name="StoreReceiptDetails" xml:space="preserve"><value>Seller: {0}
+Buyer: {1}
+Item: {2}
+Price: {3}</value></data>
+<data name="StoreItemDeliveredToMail" xml:space="preserve"><value>Purchase complete. Open your mail to claim the item.</value></data>
+<data name="StoreClaimFirst" xml:space="preserve"><value>Claim the attached item before deleting this letter.</value></data>
+<data name="StoreClaimUnavailable" xml:space="preserve"><value>This attachment is unavailable or has already been claimed.</value></data>
+<data name="StoreClaimSuccess" xml:space="preserve"><value>Item claimed.</value></data>
+<data name="StoreClaimFailed" xml:space="preserve"><value>Could not claim the item. Please try again.</value></data>
 </root>

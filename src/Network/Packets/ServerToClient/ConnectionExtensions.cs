@@ -9104,4 +9104,68 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="StoreCombinedPriceResponse" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="ownStore">The own store.</param>
+    /// <param name="slot">The slot.</param>
+    /// <param name="count">The count.</param>
+    /// <param name="components">The components.</param>
+    /// <remarks>
+    /// Is sent by the server when: A TwinMU personal-store or mail operation is requested.
+    /// Causes reaction on client side: The server validates ownership and all payment components.
+    /// </remarks>
+    public static async ValueTask SendStoreCombinedPriceResponseAsync(this IConnection? connection, bool @ownStore, byte @slot, byte @count, Memory<byte> @components)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = StoreCombinedPriceResponseRef.Length;
+            var packet = new StoreCombinedPriceResponseRef(connection.Output.GetSpan(length)[..length]);
+            packet.OwnStore = @ownStore;
+            packet.Slot = @slot;
+            packet.Count = @count;
+            @components.Span.CopyTo(packet.Components);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="StoreMailAttachmentResponse" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="letterIndex">The letter index.</param>
+    /// <param name="available">The available.</param>
+    /// <remarks>
+    /// Is sent by the server when: A TwinMU personal-store or mail operation is requested.
+    /// Causes reaction on client side: The server validates ownership and all payment components.
+    /// </remarks>
+    public static async ValueTask SendStoreMailAttachmentResponseAsync(this IConnection? connection, ushort @letterIndex, bool @available)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = StoreMailAttachmentResponseRef.Length;
+            var packet = new StoreMailAttachmentResponseRef(connection.Output.GetSpan(length)[..length]);
+            packet.LetterIndex = @letterIndex;
+            packet.Available = @available;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

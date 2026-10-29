@@ -23,6 +23,13 @@ internal class CosmeticArmorInitializationTests
         using var context = provider.CreateNewContext();
         var configuration = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).First();
         AssertSkins(configuration);
+        foreach (var group in new byte[] { 0, 2, 5 })
+        {
+            var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
+            Assert.That(skin.Width, Is.EqualTo(1));
+            Assert.That(skin.Height, Is.EqualTo(group == 2 ? 3 : 2));
+            Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
+        }
         foreach (var group in new byte[] { 0, 5, 6, 8 })
         {
             var definition = configuration.Items.Single(d => d.Group == group && d.Number == 100);
@@ -30,11 +37,27 @@ internal class CosmeticArmorInitializationTests
             Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(definition).All(o => o.OptionType == ItemOptionTypes.Excellent), Is.True);
         }
 
+        foreach (var group in new byte[] { 0, 2, 5 })
+        {
+            var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
+            Assert.That(skin.QualifiedCharacters, Is.Not.Empty);
+            Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(skin).Count(), Is.EqualTo(6));
+        }
+
+        Assert.That(configuration.Items.Single(d => d.Group == 4 && d.Number == 100).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 8, 10, 11 }));
+        Assert.That(configuration.Items.Single(d => d.Group == 5 && d.Number == 100).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 0, 2, 3, 12, 13 }));
+        Assert.That(configuration.Items.Single(d => d.Group == 5 && d.Number == 302).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 20, 22, 23 }));
+        Assert.That(configuration.Items.Single(d => d.Group == 0 && d.Number == 101).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 24, 25 }));
+        Assert.That(configuration.Items.Single(d => d.Group == 2 && d.Number == 101).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 16, 17 }));
+
+        var book = configuration.Items.Single(d => d.Group == 5 && d.Number == 101);
+        Assert.That(book.PossibleItemOptions.Single().GetId(), Is.EqualTo(GuidHelper.CreateGuid<ItemOptionDefinition>(ItemOptionDefinitionNumbers.ExcellentWizardry)));
+
         var wing = configuration.Items.Single(d => d.Group == 12 && d.Number == 210);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(4));
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).All(o => o.OptionType == ItemOptionTypes.Wing), Is.True);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(configuration.Items.Single(d => d.Group == 13 && d.Number == 200)), Is.Empty);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(183));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(186));
     }
 
     [Test]
@@ -48,7 +71,14 @@ internal class CosmeticArmorInitializationTests
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         AssertSkins(configuration);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(183));
+        foreach (var group in new byte[] { 0, 2, 5 })
+        {
+            var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
+            Assert.That(skin.Width, Is.EqualTo(1));
+            Assert.That(skin.Height, Is.EqualTo(group == 2 ? 3 : 2));
+            Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
+        }
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(186));
         Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(10));
         var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
         Assert.Multiple(() =>

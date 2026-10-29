@@ -51,6 +51,32 @@ internal partial class LetterBody : MUnique.OpenMU.DataModel.Entities.LetterBody
     }
 
     /// <summary>
+    /// Gets or sets the identifier of <see cref="Attachment"/>.
+    /// </summary>
+    public Guid? AttachmentId { get; set; }
+
+    /// <summary>
+    /// Gets the raw object of <see cref="Attachment" />.
+    /// </summary>
+    [ForeignKey(nameof(AttachmentId))]
+    public Item RawAttachment
+    {
+        get => base.Attachment as Item;
+        set => base.Attachment = value;
+    }
+
+    /// <inheritdoc/>
+    [NotMapped]
+    public override MUnique.OpenMU.DataModel.Entities.Item Attachment
+    {
+        get => base.Attachment;set
+        {
+            base.Attachment = value;
+            this.AttachmentId = this.RawAttachment?.Id;
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the identifier of <see cref="SenderAppearance"/>.
     /// </summary>
     public Guid? SenderAppearanceId { get; set; }

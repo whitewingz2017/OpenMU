@@ -1,4 +1,4 @@
-﻿// <copyright file="LetterDeleteAction.cs" company="MUnique">
+// <copyright file="LetterDeleteAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -27,6 +27,13 @@ public class LetterDeleteAction
         }
 
         var letterIndex = character.Letters.IndexOf(letter);
+        if (letterIndex < 0) return;
+        var body = await player.PersistenceContext.GetLetterBodyByHeaderIdAsync(letter.Id).ConfigureAwait(false);
+        if (body?.Attachment is not null)
+        {
+            await player.ShowLocalizedBlueMessageAsync("StoreClaimFirst").ConfigureAwait(false);
+            return;
+        }
         character.Letters.RemoveAt(letterIndex);
         await player.InvokeViewPlugInAsync<ILetterDeletedPlugIn>(p => p.LetterDeletedAsync((ushort)letterIndex)).ConfigureAwait(false);
     }

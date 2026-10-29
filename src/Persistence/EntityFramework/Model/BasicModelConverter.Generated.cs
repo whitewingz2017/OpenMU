@@ -1789,6 +1789,7 @@ internal sealed class BasicModelConverter
         target.SocketCount = source.SocketCount;
         target.StorePrice = source.StorePrice;
         target.StorePriceItemType = source.StorePriceItemType;
+        target.StorePricesJson = source.StorePricesJson;
         target.PetExperience = source.PetExperience;
         return target;
     }
@@ -2285,6 +2286,8 @@ internal sealed class BasicModelConverter
         target.Header = (MUnique.OpenMU.Interfaces.LetterHeader)this.ConvertObject(source.Header)!;
         target.Message = source.Message;
         target.Rotation = source.Rotation;
+        target.Attachment = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.Attachment)!;
+        target.ClaimRevision = source.ClaimRevision;
         target.Animation = source.Animation;
         target.SenderAppearance = (MUnique.OpenMU.DataModel.Entities.AppearanceData)this.ConvertObject(source.SenderAppearance)!;
         return target;

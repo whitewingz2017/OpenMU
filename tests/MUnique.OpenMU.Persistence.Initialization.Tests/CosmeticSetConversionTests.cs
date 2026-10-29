@@ -122,6 +122,30 @@ internal class CosmeticSetConversionTests
         _ = new MUnique.OpenMU.GameLogic.Storage(64, 0, 12, character.Inventory);
     }
 
+    /// <summary>New class limits return incompatible equipped weapon skins to the bag without deleting them.</summary>
+    [TestCase(4, false)]
+    [TestCase(24, true)]
+    public async Task ClassRestrictedWeaponIsRetainedAsync(byte classNumber, bool allowed)
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        using var context = provider.CreateNewContext();
+        var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
+        CosmeticArmorItems.Ensure(context, configuration);
+        var character = context.CreateNew<Character>();
+        character.CharacterClass = configuration.CharacterClasses.Single(c => c.Number == classNumber);
+        character.Inventory = context.CreateNew<ItemStorage>();
+        var item = context.CreateNew<Item>();
+        item.Definition = configuration.Items.Single(d => d.Group == 0 && d.Number == 101);
+        item.ItemSlot = 245;
+        character.Inventory.Items.Add(item);
+        var identity = item.GetId();
+        await CosmeticSetConversion.ApplyAsync(context, configuration).ConfigureAwait(false);
+        Assert.That(item.GetId(), Is.EqualTo(identity));
+        Assert.That(character.Inventory.Items.Single(), Is.SameAs(item));
+        Assert.That(item.ItemSlot == 245, Is.EqualTo(allowed));
+    }
+
     /// <summary>Insufficient bag space restores the original definition and equipped position.</summary>
     [Test]
     public void FullBagRollsBackEveryConvertedItem()

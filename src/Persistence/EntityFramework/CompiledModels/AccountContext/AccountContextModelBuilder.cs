@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
     public partial class AccountContextModel
     {
         private AccountContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("cadfd57c-10a4-4d9c-817d-955842a75063"), entityTypeCount: 52)
+            : base(skipDetectChanges: false, modelId: new Guid("46fe86a8-5529-4303-bfa9-dea2ee32dbe9"), entityTypeCount: 52)
         {
         }
 
@@ -93,8 +93,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
             ItemAppearanceItemOptionTypeEntityType.CreateForeignKey1(itemAppearanceItemOptionType, itemAppearance);
             ItemItemOfItemSetEntityType.CreateForeignKey1(itemItemOfItemSet, item);
             ItemOptionLinkEntityType.CreateForeignKey1(itemOptionLink, item);
-            LetterBodyEntityType.CreateForeignKey1(letterBody, letterHeader);
-            LetterBodyEntityType.CreateForeignKey2(letterBody, appearanceData);
+            LetterBodyEntityType.CreateForeignKey1(letterBody, item);
+            LetterBodyEntityType.CreateForeignKey2(letterBody, letterHeader);
+            LetterBodyEntityType.CreateForeignKey3(letterBody, appearanceData);
             LetterHeaderEntityType.CreateForeignKey1(letterHeader, character);
             MiniGameRankingEntryEntityType.CreateForeignKey1(miniGameRankingEntry, character);
             PowerUpDefinitionEntityType.CreateForeignKey1(powerUpDefinition, powerUpDefinitionValue);

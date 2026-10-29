@@ -12,6 +12,13 @@ internal static class FenrirMountFixture
 {
     public static void Add(IContext context, GameConfiguration configuration)
     {
+        foreach (var number in Enum.GetValues<CharacterClasses.CharacterClassNumber>())
+        {
+            var characterClass = context.CreateNew<CharacterClass>();
+            characterClass.Number = (byte)number;
+            configuration.CharacterClasses.Add(characterClass);
+        }
+
         var slot = context.CreateNew<ItemSlotType>();
         slot.SetGuid(8);
         slot.ItemSlots.Add(8);

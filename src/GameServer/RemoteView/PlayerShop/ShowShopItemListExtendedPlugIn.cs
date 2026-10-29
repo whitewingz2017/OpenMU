@@ -89,5 +89,6 @@ public class ShowShopItemListExtendedPlugIn : IShowShopItemListPlugIn
         }
 
         await connection.SendAsync(Write).ConfigureAwait(false);
+        await CombinedStorePrices.SendAsync(this._player, requestedPlayer).ConfigureAwait(false);
     }
 }

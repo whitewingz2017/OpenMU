@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("a21887cd-4e96-4b6d-82dc-e18c2268e971"), entityTypeCount: 127)
+            : base(skipDetectChanges: false, modelId: new Guid("8878b592-879e-411f-93cd-5bfaf55d0996"), entityTypeCount: 127)
         {
         }
 
@@ -312,8 +312,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             JewelMixEntityType.CreateForeignKey1(jewelMix, gameConfiguration);
             JewelMixEntityType.CreateForeignKey2(jewelMix, itemDefinition);
             JewelMixEntityType.CreateForeignKey3(jewelMix, itemDefinition);
-            LetterBodyEntityType.CreateForeignKey1(letterBody, letterHeader);
-            LetterBodyEntityType.CreateForeignKey2(letterBody, appearanceData);
+            LetterBodyEntityType.CreateForeignKey1(letterBody, item);
+            LetterBodyEntityType.CreateForeignKey2(letterBody, letterHeader);
+            LetterBodyEntityType.CreateForeignKey3(letterBody, appearanceData);
             LetterHeaderEntityType.CreateForeignKey1(letterHeader, character);
             LevelBonusEntityType.CreateForeignKey1(levelBonus, itemLevelBonusTable);
             MagicEffectDefinitionEntityType.CreateForeignKey1(magicEffectDefinition, powerUpDefinitionValue);
