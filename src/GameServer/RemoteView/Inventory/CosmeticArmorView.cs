@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using MUnique.OpenMU.GameLogic.Cosmetics;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.Network;
 using MUnique.OpenMU.Network.Packets.ServerToClient;
@@ -32,6 +33,7 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
         {
             RequestId = requestId,
             Status = status,
+            Statistics = CharacterCombatStatistics.Create(this._player),
             Skins = CosmeticArmorRules.Equipped(this._player).Select(i => new { Part = i.ItemSlot - CosmeticArmorRules.FirstSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),
         });
         await connection.SendAsync(() =>

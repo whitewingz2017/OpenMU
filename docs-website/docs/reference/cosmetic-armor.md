@@ -159,3 +159,14 @@ client. Cosmetic pets face their travel direction; cosmetic wings use the
 normal idle and flight frame rates. Run `python tools/test_cosmetic_armor.py`
 for asset checks and the inventory/shop layout scripts under `android/` for
 native RmlUi checks.
+
+
+### Character combat statistics
+
+The custom mobile client's character window has an Attributes / Statistics switch.
+The statistics response uses live server attributes, including equipped skin
+bonuses. Chances and multiplier rows use percentage points: a configured 0.10
+excellent-damage chance is displayed as 10%. This is a chance to trigger excellent
+damage, not a 10% addition to the ordinary damage range. The page refreshes once
+per second while visible. Both the updated server and client are required; no
+configuration or database migration is needed.

@@ -168,6 +168,27 @@ public class SkinShopTests
         Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.Zero);
     }
 
+    /// <summary>The chosen excellent chance is visible in the authoritative total and survives inventory reload.</summary>
+    [Test]
+    public async Task ExcellentSkinBonusIsIncludedInCombatStatisticsAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var definition = player.GameContext.Configuration.Items.Single();
+        var option = definition.PossibleItemOptions.Single().PossibleOptions.Single();
+        option.PowerUpDefinition!.TargetAttribute = Stats.ExcellentDamageChance;
+        option.PowerUpDefinition.Boost!.ConstantValue.Value = 0.10f;
+        var baseline = player.Attributes![Stats.ExcellentDamageChance];
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, (8 * 512) + 100, 4, 100).ConfigureAwait(false);
+        var item = player.Inventory!.Items.Single();
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
+        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo((baseline + 0.10f) * 100).Within(0.001));
+        _ = new InventoryStorage(player, player.GameContext);
+        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo((baseline + 0.10f) * 100).Within(0.001));
+        await actions.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false);
+        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo(baseline * 100).Within(0.001));
+    }
+
     private static async Task<Player> CreateAsync(int price = 100)
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
