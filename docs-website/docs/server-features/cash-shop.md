@@ -230,3 +230,12 @@ Cash Shop open response. This lets the mobile client recover if it missed the
 login-time version announcement, without choosing a different catalog locally.
 Opening still requires the Cash Shop feature and catalog to be configured and the
 player to be alive in a safe zone, outside other inventory operations.
+
+If an open request is denied, the game server logs `Cash Shop open denied` at
+Warning level with `catalogConfigured`, `featureEnabled`, `state`, `alive`, and
+`safezone`. The first two must be true, state must be `EnteredWorld`, and the last
+two must be true. In the admin panel, open **Log Files**, select the latest game
+server log, and search for that message immediately after trying SHOP. The
+`Client version changed` warning is a packet-handler refresh and does not identify
+an access denial. Rebuild, deploy, and restart the server to enable this diagnostic;
+no APK change is needed.

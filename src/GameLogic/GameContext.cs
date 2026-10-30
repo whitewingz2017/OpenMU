@@ -485,7 +485,7 @@ public class GameContext : AsyncDisposable, IGameContext
         }
         catch (Exception ex)
         {
-            Debug.Fail(ex.Message, ex.StackTrace);
+            this.LoggerFactory.CreateLogger<GameContext>().LogError(ex, "Executing periodic game tasks failed.");
         }
     }
 

@@ -52,6 +52,15 @@ public class CashShopActions
     {
         var isAllowed = IsAllowedToUse(player);
         player.IsCashShopOpen = isAllowed;
+        if (!isAllowed)
+        {
+            player.Logger.LogWarning(
+                "Cash Shop open denied: catalogConfigured={catalogConfigured}, featureEnabled={featureEnabled}, state={state}, alive={alive}, safezone={safezone}.",
+                player.GameContext.Configuration.CashShopConfiguration is not null,
+                CashShopFeaturePlugIn.GetSettings(player.GameContext) is not null,
+                player.PlayerState.CurrentState, player.IsAlive, player.IsAtSafezone());
+        }
+
         if (isAllowed && player.GameContext.Configuration.CashShopConfiguration is { } configuration)
         {
             // Resend before the result so clients can recover a missing login-time catalog version.

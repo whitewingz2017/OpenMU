@@ -50,7 +50,16 @@ public class WanderingMerchantsPlugIn : PeriodicTaskBasePlugIn<WanderingMerchant
         var wanderingNow = state.Merchants.Where(m => m.NextWanderingAt <= DateTime.UtcNow).ToList();
         foreach (var merchantState in wanderingNow)
         {
-            await this.HandleMerchantAsync(state, merchantState).ConfigureAwait(false);
+            try
+            {
+                await this.HandleMerchantAsync(state, merchantState).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                state.Context.LoggerFactory.CreateLogger(this.GetType().Name).LogError(ex,
+                    "Could not spawn wandering NPC {npcNumber}; remaining merchants will still be processed. The spawn will be retried.",
+                    merchantState.MerchantDefinition.Number);
+            }
         }
     }
 
@@ -107,7 +116,6 @@ public class WanderingMerchantsPlugIn : PeriodicTaskBasePlugIn<WanderingMerchant
             return;
         }
 
-        await this.RemoveOldMerchantIfNeededAsync(oldMerchant, logger, merchantState).ConfigureAwait(false);
         await this.SpawnMerchantAsync(nextSpawn, merchantState, nextMap, logger).ConfigureAwait(false);
     }
 
@@ -128,10 +136,22 @@ public class WanderingMerchantsPlugIn : PeriodicTaskBasePlugIn<WanderingMerchant
     private async Task SpawnMerchantAsync(MonsterSpawnArea nextSpawn, MerchantSpawnState merchantState, GameMap nextMap, ILogger logger)
     {
         var newMerchant = new NonPlayerCharacter(nextSpawn, merchantState.MerchantDefinition, nextMap);
-        merchantState.Merchant = newMerchant;
         newMerchant.Initialize();
-        await nextMap.AddAsync(newMerchant).ConfigureAwait(false);
-        merchantState.NextWanderingAt = DateTime.UtcNow.AddMinutes(Rand.NextInt((int)this.Configuration!.MinimumSpawnDuration.TotalMinutes, (int)this.Configuration!.MaximumSpawnDuration.TotalMinutes));
+        var nextWanderingAt = DateTime.UtcNow.AddMinutes(Rand.NextInt((int)this.Configuration!.MinimumSpawnDuration.TotalMinutes, (int)this.Configuration!.MaximumSpawnDuration.TotalMinutes));
+        // Validate the replacement before removing the visible NPC, and publish only a successful spawn.
+        await this.RemoveOldMerchantIfNeededAsync(merchantState.Merchant, logger, merchantState).ConfigureAwait(false);
+        try
+        {
+            await nextMap.AddAsync(newMerchant).ConfigureAwait(false);
+        }
+        catch
+        {
+            await newMerchant.DisposeAsync().ConfigureAwait(false);
+            throw;
+        }
+
+        merchantState.Merchant = newMerchant;
+        merchantState.NextWanderingAt = nextWanderingAt;
         logger.LogDebug("New merchant {merchant} has been created on {map}. Next wandering at {next}", newMerchant, nextMap.Definition, merchantState.NextWanderingAt);
     }
 }
