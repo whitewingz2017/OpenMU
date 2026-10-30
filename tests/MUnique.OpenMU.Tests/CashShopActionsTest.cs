@@ -1,4 +1,4 @@
-﻿// <copyright file="CashShopActionsTest.cs" company="MUnique">
+// <copyright file="CashShopActionsTest.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -43,10 +43,18 @@ public class CashShopActionsTest
     {
         var player = await CreatePlayerAsync().ConfigureAwait(false);
 
+        var order = new List<string>();
+        var view = GetView(player);
+        view.Setup(v => v.ShowVersionsAsync(player.GameContext.Configuration.CashShopConfiguration!))
+            .Callback(() => order.Add("versions"));
+        view.Setup(v => v.ShowOpenResultAsync(true)).Callback(() => order.Add("open"));
+
         await this._actions.OpenAsync(player).ConfigureAwait(false);
 
         Assert.That(player.IsCashShopOpen, Is.True);
-        GetView(player).Verify(v => v.ShowOpenResultAsync(true), Times.Once);
+        Assert.That(order, Is.EqualTo(new[] { "versions", "open" }));
+        view.Verify(v => v.ShowVersionsAsync(player.GameContext.Configuration.CashShopConfiguration!), Times.Once);
+        view.Verify(v => v.ShowOpenResultAsync(true), Times.Once);
     }
 
     /// <summary>
@@ -61,6 +69,7 @@ public class CashShopActionsTest
 
         Assert.That(player.IsCashShopOpen, Is.False);
         GetView(player).Verify(v => v.ShowOpenResultAsync(false), Times.Once);
+        GetView(player).Verify(v => v.ShowVersionsAsync(It.IsAny<CashShopConfiguration>()), Times.Never);
     }
 
     /// <summary>
@@ -76,6 +85,7 @@ public class CashShopActionsTest
 
         Assert.That(player.IsCashShopOpen, Is.False);
         GetView(player).Verify(v => v.ShowOpenResultAsync(false), Times.Once);
+        GetView(player).Verify(v => v.ShowVersionsAsync(It.IsAny<CashShopConfiguration>()), Times.Never);
     }
 
     /// <summary>

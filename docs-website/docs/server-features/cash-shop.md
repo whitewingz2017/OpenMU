@@ -222,3 +222,11 @@ Timed pets retain their displayed HP and do not lose it from combat damage.
 They remain available until their purchased UTC expiration; ordinary pets without
 an expiration still take durability damage and can die. This rule applies to all
 period pets, including Panda, rather than a list of pet species.
+
+## Catalog recovery when opening
+
+The server sends the configured catalog and banner versions again before an allowed
+Cash Shop open response. This lets the mobile client recover if it missed the
+login-time version announcement, without choosing a different catalog locally.
+Opening still requires the Cash Shop feature and catalog to be configured and the
+player to be alive in a safe zone, outside other inventory operations.

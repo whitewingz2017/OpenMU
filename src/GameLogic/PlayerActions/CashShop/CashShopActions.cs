@@ -1,4 +1,4 @@
-﻿// <copyright file="CashShopActions.cs" company="MUnique">
+// <copyright file="CashShopActions.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -52,6 +52,12 @@ public class CashShopActions
     {
         var isAllowed = IsAllowedToUse(player);
         player.IsCashShopOpen = isAllowed;
+        if (isAllowed && player.GameContext.Configuration.CashShopConfiguration is { } configuration)
+        {
+            // Resend before the result so clients can recover a missing login-time catalog version.
+            await player.InvokeViewPlugInAsync<ICashShopViewPlugIn>(p => p.ShowVersionsAsync(configuration)).ConfigureAwait(false);
+        }
+
         await player.InvokeViewPlugInAsync<ICashShopViewPlugIn>(p => p.ShowOpenResultAsync(isAllowed)).ConfigureAwait(false);
     }
 
