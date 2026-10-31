@@ -19,6 +19,34 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class JewelBankTests
 {
+    [TestCase(10)]
+    [TestCase(20)]
+    [TestCase(30)]
+    [TestCase(40)]
+    [TestCase(50)]
+    public async Task SelectedQuantityDepositsAndWithdrawsExactlyAsync(int amount)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var definition = player.GameContext.Configuration.Items.First();
+        for (var i = 0; i < amount + 1; i++) await AddAsync(player, definition).ConfigureAwait(false);
+        var actions = new JewelBankActions();
+        await actions.ExecuteAsync(player, Configuration, 1, 1, 7181, (uint)amount).ConfigureAwait(false);
+        Assert.That(Balance(player), Is.EqualTo(amount));
+        Assert.That(player.Inventory!.Items.Count(), Is.EqualTo(1));
+        await actions.ExecuteAsync(player, Configuration, 2, 2, 7181, (uint)amount).ConfigureAwait(false);
+        Assert.That(Balance(player), Is.Zero);
+        Assert.That(player.Inventory.Items.Count(), Is.EqualTo(amount + 1));
+    }
+    [Test]
+    public async Task ExactDepositCannotPartiallyConsumeBundleAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        await AddAsync(player, player.GameContext.Configuration.Items.Last(), 2).ConfigureAwait(false);
+        await new JewelBankActions().ExecuteAsync(player, Configuration, 1, 1, 7181, 20).ConfigureAwait(false);
+        Assert.That(Balance(player), Is.Zero);
+        Assert.That(player.Inventory!.Items.Count(), Is.EqualTo(1));
+    }
+
     private static readonly JewelBankConfiguration Configuration = new() { Items = [7181], MaximumBalance = 100 };
 
     /// <summary>Deposits bundles and singles; duplicate requests cannot mint jewels.</summary>

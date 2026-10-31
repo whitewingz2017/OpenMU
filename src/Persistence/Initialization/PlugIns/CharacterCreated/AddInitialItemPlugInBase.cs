@@ -41,6 +41,7 @@ public class AddInitialItemPlugInBase : ICharacterCreatedPlugIn
     public void CharacterCreated(Account account, Character createdCharacter, IContext persistenceContext, GameConfiguration gameConfiguration, ILogger logger)
     {
         using var logScope = logger.BeginScope(this.GetType());
+        if (StartingItemsPlugIn.ReplacesLegacy(gameConfiguration, createdCharacter.CharacterClass?.Number)) return;
         if (this._characterClassNumber.HasValue && this._characterClassNumber != createdCharacter.CharacterClass?.Number)
         {
             logger.LogDebug("Wrong character class {0}, expected {1}", createdCharacter.CharacterClass?.Number, this._characterClassNumber);

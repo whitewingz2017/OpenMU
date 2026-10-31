@@ -113,7 +113,7 @@ public sealed class JewelBankActions
 
         var definition = player.GameContext.Configuration.Items.FirstOrDefault(d => (d.Group * 512) + d.Number == itemId);
         if (operation > 2 || !configuration.Items.Contains(itemId) || definition == null || definition.Width != 1 || definition.Height != 1
-            || (operation == 2 && amount != 0 && amount != 1 && amount != 10 && amount != 20 && amount != 30))
+            || (amount != 0 && amount != 1 && (amount > 50 || amount % 10 != 0)))
         {
             await ShowAsync(player, configuration, request, "Invalid bank request.").ConfigureAwait(false);
             return;
@@ -136,6 +136,22 @@ public sealed class JewelBankActions
             if (operation == 1)
             {
                 var items = DepositItems(player, definition).ToArray();
+                if (amount > 0)
+                {
+                    // Select whole singles/bundles for the exact count; never destroy the remainder of a bundle.
+                    var plans = new List<(Item Item, int Count)>?[amount + 1];
+                    plans[0] = [];
+                    foreach (var entry in items)
+                        for (var count = (int)amount; count >= entry.Count; count--)
+                            if (plans[count] is null && plans[count - entry.Count] is { } previous)
+                                plans[count] = [.. previous, entry];
+                    if (plans[amount] is not { } selected || (long)balance + amount > configuration.MaximumBalance)
+                    {
+                        await ShowAsync(player, configuration, request, "Not enough matching inventory jewels for that exact quantity, or bank limit reached. Unpack bundles if needed.").ConfigureAwait(false);
+                        return;
+                    }
+                    items = selected.ToArray();
+                }
                 foreach (var entry in items)
                 {
                     if ((long)balance + transferred + entry.Count > configuration.MaximumBalance)

@@ -1698,4 +1698,8 @@
   </data>
   <data name="Muun_Name" xml:space="preserve"><value>Muun Pets</value></data>
   <data name="Muun_Description" xml:space="preserve"><value>Separate Muun inventory, two equipped pets, configurable bonuses, duplicate leveling and evolution.</value></data>
+  <data name="Admin_StartingItemsName" xml:space="preserve"><value>Starting items by class</value></data>
+  <data name="Admin_StartingItemsDescription" xml:space="preserve"><value>Configure plain starter items separately for each class. Group/Number identify an item; quantities are individual items. Disabled class profiles preserve existing grants. Restart game servers after saving.</value></data>
+  <data name="Admin_ZenDropsName" xml:space="preserve"><value>Monster Zen drop amounts</value></data>
+  <data name="Admin_ZenDropsDescription" xml:space="preserve"><value>Amount multiplier and minimum/maximum Zen per monster drop. Does not change drop chances, player-dropped money, or item-box rewards. Restart game servers after saving.</value></data>
 </root>

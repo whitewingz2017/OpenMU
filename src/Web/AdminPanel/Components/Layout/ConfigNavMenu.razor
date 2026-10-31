@@ -18,6 +18,10 @@
             <NavLink class="dropdown-item" href="cash-shop-catalog" @onclick="() => NavigationHistory.Clear()">@Resources.CashShopCatalog</NavLink>
         </AuthorizeView>
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(CharacterClass).FullName}/")" @onclick="() => NavigationHistory.Clear()">@Resources.CharacterClasses</NavLink>
+        <AuthorizeView Policy="@AdminPolicies.Administrator">
+            <NavLink class="dropdown-item" href="plugins?id=5c840612-c047-4881-a218-180f14d62df1" @onclick="() => NavigationHistory.Clear()">@MUnique.OpenMU.GameLogic.PlugIns.AdministrationResources.StartingItemsName</NavLink>
+            <NavLink class="dropdown-item" href="plugins?id=bde5b131-d79b-4b38-a5cb-0995ec5344ae" @onclick="() => NavigationHistory.Clear()">@MUnique.OpenMU.GameLogic.PlugIns.AdministrationResources.ZenDropsName</NavLink>
+        </AuthorizeView>
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(Skill).FullName}/")" @onclick="() => NavigationHistory.Clear()">@Resources.Skills</NavLink>
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(ItemDefinition).FullName}/")" @onclick="() => NavigationHistory.Clear()">@Resources.Items</NavLink>
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(ItemOptionDefinition).FullName}/")" @onclick="() => NavigationHistory.Clear()">@(ModelResourceProvider.GetPluralizedTypeCaption<ItemOptionDefinition>())</NavLink>

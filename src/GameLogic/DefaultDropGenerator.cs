@@ -90,7 +90,7 @@ public class DefaultDropGenerator : IDropGenerator
         var (droppedItems, moneyResult) = this.GenerateDrops(monster, gainedExperience, player.Attributes?[Stats.ItemDropRate] ?? 1);
         if (moneyResult > 0)
         {
-            money = moneyResult;
+            money = PlugIns.ZenDropPlugIn.Apply(moneyResult, player.GameContext.FeaturePlugIns.GetPlugIn<PlugIns.ZenDropPlugIn>()?.Configuration);
         }
 
         this._guaranteedDropGroups.Clear();
