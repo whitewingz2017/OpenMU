@@ -17,6 +17,7 @@ using MUnique.OpenMU.PlugIns;
 internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
 {
     private readonly CosmeticArmorActions _actions = new();
+    private readonly GameLogic.Muun.MuunActions _muun = new();
     private readonly SkinShopActions _shop = new();
     private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
@@ -24,6 +25,14 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
+        if (packet.Length == MuunRequestExtended.Length && packet.Span[0] == 0xC1
+            && packet.Span[1] == packet.Length && packet.Span[3] == MuunRequestExtended.SubCode)
+        {
+            MuunRequestExtended muun = packet;
+            await this._muun.ExecuteAsync(player, muun.RequestId, muun.Operation, muun.SourceSlot, muun.TargetSlot).ConfigureAwait(false);
+            return;
+        }
+
         if (packet.Length == ExcellentCombinationRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == ExcellentCombinationRequestExtended.SubCode)
         {
             ExcellentCombinationRequestExtended combination = packet;

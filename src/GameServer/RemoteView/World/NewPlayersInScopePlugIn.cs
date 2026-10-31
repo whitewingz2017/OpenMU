@@ -47,6 +47,11 @@ public class NewPlayersInScopePlugIn : INewPlayersInScopePlugIn
         }
 
         var (shopPlayers, guildPlayers, gensPlayers) = await this.SendCharactersAsync(newPlayers, isSpawned).ConfigureAwait(false);
+        foreach (var owner in newPlayers)
+        {
+            await this.Player.InvokeViewPlugInAsync<GameLogic.Views.Inventory.IMuunView>(view => view.AppearanceAsync(owner)).ConfigureAwait(false);
+        }
+
 
         if (shopPlayers != null)
         {

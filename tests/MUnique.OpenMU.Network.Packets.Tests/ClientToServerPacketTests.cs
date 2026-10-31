@@ -4221,4 +4221,34 @@ public class PacketStructureTests
         Assert.That(16 + 1, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'Slot' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for MuunRequestExtended.
+    /// </summary>
+    [Test]
+    public void MuunRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 11;
+        var actualLength = MuunRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'SourceSlot' boundary
+        Assert.That(5 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'SourceSlot' exceeds packet boundary");
+        
+        // Validate field 'TargetSlot' boundary
+        Assert.That(6 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'TargetSlot' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

@@ -68,6 +68,7 @@ public class GameConfigurationInitializer : GameConfigurationInitializerBase
         new GuardianOptions(this.Context, this.GameConfiguration).Initialize();
         new Armors(this.Context, this.GameConfiguration).Initialize();
         CosmeticArmorItems.Ensure(this.Context, this.GameConfiguration);
+        MuunItems.Ensure(this.Context, this.GameConfiguration);
         new Weapons(this.Context, this.GameConfiguration).Initialize();
         new Potions(this.Context, this.GameConfiguration).Initialize();
         new Jewels(this.Context, this.GameConfiguration).Initialize();

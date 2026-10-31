@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForMiniGameR
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Character",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character),
                 baseEntityType,
-                propertyCount: 26,
+                propertyCount: 27,
                 unnamedIndexCount: 1,
                 keyCount: 1);
 
@@ -146,6 +146,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForMiniGameR
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<MuHelperConfiguration>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             muHelperConfiguration.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var muunInventoryId = runtimeEntityType.AddProperty(
+                "MuunInventoryId",
+                typeof(Guid?),
+                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character).GetProperty("MuunInventoryId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character).GetField("<MuunInventoryId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            muunInventoryId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var name = runtimeEntityType.AddProperty(
                 "Name",

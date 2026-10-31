@@ -42755,6 +42755,180 @@ public readonly struct StoreMailAttachmentResponse
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(StoreMailAttachmentResponse packet) => packet._data; 
 }
+
+
+/// <summary>
+/// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
+/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+/// </summary>
+public readonly struct MuunResponseExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public MuunResponseExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private MuunResponseExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x05;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(5).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="MuunResponseExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator MuunResponseExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="MuunResponseExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(MuunResponseExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 5;
+}
+
+
+/// <summary>
+/// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
+/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+/// </summary>
+public readonly struct MuunAppearanceExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunAppearanceExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public MuunAppearanceExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunAppearanceExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private MuunAppearanceExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x06;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(5).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="MuunAppearanceExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator MuunAppearanceExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="MuunAppearanceExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(MuunAppearanceExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 5;
+}
     /// <summary>
     /// Describes the gens type.
     /// </summary>

@@ -1696,4 +1696,6 @@
   <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Description" xml:space="preserve">
     <value>Opens the Castle Siege registration window, which shows the Castle Siege status, when a player talks to a guardsman on the Castle Siege map.</value>
   </data>
+  <data name="Muun_Name" xml:space="preserve"><value>Muun Pets</value></data>
+  <data name="Muun_Description" xml:space="preserve"><value>Separate Muun inventory, two equipped pets, configurable bonuses, duplicate leveling and evolution.</value></data>
 </root>

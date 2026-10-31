@@ -5967,4 +5967,38 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="MuunRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="sourceSlot">The source slot.</param>
+    /// <param name="targetSlot">The target slot.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: A custom client requests Muun operations or a Muun appearance changes.
+    /// Causes reaction on server side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+    /// </remarks>
+    public static async ValueTask SendMuunRequestExtendedAsync(this IConnection? connection, byte @operation, byte @sourceSlot, byte @targetSlot, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MuunRequestExtendedRef.Length;
+            var packet = new MuunRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.SourceSlot = @sourceSlot;
+            packet.TargetSlot = @targetSlot;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

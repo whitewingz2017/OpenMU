@@ -230,6 +230,7 @@ public class InventoryStorage : Storage, IInventoryStorage
 
             this.UpdateSetPowerUps();
             this.RefreshCosmeticPowerUps();
+            Muun.MuunBonuses.Refresh(this._player);
         }
         else
         {

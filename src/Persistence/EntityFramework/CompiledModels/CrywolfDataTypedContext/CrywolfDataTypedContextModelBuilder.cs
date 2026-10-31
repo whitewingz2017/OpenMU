@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForCrywolfDa
     public partial class CrywolfDataTypedContextModel
     {
         private CrywolfDataTypedContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("f4ab88ca-b7b4-48c3-ae17-2d178c461cde"), entityTypeCount: 1)
+            : base(skipDetectChanges: false, modelId: new Guid("be57c6f3-0c8c-4867-b750-80990ff0ae14"), entityTypeCount: 1)
         {
         }
 

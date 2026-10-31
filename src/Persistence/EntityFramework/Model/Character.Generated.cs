@@ -153,6 +153,32 @@ internal partial class Character : MUnique.OpenMU.DataModel.Entities.Character, 
     }
 
     /// <summary>
+    /// Gets or sets the identifier of <see cref="MuunInventory"/>.
+    /// </summary>
+    public Guid? MuunInventoryId { get; set; }
+
+    /// <summary>
+    /// Gets the raw object of <see cref="MuunInventory" />.
+    /// </summary>
+    [ForeignKey(nameof(MuunInventoryId))]
+    public ItemStorage RawMuunInventory
+    {
+        get => base.MuunInventory as ItemStorage;
+        set => base.MuunInventory = value;
+    }
+
+    /// <inheritdoc/>
+    [NotMapped]
+    public override MUnique.OpenMU.DataModel.Entities.ItemStorage MuunInventory
+    {
+        get => base.MuunInventory;set
+        {
+            base.MuunInventory = value;
+            this.MuunInventoryId = this.RawMuunInventory?.Id;
+        }
+    }
+
+    /// <summary>
     /// Gets or sets the identifier of <see cref="SkinInventory"/>.
     /// </summary>
     public Guid? SkinInventoryId { get; set; }

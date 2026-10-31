@@ -18860,6 +18860,119 @@ public readonly struct StoreMailBuyRequest
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(StoreMailBuyRequest packet) => packet._data; 
 }
+
+
+/// <summary>
+/// Is sent by the client when: A custom client requests Muun operations or a Muun appearance changes.
+/// Causes reaction on server side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+/// </summary>
+public readonly struct MuunRequestExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public MuunRequestExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MuunRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private MuunRequestExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x05;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 11;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data.Span[4];
+        set => this._data.Span[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the source slot.
+    /// </summary>
+    public byte SourceSlot
+    {
+        get => this._data.Span[5];
+        set => this._data.Span[5] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the target slot.
+    /// </summary>
+    public byte TargetSlot
+    {
+        get => this._data.Span[6];
+        set => this._data.Span[6] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[7..]);
+        set => WriteUInt32LittleEndian(this._data.Span[7..], value);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="MuunRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator MuunRequestExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="MuunRequestExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(MuunRequestExtended packet) => packet._data; 
+}
     /// <summary>
     /// The state of the trade button.
     /// </summary>

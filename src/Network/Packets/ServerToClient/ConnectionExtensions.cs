@@ -9196,4 +9196,60 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="MuunResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
+    /// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+    /// </remarks>
+    public static async ValueTask SendMuunResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MuunResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new MuunResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="MuunAppearanceExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
+    /// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+    /// </remarks>
+    public static async ValueTask SendMuunAppearanceExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MuunAppearanceExtendedRef.GetRequiredSize(data.Length);
+            var packet = new MuunAppearanceExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

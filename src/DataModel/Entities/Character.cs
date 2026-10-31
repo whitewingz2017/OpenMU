@@ -252,6 +252,10 @@ public class Character
     [MemberOfAggregate]
     public virtual ItemStorage? Inventory { get; set; }
 
+    /// <summary>Gets or sets the separate Muun inventory; positions zero and one are equipped pets.</summary>
+    [MemberOfAggregate]
+    public virtual ItemStorage? MuunInventory { get; set; }
+
     /// <summary>Gets or sets the character-owned skin collection, separate from usable inventory cells.</summary>
     [MemberOfAggregate]
     public virtual ItemStorage? SkinInventory { get; set; }

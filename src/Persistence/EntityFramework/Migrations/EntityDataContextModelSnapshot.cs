@@ -1087,6 +1087,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<byte[]>("MuHelperConfiguration")
                         .HasColumnType("bytea");
 
+                    b.Property<Guid?>("MuunInventoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -1131,6 +1134,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.HasIndex("CurrentMapId");
 
                     b.HasIndex("InventoryId")
+                        .IsUnique();
+
+                    b.HasIndex("MuunInventoryId")
                         .IsUnique();
 
                     b.HasIndex("Name")
@@ -4880,6 +4886,11 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", "InventoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.ItemStorage", "RawMuunInventory")
+                        .WithOne()
+                        .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", "MuunInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.ItemStorage", "RawSkinInventory")
                         .WithOne()
                         .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", "SkinInventoryId")
@@ -4890,6 +4901,8 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Navigation("RawCurrentMap");
 
                     b.Navigation("RawInventory");
+
+                    b.Navigation("RawMuunInventory");
 
                     b.Navigation("RawSkinInventory");
                 });

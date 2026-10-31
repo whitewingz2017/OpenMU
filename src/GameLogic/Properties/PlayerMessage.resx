@@ -1071,4 +1071,16 @@ Price: {3}</value></data>
 <data name="StoreClaimUnavailable" xml:space="preserve"><value>This attachment is unavailable or has already been claimed.</value></data>
 <data name="StoreClaimSuccess" xml:space="preserve"><value>Item claimed.</value></data>
 <data name="StoreClaimFailed" xml:space="preserve"><value>Could not claim the item. Please try again.</value></data>
+  <data name="MuunRetry" xml:space="preserve"><value>Request already processed. Refresh Muun Inventory.</value></data>
+  <data name="MuunDisabled" xml:space="preserve"><value>Muun pets are disabled on this server.</value></data>
+  <data name="MuunInvalid" xml:space="preserve"><value>Select a valid Muun or material.</value></data>
+  <data name="MuunCloseWindows" xml:space="preserve"><value>Close shop, trade, warehouse and mixing operations first.</value></data>
+  <data name="MuunFull" xml:space="preserve"><value>Muun inventory is full.</value></data>
+  <data name="MuunBagFull" xml:space="preserve"><value>Make room in your inventory first.</value></data>
+  <data name="MuunEquipInvalid" xml:space="preserve"><value>Unequip the current pet first. Two identical Muuns cannot be equipped together.</value></data>
+  <data name="MuunFeedInvalid" xml:space="preserve"><value>Leveling requires a level-one duplicate from Muun storage, and the target must be below its maximum level.</value></data>
+  <data name="MuunEvolutionInvalid" xml:space="preserve"><value>Evolution requires a maximum-level Muun and its configured evolution stone.</value></data>
+  <data name="MuunRepairInvalid" xml:space="preserve"><value>Select the configured life-restoring item and a damaged Muun.</value></data>
+  <data name="MuunChanged" xml:space="preserve"><value>Muun inventory updated.</value></data>
+  <data name="MuunSaveFailed" xml:space="preserve"><value>Saving failed. No Muun items or materials were spent.</value></data>
 </root>
