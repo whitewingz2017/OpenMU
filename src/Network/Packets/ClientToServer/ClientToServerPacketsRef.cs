@@ -18015,6 +18015,119 @@ public readonly ref struct RedeemCodeRequestExtendedRef
 
 
 /// <summary>
+/// Is sent by the client when: The client quotes (0) or confirms (1) two inventory items.
+/// Causes reaction on server side: The server validates the quoted identities, combines at most two excellent options and atomically saves the primary item, material removal and Zen.
+/// </summary>
+public readonly ref struct ExcellentCombinationRequestExtendedRef
+{
+    private readonly Span<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExcellentCombinationRequestExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public ExcellentCombinationRequestExtendedRef(Span<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExcellentCombinationRequestExtendedRef"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private ExcellentCombinationRequestExtendedRef(Span<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x03;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 11;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderWithSubCodeRef Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data[4];
+        set => this._data[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the primary slot.
+    /// </summary>
+    public byte PrimarySlot
+    {
+        get => this._data[5];
+        set => this._data[5] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the secondary slot.
+    /// </summary>
+    public byte SecondarySlot
+    {
+        get => this._data[6];
+        set => this._data[6] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data[7..]);
+        set => WriteUInt32LittleEndian(this._data[7..], value);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Span of bytes to a <see cref="ExcellentCombinationRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator ExcellentCombinationRequestExtendedRef(Span<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="ExcellentCombinationRequestExtended"/> to a Span of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Span<byte>(ExcellentCombinationRequestExtendedRef packet) => packet._data; 
+}
+
+
+/// <summary>
 /// Is sent by the client when: The custom client opens its Skin page or equips or unequips an owned cosmetic item.
 /// Causes reaction on server side: The server validates ownership and the configured cosmetic slot, persists the move, refreshes inventory and returns confirmed skin slots. Operations are 0 refresh, 1 equip from InventorySlot, 2 unequip Part. Part is 1 full armor set, 5 right weapon, 6 left weapon or shield, 7 wing, 8 pet. Other part numbers are reserved.
 /// </summary>

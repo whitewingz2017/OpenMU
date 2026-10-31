@@ -5774,6 +5774,40 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="ExcellentCombinationRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="primarySlot">The primary slot.</param>
+    /// <param name="secondarySlot">The secondary slot.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The client quotes (0) or confirms (1) two inventory items.
+    /// Causes reaction on server side: The server validates the quoted identities, combines at most two excellent options and atomically saves the primary item, material removal and Zen.
+    /// </remarks>
+    public static async ValueTask SendExcellentCombinationRequestExtendedAsync(this IConnection? connection, byte @operation, byte @primarySlot, byte @secondarySlot, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ExcellentCombinationRequestExtendedRef.Length;
+            var packet = new ExcellentCombinationRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.PrimarySlot = @primarySlot;
+            packet.SecondarySlot = @secondarySlot;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="CosmeticArmorRequestExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

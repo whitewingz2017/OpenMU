@@ -9051,6 +9051,34 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="ExcellentCombinationResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A combination quote or confirmation completes.
+    /// Causes reaction on client side: The client displays RequestId, Status, Valid, Success, Cost and ExcellentFlags from UTF-8 JSON after inventory synchronization.
+    /// </remarks>
+    public static async ValueTask SendExcellentCombinationResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ExcellentCombinationResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new ExcellentCombinationResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="CosmeticArmorResponseExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

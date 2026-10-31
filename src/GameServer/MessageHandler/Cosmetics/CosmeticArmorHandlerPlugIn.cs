@@ -18,11 +18,19 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
 {
     private readonly CosmeticArmorActions _actions = new();
     private readonly SkinShopActions _shop = new();
+    private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
+        if (packet.Length == ExcellentCombinationRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == ExcellentCombinationRequestExtended.SubCode)
+        {
+            ExcellentCombinationRequestExtended combination = packet;
+            await this._combination.ExecuteAsync(player, combination.RequestId, combination.Operation, combination.PrimarySlot, combination.SecondarySlot).ConfigureAwait(false);
+            return;
+        }
+
         if (packet.Length == SkinShopRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == SkinShopRequestExtended.SubCode)
         {
             SkinShopRequestExtended shop = packet;

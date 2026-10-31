@@ -339,5 +339,6 @@
   * [C2 FB 21 - EventTimerResponseExtended (by server)](C2-FB-21-EventTimerResponseExtended_by-server.md)
   * [C2 FD 01 - CosmeticArmorResponseExtended (by server)](C2-FD-01-CosmeticArmorResponseExtended_by-server.md)
   * [C2 FD 02 - SkinShopResponseExtended (by server)](C2-FD-02-SkinShopResponseExtended_by-server.md)
+  * [C2 FD 03 - ExcellentCombinationResponseExtended (by server)](C2-FD-03-ExcellentCombinationResponseExtended_by-server.md)
   * [C1 FE 01 - StoreCombinedPriceResponse (by server)](C1-FE-01-StoreCombinedPriceResponse_by-server.md)
   * [C1 FE 02 - StoreMailAttachmentResponse (by server)](C1-FE-02-StoreMailAttachmentResponse_by-server.md)
