@@ -32,6 +32,7 @@ public class MuHelperConfigurationUpdatePlugIn : IMuHelperConfigurationUpdatePlu
     /// <inheritdoc />
     public async ValueTask UpdateMuHelperConfigurationAsync(Memory<byte> data)
     {
+        this._player.MuHelperSettings = MuHelperSettingsSerializer.TryDeserialize(data.ToArray());
         if (this._player.Connection is not { Connected: true } connection)
         {
             return;

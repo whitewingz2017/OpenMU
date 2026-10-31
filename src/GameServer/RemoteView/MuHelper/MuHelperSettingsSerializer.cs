@@ -188,7 +188,7 @@ public static class MuHelperSettingsSerializer
         int petAttack = blob[PetAttackOffset];
 
         byte helperFlags = blob[HelperFlagsOffset];
-        bool useSelfDefense = (helperFlags & UseSelfDefenseFlag) != 0;
+        bool useSelfDefense = (helperFlags & UseSelfDefenseFlag) != 0 && PvpCounterattackPayment.IsPaid(blob);
         bool autoAcceptFriend = (helperFlags & AutoAcceptFriendFlag) != 0;
         bool autoAcceptGuild = (helperFlags & AutoAcceptGuildFlag) != 0;
         bool fallbackBasicAttack = (helperFlags & FallbackBasicAttackFlag) != 0;

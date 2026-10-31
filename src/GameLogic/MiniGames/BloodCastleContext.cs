@@ -59,7 +59,6 @@ public sealed class BloodCastleContext : MiniGameContext
     private readonly ConcurrentDictionary<string, PlayerGameState> _gameStates = new();
 
     private IReadOnlyCollection<(string Name, int Score, int BonusExp, int BonusMoney)>? _highScoreTable;
-    private TimeSpan _remainingTime;
 
     private bool _gateDestroyed;
     private int _bridgeMonsterGoal;
@@ -95,7 +94,9 @@ public sealed class BloodCastleContext : MiniGameContext
     protected override Player? Winner => this._winner;
 
     /// <inheritdoc />
-    protected override TimeSpan RemainingTime => this._remainingTime;
+    // Rewards still need the unused time after the event changes to Ended.
+    protected override TimeSpan RemainingTime => this.Definition.GameDuration > this.ElapsedGameTime
+        ? this.Definition.GameDuration - this.ElapsedGameTime : TimeSpan.Zero;
 
     /// <summary>
     /// Player interact with Archangel.
@@ -271,24 +272,22 @@ public sealed class BloodCastleContext : MiniGameContext
             var timerInterval = TimeSpan.FromSeconds(1);
             using var timer = new PeriodicTimer(timerInterval);
             var maximumGameDuration = this.Definition.GameDuration;
-            this._remainingTime = maximumGameDuration;
 
             await this.UpdateStateForAllAsync(BloodCastleStatus.Started).ConfigureAwait(false);
             while (!cancellationToken.IsCancellationRequested
-                   && this._remainingTime >= TimeSpan.Zero
+                   && this.ElapsedGameTime < maximumGameDuration
                    && await timer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
             {
-                if (this._remainingTime < maximumGameDuration && !this._gateDestroyed)
+                if (this.RemainingTime < maximumGameDuration && !this._gateDestroyed)
                 {
                     await this.UpdateStateForAllAsync(BloodCastleStatus.GateNotDestroyed).ConfigureAwait(false);
                 }
 
-                if (this._remainingTime < maximumGameDuration && this._gateDestroyed)
+                if (this.RemainingTime < maximumGameDuration && this._gateDestroyed)
                 {
                     await this.UpdateStateForAllAsync(BloodCastleStatus.GateDestroyed).ConfigureAwait(false);
                 }
 
-                this._remainingTime = this._remainingTime.Subtract(timerInterval);
             }
         }
         catch (OperationCanceledException)
@@ -314,7 +313,7 @@ public sealed class BloodCastleContext : MiniGameContext
             p =>
                 p.UpdateStateAsync(
                     status,
-                    this._remainingTime,
+                    this.RemainingTime,
                     gateObjective ? this._bridgeMonsterGoal : this.NextEventRequiredKills,
                     gateObjective ? this._bridgeMonsterGoal : this.NextEventActualKills,
                     this._questItemOwner,

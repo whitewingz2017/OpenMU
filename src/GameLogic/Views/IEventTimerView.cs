@@ -11,5 +11,7 @@ public interface IEventTimerView : IViewPlugIn
     /// <param name="requestId">The request to answer.</param>
     /// <param name="serverUtc">The server reference time.</param>
     /// <param name="events">The event names and next start times.</param>
-    ValueTask ShowAsync(uint requestId, DateTime serverUtc, IReadOnlyList<(string Name, DateTime StartsAtUtc)> events);
+    /// <param name="active">The active event names and end times.</param>
+    ValueTask ShowAsync(uint requestId, DateTime serverUtc, IReadOnlyList<(string Name, DateTime StartsAtUtc)> events,
+        IReadOnlyList<(string Name, DateTime EndsAtUtc)> active);
 }

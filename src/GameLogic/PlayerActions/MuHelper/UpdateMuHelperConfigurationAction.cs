@@ -4,8 +4,6 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.MuHelper;
 
-using MUnique.OpenMU.GameLogic.Views.MuHelper;
-
 /// <summary>
 /// Action to update the mu helper configuration.
 /// </summary>
@@ -18,19 +16,11 @@ public class UpdateMuHelperConfigurationAction
     /// <param name="data">mu bot data to be saved.</param>
     public async ValueTask SaveDataAsync(Player player, Memory<byte> data)
     {
-        if (player.SelectedCharacter is not { } character)
+        if (player.SelectedCharacter is null)
         {
             return;
         }
 
-        try
-        {
-            character.MuHelperConfiguration = data.ToArray();
-            await player.InvokeViewPlugInAsync<IMuHelperConfigurationUpdatePlugIn>(p => p.UpdateMuHelperConfigurationAsync(character.MuHelperConfiguration)).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            player.Logger.LogWarning($"Cannot save MU Helper Configuration => {e}");
-        }
+        await GameLogic.MuHelper.PvpCounterattackPayment.SaveAsync(player, data).ConfigureAwait(false);
     }
 }

@@ -59,6 +59,12 @@ public abstract class PeriodicTaskBasePlugIn<TConfiguration, TState> : IPeriodic
             : null;
     }
 
+    /// <inheritdoc />
+    public DateTime? GetActiveUntilUtc(IGameContext gameContext)
+        => this is not IPeriodicMiniGameStartPlugIn && States.TryGetValue(this.GetType(), out var contexts)
+            && contexts.TryGetValue(gameContext, out var state) && state.State == PeriodicTaskState.Started
+            ? state.NextRunUtc : null;
+
     /// <summary>
     /// Forces the task to start on the next start check of the game server which
     /// owns this plug-in instance: every game server runs its own instance, so a

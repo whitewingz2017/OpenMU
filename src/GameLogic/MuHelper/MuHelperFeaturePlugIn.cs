@@ -13,8 +13,23 @@ using MUnique.OpenMU.PlugIns;
 [PlugIn]
 [Display(Name = nameof(PlugInResources.MuHelperFeaturePlugIn_Name), Description = nameof(PlugInResources.MuHelperFeaturePlugIn_Description), ResourceType = typeof(PlugInResources))]
 [Guid("E90A72C3-0459-4323-B6D3-171F88D35542")]
-public class MuHelperFeaturePlugIn : IFeaturePlugIn, ISupportCustomConfiguration<MuHelperConfiguration>, ISupportDefaultCustomConfiguration
+public class MuHelperFeaturePlugIn : IFeaturePlugIn, GameLogic.PlugIns.IPeriodicTaskPlugIn, ISupportCustomConfiguration<MuHelperConfiguration>, ISupportDefaultCustomConfiguration
 {
+    /// <inheritdoc />
+    public async ValueTask ExecuteTaskAsync(GameContext gameContext)
+    {
+        foreach (var player in await gameContext.GetPlayersAsync().ConfigureAwait(false))
+        {
+            if (player.PlayerState.CurrentState == PlayerState.EnteredWorld)
+            {
+                await PvpCounterattackPayment.RenewAsync(player).ConfigureAwait(false);
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public void ForceStart() { }
+
     /// <inheritdoc/>
     public MuHelperConfiguration? Configuration { get; set; }
 

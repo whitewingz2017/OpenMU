@@ -499,6 +499,7 @@ public sealed class CombatHandler
         // outlives the game's self-defense window, and striking outside of it would turn the bot into
         // an outlaw (see BotPvpRules.IsLegalPvpTarget).
         if (this._config?.UseSelfDefense == true
+            && (this.IsBot || MUnique.OpenMU.GameLogic.MuHelper.PvpCounterattackPayment.IsPaid(this._player.SelectedCharacter?.MuHelperConfiguration ?? []))
             && this._player.RecentAggressor is { } aggressor
             && aggressor.IsInRange(this._player.Position, this.HuntingRange * 2)
             && BotPvpRules.IsLegalPvpTarget(this._player, aggressor))

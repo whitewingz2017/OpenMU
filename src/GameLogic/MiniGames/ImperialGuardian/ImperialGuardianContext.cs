@@ -96,6 +96,16 @@ public sealed class ImperialGuardianContext : MiniGameContext
     /// </summary>
     public int Zone => Volatile.Read(ref this._zone);
 
+    /// <inheritdoc />
+    public override TimeSpan ActiveTimeRemaining
+    {
+        get
+        {
+            var remaining = Volatile.Read(ref this._timer).EndsAtUtc - DateTime.UtcNow;
+            return this.IsEventRunning && remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero;
+        }
+    }
+
     /// <summary>
     /// Gets the number of the monsters of the current zone, which are still alive.
     /// </summary>

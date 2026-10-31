@@ -405,7 +405,6 @@ public sealed class ChaosCastleContext : MiniGameContext
             var maximumGameDuration = this.Definition.GameDuration;
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(maximumGameDuration);
-            var ending = DateTime.UtcNow.Add(maximumGameDuration);
             this._remainingTime = maximumGameDuration;
             this._currentCastleStatus = ChaosCastleStatus.Started;
             await this.UpdateStateForAllAsync().ConfigureAwait(false);
@@ -414,6 +413,7 @@ public sealed class ChaosCastleContext : MiniGameContext
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                this._remainingTime = this.ActiveTimeRemaining;
                 await this.UpdateStateForAllAsync().ConfigureAwait(false);
 
                 if (this.HasGameEnded())
@@ -421,8 +421,6 @@ public sealed class ChaosCastleContext : MiniGameContext
                     this.FinishEvent();
                     break;
                 }
-
-                this._remainingTime = ending.Subtract(DateTime.UtcNow);
             }
 
             this._remainingTime = TimeSpan.Zero;

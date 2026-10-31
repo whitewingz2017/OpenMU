@@ -17,6 +17,11 @@ public interface IScheduledPlugIn
     /// <returns>The next start time, in UTC; or <see langword="null"/>, if there is none.</returns>
     DateTime? GetNextStartUtc(DateTime utcNow, TimeZoneInfo serverTimeZone);
 
+    /// <summary>Gets the end of a currently active timed task, if any.</summary>
+    /// <param name="gameContext">The hosting server.</param>
+    /// <returns>The active end time, or null.</returns>
+    DateTime? GetActiveUntilUtc(IGameContext gameContext) => null;
+
     /// <summary>Gets the next start on the player's game server.</summary>
     /// <param name="gameContext">The hosting game context.</param>
     /// <param name="utcNow">The reference time.</param>

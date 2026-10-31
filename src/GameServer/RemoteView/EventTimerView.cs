@@ -24,7 +24,7 @@ public sealed class EventTimerView : IEventTimerView
     public EventTimerView(RemotePlayer player) => this._player = player;
 
     /// <inheritdoc />
-    public async ValueTask ShowAsync(uint requestId, DateTime serverUtc, IReadOnlyList<(string Name, DateTime StartsAtUtc)> events)
+    public async ValueTask ShowAsync(uint requestId, DateTime serverUtc, IReadOnlyList<(string Name, DateTime StartsAtUtc)> events, IReadOnlyList<(string Name, DateTime EndsAtUtc)> active)
     {
         if (this._player.Connection is not { } connection)
         {
@@ -35,7 +35,8 @@ public sealed class EventTimerView : IEventTimerView
         {
             RequestId = requestId,
             ServerUtc = serverUtc,
-            Rows = events.Select(e => new { e.Name, e.StartsAtUtc }),
+            Rows = events.Select(e => new { e.Name, e.StartsAtUtc, Seconds = Math.Max(0, (int)Math.Ceiling((e.StartsAtUtc - serverUtc).TotalSeconds)) }),
+            Active = active.Select(e => new { e.Name, e.EndsAtUtc, Seconds = Math.Max(0, (int)Math.Ceiling((e.EndsAtUtc - serverUtc).TotalSeconds)) }),
         });
         await connection.SendAsync(() =>
         {

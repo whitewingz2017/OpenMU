@@ -131,6 +131,10 @@ public class MiniGameContext : AsyncDisposable, IEventStateProvider
     /// <inheritdoc />
     public bool IsEventRunning => this.State == MiniGameState.Playing;
 
+    /// <summary>Gets the time left on the running event's monotonic clock.</summary>
+    public virtual TimeSpan ActiveTimeRemaining => this.IsEventRunning && this.Definition.GameDuration > this.ElapsedGameTime
+        ? this.Definition.GameDuration - this.ElapsedGameTime : TimeSpan.Zero;
+
     /// <summary>
     /// Gets the player count.
     /// </summary>

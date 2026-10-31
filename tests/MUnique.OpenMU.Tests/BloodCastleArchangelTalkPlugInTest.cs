@@ -93,6 +93,17 @@ public class BloodCastleArchangelTalkPlugInTest
         Assert.That(configuredArchangelArgs.HasBeenHandled, Is.True);
     }
 
+    /// <summary>Inactive display timers must not erase the remaining-time reward input.</summary>
+    [Test]
+    public async Task RemainingRewardTimeSurvivesInactiveStateAsync()
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var context = this.CreateBloodCastle(player);
+        var remaining = typeof(BloodCastleContext).GetProperty("RemainingTime", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        Assert.That(context.ActiveTimeRemaining, Is.EqualTo(TimeSpan.Zero));
+        Assert.That(remaining.GetValue(context), Is.EqualTo(TimeSpan.FromMinutes(5)));
+    }
+
     private static BloodCastleArchangelTalkPlugIn CreatePlugIn()
     {
         return new BloodCastleArchangelTalkPlugIn

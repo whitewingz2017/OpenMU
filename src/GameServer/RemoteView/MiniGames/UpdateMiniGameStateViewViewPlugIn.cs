@@ -20,6 +20,7 @@ using MiniGameType = MUnique.OpenMU.DataModel.Configuration.MiniGameType;
 public class UpdateMiniGameStateViewViewPlugIn : IUpdateMiniGameStateViewPlugIn
 {
     private readonly RemotePlayer _player;
+    private Task? _progressTask;
     private DevilSquareContext? _progressGame;
 
     /// <summary>
@@ -33,10 +34,10 @@ public class UpdateMiniGameStateViewViewPlugIn : IUpdateMiniGameStateViewPlugIn
     {
         if (type == MiniGameType.DevilSquare && state == MiniGameState.Playing
             && this._player.ClientVersion.CompareTo(new ClientVersion(106, 3, ClientLanguage.Invariant)) >= 0
-            && this._player.CurrentMiniGame is DevilSquareContext game && !ReferenceEquals(this._progressGame, game))
+            && this._player.CurrentMiniGame is DevilSquareContext game && (!ReferenceEquals(this._progressGame, game) || this._progressTask is null || this._progressTask.IsCompleted))
         {
             this._progressGame = game;
-            _ = DevilSquareProgressView.StreamAsync(this._player, game);
+            this._progressTask = DevilSquareProgressView.StreamAsync(this._player, game);
         }
 
         if (TryGetState(type, state, out var miniGameState))

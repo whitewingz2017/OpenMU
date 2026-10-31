@@ -22,8 +22,8 @@ public sealed class EventTimerRequestAction
 
         var now = DateTime.UtcNow;
         var context = player.GameContext;
-        var events = UpcomingEvents.Get(context.PlugInManager, now, context.ServerTimeZone, TimeSpan.FromDays(2), player.Culture, context)
+        var events = UpcomingEvents.Get(context.PlugInManager, now, context.ServerTimeZone, TimeSpan.FromDays(7), player.Culture, context)
             .Take(128).ToList();
-        await player.InvokeViewPlugInAsync<IEventTimerView>(view => view.ShowAsync(requestId, now, events)).ConfigureAwait(false);
+        await player.InvokeViewPlugInAsync<IEventTimerView>(view => view.ShowAsync(requestId, now, events, UpcomingEvents.GetActive(context, now, player.Culture).Take(128).ToList())).ConfigureAwait(false);
     }
 }
