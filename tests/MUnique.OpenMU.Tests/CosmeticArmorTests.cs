@@ -15,6 +15,54 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 public class CosmeticArmorTests
 {
     [Test]
+    public async Task SkinStorageTransfersSameItemAndRejectsReplayAsync()
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 3, item.ItemSlot, 0).ConfigureAwait(false);
+        Assert.That(player.Inventory!.Items, Does.Not.Contain(item));
+        Assert.That(player.SelectedCharacter!.Inventory!.Items, Does.Not.Contain(item));
+        Assert.That(player.SelectedCharacter.SkinInventory!.Items.Single(), Is.SameAs(item));
+        var storedSlot = item.ItemSlot;
+        await actions.ExecuteAsync(player, 2, 4, storedSlot, 0).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, 4, storedSlot, 0).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items.Count(i => i == item), Is.EqualTo(1));
+        Assert.That(player.SelectedCharacter.SkinInventory.Items, Is.Empty);
+    }
+
+    [Test]
+    public async Task SkinStorageFailedDepositSaveRestoresItemAsync()
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        var slot = item.ItemSlot;
+        CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await new CosmeticArmorActions().ExecuteAsync(player, 1, 3, slot, 0).ConfigureAwait(false));
+        Assert.That(player.Inventory!.GetItem(slot), Is.SameAs(item));
+        Assert.That(player.SelectedCharacter!.SkinInventory!.Items, Is.Empty);
+    }
+
+    [Test]
+    public async Task SkinStorageFullBagKeepsStoredItemAsync()
+    {
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        var actions = new CosmeticArmorActions();
+        await actions.ExecuteAsync(player, 1, 3, item.ItemSlot, 0).ConfigureAwait(false);
+        var slot = item.ItemSlot;
+        var ordinary = new BasicModel.ItemDefinition { Width = 1, Height = 1, Name = "Bag item" };
+        foreach (var freeSlot in player.Inventory!.FreeSlots.ToArray())
+        {
+            var filler = player.PersistenceContext.CreateNew<Item>();
+            filler.Definition = ordinary;
+            Assert.That(await player.Inventory.AddItemAsync(freeSlot, filler).ConfigureAwait(false), Is.True);
+        }
+        await actions.ExecuteAsync(player, 2, 4, slot, 0).ConfigureAwait(false);
+        Assert.That(player.SelectedCharacter!.SkinInventory!.Items.Single(), Is.SameAs(item));
+        Assert.That(item.ItemSlot, Is.EqualTo(slot));
+        Assert.That(player.Inventory.Items, Does.Not.Contain(item));
+    }
+
+    [Test]
     public async Task EquipUnequipAndReplayConserveItemAsync()
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);

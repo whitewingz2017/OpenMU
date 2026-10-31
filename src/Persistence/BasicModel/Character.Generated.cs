@@ -202,6 +202,24 @@ public partial class Character : MUnique.OpenMU.DataModel.Entities.Character, II
         set => base.Inventory = value;
     }
 
+    /// <summary>
+    /// Gets the raw object of <see cref="SkinInventory" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("skinInventory")]
+    public ItemStorage RawSkinInventory
+    {
+        get => base.SkinInventory as ItemStorage;
+        set => base.SkinInventory = value;
+    }
+
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override MUnique.OpenMU.DataModel.Entities.ItemStorage SkinInventory
+    {
+        get => base.SkinInventory;
+        set => base.SkinInventory = value;
+    }
+
 
     /// <inheritdoc/>
     public override bool Equals(object obj)

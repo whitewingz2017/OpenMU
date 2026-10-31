@@ -825,6 +825,7 @@ internal sealed class BasicModelConverter
         }
 
         target.Inventory = (MUnique.OpenMU.DataModel.Entities.ItemStorage)this.ConvertObject(source.Inventory)!;
+        target.SkinInventory = (MUnique.OpenMU.DataModel.Entities.ItemStorage)this.ConvertObject(source.SkinInventory)!;
         if (source.DropItemGroups is { } dropItemGroupsItems)
         {
             foreach (var item in dropItemGroupsItems)

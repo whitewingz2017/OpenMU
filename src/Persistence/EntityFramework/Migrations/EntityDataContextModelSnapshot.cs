@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 {
-    [DbContext(typeof(EntityDataContext))]
+    [DbContext(typeof(MUnique.OpenMU.Persistence.EntityFramework.EntityDataContext))]
     partial class EntityDataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -1104,6 +1104,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<byte>("PositionY")
                         .HasColumnType("smallint");
 
+                    b.Property<Guid?>("SkinInventoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
@@ -1131,6 +1134,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .IsUnique();
 
                     b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("SkinInventoryId")
                         .IsUnique();
 
                     b.ToTable("Character", "data");
@@ -4874,11 +4880,18 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", "InventoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("MUnique.OpenMU.Persistence.EntityFramework.Model.ItemStorage", "RawSkinInventory")
+                        .WithOne()
+                        .HasForeignKey("MUnique.OpenMU.Persistence.EntityFramework.Model.Character", "SkinInventoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.Navigation("RawCharacterClass");
 
                     b.Navigation("RawCurrentMap");
 
                     b.Navigation("RawInventory");
+
+                    b.Navigation("RawSkinInventory");
                 });
 
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.CharacterClass", b =>

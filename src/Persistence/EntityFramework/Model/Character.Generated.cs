@@ -152,6 +152,32 @@ internal partial class Character : MUnique.OpenMU.DataModel.Entities.Character, 
         }
     }
 
+    /// <summary>
+    /// Gets or sets the identifier of <see cref="SkinInventory"/>.
+    /// </summary>
+    public Guid? SkinInventoryId { get; set; }
+
+    /// <summary>
+    /// Gets the raw object of <see cref="SkinInventory" />.
+    /// </summary>
+    [ForeignKey(nameof(SkinInventoryId))]
+    public ItemStorage RawSkinInventory
+    {
+        get => base.SkinInventory as ItemStorage;
+        set => base.SkinInventory = value;
+    }
+
+    /// <inheritdoc/>
+    [NotMapped]
+    public override MUnique.OpenMU.DataModel.Entities.ItemStorage SkinInventory
+    {
+        get => base.SkinInventory;set
+        {
+            base.SkinInventory = value;
+            this.SkinInventoryId = this.RawSkinInventory?.Id;
+        }
+    }
+
 
     /// <inheritdoc/>
     public override bool Equals(object obj)

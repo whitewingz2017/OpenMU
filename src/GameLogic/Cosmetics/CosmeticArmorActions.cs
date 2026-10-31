@@ -41,11 +41,18 @@ public sealed class CosmeticArmorActions
             return;
         }
 
-        if (part >= CosmeticArmorRules.SlotCount || operation > 2 || player.IsTemplatePlayer
+        if (part >= CosmeticArmorRules.SlotCount || operation > 4 || player.IsTemplatePlayer
             || player.PlayerState.CurrentState != PlayerState.EnteredWorld || player.OpenedNpc is not null
             || player.TemporaryStorage?.Items.Any() == true || player.ShopStorage?.StoreOpen == true || player.IsCashShopOpen)
         {
             await ShowAsync(player, request, "Close other inventory operations before changing skins.").ConfigureAwait(false);
+            return;
+        }
+
+        if (operation is 3 or 4)
+        {
+            var status = await SkinInventoryTransfer.ExecuteAsync(player, source, operation == 3).ConfigureAwait(false);
+            await ShowAsync(player, request, status).ConfigureAwait(false);
             return;
         }
 

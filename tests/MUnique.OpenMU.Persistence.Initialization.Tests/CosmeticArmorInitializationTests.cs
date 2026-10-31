@@ -26,8 +26,8 @@ internal class CosmeticArmorInitializationTests
         foreach (var group in new byte[] { 0, 2, 5 })
         {
             var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
-            Assert.That(skin.Width, Is.EqualTo(1));
-            Assert.That(skin.Height, Is.EqualTo(group == 2 ? 3 : 2));
+            Assert.That(skin.Width, Is.EqualTo(2));
+            Assert.That(skin.Height, Is.EqualTo(2));
             Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
         }
         foreach (var group in new byte[] { 0, 5, 6, 8 })
@@ -74,8 +74,8 @@ internal class CosmeticArmorInitializationTests
         foreach (var group in new byte[] { 0, 2, 5 })
         {
             var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
-            Assert.That(skin.Width, Is.EqualTo(1));
-            Assert.That(skin.Height, Is.EqualTo(group == 2 ? 3 : 2));
+            Assert.That(skin.Width, Is.EqualTo(2));
+            Assert.That(skin.Height, Is.EqualTo(2));
             Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
         }
         Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(186));
@@ -147,6 +147,6 @@ internal class CosmeticArmorInitializationTests
         Assert.That(skins.All(i => i.IsTradable && i.IsStorable && i.IsPersonalStoreSellable), Is.True);
         Assert.That(skins.All(i => !i.IsSellableToNpc && !i.IsDroppable && !i.IsRepairable), Is.True);
         Assert.That(skins.All(i => i.BasePowerUpAttributes.Count == 0 && (i.Group == 8 || i.PossibleItemOptions.Count == 0)), Is.True);
-        Assert.That(skins.All(i => i.Width == 2 && i.Height == (i.Group == 8 ? 3 : 2) && i.ItemSlot!.ItemSlots.Single() == 240 + i.Group - 7), Is.True);
+        Assert.That(skins.All(i => i.Width == 2 && i.Height == 2 && i.ItemSlot!.ItemSlots.Single() == 240 + i.Group - 7), Is.True);
     }
 }

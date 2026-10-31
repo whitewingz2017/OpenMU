@@ -34,6 +34,9 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
             RequestId = requestId,
             Status = status,
             Statistics = CharacterCombatStatistics.Create(this._player),
+            StoredSkins = this._player.SelectedCharacter?.SkinInventory?.Items.OrderBy(i => i.ItemSlot)
+                .Select(i => new { Slot = i.ItemSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number,
+                    Level = i.Level, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),
             Skins = CosmeticArmorRules.Equipped(this._player).Select(i => new { Part = i.ItemSlot - CosmeticArmorRules.FirstSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),
         });
         await connection.SendAsync(() =>

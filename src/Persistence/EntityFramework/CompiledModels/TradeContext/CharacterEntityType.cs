@@ -23,7 +23,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Character",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character),
                 baseEntityType,
-                propertyCount: 26,
+                propertyCount: 27,
                 navigationCount: 6,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 2,
@@ -196,6 +196,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<PositionY>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: (byte)0);
             positionY.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var skinInventoryId = runtimeEntityType.AddProperty(
+                "SkinInventoryId",
+                typeof(Guid?),
+                propertyInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character).GetProperty("SkinInventoryId", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character).GetField("<SkinInventoryId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            skinInventoryId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var state = runtimeEntityType.AddProperty(
                 "State",

@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
     public partial class AccountContextModel
     {
         private AccountContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("46fe86a8-5529-4303-bfa9-dea2ee32dbe9"), entityTypeCount: 52)
+            : base(skipDetectChanges: false, modelId: new Guid("2735e319-f71a-4e2f-bd15-fe3a1feeda31"), entityTypeCount: 52)
         {
         }
 
@@ -82,6 +82,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
             CastleSiegePendingRewardEntityType.CreateForeignKey1(castleSiegePendingReward, character);
             CharacterEntityType.CreateForeignKey1(character, account);
             CharacterEntityType.CreateForeignKey2(character, itemStorage);
+            CharacterEntityType.CreateForeignKey3(character, itemStorage);
             CharacterDropItemGroupEntityType.CreateForeignKey1(characterDropItemGroup, character);
             CharacterMagicEffectEntityType.CreateForeignKey1(characterMagicEffect, character);
             CharacterQuestStateEntityType.CreateForeignKey1(characterQuestState, character);
