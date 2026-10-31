@@ -127,6 +127,34 @@ public class MuunTests
         using var json = System.Text.Json.JsonDocument.Parse(bytes.AsMemory(5));
         Assert.That(json.RootElement.GetProperty("RequestId").GetUInt32(), Is.EqualTo(7));
     }
+    [Test]
+    public async Task ImportedCompanionsUseExistingItemsWithoutDuplicateRules()
+    {
+        var player = await Create();
+        var settings = MuunFeaturePlugIn.Settings(player.GameContext)!;
+        var definition = new Basic.ItemDefinition { Group = 13, Number = 313, Width = 2, Height = 2, Durability = 1, Name = "fighterpet_evol Skin" };
+        var mount = new Basic.ItemDefinition { Group = 13, Number = 300, Width = 2, Height = 2, Durability = 1, Name = "Fenrir1 Mount" };
+        player.GameContext.Configuration.Items.Add(definition);
+        player.GameContext.Configuration.Items.Add(mount);
+        var original = settings.Pets[0]; original.SpecialMultiplier = 3;
+        var count = settings.Pets.Count;
+        MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items.ImportedMuunItems.Register(player.GameContext.Configuration, settings);
+        MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items.ImportedMuunItems.Register(player.GameContext.Configuration, settings);
+        Assert.That(settings.Pets.Count, Is.EqualTo(count + 1));
+        Assert.That(original.SpecialMultiplier, Is.EqualTo(3));
+        Assert.That(MuunRules.Find(settings, 13 * 512 + 300), Is.Null);
+        var item = player.PersistenceContext.CreateNew<Item>(); item.Definition = definition; item.Level = 7; item.Durability = 1;
+        Assert.That(await player.Inventory!.AddItemAsync(item), Is.True);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 0);
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Single(), Is.SameAs(item));
+        await actions.ExecuteAsync(player, 2, 3, item.ItemSlot, 0);
+        Assert.That(item.ItemSlot, Is.Zero);
+        await actions.ExecuteAsync(player, 3, 2, item.ItemSlot, 0);
+        Assert.That(player.Inventory.Items.Single(), Is.SameAs(item));
+        Assert.That(item.Level, Is.EqualTo(7));
+        Assert.That(item.Definition, Is.SameAs(definition));
+    }
     private static async Task<Item> BagItem(Player player, int index)
     {
         var item = player.PersistenceContext.CreateNew<Item>(); item.Definition = player.GameContext.Configuration.Items.ElementAt(index); item.Durability = item.Definition.Durability;
