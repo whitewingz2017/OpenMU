@@ -21,33 +21,35 @@ internal sealed class PurchasedEffectDelivery : ICashShopProductDeliveryPlugIn
         && product.ItemDefinition?.ConsumeEffect is { PowerUpDefinitions.Count: > 0 };
 
     /// <inheritdoc />
-    public ValueTask<CashShopUseResult> DeliverAsync(Player player, CashShopProduct product)
+    public async ValueTask<CashShopUseResult> DeliverAsync(Player player, CashShopProduct product)
     {
         if (!this.CanDeliver(product) || player.SelectedCharacter is not { } character
             || product.ItemDefinition?.ConsumeEffect is not { } definition)
         {
-            return ValueTask.FromResult(CashShopUseResult.CannotUse);
+            return CashShopUseResult.CannotUse;
         }
 
         if (product.ItemDefinition is { QualifiedCharacters.Count: > 0 } itemDefinition
             && (character.CharacterClass is null || !itemDefinition.QualifiedCharacters.Contains(character.CharacterClass)))
         {
-            return ValueTask.FromResult(CashShopUseResult.CannotUse);
+            return CashShopUseResult.CannotUse;
         }
 
         var now = DateTime.UtcNow;
         if (character.PurchasedEffects.Any(effect => effect.ExpiresAtUtc > now
-                && effect.Definition?.SubType == definition.SubType)
-            || player.MagicEffectList.TryGetActiveEffectOfSubType(definition.SubType) is not null)
+                && effect.Definition is { } existing && CashShopEffectConflicts.BlocksPurchase(player, definition, existing))
+            || player.MagicEffectList.GetActiveEffectsSnapshot()
+                .Any(effect => CashShopEffectConflicts.BlocksPurchase(player, definition, effect.Definition)))
         {
-            return ValueTask.FromResult(CashShopUseResult.ConflictingItemActive);
+            return CashShopUseResult.ConflictingItemActive;
         }
 
+        await CashShopEffectConflicts.RemoveAsync(player, definition).ConfigureAwait(false);
         var entry = player.PersistenceContext.CreateNew<CharacterMagicEffect>();
         entry.Definition = definition;
         entry.ExpiresAtUtc = now.Add(product.Duration);
         character.PurchasedEffects.Add(entry);
-        return ValueTask.FromResult(CashShopUseResult.Success);
+        return CashShopUseResult.Success;
     }
 
     /// <inheritdoc />

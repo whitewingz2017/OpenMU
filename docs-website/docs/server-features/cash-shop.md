@@ -197,7 +197,14 @@ four Seal of Wealth price options, not just the selected duration.
 
 Configured seals and scrolls activate directly from shop storage. Their bonuses
 persist through logout and server restart until the purchased UTC deadline.
-Conflicting effects remain in storage instead of being consumed. Gold Channel
+Using a different conflicting seal replaces the active seal and its saved deadline;
+using the same seal again leaves the second purchase in storage. Wealth, Ascension
+and Healing can coexist. Master Wealth and Master Ascension each replace normal
+Wealth/Ascension, and vice versa. Maximum AG and SD Boost Auras replace each other.
+The Cash Shop plugin's `EffectReplacements` setting defines these pairs by effect
+number; other effects retain their configured subtype rules. No database update
+or migration is required for these rules; deploy and restart the game server.
+Gold Channel
 access and Premium Service are unavailable until their server access rules and
 benefits are defined.
 

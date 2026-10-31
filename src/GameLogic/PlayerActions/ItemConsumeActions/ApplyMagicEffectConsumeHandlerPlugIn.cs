@@ -1,4 +1,4 @@
-﻿// <copyright file="ApplyMagicEffectConsumeHandlerPlugIn.cs" company="MUnique">
+// <copyright file="ApplyMagicEffectConsumeHandlerPlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.PlayerActions.ItemConsumeActions;
 
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.CashShop;
 
 /// <summary>
 /// <see cref="IItemConsumeHandlerPlugIn"/> for <see cref="Item"/>s which have a defined <see cref="ItemDefinition.ConsumeEffect"/>.
@@ -39,17 +40,15 @@ public class ApplyMagicEffectConsumeHandlerPlugIn : BaseConsumeHandlerPlugIn
     /// <returns>
     /// The success of the consumption.
     /// </returns>
-    protected async ValueTask<bool> ConsumeItemCoreAsync(Player player, Item item, Item? targetItem, FruitUsage fruitUsage, MagicEffectDefinition effectDefinition)
+    protected ValueTask<bool> ConsumeItemCoreAsync(Player player, Item item, Item? targetItem, FruitUsage fruitUsage, MagicEffectDefinition effectDefinition)
+        => player.RunPersistenceExclusiveAsync(() => this.ConsumeItemLockedAsync(player, item, targetItem, fruitUsage, effectDefinition));
+
+    private async ValueTask<bool> ConsumeItemLockedAsync(Player player, Item item, Item? targetItem, FruitUsage fruitUsage, MagicEffectDefinition effectDefinition)
     {
         if (!effectDefinition.PowerUpDefinitions.Any()
             || effectDefinition.Duration?.ConstantValue.Value is not { } durationInSeconds)
         {
             return false;
-        }
-
-        if (player.MagicEffectList.TryGetActiveEffectOfSubType(effectDefinition.SubType) is { } existingEffect)
-        {
-            await existingEffect.DisposeAsync().ConfigureAwait(false);
         }
 
         var boosts = effectDefinition.PowerUpDefinitions
@@ -66,6 +65,7 @@ public class ApplyMagicEffectConsumeHandlerPlugIn : BaseConsumeHandlerPlugIn
             return false;
         }
 
+        await CashShopEffectConflicts.RemoveAsync(player, effectDefinition).ConfigureAwait(false);
         var effect = new MagicEffect(TimeSpan.FromSeconds(durationInSeconds), effectDefinition, boosts!);
         await player.MagicEffectList.AddEffectAsync(effect).ConfigureAwait(false);
         return true;

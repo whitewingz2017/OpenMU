@@ -39,4 +39,18 @@ public class CashShopSettings
     /// 0 means unlimited.
     /// </summary>
     public int MaximumStorageItems { get; set; }
+
+    /// <summary>
+    /// Gets or sets explicit replacement pairs by magic-effect number. Listed effects use these
+    /// pairs instead of their shared subtype; other effects keep the configured subtype rule.
+    /// </summary>
+    public Dictionary<short, short[]> EffectReplacements { get; set; } = new()
+    {
+        [29] = [101, 102], // Ascension replaces the master seals.
+        [30] = [101, 102], // Wealth coexists with Ascension and Healing.
+        [101] = [29, 30],
+        [102] = [29, 30],
+        [113] = [114], // Maximum AG and SD auras replace one another.
+        [114] = [113],
+    };
 }

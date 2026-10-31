@@ -11,7 +11,7 @@ public sealed class MuunItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Muun Companions";
     public override string Description => "Adds Muun items and registers the existing imported pet companions for Muun storage, preserving item IDs and bonuses. Apply with players offline.";
     public override DateTime CreatedAt => new(2026, 10, 31, 0, 0, 0, DateTimeKind.Utc);
-    public override int Version => 2;
+    public override int Version => 3;
     public override DateTime UpdatedAt => new(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc);
     public override bool IsMandatory => false;
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration config)
@@ -19,10 +19,10 @@ public sealed class MuunItemsUpdatePlugIn : UpdatePlugInBase
         VersionSeasonSix.Items.MuunItems.Ensure(context, config);
         var feature = config.PlugInConfigurations.SingleOrDefault(p => p.TypeId == typeof(GameLogic.Muun.MuunFeaturePlugIn).GUID);
         if (feature is null) { feature = context.CreateNew<PlugInConfiguration>(); feature.TypeId = typeof(GameLogic.Muun.MuunFeaturePlugIn).GUID; feature.CustomConfiguration = System.Text.Json.JsonSerializer.Serialize(new GameLogic.Muun.MuunConfiguration()); config.PlugInConfigurations.Add(feature); }
-        var settings = System.Text.Json.JsonSerializer.Deserialize<GameLogic.Muun.MuunConfiguration>(feature.CustomConfiguration ?? "null")
+        var settings = feature.GetConfiguration<GameLogic.Muun.MuunConfiguration>(new ConfigureNpcTalkPlugInsPlugInBase.IdReferenceHandler())
             ?? new GameLogic.Muun.MuunConfiguration();
         VersionSeasonSix.Items.ImportedMuunItems.Register(config, settings);
-        feature.CustomConfiguration = System.Text.Json.JsonSerializer.Serialize(settings);
+        feature.SetConfiguration(settings, null);
         feature.IsActive = true;
         return ValueTask.CompletedTask;
     }

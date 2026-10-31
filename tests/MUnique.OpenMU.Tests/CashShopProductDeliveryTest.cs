@@ -380,6 +380,75 @@ public class CashShopProductDeliveryTest
         Assert.DoesNotThrow(effect.ResetTimer);
     }
 
+    /// <summary>
+    /// Seal coexistence and replacements survive rebuilding the runtime effects.
+    /// </summary>
+    [TestCase(29, 30, true)]
+    [TestCase(30, 29, true)]
+    [TestCase(29, 87, true)]
+    [TestCase(30, 87, true)]
+    [TestCase(29, 101, false)]
+    [TestCase(30, 101, false)]
+    [TestCase(29, 102, false)]
+    [TestCase(30, 102, false)]
+    [TestCase(101, 29, false)]
+    [TestCase(101, 30, false)]
+    [TestCase(102, 29, false)]
+    [TestCase(102, 30, false)]
+    [TestCase(113, 114, false)]
+    [TestCase(114, 113, false)]
+    [TestCase(200, 201, false)]
+    public async Task PurchasedEffectReplacementPersistsAsync(short first, short second, bool coexist)
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        foreach (var number in new[] { first, second })
+        {
+            var product = new BasicModel.CashShopProduct
+            {
+                Duration = TimeSpan.FromHours(1),
+                ItemDefinition = new ItemDefinition
+                {
+                    Group = 13,
+                    Number = 43,
+                    ConsumeEffect = new BasicModel.MagicEffectDefinition
+                    {
+                        Number = number,
+                        SubType = (byte)(number == 87 ? 13 : number >= 113 ? 58 : 60),
+                        PowerUpDefinitions =
+                        {
+                            new BasicModel.PowerUpDefinition
+                            {
+                                TargetAttribute = Stats.ExperienceRate,
+                                Boost = new BasicModel.PowerUpDefinitionValue { ConstantValue = { Value = 0.5f } },
+                            },
+                        },
+                    },
+                },
+            };
+            var delivery = CashShopProductDelivery.GetDelivery(player.GameContext, product)!;
+            var result = await player.RunPersistenceExclusiveAsync(() => delivery.DeliverAsync(player, product)).ConfigureAwait(false);
+            if (first == 200 && number == second)
+            {
+                Assert.That(result, Is.EqualTo(CashShopUseResult.ConflictingItemActive), "Other purchased effect groups retain their conflict rejection.");
+                Assert.That(player.SelectedCharacter!.PurchasedEffects.Single().Definition!.Number, Is.EqualTo(first));
+                return;
+            }
+
+            Assert.That(result, Is.EqualTo(CashShopUseResult.Success));
+            await delivery.DeliveredAsync(player, product).ConfigureAwait(false);
+        }
+
+        Assert.That(player.SelectedCharacter!.PurchasedEffects.Select(entry => entry.Definition!.Number),
+            Is.EquivalentTo(coexist ? new[] { first, second } : new[] { second }));
+        Assert.That(player.MagicEffectList.TryGetEffect(first, out _), Is.EqualTo(coexist));
+        Assert.That(player.MagicEffectList.TryGetEffect(second, out _), Is.True);
+        await player.MagicEffectList.ClearAllEffectsAsync().ConfigureAwait(false);
+        await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
+        Assert.That(player.MagicEffectList.TryGetEffect(first, out _), Is.EqualTo(coexist));
+        Assert.That(player.MagicEffectList.TryGetEffect(second, out _), Is.True);
+    }
+
     private async ValueTask<Player> CreatePlayerAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
