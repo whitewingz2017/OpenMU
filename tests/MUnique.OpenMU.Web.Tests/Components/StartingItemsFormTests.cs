@@ -46,7 +46,12 @@ public class StartingItemsFormTests
         Assert.That(rewards, Has.Count.EqualTo(7));
         rewards[0].Find("tfoot button").Click();
         Assert.That(configuration.Classes.Sum(c => c.Items.Count), Is.EqualTo(1));
-        Assert.That(form.FindComponents<ByteField>().Count, Is.EqualTo(2));
+        Assert.That(form.FindComponents<ByteField>().Count, Is.EqualTo(3));
+        Assert.That(form.FindComponents<IntCollectionField>(), Has.Count.EqualTo(1));
+        var excellent = form.FindComponent<IntCollectionField>();
+        excellent.Find("input").Change("2;3;4");
+        var reward = configuration.Classes.SelectMany(c => c.Items).Single();
+        Assert.That(reward.ExcellentOptions, Is.EqualTo(new[] { 2, 3, 4 }));
         Assert.That(form.FindComponents<ShortField>(), Has.Count.EqualTo(1));
     }
 }

@@ -11,7 +11,7 @@ public sealed class MuunItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Muun Companions";
     public override string Description => "Adds Muun items and registers the existing imported pet companions for Muun storage, preserving item IDs and bonuses. Apply with players offline.";
     public override DateTime CreatedAt => new(2026, 10, 31, 0, 0, 0, DateTimeKind.Utc);
-    public override int Version => 3;
+    public override int Version => 4;
     public override DateTime UpdatedAt => new(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc);
     public override bool IsMandatory => false;
     protected override ValueTask ApplyAsync(IContext context, GameConfiguration config)

@@ -27,6 +27,54 @@ public class MuunTests
         Assert.That(player.Inventory.Items.Count(i => i == item), Is.EqualTo(1));
         Assert.That(player.SelectedCharacter.MuunInventory.Items, Is.Empty);
     }
+    [TestCase(false)] [TestCase(true)]
+    public async Task SwitchingAndSwappingEquipmentPreservesItems(bool fail)
+    {
+        var player = await Create(); var first = await BagItem(player, 0); var second = await BagItem(player, 1);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 1, first.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 2, 1, second.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 3, 3, first.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 4, 3, 0, 1);
+        Assert.That(first.ItemSlot, Is.EqualTo(1));
+        await actions.ExecuteAsync(player, 5, 3, second.ItemSlot, 0);
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        await actions.ExecuteAsync(player, 6, 3, 1, 0);
+        Assert.That(first.ItemSlot, Is.EqualTo(fail ? 1 : 0));
+        Assert.That(second.ItemSlot, Is.EqualTo(fail ? 0 : 1));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Count, Is.EqualTo(2));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+    }
+    [TestCase(false)] [TestCase(true)]
+    public async Task StoredCompanionCanReplaceEquippedCompanion(bool fail)
+    {
+        var player = await Create(); var first = await BagItem(player, 0); var second = await BagItem(player, 1);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 1, first.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 2, 1, second.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 3, 3, first.ItemSlot, 0);
+        var storedSlot = second.ItemSlot;
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        await actions.ExecuteAsync(player, 4, 3, storedSlot, 0);
+        Assert.That(first.ItemSlot, Is.EqualTo(fail ? 0 : storedSlot));
+        Assert.That(second.ItemSlot, Is.EqualTo(fail ? storedSlot : 0));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Count, Is.EqualTo(2));
+    }
+    [Test]
+    public async Task CompanionCanBeWithdrawnFromCollectionOrEitherEquipmentSlot()
+    {
+        var player = await Create(); var actions = new MuunActions(); uint request = 0;
+        foreach (var equipment in new[] { -1, 0, 1 })
+        {
+            var pet = await BagItem(player, 0);
+            await actions.ExecuteAsync(player, ++request, 1, pet.ItemSlot, 0);
+            if (equipment >= 0) await actions.ExecuteAsync(player, ++request, 3, pet.ItemSlot, (byte)equipment);
+            await actions.ExecuteAsync(player, ++request, 2, pet.ItemSlot, 0);
+            Assert.That(player.Inventory!.Items.Count(i => i == pet), Is.EqualTo(1));
+            Assert.That(player.SelectedCharacter!.MuunInventory!.Items, Is.Empty);
+            await player.Inventory.RemoveItemAsync(pet);
+        }
+    }
     [TestCase(1)] [TestCase(2)] [TestCase(3)] [TestCase(4)]
     public async Task SaveFailuresRestoreLocations(int operation)
     {
@@ -127,8 +175,9 @@ public class MuunTests
         using var json = System.Text.Json.JsonDocument.Parse(bytes.AsMemory(5));
         Assert.That(json.RootElement.GetProperty("RequestId").GetUInt32(), Is.EqualTo(7));
     }
-    [Test]
-    public async Task ImportedCompanionsUseExistingItemsWithoutDuplicateRules()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ImportedCompanionsUseExistingItemsWithoutDuplicateRules(bool useMount)
     {
         var player = await Create();
         var settings = MuunFeaturePlugIn.Settings(player.GameContext)!;
@@ -140,9 +189,10 @@ public class MuunTests
         var count = settings.Pets.Count;
         MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items.ImportedMuunItems.Register(player.GameContext.Configuration, settings);
         MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items.ImportedMuunItems.Register(player.GameContext.Configuration, settings);
-        Assert.That(settings.Pets.Count, Is.EqualTo(count + 1));
+        Assert.That(settings.Pets.Count, Is.EqualTo(count + 2));
         Assert.That(original.SpecialMultiplier, Is.EqualTo(3));
-        Assert.That(MuunRules.Find(settings, 13 * 512 + 300), Is.Null);
+        Assert.That(MuunRules.Find(settings, 13 * 512 + 300), Is.Not.Null);
+        if (useMount) definition = mount;
         var item = player.PersistenceContext.CreateNew<Item>(); item.Definition = definition; item.Level = 7; item.Durability = 1;
         Assert.That(await player.Inventory!.AddItemAsync(item), Is.True);
         var actions = new MuunActions();

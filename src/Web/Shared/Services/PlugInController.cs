@@ -1,4 +1,4 @@
-﻿// <copyright file="PlugInController.cs" company="MUnique">
+// <copyright file="PlugInController.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -143,9 +143,9 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
     }
 
     /// <summary>
-    /// Gets the plug-in by identifier.
+    /// Gets the plug-in by saved configuration identifier or plug-in type identifier.
     /// </summary>
-    /// <param name="id">The identifier.</param>
+    /// <param name="id">The saved configuration identifier or plug-in type identifier.</param>
     /// <returns>The plug-in view item, if found.</returns>
     public async Task<PlugInConfigurationViewItem?> GetByIdAsync(Guid id)
     {
@@ -154,7 +154,7 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
             var gameConfiguration = await this._dataSource.GetOwnerAsync(Guid.Empty).ConfigureAwait(true);
             var allPlugIns = GetPluginTypes().ToDictionary(t => t.GUID, t => t);
 
-            var config = gameConfiguration.PlugInConfigurations.FirstOrDefault(c => c.GetId() == id);
+            var config = gameConfiguration.PlugInConfigurations.FirstOrDefault(c => c.GetId() == id || c.TypeId == id);
             if (config != null && allPlugIns.TryGetValue(config.TypeId, out var plugInType))
             {
                 return BuildConfigurationDto(plugInType, gameConfiguration, config);

@@ -55,6 +55,7 @@ public sealed class MuunActions
         storage ??= character.MuunInventory = player.PersistenceContext.CreateNew<ItemStorage>();
         var oldSlot = item.ItemSlot; var oldLevel = item.Level; var oldDefinition = item.Definition; var oldLife = item.Durability;
         Item? consumed = null; byte consumedSlot = 0; bool consumedFromBag = false; double consumedLife = 0; bool removedMaterial = false;
+        Item? swapped = null;
         var moved = false; var committed = false;
         try
         {
@@ -77,8 +78,10 @@ public sealed class MuunActions
             }
             else if (operation == 3)
             {
-                if (source < MuunRules.EquipmentCount || target >= MuunRules.EquipmentCount || storage.Items.Any(i => i.ItemSlot == target)
-                    || storage.Items.Any(i => i.ItemSlot < MuunRules.EquipmentCount && i.Definition == item.Definition)) return "MuunEquipInvalid";
+                if (source == target || target >= MuunRules.EquipmentCount
+                    || storage.Items.Any(i => i != item && i.ItemSlot < MuunRules.EquipmentCount && i.Definition == item.Definition)) return "MuunEquipInvalid";
+                swapped = storage.Items.SingleOrDefault(i => i.ItemSlot == target);
+                if (swapped is not null) swapped.ItemSlot = source;
                 item.ItemSlot = target; moved = true;
             }
             else
@@ -137,7 +140,11 @@ public sealed class MuunActions
                         storage.Items.Remove(item);
                         if (!await inventory.AddItemAsync(oldSlot, item).ConfigureAwait(false)) throw new InvalidOperationException("Muun deposit rollback failed.");
                     }
-                    else item.ItemSlot = oldSlot;
+                    else
+                    {
+                        item.ItemSlot = oldSlot;
+                        if (swapped is not null) swapped.ItemSlot = target;
+                    }
                 }
                 if (consumed is not null && consumedSlot != 0)
                 {

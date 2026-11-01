@@ -12,6 +12,8 @@ using MUnique.OpenMU.Web.Shared.Services;
 /// </summary>
 public partial class Plugins
 {
+    private Guid? _configurationToOpen;
+
     /// <summary>
     /// Gets or sets the plug-in identifier.
     /// </summary>
@@ -38,15 +40,27 @@ public partial class Plugins
 
                 if (plugin.ConfigurationType is { })
                 {
-                    _ = Task.Run(async () =>
-                    {
-                        await Task.Delay(100).ConfigureAwait(false);
-                        await this.InvokeAsync(() => this.PlugInController.ShowPlugInConfigAsync(plugin)).ConfigureAwait(false);
-                    });
+                    this._configurationToOpen = id;
                 }
             }
 
             this.PlugInId = null;
+        }
+    }
+
+    /// <inheritdoc />
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender).ConfigureAwait(true);
+        if (this._configurationToOpen is not { } id)
+        {
+            return;
+        }
+
+        this._configurationToOpen = null;
+        if (await this.PlugInController.GetByIdAsync(id).ConfigureAwait(true) is { } plugin)
+        {
+            await this.PlugInController.ShowPlugInConfigAsync(plugin).ConfigureAwait(true);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿@using MUnique.OpenMU.DataModel
+@using MUnique.OpenMU.DataModel
 @using MUnique.OpenMU.DataModel.Configuration
 @using MUnique.OpenMU.DataModel.Configuration.Items
 @using MUnique.OpenMU.Web.AdminPanel.Properties
@@ -20,6 +20,7 @@
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(CharacterClass).FullName}/")" @onclick="() => NavigationHistory.Clear()">@Resources.CharacterClasses</NavLink>
         <AuthorizeView Policy="@AdminPolicies.Administrator">
             <NavLink class="dropdown-item" href="plugins?id=5c840612-c047-4881-a218-180f14d62df1" @onclick="() => NavigationHistory.Clear()">@MUnique.OpenMU.GameLogic.PlugIns.AdministrationResources.StartingItemsName</NavLink>
+            <NavLink class="dropdown-item" href="plugins?id=8f5e4988-db22-4313-bdbd-09a680ad92f8" @onclick="() => NavigationHistory.Clear()">@MUnique.OpenMU.GameLogic.PlugIns.AdministrationResources.StartingWCoinsName</NavLink>
             <NavLink class="dropdown-item" href="plugins?id=bde5b131-d79b-4b38-a5cb-0995ec5344ae" @onclick="() => NavigationHistory.Clear()">@MUnique.OpenMU.GameLogic.PlugIns.AdministrationResources.ZenDropsName</NavLink>
         </AuthorizeView>
         <NavLink class="dropdown-item" href="@($"edit-config-grid/{typeof(Skill).FullName}/")" @onclick="() => NavigationHistory.Clear()">@Resources.Skills</NavLink>

@@ -22,7 +22,10 @@ public class StartingItemsAndZenTests
         Assert.That(profile.Enabled, Is.True);
         Assert.That(profile.ReplaceLegacyItems, Is.False);
         Assert.That(profile.Items.Single().ToString(), Is.EqualTo("14:0 +3 x2"));
-        Assert.That(System.Text.Json.JsonSerializer.Serialize(configuration), Is.EqualTo(saved));
+        var reopened = System.Text.Json.JsonSerializer.Deserialize<StartingItemsConfiguration>(System.Text.Json.JsonSerializer.Serialize(configuration))!;
+        Assert.That(reopened.Classes.Single().Items.Single().ExcellentOptions, Is.Empty);
+        Assert.That(reopened.Classes.Single().Items.Single().Luck, Is.False);
+        Assert.That(reopened.Classes.Single().Items.Single().AdditionalOptionLevel, Is.Zero);
         Assert.That(new StartingItemsConfiguration().Classes.Select(c => c.Class), Is.EquivalentTo(Enum.GetValues<StartingCharacterClass>()));
     }
     [Test]
@@ -32,7 +35,7 @@ public class StartingItemsAndZenTests
         var character = player.SelectedCharacter!;
         character.CharacterClass = new Basic.CharacterClass { Number = 0 };
         character.Inventory = new Basic.ItemStorage();
-        var definition = new Basic.ItemDefinition { Group = 13, Number = 450, Width = 2, Height = 2, Durability = 100 };
+        var definition = new Basic.ItemDefinition { Group = 13, Number = 450, Width = 2, Height = 2, Durability = 100, MaximumItemLevel = 15 };
         Mock.Get(player.GameContext.Configuration).Setup(c => c.Items).Returns(new List<ItemDefinition> { definition });
         var config = new StartingItemsConfiguration();
         var profile = config.Classes.Single(c => c.Class == StartingCharacterClass.DarkWizard);

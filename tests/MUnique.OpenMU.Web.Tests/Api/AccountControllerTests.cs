@@ -15,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic.CashShop;
+using MUnique.OpenMU.PlugIns;
 using MUnique.OpenMU.Persistence.InMemory;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.API;
@@ -29,6 +31,8 @@ public class AccountControllerTests
 
     private AccountController _controller = null!;
 
+    private GameConfiguration _gameConfiguration = null!;
+
     /// <summary>
     /// Sets up an empty in-memory database and the controller.
     /// </summary>
@@ -36,10 +40,11 @@ public class AccountControllerTests
     public void SetUp()
     {
         this._persistenceContextProvider = new InMemoryPersistenceContextProvider();
+        this._gameConfiguration = new MUnique.OpenMU.Persistence.BasicModel.GameConfiguration();
         var gameConfigurationSource = new Mock<IDataSource<GameConfiguration>>();
         gameConfigurationSource
             .Setup(s => s.GetOwnerAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new GameConfiguration());
+            .ReturnsAsync(this._gameConfiguration);
         this._controller = new AccountController(this._persistenceContextProvider, gameConfigurationSource.Object, Mock.Of<ILogger<AccountController>>())
         {
             ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() },
@@ -170,6 +175,43 @@ public class AccountControllerTests
         Assert.That(method.GetCustomAttributes(typeof(EnableRateLimitingAttribute), true), Has.Length.EqualTo(1));
         Assert.That(typeof(AccountController).GetMethod(nameof(AccountController.RegisterAsync))!.GetCustomAttributes(typeof(AllowAnonymousAttribute), true), Is.Empty);
         Assert.That(typeof(AccountController).GetCustomAttributes(typeof(AuthorizeAttribute), true), Has.Length.EqualTo(1));
+    }
+
+    /// <summary>Starting WCoins are persisted on registration and never credited again for duplicate requests.</summary>
+    [Test]
+    public async Task RegistrationGrantsStartingCoinsOnceAsync()
+    {
+        var plugin = new MUnique.OpenMU.Persistence.BasicModel.PlugInConfiguration { TypeId = typeof(CashShopFeaturePlugIn).GUID, IsActive = true };
+        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = 500, StartingWCoinP = 250 }, null);
+        this._gameConfiguration.PlugInConfigurations.Add(plugin);
+        var registration = CreateRegistration("newbie", "secret1", null);
+        await this._controller.RegisterAsync(registration, CancellationToken.None).ConfigureAwait(false);
+        Assert.That(await this._controller.RegisterAsync(registration, CancellationToken.None).ConfigureAwait(false), Is.InstanceOf<ConflictResult>());
+        var account = (await this.GetAccountAsync("newbie").ConfigureAwait(false))!;
+        Assert.That(account.WCoinC, Is.EqualTo(500));
+        Assert.That(account.WCoinP, Is.EqualTo(250));
+    }
+
+    /// <summary>Disabled cash shop settings grant no registration currency.</summary>
+    [Test]
+    public async Task InactiveStartingCoinsAreNotGrantedAsync()
+    {
+        var plugin = new MUnique.OpenMU.Persistence.BasicModel.PlugInConfiguration { TypeId = typeof(CashShopFeaturePlugIn).GUID, IsActive = false };
+        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = 500 }, null);
+        this._gameConfiguration.PlugInConfigurations.Add(plugin);
+        await this._controller.RegisterAsync(CreateRegistration("newbie", "secret1", null), CancellationToken.None).ConfigureAwait(false);
+        Assert.That((await this.GetAccountAsync("newbie").ConfigureAwait(false))!.WCoinC, Is.Zero);
+    }
+
+    /// <summary>Invalid currency configuration cannot create a partially funded account.</summary>
+    [Test]
+    public async Task NegativeStartingCoinsRejectRegistrationAsync()
+    {
+        var plugin = new MUnique.OpenMU.Persistence.BasicModel.PlugInConfiguration { TypeId = typeof(CashShopFeaturePlugIn).GUID, IsActive = true };
+        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = -1 }, null);
+        this._gameConfiguration.PlugInConfigurations.Add(plugin);
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await this._controller.RegisterAsync(CreateRegistration("newbie", "secret1", null), CancellationToken.None).ConfigureAwait(false));
+        Assert.That(await this.GetAccountAsync("newbie").ConfigureAwait(false), Is.Null);
     }
 
     private static AccountRegistration CreateRegistration(string loginName, string password, string? eMail)

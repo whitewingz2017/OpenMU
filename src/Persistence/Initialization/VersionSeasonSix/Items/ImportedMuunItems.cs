@@ -14,7 +14,7 @@ public static class ImportedMuunItems
             ?? throw new InvalidOperationException("The FinalMU companion catalog is missing.");
         var catalog = JsonSerializer.Deserialize<Companion[]>(stream)
             ?? throw new InvalidOperationException("The FinalMU companion catalog is invalid.");
-        var types = catalog.Where(p => p.Part == 8 && !p.Mount).Select(p => p.Group * 512 + p.Number).Append(13 * 512 + 200);
+        var types = catalog.Where(p => p.Part == 8).Select(p => p.Group * 512 + p.Number).Append(13 * 512 + 200).Append(13 * 512 + 4).Append(13 * 512 + 37);
         foreach (var type in types)
         {
             if (settings.Pets.Any(p => p.ItemType == type)

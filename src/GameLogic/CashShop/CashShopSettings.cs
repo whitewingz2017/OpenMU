@@ -13,6 +13,16 @@ namespace MUnique.OpenMU.GameLogic.CashShop;
 /// </remarks>
 public class CashShopSettings
 {
+    /// <summary>Gets or sets WCoin C granted once when a new account registers.</summary>
+    [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
+    [System.ComponentModel.DataAnnotations.Display(Name = nameof(PlugIns.AdministrationResources.StartingWCoinC), ResourceType = typeof(PlugIns.AdministrationResources))]
+    public int StartingWCoinC { get; set; }
+
+    /// <summary>Gets or sets WCoin P granted once when a new account registers.</summary>
+    [System.ComponentModel.DataAnnotations.Range(0, int.MaxValue)]
+    [System.ComponentModel.DataAnnotations.Display(Name = nameof(PlugIns.AdministrationResources.StartingWCoinP), ResourceType = typeof(PlugIns.AdministrationResources))]
+    public int StartingWCoinP { get; set; }
+
     /// <summary>
     /// Gets or sets the alternate entrance tickets sold by the cash shop.
     /// </summary>

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.AdminPanel.Auth;
 
@@ -69,12 +70,15 @@ public class AccountController : ControllerBase
             return this.Conflict();
         }
 
+        var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(gameConfiguration);
         var account = context.CreateNew<Account>();
         account.LoginName = registration.LoginName;
         account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registration.Password);
         account.EMail = registration.EMail ?? string.Empty;
         account.State = AccountState.Normal;
         account.RegistrationDate = DateTime.UtcNow;
+        account.WCoinC = wCoinC;
+        account.WCoinP = wCoinP;
 
         try
         {

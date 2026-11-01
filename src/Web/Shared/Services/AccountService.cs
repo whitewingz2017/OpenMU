@@ -6,7 +6,9 @@ namespace MUnique.OpenMU.Web.Shared.Services;
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Web.Shared.Components;
 using MUnique.OpenMU.Web.Shared.Components.Form.Modal;
@@ -20,6 +22,7 @@ public class AccountService : IDataService<Account>, ISupportDataChangedNotifica
 {
     private readonly IDataSource<Account> _dataSource;
     private readonly IModalService _modalService;
+    private readonly IDataSource<GameConfiguration> _gameConfigurationSource;
     private readonly Debouncer _debouncer = new(300);
 
     private string _searchFilter = string.Empty;
@@ -29,10 +32,12 @@ public class AccountService : IDataService<Account>, ISupportDataChangedNotifica
     /// </summary>
     /// <param name="dataSource">The player context.</param>
     /// <param name="modalService">The modal service.</param>
-    public AccountService(IDataSource<Account> dataSource, IModalService modalService)
+    /// <param name="gameConfigurationSource">The game configuration used for starting currency.</param>
+    public AccountService(IDataSource<Account> dataSource, IModalService modalService, IDataSource<GameConfiguration> gameConfigurationSource)
     {
         this._dataSource = dataSource;
         this._modalService = modalService;
+        this._gameConfigurationSource = gameConfigurationSource;
     }
 
     /// <inheritdoc />
@@ -136,6 +141,8 @@ public class AccountService : IDataService<Account>, ISupportDataChangedNotifica
         {
             var context = await this._dataSource.GetContextAsync().ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
+            var configuration = await this._gameConfigurationSource.GetOwnerAsync(Guid.Empty).ConfigureAwait(false);
+            var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(configuration);
             var item = context.CreateNew<Account>();
             item.LoginName = accountParameters.LoginName;
             item.PasswordHash = BCrypt.Net.BCrypt.HashPassword(accountParameters.Password);
@@ -143,6 +150,8 @@ public class AccountService : IDataService<Account>, ISupportDataChangedNotifica
             item.State = accountParameters.State;
             item.SecurityCode = accountParameters.SecurityCode;
             item.RegistrationDate = DateTime.UtcNow;
+            item.WCoinC = wCoinC;
+            item.WCoinP = wCoinP;
             await context.SaveChangesAsync().ConfigureAwait(false);
             this.DataChanged?.Invoke(this, EventArgs.Empty);
         }

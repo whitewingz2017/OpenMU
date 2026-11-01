@@ -11,4 +11,32 @@ public static class AdministrationResources
     public static string ZenDropsName => Properties.PlugInResources.ResourceManager.GetString("Admin_ZenDropsName", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_ZenDropsName";
     /// <summary>Gets the ZenDropsDescription caption.</summary>
     public static string ZenDropsDescription => Properties.PlugInResources.ResourceManager.GetString("Admin_ZenDropsDescription", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_ZenDropsDescription";
+
+    /// <summary>Gets the StartingLuck caption.</summary>
+    public static string StartingLuck => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingLuck", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingLuck";
+
+    /// <summary>Gets the StartingSkill caption.</summary>
+    public static string StartingSkill => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingSkill", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingSkill";
+
+    /// <summary>Gets the StartingOptionLevel caption.</summary>
+    public static string StartingOptionLevel => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingOptionLevel", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingOptionLevel";
+
+    /// <summary>Gets the StartingOptionDescription caption.</summary>
+    public static string StartingOptionDescription => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingOptionDescription", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingOptionDescription";
+
+    /// <summary>Gets the StartingExcellent caption.</summary>
+    public static string StartingExcellent => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingExcellent", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingExcellent";
+
+    /// <summary>Gets the StartingExcellentDescription caption.</summary>
+    public static string StartingExcellentDescription => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingExcellentDescription", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingExcellentDescription";
+
+    /// <summary>Gets the StartingWCoinC caption.</summary>
+    public static string StartingWCoinC => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingWCoinC", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingWCoinC";
+
+    /// <summary>Gets the StartingWCoinP caption.</summary>
+    public static string StartingWCoinP => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingWCoinP", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingWCoinP";
+
+    /// <summary>Gets the StartingWCoinsName caption.</summary>
+    public static string StartingWCoinsName => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingWCoinsName", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingWCoinsName";
+
 }

@@ -1702,4 +1702,13 @@
   <data name="Admin_StartingItemsDescription" xml:space="preserve"><value>Configure plain starter items separately for each class. Group/Number identify an item; quantities are individual items. Disabled class profiles preserve existing grants. Restart game servers after saving.</value></data>
   <data name="Admin_ZenDropsName" xml:space="preserve"><value>Monster Zen drop amounts</value></data>
   <data name="Admin_ZenDropsDescription" xml:space="preserve"><value>Amount multiplier and minimum/maximum Zen per monster drop. Does not change drop chances, player-dropped money, or item-box rewards. Restart game servers after saving.</value></data>
+  <data name="Admin_StartingLuck" xml:space="preserve"><value>Luck</value></data>
+  <data name="Admin_StartingSkill" xml:space="preserve"><value>Skill</value></data>
+  <data name="Admin_StartingOptionLevel" xml:space="preserve"><value>Additional option level</value></data>
+  <data name="Admin_StartingOptionDescription" xml:space="preserve"><value>0 to 7. Use 4 for +16 damage/defense; recovery options use their own item-defined values.</value></data>
+  <data name="Admin_StartingExcellent" xml:space="preserve"><value>Excellent option numbers</value></data>
+  <data name="Admin_StartingExcellentDescription" xml:space="preserve"><value>Separate numbers with semicolons. Armor: 2 = DSR, 3 = Reflect damage, 4 = Damage decrease. Only options supported by this item are allowed.</value></data>
+  <data name="Admin_StartingWCoinC" xml:space="preserve"><value>Starting WCoin C</value></data>
+  <data name="Admin_StartingWCoinP" xml:space="preserve"><value>Starting WCoin P</value></data>
+  <data name="Admin_StartingWCoinsName" xml:space="preserve"><value>Starting WCoins (new accounts)</value></data>
 </root>
