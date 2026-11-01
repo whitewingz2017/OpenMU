@@ -12,7 +12,7 @@ using MUnique.OpenMU.GameLogic.Views.Inventory;
 public sealed class MuunActions
 {
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
-    /// <summary>Processes 0 refresh, 1 deposit, 2 withdraw, 3 equip, 4 unequip, 5 level, 6 evolve, 7 repair.</summary>
+    /// <summary>Processes 0 refresh, 1 deposit, 2 withdraw, 3 equip, 4 unequip, 5 level, 6 evolve, 7 repair, 8 egg/material exchange.</summary>
     public ValueTask ExecuteAsync(Player player, uint request, byte operation, byte source, byte target)
         => player.RunPersistenceExclusiveAsync(() => this.ExecuteCoreAsync(player, request, operation, source, target));
 
@@ -29,12 +29,14 @@ public sealed class MuunActions
             session.LastRequest = request;
             var config = MuunFeaturePlugIn.Settings(player.GameContext);
             if (config is null) status = "MuunDisabled";
-            else if (operation > 7 || config.Capacity is < 3 or > 120) status = "MuunInvalid";
+            else if (operation > 8 || config.Capacity is < 3 or > 120) status = "MuunInvalid";
             else if (operation != 0)
             {
                 if (player.IsTemplatePlayer || player.OpenedNpc is not null || player.TemporaryStorage?.Items.Any() == true
                     || player.ShopStorage?.StoreOpen == true || player.IsCashShopOpen) status = "MuunCloseWindows";
-                else status = await ChangeAsync(player, config, operation, source, target).ConfigureAwait(false);
+                else status = operation == 8
+                    ? await MuunExchange.ExecuteAsync(player, config, source, target).ConfigureAwait(false)
+                    : await ChangeAsync(player, config, operation, source, target).ConfigureAwait(false);
             }
         }
         MuunBonuses.Refresh(player);

@@ -38,6 +38,9 @@ public sealed class StartingItemReward
     [Display(Name = nameof(AdministrationResources.StartingOptionLevel), Description = nameof(AdministrationResources.StartingOptionDescription), ResourceType = typeof(AdministrationResources))]
     public byte AdditionalOptionLevel { get; set; }
 
+    /// <summary>Gets or sets the selected additional option number, or null for legacy automatic selection.</summary>
+    public int? AdditionalOptionNumber { get; set; }
+
     /// <summary>Gets or sets the excellent option numbers supported by the item.</summary>
     [Display(Name = nameof(AdministrationResources.StartingExcellent), Description = nameof(AdministrationResources.StartingExcellentDescription), ResourceType = typeof(AdministrationResources))]
     public ICollection<int> ExcellentOptions { get; set; } = [];

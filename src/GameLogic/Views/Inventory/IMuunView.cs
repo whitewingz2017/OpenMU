@@ -9,6 +9,8 @@ public interface IMuunView : IViewPlugIn
 {
     /// <summary>Sends the requesting owner's authoritative inventory and species rules.</summary>
     ValueTask ShowAsync(uint requestId, string status);
+    /// <summary>Shows a server-authorized Muun attack against a visible target.</summary>
+    ValueTask AttackAsync(Player owner, IAttackable target, byte slot);
     /// <summary>Sends the visible pets of a character in the observer's scope.</summary>
     ValueTask AppearanceAsync(Player owner);
 }

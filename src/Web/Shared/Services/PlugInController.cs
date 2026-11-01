@@ -190,7 +190,8 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
     /// Shows the custom plugin configuration in a modal dialog.
     /// </summary>
     /// <param name="item">The item.</param>
-    public async Task ShowPlugInConfigAsync(PlugInConfigurationViewItem item)
+    /// <param name="editorComponent">An optional specialized configuration editor.</param>
+    public async Task ShowPlugInConfigAsync(PlugInConfigurationViewItem item, Type? editorComponent = null)
     {
         if (item.ConfigurationType is null)
         {
@@ -213,7 +214,7 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
         };
 
         var modal = this._modalService.Show(
-            typeof(ModalCreateNew<>).MakeGenericType(item.ConfigurationType),
+            editorComponent ?? typeof(ModalCreateNew<>).MakeGenericType(item.ConfigurationType),
             item.PlugInName ?? string.Empty,
             parameters,
             options);

@@ -1,0 +1,41 @@
+@using MUnique.OpenMU.DataModel.Configuration.Items
+@using MUnique.OpenMU.GameLogic.PlugIns
+@using ItemResources = MUnique.OpenMU.Web.Shared.Properties.Resources
+
+<div class="card card-body mb-3">
+    <LookupField Label="@ItemResources.ItemEdit_Definition" @bind-Value="this.Definition"
+                 ExplicitLookupController="@(new EnumerableLookupController(this.Definitions))" />
+    @if (this.Definition is { } definition)
+    {
+        <ByteField Label="@ItemResources.ItemEdit_Level" @bind-Value="this.Reward.Level" Min="0" Max="@definition.MaximumItemLevel" />
+        @if (definition.Skill is not null)
+        {
+            <BooleanField Label="@AdministrationResources.StartingSkill" @bind-Value="this.Reward.Skill" />
+        }
+        @if (this.Options.Any(o => o.OptionType == ItemOptionTypes.Luck))
+        {
+            <BooleanField Label="@ItemResources.ItemEdit_HasLuck" @bind-Value="this.Reward.Luck" />
+        }
+        @if (this.Options.Any(o => o.OptionType == ItemOptionTypes.Excellent))
+        {
+            <MultiLookupField Label="@ItemResources.ItemEdit_ExcellentOptions" @bind-Value="this.ExcellentOptions"
+                              CaptionFactory="@OptionCaption"
+                              ExplicitLookupController="@(new EnumerableLookupController(this.Options.Where(o => o.OptionType == ItemOptionTypes.Excellent)))" />
+        }
+        @if (this.NormalOptions.Any())
+        {
+            <LookupField Label="@ItemResources.ItemEdit_NormalOption" @bind-Value="this.AdditionalOption"
+                         CaptionFactory="@OptionCaption" ExplicitLookupController="@(new EnumerableLookupController(this.NormalOptions))" />
+            @if (this.AdditionalOption is { } option)
+            {
+                <select class="form-select mb-3" aria-label="@AdministrationResources.StartingOptionLevel" @bind="this.Reward.AdditionalOptionLevel">
+                    @foreach (var level in option.LevelDependentOptions.OrderBy(l => l.Level))
+                    {
+                        <option value="@level.Level">@level.PowerUpDefinition</option>
+                    }
+                </select>
+            }
+        }
+    }
+    <NumberField Label="@AdministrationResources.StartingQuantity" @bind-Value="this.Reward.Quantity" Min="1" Max="64" />
+</div>

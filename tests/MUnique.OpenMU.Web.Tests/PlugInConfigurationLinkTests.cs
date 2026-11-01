@@ -74,5 +74,9 @@ public class PlugInConfigurationLinkTests
         var page = context.Render<Plugins>();
         page.WaitForAssertion(() => modal.Verify(m => m.Show(It.IsAny<Type>(), It.IsAny<string>(), It.IsAny<ModalParameters>(), It.IsAny<ModalOptions>()), Times.Once));
         Assert.That(controller.NameFilter, Is.Not.Empty);
+        var expectedEditor = type == typeof(StartingItemsPlugIn)
+            ? typeof(MUnique.OpenMU.Web.AdminPanel.Components.StartingItems.StartingItemsEditor)
+            : typeof(MUnique.OpenMU.Web.Shared.Components.Form.Modal.ModalCreateNew<>).MakeGenericType(type == typeof(ZenDropPlugIn) ? typeof(ZenDropConfiguration) : typeof(CashShopSettings));
+        modal.Verify(m => m.Show(expectedEditor, It.IsAny<string>(), It.IsAny<ModalParameters>(), It.IsAny<ModalOptions>()), Times.Once);
     }
 }

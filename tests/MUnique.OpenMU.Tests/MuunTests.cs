@@ -205,6 +205,77 @@ public class MuunTests
         Assert.That(item.Level, Is.EqualTo(7));
         Assert.That(item.Definition, Is.SameAs(definition));
     }
+    [TestCase(false)] [TestCase(true)]
+    public async Task EggExchangeCommitsExactlyOnceOrRestoresMaterials(bool fail)
+    {
+        var player = await Create(); var config = MuunFeaturePlugIn.Settings(player.GameContext)!;
+        config.Exchanges = [new() { MaterialItemType = 14 * 512 + 250, RequiredCount = 2, Rewards = [new()] }];
+        var first = await BagItem(player, 2); var second = await BagItem(player, 2); var original = first.ItemSlot;
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 8, original, 0);
+        await actions.ExecuteAsync(player, 1, 8, original, 0);
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(fail ? 2 : 0));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Count, Is.EqualTo(fail ? 0 : 1));
+        if (fail) Assert.That(player.Inventory.GetItem(original), Is.SameAs(first));
+    }
+    [TestCase(0)] [TestCase(1)] [TestCase(2)] [TestCase(3)]
+    public async Task InvalidEggExchangeCannotConsumeMaterials(int invalid)
+    {
+        var player = await Create(); var config = MuunFeaturePlugIn.Settings(player.GameContext)!;
+        config.Exchanges = [new() { MaterialItemType = 14 * 512 + 250, Rewards = [new()] }];
+        var egg = await BagItem(player, 2);
+        if (invalid == 0) config.Exchanges[0].RequiredCount = 2;
+        if (invalid == 1) config.Exchanges[0].Rewards[0].ItemType = 8191;
+        if (invalid == 2) config.Exchanges[0].Rewards[0].Weight = 0;
+        if (invalid == 3) egg.ExpiresAtUtc = DateTime.UtcNow.AddDays(1);
+        await new MuunActions().ExecuteAsync(player, 1, 8, egg.ItemSlot, 0);
+        Assert.That(player.Inventory!.Items.Single(), Is.SameAs(egg));
+        Assert.That(player.SelectedCharacter!.MuunInventory?.Items.Count ?? 0, Is.Zero);
+    }
+    [TestCase(0.1, 3000, 4, true)] [TestCase(0, 3000, 4, false)]
+    [TestCase(-1, 3000, 4, false)] [TestCase(2, 3000, 4, false)]
+    [TestCase(0.1, 0, 4, false)] [TestCase(0.1, 3000, 50, false)]
+    public void CombatSettingsRejectExcessiveRatesAndDamage(double factor, int interval, int range, bool allowed)
+        => Assert.That(MuunCombat.CanAttack(new() { AttackDamageFactor = factor, AttackIntervalMilliseconds = interval, AttackRange = range }), Is.EqualTo(allowed));
+    [Test]
+    public async Task CombatAssistsOnlyRecentInRangeTargetsAndRespectsCooldown()
+    {
+        var player = await Create(); var pet = await BagItem(player, 0);
+        var actions = new MuunActions(); await actions.ExecuteAsync(player, 1, 1, pet.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 2, 3, pet.ItemSlot, 0);
+        player.IsAlive = true;
+        player.Position = new(100, 100);
+        player.CurrentMap!.Terrain.SafezoneMap[100, 100] = false;
+        var definition = new Basic.MonsterDefinition { Id = Guid.NewGuid(), ObjectKind = MUnique.OpenMU.DataModel.Configuration.NpcObjectKind.Monster };
+        definition.Attributes.Add(new Basic.MonsterAttribute { AttributeDefinition = Stats.MaximumHealth, Value = 100000 });
+        definition.Attributes.Add(new Basic.MonsterAttribute { AttributeDefinition = Stats.DamageReceiveDecrement, Value = 1 });
+        var spawn = new Basic.MonsterSpawnArea { MonsterDefinition = definition, X1 = 101, X2 = 101, Y1 = 100, Y2 = 100, Quantity = 1 };
+        var monster = new MUnique.OpenMU.GameLogic.NPC.Monster(spawn, definition, player.CurrentMap, NullDropGenerator.Instance,
+            new Mock<MUnique.OpenMU.GameLogic.INpcIntelligence>().Object, player.GameContext.PlugInManager, player.GameContext.PathFinderPool);
+        monster.Initialize(); monster.Position = new(101, 100);
+        player.CurrentMap.Terrain.SafezoneMap[101, 100] = false;
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<MUnique.OpenMU.GameLogic.Views.Inventory.IMuunView>()!);
+        var combat = new MuunCombat();
+        await combat.TickAsync(player);
+        view.Verify(v => v.AttackAsync(player, monster, 0), Times.Never);
+        combat.Record(monster, player);
+        await combat.TickAsync(player); await combat.TickAsync(player);
+        view.Verify(v => v.AttackAsync(player, monster, 0), Times.Once);
+        monster.Position = new(110, 100);
+        player.CurrentMap.Terrain.SafezoneMap[110, 100] = false;
+        combat = new MuunCombat(); combat.Record(monster, player); await combat.TickAsync(player);
+        view.Verify(v => v.AttackAsync(player, monster, 0), Times.Once);
+        monster.Position = new(101, 100);
+        player.CurrentMap.Terrain.SafezoneMap[100, 100] = true;
+        combat = new MuunCombat(); combat.Record(monster, player); await combat.TickAsync(player);
+        view.Verify(v => v.AttackAsync(player, monster, 0), Times.Once);
+        player.CurrentMap.Terrain.SafezoneMap[100, 100] = false;
+        combat = new MuunCombat(); combat.Record(monster, new MUnique.OpenMU.GameLogic.Pet.AttackerSurrogate(player, player.Attributes!));
+        await combat.TickAsync(player);
+        view.Verify(v => v.AttackAsync(player, monster, 0), Times.Once);
+        monster.Dispose();
+    }
     private static async Task<Item> BagItem(Player player, int index)
     {
         var item = player.PersistenceContext.CreateNew<Item>(); item.Definition = player.GameContext.Configuration.Items.ElementAt(index); item.Durability = item.Definition.Durability;

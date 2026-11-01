@@ -1711,4 +1711,9 @@
   <data name="Admin_StartingWCoinC" xml:space="preserve"><value>Starting WCoin C</value></data>
   <data name="Admin_StartingWCoinP" xml:space="preserve"><value>Starting WCoin P</value></data>
   <data name="Admin_StartingWCoinsName" xml:space="preserve"><value>Starting WCoins (new accounts)</value></data>
+  <data name="Admin_StartingQuantity" xml:space="preserve"><value>Quantity</value></data>
+  <data name="Admin_StartingClass" xml:space="preserve"><value>Class</value></data>
+  <data name="Admin_StartingEnabled" xml:space="preserve"><value>Enabled</value></data>
+  <data name="Admin_StartingReplaceLegacy" xml:space="preserve"><value>Replace legacy items</value></data>
+  <data name="Admin_StartingInvalidItems" xml:space="preserve"><value>Check the selected items, supported options, levels, and quantities. Each class must be unique and have at most 64 items.</value></data>
 </root>

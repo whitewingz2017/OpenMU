@@ -1083,4 +1083,6 @@ Price: {3}</value></data>
   <data name="MuunRepairInvalid" xml:space="preserve"><value>Select the configured life-restoring item and a damaged Muun.</value></data>
   <data name="MuunChanged" xml:space="preserve"><value>Muun inventory updated.</value></data>
   <data name="MuunSaveFailed" xml:space="preserve"><value>Saving failed. No Muun items or materials were spent.</value></data>
+  <data name="MuunMaterialsMissing" xml:space="preserve"><value>Not enough eligible materials in your inventory for this Muun exchange.</value></data>
+  <data name="MuunCatalogueTooLarge" xml:space="preserve"><value>Muun inventory refreshed. The server catalogue is too large; ask an administrator to shorten its descriptions.</value></data>
 </root>

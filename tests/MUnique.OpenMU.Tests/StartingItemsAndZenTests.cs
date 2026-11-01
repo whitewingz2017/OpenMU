@@ -64,7 +64,7 @@ public class StartingItemsAndZenTests
     {
         var config = new Basic.GameConfiguration(); var settings = new StartingItemsConfiguration(); settings.Classes.First().Enabled = true;
         var plugin = new Basic.PlugInConfiguration { TypeId = typeof(StartingItemsPlugIn).GUID, IsActive = true };
-        plugin.SetConfiguration(settings, null); config.PlugInConfigurations.Add(plugin);
+        plugin.SetConfiguration(settings, new MUnique.OpenMU.Persistence.ByDataSourceReferenceHandler(Mock.Of<MUnique.OpenMU.Persistence.IDataSource<GameConfiguration>>())); config.PlugInConfigurations.Add(plugin);
         Assert.That(StartingItemsPlugIn.ReplacesLegacy(config, 0), Is.True);
         Assert.That(StartingItemsPlugIn.ReplacesLegacy(config, 4), Is.False);
         plugin.IsActive = false; Assert.That(StartingItemsPlugIn.ReplacesLegacy(config, 0), Is.False);

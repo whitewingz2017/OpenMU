@@ -11,6 +11,8 @@ public sealed class MuunConfiguration
     [Range(3, 120)] public int Capacity { get; set; } = 102;
     /// <summary>Gets or sets Muun life lost when the owner dies; zero disables the loss.</summary>
     [Range(0, 100)] public int LifeLossOnDeath { get; set; } = 1;
+    /// <summary>Gets or sets egg/material exchanges; at most 64 are exposed to clients.</summary>
+    public List<MuunExchangeRecipe> Exchanges { get; set; } = [new()];
     /// <summary>Gets or sets the configured species. Bonuses are defined on the normal item definitions.</summary>
     public List<MuunDefinition> Pets { get; set; } = Enumerable.Range(0, 6).Select(i => new MuunDefinition
     {

@@ -16,7 +16,7 @@ public sealed class StartingItemsPlugIn : ICharacterCreatedPlugIn, ISupportCusto
     public static bool ReplacesLegacy(GameConfiguration config, byte? number)
     {
         var plugin = config.PlugInConfigurations.SingleOrDefault(p => p.IsActive && p.TypeId == typeof(StartingItemsPlugIn).GUID);
-        return plugin?.GetConfiguration<StartingItemsConfiguration>(null)?.Classes.Any(c => c.Enabled && (byte)c.Class == number && c.ReplaceLegacyItems) == true;
+        return plugin?.GetConfiguration<StartingItemsConfiguration>(new MUnique.OpenMU.Persistence.Json.IdReferenceHandler())?.Classes.Any(c => c.Enabled && (byte)c.Class == number && c.ReplaceLegacyItems) == true;
     }
     public void CharacterCreated(Account account, Character character, IContext context, GameConfiguration config, ILogger logger)
     {

@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameServer.RemoteView.Inventory;
 
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Muun;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
@@ -41,12 +42,51 @@ public sealed class MuunView : IMuunView
                 Level = i.Level, Life = i.Durability, MaximumLife = i.Definition!.Durability,
                 Active = MuunRules.Find(config, MuunRules.Type(i)) is { } rule && MuunRules.IsActive(this._player, i, rule),
             }),
-            Species = config?.Pets.Take(120).Select(p => new { Type = p.ItemType, p.MaximumLevel, p.EvolutionItemType, p.EvolutionStoneType, p.RepairItemType }),
+            Species = config?.Pets.Take(120).Select(p => new { Type = p.ItemType, p.MaximumLevel, p.EvolutionItemType, p.EvolutionStoneType, p.RepairItemType,
+                Name = this.SpeciesName(p.ItemType), Description = this.SpeciesDescription(p),
+                Owned = this._player.SelectedCharacter?.MuunInventory?.Items.Any(i => MuunRules.Type(i) == p.ItemType) == true }),
+            Exchanges = config?.Exchanges.Take(64).Select((p, i) => new { Index = i, Name = p.Name[..Math.Min(p.Name.Length, 80)], p.MaterialItemType, p.RequiredCount }),
         });
+        if (data.Length > ushort.MaxValue - 5)
+        {
+            // Keep transfers available even if an administrator configures an oversized catalogue.
+            data = JsonSerializer.SerializeToUtf8Bytes(new {
+                RequestId = requestId, Status = this._player.GetLocalizedMessage("MuunCatalogueTooLarge"), Enabled = config is not null,
+                Capacity = config?.Capacity ?? 0,
+                Items = this._player.SelectedCharacter?.MuunInventory?.Items.Select(i => new {
+                    Slot = i.ItemSlot, Type = MuunRules.Type(i), Name = "Muun", Level = i.Level, Life = i.Durability,
+                    MaximumLife = i.Definition!.Durability, Active = false }),
+                Species = config?.Pets.Take(120).Select(p => new { Type = p.ItemType, p.MaximumLevel, p.EvolutionItemType, p.EvolutionStoneType, p.RepairItemType })
+            });
+        }
         await connection.SendAsync(() =>
         {
             var size = MuunResponseExtendedRef.GetRequiredSize(data.Length);
             var packet = new MuunResponseExtendedRef(connection.Output.GetSpan(size)[..size]);
+            data.CopyTo(packet.Data); return size;
+        }).ConfigureAwait(false);
+    }
+    private string SpeciesName(int type)
+    {
+        var name = this._player.GameContext.Configuration.Items.FirstOrDefault(d => d.Group * 512 + d.Number == type)?.Name.ValueInNeutralLanguage ?? type.ToString();
+        return name[..Math.Min(name.Length, 80)];
+    }
+    private string SpeciesDescription(MuunDefinition rule)
+    {
+        var item = this._player.GameContext.Configuration.Items.FirstOrDefault(d => d.Group * 512 + d.Number == rule.ItemType);
+        var bonuses = string.Join("; ", item?.BasePowerUpAttributes.Take(4).Select(b => FormattableString.Invariant($"{b.TargetAttribute?.GetDisplayName()}: {b.BaseValue:0.####} ({b.AggregateType})")) ?? []);
+        var description = FormattableString.Invariant($"Max +{rule.MaximumLevel}; Min character level {rule.MinimumCharacterLevel}; Combat {rule.AttackDamageFactor:P0}, {rule.AttackRange} tiles/{rule.AttackIntervalMilliseconds}ms; {bonuses}");
+        return description[..Math.Min(description.Length, 256)];
+    }
+    /// <inheritdoc />
+    public async ValueTask AttackAsync(Player owner, IAttackable target, byte slot)
+    {
+        if (this._player.Connection is not { } connection) return;
+        var data = JsonSerializer.SerializeToUtf8Bytes(new { Id = owner.GetId(this._player), Name = owner.Name, AttackTarget = target.GetId(this._player), MuunSlot = slot });
+        await connection.SendAsync(() =>
+        {
+            var size = MuunAppearanceExtendedRef.GetRequiredSize(data.Length);
+            var packet = new MuunAppearanceExtendedRef(connection.Output.GetSpan(size)[..size]);
             data.CopyTo(packet.Data); return size;
         }).ConfigureAwait(false);
     }

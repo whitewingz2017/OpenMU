@@ -47,5 +47,13 @@ public static class MuunItems
             stone.Width = 1; stone.Height = 1; stone.Durability = 1; stone.IsTradable = true; stone.IsStorable = true; stone.IsDroppable = true; stone.IsPersonalStoreSellable = true;
             config.Items.Add(stone);
         }
+        var egg = config.Items.SingleOrDefault(d => d.Group == 14 && d.Number == 251);
+        if (egg is not null && egg.Name.ValueInNeutralLanguage != "Muun Egg") throw new InvalidOperationException("Muun egg item 14:251 is already in use.");
+        if (egg is null)
+        {
+            egg = context.CreateNew<ItemDefinition>(); egg.SetGuid(14, 251); egg.Group = 14; egg.Number = 251; egg.Name = "Muun Egg";
+            egg.Width = 1; egg.Height = 1; egg.Durability = 1; egg.IsTradable = true; egg.IsStorable = true; egg.IsDroppable = true;
+            config.Items.Add(egg);
+        }
     }
 }

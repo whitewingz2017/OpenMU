@@ -70,6 +70,8 @@ internal class MuunItemsUpdateTest
         Assert.That(restored.Pets.Select(p => p.ItemType), Is.Unique);
         foreach (var type in new[] { 13 * 512 + 4, 13 * 512 + 37, 13 * 512 + 300 })
             Assert.That(MuunRules.Find(restored, type), Is.Not.Null);
+        Assert.That(config.Items.Count(i => i.Group == 14 && i.Number == 251), Is.EqualTo(1));
+        Assert.That(restored.Exchanges, Is.Not.Empty);
         var saved = result.CustomConfiguration;
         await update.ApplyUpdateAsync(context, config).ConfigureAwait(false);
         Assert.That(result.CustomConfiguration, Is.EqualTo(saved));

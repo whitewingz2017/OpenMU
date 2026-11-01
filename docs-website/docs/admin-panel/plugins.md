@@ -123,43 +123,35 @@ them the messages written in Discord as such. See
 
 ## Starting items by class
 
-Open **Game configuration → Starting items by class** and use the plugin's
-configuration button. **Classes** shows seven editable profiles. Enable the
-profile for the desired class, then use **Create** under its **Items** list to
-add rows with **Group**, **Number**, **Level**, **Quantity**, **Luck**, **Skill**,
-**Additional option level**, and **Excellent option numbers**. Look up item
-identifiers in **Game configuration → Items**. Quantity counts separate items.
-
-**ReplaceLegacyItems** replaces that class's previous starter-item grants; turn
-it off to add items alongside them. Disabled profiles preserve the old grants.
-An enabled profile with replacement on and no items intentionally grants none.
-Use **Submit** to save, activate the plugin, and restart game servers before
-creating a character. Existing characters are unaffected.
+Open **Game configuration → Starting items by class**. Enable the profile for the
+desired class and click **Create** to add a starter item. The item editor uses
+the same searchable **Definition**, named **Excellent Options**, **Luck**, and
+additional-option selectors as the inventory/vault editor. Select the item by
+name, choose its level and supported options, and set **Quantity** (separate items).
+Options which the selected item does not support are hidden. Changing the item
+clears the previous item's level and options. Existing numeric settings reopen
+with their item and named options selected.
 
 For a Dragon set +9 +Luck +16 with DSR, Reflect Damage, and Damage Decrease,
-create one row per set piece: groups **7, 8, 9, 10, 11**, number **1**, level
-**9**, quantity **1**, Luck enabled, Additional option level **4**, and Excellent
-option numbers **2;3;4**. Keep the Dark Knight profile enabled. Add the desired
-sword and small wings as separate rows using their Group/Number from **Items**.
-Items are placed in the bag, not equipped. Small Wings of Satan for a Dark
-Knight are **Group 12, Number 134**; leave Luck, Skill, additional option level,
-and excellent numbers off/empty because small wings have no such options in
-the default configuration.
+create one row for each Dragon set piece. Select **Level 9**, enable **Luck**,
+select **Defense rate**, **Reflect damage**, and **Damage decrease** under
+**Excellent Options**, and select the **+16 defense** additional-option level.
+Add your sword and **Small Wings of Satan** as separate rows. Small wings have
+no Luck or excellent options in the default item definitions. Bag placement
+and durability are automatic; these controls do not appear in the starter editor.
+Ancient, Harmony, and socket options are not part of the starter policy.
 
-Excellent numbers are separated by **semicolons**. Their meanings depend on the
-item: armor **2 = DSR**, **3 = Reflect Damage**, **4 = Damage Decrease**; weapons
-**1 = mana after kill**, **2 = health after kill**, **3 = attack speed**,
-**4 = damage increase**, **5 = damage per level**, **6 = excellent damage chance**.
-Check the item's possible options for wings and other equipment; armor options
-do not apply to swords or wings. Unsupported options reject the complete starter
-grant. Additional option level ranges from **0 to 7**: for damage and defense,
-levels 1–7 mean +4 through +28, so **4 means +16**. Recovery options use their
-item-defined values. Excellent weapons receive their skill when supported.
+**Replace legacy items** replaces that class's previous starter-item grants;
+turn it off to add items alongside them. Disabled profiles preserve the old grants.
+An enabled profile with replacement on and no items intentionally grants none.
+Use **Submit** to save, activate the plugin in the filtered list behind the dialog,
+and restart game servers before creating a character. Existing characters are
+unaffected. All items must fit in the initial bag, with a maximum of 64 items per
+class. Missing items, duplicate classes, and unsupported options prevent saving.
+**Cancel** discards the dialog's changes without creating inventory objects.
 
 The **Starting items by class** and **Monster Zen drop amounts** menu entries
-open their configuration dialogs directly. The plugin must be active for its
-settings to take effect; the filtered list behind the dialog has its activation
-button.
+open their configuration dialogs directly.
 
 ## Starting WCoins
 

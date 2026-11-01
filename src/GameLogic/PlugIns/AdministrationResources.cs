@@ -39,4 +39,19 @@ public static class AdministrationResources
     /// <summary>Gets the StartingWCoinsName caption.</summary>
     public static string StartingWCoinsName => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingWCoinsName", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingWCoinsName";
 
+    /// <summary>Gets the StartingQuantity caption.</summary>
+    public static string StartingQuantity => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingQuantity", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingQuantity";
+
+    /// <summary>Gets the StartingClass caption.</summary>
+    public static string StartingClass => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingClass", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingClass";
+
+    /// <summary>Gets the StartingEnabled caption.</summary>
+    public static string StartingEnabled => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingEnabled", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingEnabled";
+
+    /// <summary>Gets the StartingReplaceLegacy caption.</summary>
+    public static string StartingReplaceLegacy => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingReplaceLegacy", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingReplaceLegacy";
+
+    /// <summary>Gets the StartingInvalidItems caption.</summary>
+    public static string StartingInvalidItems => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingInvalidItems", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingInvalidItems";
+
 }

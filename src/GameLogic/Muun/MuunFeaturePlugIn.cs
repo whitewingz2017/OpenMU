@@ -13,8 +13,11 @@ using MUnique.OpenMU.PlugIns;
 [PlugIn]
 [Display(Name = nameof(MuunResources.Name), Description = nameof(MuunResources.Description), ResourceType = typeof(MuunResources))]
 [Guid("f43252e4-5cbc-46b1-a283-ed91758d58bc")]
-public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugIn, IAttackableGotKilledPlugIn, IPeriodicTaskPlugIn, ISupportCustomConfiguration<MuunConfiguration>, ISupportDefaultCustomConfiguration, IDisabledByDefault
+public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugIn, IAttackableGotHitPlugIn, IAttackableGotKilledPlugIn, IPeriodicTaskPlugIn, ISupportCustomConfiguration<MuunConfiguration>, ISupportDefaultCustomConfiguration, IDisabledByDefault
 {
+    private readonly MuunCombat _combat = new();
+    /// <inheritdoc />
+    public void AttackableGotHit(IAttackable attackable, IAttacker attacker, HitInfo hitInfo) => this._combat.Record(attackable, attacker);
     /// <inheritdoc />
     public MuunConfiguration? Configuration { get; set; }
     /// <summary>Gets the active settings; disabled servers grant no Muun bonuses.</summary>
@@ -67,6 +70,7 @@ public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugI
             {
                 await player.RunPersistenceExclusiveAsync(async () =>
                 {
+                    await this._combat.TickAsync(player).ConfigureAwait(false);
                     if (MuunBonuses.Refresh(player))
                     {
                         await player.ForEachWorldObserverAsync<IMuunView>(v => v.AppearanceAsync(player), true).ConfigureAwait(false);

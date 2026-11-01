@@ -7,6 +7,12 @@ namespace MUnique.OpenMU.GameLogic.Muun;
 /// <summary>Administrator-configured rules for one Muun species.</summary>
 public sealed class MuunDefinition
 {
+    /// <summary>Gets or sets the fraction of owner damage used for assisted monster attacks; zero disables combat.</summary>
+    [Range(0, 1)] public double AttackDamageFactor { get; set; } = 0.1;
+    /// <summary>Gets or sets the minimum time between assisted attacks.</summary>
+    [Range(500, 60000)] public int AttackIntervalMilliseconds { get; set; } = 3000;
+    /// <summary>Gets or sets maximum attack distance in tiles.</summary>
+    [Range(1, 10)] public int AttackRange { get; set; } = 4;
     /// <summary>Gets or sets the pet item group times 512 plus its number.</summary>
     public int ItemType { get; set; }
     /// <summary>Gets or sets its maximum zero-based item level.</summary>

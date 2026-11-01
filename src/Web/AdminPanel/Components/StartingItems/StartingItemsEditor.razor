@@ -1,0 +1,40 @@
+@using MUnique.OpenMU.GameLogic.PlugIns
+@using Resources = MUnique.OpenMU.Web.Shared.Properties.Resources
+
+@if (this._configuration is null)
+{
+    <p>@Resources.Loading</p>
+}
+else
+{
+    <EditForm Model="this.Item" OnSubmit="this.SubmitAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <CascadingValue Value="this.PersistenceContext">
+            @foreach (var profile in this.Item.Classes)
+            {
+                <div class="card card-body mb-3" @key="profile">
+                    <EnumField Label="@AdministrationResources.StartingClass" @bind-Value="profile.Class" />
+                    <BooleanField Label="@AdministrationResources.StartingEnabled" @bind-Value="profile.Enabled" />
+                    <BooleanField Label="@AdministrationResources.StartingReplaceLegacy" @bind-Value="profile.ReplaceLegacyItems" />
+                    @foreach (var reward in profile.Items)
+                    {
+                        <div @key="reward">
+                            <StartingItemEditor Reward="reward" Definitions="this._configuration.Items" />
+                            <button type="button" class="btn btn-danger mb-3" @onclick="() => profile.Items.Remove(reward)">@Resources.Remove</button>
+                        </div>
+                    }
+                    <button type="button" class="btn btn-primary" @onclick="() => AddItem(profile)">@Resources.Create</button>
+                </div>
+            }
+        </CascadingValue>
+        @if (this._invalid)
+        {
+            <div class="alert alert-danger" role="alert">@AdministrationResources.StartingInvalidItems</div>
+        }
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">@Resources.Submit</button>
+            <button type="button" class="btn btn-secondary" @onclick="() => this.Modal.CancelAsync()">@Resources.Cancel</button>
+        </div>
+    </EditForm>
+}

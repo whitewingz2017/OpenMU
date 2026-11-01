@@ -42759,7 +42759,7 @@ public readonly struct StoreMailAttachmentResponse
 
 /// <summary>
 /// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
-/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material, 8 exchange bag material in source using the recipe index in target. Responses contain authoritative UTF-8 JSON with species catalogue and exchange recipes. Appearance packets identify the player and two visible pet types, or AttackTarget and MuunSlot for a server-authorized assisted monster attack.
 /// </summary>
 public readonly struct MuunResponseExtended
 {
@@ -42846,7 +42846,7 @@ public readonly struct MuunResponseExtended
 
 /// <summary>
 /// Is sent by the server when: A custom client requests Muun operations or a Muun appearance changes.
-/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material. Responses contain authoritative UTF-8 JSON. Appearance packets identify the player and two visible pet types.
+/// Causes reaction on client side: Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material, 8 exchange bag material in source using the recipe index in target. Responses contain authoritative UTF-8 JSON with species catalogue and exchange recipes. Appearance packets identify the player and two visible pet types, or AttackTarget and MuunSlot for a server-authorized assisted monster attack.
 /// </summary>
 public readonly struct MuunAppearanceExtended
 {
