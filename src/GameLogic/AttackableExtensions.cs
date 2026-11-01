@@ -334,6 +334,13 @@ public static class AttackableExtensions
             return new HitInfo(damage, (uint)shieldDamage, attributes, manaToll);
         }
 
+        if (attacker is Player)
+        {
+            // A player's hit is paid from SD first; only what the shield can't hold reaches HP
+            // (Player.HitAsync carries the overflow).
+            return new HitInfo(0, damage, attributes, manaToll);
+        }
+
         var shieldRatio = 0.90;
         shieldRatio -= attacker.Attributes[Stats.ShieldDecreaseRateIncrease];
         shieldRatio += defender.Attributes[Stats.ShieldRateIncrease];

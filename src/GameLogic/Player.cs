@@ -1688,6 +1688,12 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
             this.Attributes[Stats.CurrentShield] = oversd;
         }
 
+        if (hitInfo.ShieldDamage > 0 && this.Attributes[Stats.CurrentShield] < 1)
+        {
+            // The client plays the shield crash (explosion and sound) for whoever broke it.
+            await this.ForEachWorldObserverAsync<IShowEffectPlugIn>(p => p.ShowEffectAsync(this, IShowEffectPlugIn.EffectType.ShieldLost), true).ConfigureAwait(false);
+        }
+
         this.Attributes[Stats.CurrentHealth] -= healthDamage;
 
         if (isFinalStreakHit.HasValue)
