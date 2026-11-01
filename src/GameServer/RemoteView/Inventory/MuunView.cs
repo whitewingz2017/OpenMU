@@ -22,6 +22,8 @@ using MUnique.OpenMU.PlugIns;
 [Guid("7f59c44b-2dc2-4b15-92be-8ad70b5ffac9")]
 public sealed class MuunView : IMuunView
 {
+    /// <summary>Tells the client that a Muun has no expiration.</summary>
+    private const long NeverExpires = -1;
     private readonly RemotePlayer _player;
     /// <summary>Initializes the receiving player's view.</summary>
     public MuunView(RemotePlayer player) => this._player = player;
@@ -30,6 +32,7 @@ public sealed class MuunView : IMuunView
     {
         if (this._player.Connection is not { } connection) return;
         var config = MuunFeaturePlugIn.Settings(this._player.GameContext);
+        var now = DateTime.UtcNow;
         var data = JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
@@ -41,6 +44,9 @@ public sealed class MuunView : IMuunView
                 Slot = i.ItemSlot, Type = MuunRules.Type(i), Name = i.Definition!.Name.ValueInNeutralLanguage,
                 Level = i.Level, Life = i.Durability, MaximumLife = i.Definition!.Durability,
                 Active = MuunRules.Find(config, MuunRules.Type(i)) is { } rule && MuunRules.IsActive(this._player, i, rule),
+                // Unconfigured species report no reason; Active=false already tells the client.
+                Inactive = (int)(MuunRules.Find(config, MuunRules.Type(i)) is { } found ? MuunRules.InactiveReason(this._player, i, found, now) : MuunInactiveReason.None),
+                ExpiresInSeconds = i.ExpiresAtUtc is { } end ? (long)Math.Max(0, (end - now).TotalSeconds) : NeverExpires,
             }),
             Species = config?.Pets.Take(120).Select(p => new { Type = p.ItemType, p.MaximumLevel, p.EvolutionItemType, p.EvolutionStoneType, p.RepairItemType,
                 Name = this.SpeciesName(p.ItemType), Description = this.SpeciesDescription(p),
@@ -75,7 +81,13 @@ public sealed class MuunView : IMuunView
     {
         var item = this._player.GameContext.Configuration.Items.FirstOrDefault(d => d.Group * 512 + d.Number == rule.ItemType);
         var bonuses = string.Join("; ", item?.BasePowerUpAttributes.Take(4).Select(b => FormattableString.Invariant($"{b.TargetAttribute?.GetDisplayName()}: {b.BaseValue:0.####} ({b.AggregateType})")) ?? []);
-        var description = FormattableString.Invariant($"Max +{rule.MaximumLevel}; Min character level {rule.MinimumCharacterLevel}; Combat {rule.AttackDamageFactor:P0}, {rule.AttackRange} tiles/{rule.AttackIntervalMilliseconds}ms; {bonuses}");
+        var levels = rule.MaximumCharacterLevel > 0
+            ? FormattableString.Invariant($"Character level {rule.MinimumCharacterLevel}-{rule.MaximumCharacterLevel}")
+            : FormattableString.Invariant($"Min character level {rule.MinimumCharacterLevel}");
+        var days = rule.Days.Count > 0 ? "; " + string.Join(",", rule.Days.Select(d => d.ToString()[..3])) : string.Empty;
+        var hours = rule.FromHourUtc != 0 || rule.UntilHourUtc != MuunRules.HoursPerDay
+            ? FormattableString.Invariant($"; {rule.FromHourUtc:00}-{rule.UntilHourUtc:00} UTC") : string.Empty;
+        var description = FormattableString.Invariant($"Max +{rule.MaximumLevel}; {levels}{days}{hours}; Combat {rule.AttackDamageFactor:P0}, {rule.AttackRange} tiles/{rule.AttackIntervalMilliseconds}ms; {bonuses}");
         return description[..Math.Min(description.Length, 256)];
     }
     /// <inheritdoc />

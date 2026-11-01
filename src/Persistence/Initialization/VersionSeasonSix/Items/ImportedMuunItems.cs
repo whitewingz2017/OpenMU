@@ -28,5 +28,15 @@ public static class ImportedMuunItems
         }
     }
 
+    /// <summary>Gets the item types of the catalog companions which the client rides as a mount.</summary>
+    public static IReadOnlyList<int> MountTypes()
+    {
+        using var stream = typeof(ImportedMuunItems).Assembly.GetManifestResourceStream("FinalMuCosmeticSkins.json")
+            ?? throw new InvalidOperationException("The FinalMU companion catalog is missing.");
+        var catalog = JsonSerializer.Deserialize<Companion[]>(stream)
+            ?? throw new InvalidOperationException("The FinalMU companion catalog is invalid.");
+        return catalog.Where(p => p.Part == 8 && p.Mount).Select(p => (p.Group * 512) + p.Number).ToList();
+    }
+
     private sealed record Companion(byte Group, short Number, int Part, bool Mount);
 }

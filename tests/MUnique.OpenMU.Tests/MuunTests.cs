@@ -276,6 +276,46 @@ public class MuunTests
         view.Verify(v => v.AttackAsync(player, monster, 0), Times.Once);
         monster.Dispose();
     }
+    [TestCase(0, 24, 0, true)] [TestCase(0, 24, 23, true)] [TestCase(8, 18, 7, false)] [TestCase(8, 18, 8, true)] [TestCase(8, 18, 18, false)]
+    [TestCase(22, 2, 23, true)] [TestCase(22, 2, 1, true)] [TestCase(22, 2, 2, false)] [TestCase(22, 2, 12, false)]
+    public void DailyWindowWrapsPastMidnight(int from, int until, int hour, bool expected)
+        => Assert.That(MuunRules.InHourWindow(new MuunDefinition { FromHourUtc = from, UntilHourUtc = until }, hour), Is.EqualTo(expected));
+    [Test]
+    public void LevelRangeTreatsZeroMaximumAsUnlimited()
+    {
+        var rule = new MuunDefinition { MinimumCharacterLevel = 10 };
+        Assert.That(MuunRules.InLevelRange(rule, 9), Is.False);
+        Assert.That(MuunRules.InLevelRange(rule, 400), Is.True);
+        rule.MaximumCharacterLevel = 200;
+        Assert.That(MuunRules.InLevelRange(rule, 200), Is.True);
+        Assert.That(MuunRules.InLevelRange(rule, 201), Is.False);
+    }
+    [Test]
+    public void SpecialPeriodShortensAttacksAndAddsFlatBonuses()
+    {
+        var now = new DateTime(2026, 11, 1, 12, 0, 0, DateTimeKind.Utc);
+        var rule = new MuunDefinition { AttackIntervalMilliseconds = 3000, SpecialAttackIntervalReduction = 0.5, SpecialAddition = 5, SpecialFromUtc = now.AddHours(-1), SpecialUntilUtc = now.AddHours(1) };
+        Assert.That(MuunRules.AttackInterval(rule, now), Is.EqualTo(1500));
+        Assert.That(MuunRules.Addition(rule, now), Is.EqualTo(5));
+        Assert.That(MuunRules.AttackInterval(rule, now.AddHours(2)), Is.EqualTo(3000));
+        Assert.That(MuunRules.Addition(rule, now.AddHours(2)), Is.Zero);
+        rule.AttackIntervalMilliseconds = 600; rule.SpecialAttackIntervalReduction = 0.9;
+        Assert.That(MuunRules.AttackInterval(rule, now), Is.EqualTo(MuunCombat.MinimumAttackIntervalMilliseconds));
+    }
+    [Test]
+    public async Task InactiveReasonReportsScheduleConditions()
+    {
+        var player = await Create(); var item = await BagItem(player, 0); item.ItemSlot = 0;
+        var monday = new DateTime(2026, 11, 2, 12, 0, 0, DateTimeKind.Utc);
+        var rule = new MuunDefinition { Days = [DayOfWeek.Sunday] };
+        Assert.That(MuunRules.InactiveReason(player, item, rule, monday), Is.EqualTo(MuunInactiveReason.Day));
+        rule.Days.Clear(); rule.FromHourUtc = 13; rule.UntilHourUtc = 14;
+        Assert.That(MuunRules.InactiveReason(player, item, rule, monday), Is.EqualTo(MuunInactiveReason.Hour));
+        rule.FromHourUtc = 12;
+        Assert.That(MuunRules.InactiveReason(player, item, rule, monday), Is.EqualTo(MuunInactiveReason.None));
+        item.ItemSlot = MuunRules.EquipmentCount;
+        Assert.That(MuunRules.InactiveReason(player, item, rule, monday), Is.EqualTo(MuunInactiveReason.NotEquipped));
+    }
     private static async Task<Item> BagItem(Player player, int index)
     {
         var item = player.PersistenceContext.CreateNew<Item>(); item.Definition = player.GameContext.Configuration.Items.ElementAt(index); item.Durability = item.Definition.Durability;

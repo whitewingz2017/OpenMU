@@ -6,6 +6,8 @@ using MUnique.OpenMU.GameLogic.Views.Inventory;
 /// <summary>Server-timed assistance against the owner's recently attacked monster, without chasing.</summary>
 public sealed class MuunCombat
 {
+    /// <summary>The fastest allowed assisted attack, also after special-period reductions.</summary>
+    public const int MinimumAttackIntervalMilliseconds = 500;
     private readonly ConditionalWeakTable<Player, CombatState> _states = new();
     /// <summary>Records only real player attacks; surrogate pet hits cannot recursively trigger attacks.</summary>
     public void Record(IAttackable target, IAttacker attacker)
@@ -32,7 +34,7 @@ public sealed class MuunCombat
             var rule = MuunRules.Find(config, MuunRules.Type(item));
             if (rule is null || !MuunRules.IsActive(owner, item, rule) || !CanAttack(rule)
                 || !target.IsInRange(owner.Position, rule.AttackRange) || state.Next[item.ItemSlot] > DateTime.UtcNow) continue;
-            state.Next[item.ItemSlot] = DateTime.UtcNow.AddMilliseconds(rule.AttackIntervalMilliseconds);
+            state.Next[item.ItemSlot] = DateTime.UtcNow.AddMilliseconds(MuunRules.AttackInterval(rule, DateTime.UtcNow));
             await owner.ForEachWorldObserverAsync<IMuunView>(v => v.AttackAsync(owner, target, item.ItemSlot), true).ConfigureAwait(false);
             await target.AttackByAsync(new AttackerSurrogate(owner, owner.Attributes), null, false, rule.AttackDamageFactor).ConfigureAwait(false);
             if (!target.IsAlive) break;
@@ -40,7 +42,7 @@ public sealed class MuunCombat
     }
     /// <summary>Rejects disabled and malformed combat settings rather than allowing accelerated attacks.</summary>
     public static bool CanAttack(MuunDefinition rule) => double.IsFinite(rule.AttackDamageFactor)
-        && rule.AttackDamageFactor is > 0 and <= 1 && rule.AttackIntervalMilliseconds is >= 500 and <= 60000
+        && rule.AttackDamageFactor is > 0 and <= 1 && rule.AttackIntervalMilliseconds is >= MinimumAttackIntervalMilliseconds and <= 60000
         && rule.AttackRange is >= 1 and <= 10;
     private sealed class CombatState
     {

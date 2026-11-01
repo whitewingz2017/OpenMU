@@ -35,14 +35,20 @@ internal static class MovementSpeedConstants
     internal const float BasicMountMovementSpeed = 15f;
 
     /// <summary>
+    /// Gets the extra speed of every ridden Dark Horse, Fenrir and mount companion over the original
+    /// client (17 and 19). The custom client adds the same value in CharacterMovementSpeed.
+    /// </summary>
+    internal const float RiddenMountSpeedBonus = 1f;
+
+    /// <summary>
     /// Gets the movement speed of horse or fenrir.
     /// </summary>
-    internal const float HorseOrFenrirMovementSpeed = 17f;
+    internal const float HorseOrFenrirMovementSpeed = 17f + RiddenMountSpeedBonus;
 
     /// <summary>
     /// Gets the movement speed of upgraded fenrir.
     /// </summary>
-    internal const float UpgradedFenrirMovementSpeed = 19f;
+    internal const float UpgradedFenrirMovementSpeed = 19f + RiddenMountSpeedBonus;
 
     /// <summary>
     /// Gets the movement speed factor when iced.

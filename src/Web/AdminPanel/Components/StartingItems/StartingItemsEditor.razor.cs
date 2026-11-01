@@ -35,6 +35,22 @@ public partial class StartingItemsEditor
     private IDataSource<GameConfiguration> ConfigurationSource { get; set; } = null!;
 
     /// <inheritdoc />
+    protected override void OnParametersSet()
+    {
+        // Old or cleared JSON fields must remain editable; nothing is saved until Submit.
+        this.Item ??= new StartingItemsConfiguration();
+        this.Item.Classes ??= new StartingItemsConfiguration().Classes;
+        foreach (var profile in this.Item.Classes)
+        {
+            profile.Items ??= [];
+            foreach (var reward in profile.Items)
+            {
+                reward.ExcellentOptions ??= [];
+            }
+        }
+    }
+
+    /// <inheritdoc />
     protected override async Task OnInitializedAsync()
     {
         this._configuration = await this.ConfigurationSource.GetOwnerAsync(Guid.Empty).ConfigureAwait(true);

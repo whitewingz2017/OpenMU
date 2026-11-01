@@ -149,6 +149,8 @@ and restart game servers before creating a character. Existing characters are
 unaffected. All items must fit in the initial bag, with a maximum of 64 items per
 class. Missing items, duplicate classes, and unsupported options prevent saving.
 **Cancel** discards the dialog's changes without creating inventory objects.
+Cleared class, item, or excellent-option lists in older saved settings reopen safely.
+Missing class lists show the default disabled profiles; changes are saved only with **Submit**.
 
 The **Starting items by class** and **Monster Zen drop amounts** menu entries
 open their configuration dialogs directly.

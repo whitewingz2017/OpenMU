@@ -136,6 +136,35 @@ public class StartingItemEditorTests
         persistence.Verify(p => p.SaveChangesAsync(It.IsAny<CancellationToken>()), save ? Times.Once() : Times.Never());
     }
 
+
+    /// <summary>Null fields in saved starter policies reopen without breaking the Blazor circuit.</summary>
+    /// <param name="json">The saved configuration containing a cleared collection.</param>
+    /// <param name="profileCount">The number of editable class profiles.</param>
+    /// <param name="rewardCount">The number of retained rewards.</param>
+    [TestCase("{\"Classes\":null}", 7, 0)]
+    [TestCase("{\"Classes\":[{\"Class\":0,\"Enabled\":true,\"Items\":null}]}", 1, 0)]
+    [TestCase("{\"Classes\":[{\"Class\":0,\"Items\":[{\"Group\":8,\"Number\":1,\"ExcellentOptions\":null}]}]}", 1, 1)]
+    public void ClearedCollectionsReopen(string json, int profileCount, int rewardCount)
+    {
+        using var context = new BunitContext();
+        context.Services.AddSingleton(Mock.Of<IChangeNotificationService>());
+        context.Services.AddSingleton(Mock.Of<ILookupController>());
+        context.Services.AddLocalization();
+        var configuration = new Basic.GameConfiguration();
+        configuration.Items.Add(CreateDefinition());
+        var source = new Mock<IDataSource<GameConfiguration>>();
+        source.Setup(s => s.GetOwnerAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(configuration);
+        context.Services.AddSingleton(source.Object);
+        var policy = System.Text.Json.JsonSerializer.Deserialize<StartingItemsConfiguration>(json)!;
+
+        var form = context.Render<StartingItemsEditor>(p => p.Add(c => c.Item, policy));
+
+        Assert.That(policy.Classes, Has.Count.EqualTo(profileCount));
+        Assert.That(form.FindComponents<StartingItemEditor>(), Has.Count.EqualTo(rewardCount));
+        Assert.That(policy.Classes.All(c => c.Items is not null), Is.True);
+        Assert.That(policy.Classes.SelectMany(c => c.Items).All(r => r.ExcellentOptions is not null), Is.True);
+    }
+
     private static Basic.ItemDefinition CreateDefinition()
     {
         var item = new Basic.ItemDefinition { Group = 8, Number = 1, MaximumItemLevel = 15 };

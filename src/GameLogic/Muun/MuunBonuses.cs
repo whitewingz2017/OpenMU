@@ -27,6 +27,7 @@ public static class MuunBonuses
             var rule = MuunRules.Find(config, MuunRules.Type(item));
             hash.Add(rule is not null && MuunRules.IsActive(player, item, rule));
             hash.Add(rule is null ? 1 : MuunRules.Multiplier(rule, DateTime.UtcNow));
+            hash.Add(rule is null ? 0 : MuunRules.Addition(rule, DateTime.UtcNow));
         }
         var signature = hash.ToHashCode();
         if (state.Signature == signature && ReferenceEquals(state.Attributes, attributes) && state.Items.All(attributes.ItemPowerUps.ContainsKey)) return false;
@@ -40,12 +41,20 @@ public static class MuunBonuses
             var rule = MuunRules.Find(config, MuunRules.Type(item));
             if (rule is null || !MuunRules.IsActive(player, item, rule)) continue;
             var multiplier = MuunRules.Multiplier(rule, DateTime.UtcNow);
+            var addition = MuunRules.Addition(rule, DateTime.UtcNow);
             var values = new List<PowerUpWrapper>();
             foreach (var bonus in item.Definition!.BasePowerUpAttributes)
             {
                 if (bonus.TargetAttribute is not { } target) continue;
                 var value = bonus.BaseValue + (bonus.BonusPerLevelTable?.BonusPerLevel.FirstOrDefault(b => b.Level == item.Level)?.AdditionalValue ?? 0);
-                value = bonus.AggregateType == AggregateType.Multiplicate ? 1 + ((value - 1) * multiplier) : value * multiplier;
+                // Additions only target flat bonuses; adding to a multiplicative factor would multiply the whole stat.
+                // Maximum values (a mount's movement speed) are levels the client mirrors, so they are never scaled.
+                value = bonus.AggregateType switch
+                {
+                    AggregateType.Multiplicate => 1 + ((value - 1) * multiplier),
+                    AggregateType.Maximum => value,
+                    _ => (value * multiplier) + addition,
+                };
                 values.Add(new PowerUpWrapper(new ConstantElement(value, bonus.AggregateType), target, attributes));
             }
             attributes.ItemPowerUps[item] = values;
