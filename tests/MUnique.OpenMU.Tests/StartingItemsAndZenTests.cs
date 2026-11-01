@@ -10,6 +10,21 @@ using Basic = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class StartingItemsAndZenTests
 {
+    /// <summary>Saved class profiles retain their values when opened and saved by the editor.</summary>
+    [Test]
+    public void StarterConfigurationPreservesSavedProfiles()
+    {
+        const string saved = "{\"Classes\":[{\"Class\":4,\"Enabled\":true,\"ReplaceLegacyItems\":false,\"Items\":[{\"Group\":14,\"Number\":0,\"Level\":3,\"Quantity\":2}]}]}";
+        var configuration = System.Text.Json.JsonSerializer.Deserialize<StartingItemsConfiguration>(saved)!;
+        Assert.That(configuration.Classes, Has.Count.EqualTo(1));
+        var profile = configuration.Classes.Single();
+        Assert.That(profile.Class, Is.EqualTo(StartingCharacterClass.DarkKnight));
+        Assert.That(profile.Enabled, Is.True);
+        Assert.That(profile.ReplaceLegacyItems, Is.False);
+        Assert.That(profile.Items.Single().ToString(), Is.EqualTo("14:0 +3 x2"));
+        Assert.That(System.Text.Json.JsonSerializer.Serialize(configuration), Is.EqualTo(saved));
+        Assert.That(new StartingItemsConfiguration().Classes.Select(c => c.Class), Is.EquivalentTo(Enum.GetValues<StartingCharacterClass>()));
+    }
     [Test]
     public async Task ClassSpecificStarterItemsFitWithoutEquipmentOverlapAsync()
     {
@@ -36,7 +51,7 @@ public class StartingItemsAndZenTests
         var player = await PlayerTestHelper.CreatePlayerAsync();
         var character = player.SelectedCharacter!; character.CharacterClass = new Basic.CharacterClass { Number = 0 }; character.Inventory = new Basic.ItemStorage();
         Mock.Get(player.GameContext.Configuration).Setup(c => c.Items).Returns(new List<ItemDefinition> { new Basic.ItemDefinition { Group = 14, Number = 0, Width = 1, Height = 1 } });
-        var config = new StartingItemsConfiguration(); var profile = config.Classes[0]; profile.Enabled = true;
+        var config = new StartingItemsConfiguration(); var profile = config.Classes.First(); profile.Enabled = true;
         profile.Items.Add(new() { Group = 14, Number = 0 }); profile.Items.Add(new() { Group = 15, Number = 511 });
         Assert.Throws<InvalidOperationException>(() => new StartingItemsPlugIn { Configuration = config }.CharacterCreated(player.Account!, character, player.PersistenceContext, player.GameContext.Configuration, player.Logger));
         Assert.That(character.Inventory.Items, Is.Empty);
@@ -44,7 +59,7 @@ public class StartingItemsAndZenTests
     [Test]
     public void StarterOverrideUsesActivePersistedProfileOnly()
     {
-        var config = new Basic.GameConfiguration(); var settings = new StartingItemsConfiguration(); settings.Classes[0].Enabled = true;
+        var config = new Basic.GameConfiguration(); var settings = new StartingItemsConfiguration(); settings.Classes.First().Enabled = true;
         var plugin = new Basic.PlugInConfiguration { TypeId = typeof(StartingItemsPlugIn).GUID, IsActive = true };
         plugin.SetConfiguration(settings, null); config.PlugInConfigurations.Add(plugin);
         Assert.That(StartingItemsPlugIn.ReplacesLegacy(config, 0), Is.True);

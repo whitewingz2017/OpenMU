@@ -121,6 +121,20 @@ mirrored. It also lets players link their account from the client, and sends
 them the messages written in Discord as such. See
 [Discord](../server-features/discord.md#the-game-client).
 
+## Starting items by class
+
+Open **Game configuration → Starting items by class** and use the plugin's
+configuration button. **Classes** shows seven editable profiles. Enable the
+profile for the desired class, then use **Create** under its **Items** list to
+add rows with **Group**, **Number**, **Level**, and **Quantity**. Look up item
+identifiers in **Game configuration → Items**. Quantity counts separate items.
+
+**ReplaceLegacyItems** replaces that class's previous starter-item grants; turn
+it off to add items alongside them. Disabled profiles preserve the old grants.
+An enabled profile with replacement on and no items intentionally grants none.
+Use **Submit** to save, activate the plugin, and restart game servers before
+creating a character. Existing characters are unaffected.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the
