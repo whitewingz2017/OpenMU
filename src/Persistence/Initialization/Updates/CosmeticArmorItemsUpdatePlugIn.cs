@@ -27,10 +27,10 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override int Version => 9;
+    public override int Version => 10;
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 10, 31, 0, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 11, 2, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     public override bool IsMandatory => false;

@@ -1,7 +1,7 @@
 # FinalMU cosmetic import
 
 This is a partial import of the supplied FinalMU Season6 x1000 v2 client pack.
-It adds 24 readable weapon/shield models, 82 readable custom wings, 57 readable followers, and 13 rideable Fenrir mounts.
+It adds 24 readable weapon/shield models, 85 readable custom wings, 57 readable followers, and 13 rideable Fenrir mounts.
 The items are permanent and tradable. Original IDs are recorded in
 `Data/Custom/Skins/FinalMU/catalog.json`; the new IDs avoid all existing items.
 Followers grant no gameplay benefits. Ground-based models follow beside the
@@ -17,7 +17,7 @@ tables. Another 158 sprite references targeted absent bones and were excluded.
 Windows DLL-only effect programs have not been reproduced.
 
 Deploy the matching OpenMU server source, apply **Set 315 Cosmetic Armor version
-8**, and restart before creating these items. Existing skins continue to use
+10** with all players offline, and restart before creating these items. Existing skins continue to use
 their original commands. Enter each command below separately on a GM character,
 pick up the item, and use it to equip the corresponding Skin slot. Mounts instead
 equip the Gear helper slot and cannot occupy the Skin pet slot. Non-pet skins
@@ -33,12 +33,21 @@ active class restrictions are in an unreadable item table. Completing the
 entire pack requires unprotected assets or a compatible decoder and the class
 and effect definitions. No existing client files or IDs were replaced.
 
-Custom wing and follower playback is interpolated in the client. Wings with fewer
-BMD keys retain the same flap cycle duration. All 82 imported wings and 70 pet/mount
-models were checked for action keys: Wing204 contains only one key and stays static.
-Mount actions use the normal Fenrir cycle timing; missing actions use safe poses.
-Existing imported mesh glow and light settings remain active. The client animation
-changes need no database update; converting Fenrir items requires version 8.
+Custom wing playback advances each model's own BMD keys at the reference rates:
+0.25 keys per normal update while idle and 1 while flying, with 25 updates per
+second. The pose stays continuous when changing speed; stun and sleep pause it.
+The imported wing atlases use their fifteen populated frames at 25 frames per
+second and skip the empty tile. Verified registrations use the source's white
+model lighting, 928 attached sprites and 24 particle entries; nine particles
+have a visible size and fifteen retain the source's zero size. Invalid source
+bone/texture entries are excluded. Extra DLL overlays have no active wing
+assignments in the supplied settings and are not enabled.
+
+Wing204 and the older wing180 and wing213 contain a single key and stay static;
+they need authored animation tracks to flap. Mount actions keep normal Fenrir
+cycle timing; missing actions use safe poses. These appearance fixes require
+a rebuilt client and packaged game data. Only the three new wing definitions
+require server configuration update version 10.
 
 - `hs_blueeyeknightA Skin`: `/item 0 300`
 - `blue_eye_magicsword01 Skin`: `/item 0 301`
@@ -217,3 +226,7 @@ changes need no database update; converting Fenrir items requires version 8.
 - `WingWhite Wing Skin`: `/item 12 379`
 - `angel_devil_wing Wing Skin`: `/item 12 380`
 - `ConquerorWing Wing Skin`: `/item 12 381`
+
+- `rf5 Wing Skin`: `/item 12 382`
+- `sum7lvl Wing Skin`: `/item 12 383`
+- `rf7lvl Wing Skin`: `/item 12 384`

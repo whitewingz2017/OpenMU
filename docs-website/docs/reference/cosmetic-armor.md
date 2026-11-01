@@ -59,10 +59,11 @@ the Skin pet slot return to the bag. Free bag space if the update reports it can
 fit. Existing real helper equipment is not replaced.
 
 Custom wings and followers use forward, interpolated playback independent of
-render FPS. Wing cycle length is normalized across different BMD key counts.
+render FPS. Wings use their own BMD key count and the reference idle/flight speeds;
+changing speed preserves the pose, while stun and sleep pause it.
 Mount actions follow the normal Fenrir riding actions; models missing a skill or
 damage action use their attack or standing pose. Imported light and mesh-glow
-settings remain active. Wing204 has a single-key BMD and stays static; it needs
+settings remain active. Wing204 and older wing180 and wing213 have single-key BMDs and stay static; it needs
 a replacement animated model to flap. DLL-only source effects are unavailable.
 
 Walking pets follow beside the character at ground height rather than orbiting
@@ -170,3 +171,10 @@ excellent-damage chance is displayed as 10%. This is a chance to trigger excelle
 damage, not a 10% addition to the ordinary damage range. The page refreshes once
 per second while visible. Both the updated server and client are required; no
 configuration or database migration is needed.
+
+The additional reference wing skins are `rf5` (`/item 12 382`), `sum7lvl`
+(`/item 12 383`) and `rf7lvl` (`/item 12 384`). Their verified bone effects
+are included in the matching client data. Publish the server and apply
+**Set 315 Cosmetic Armor version 10** with all players offline before creating
+or selling them. Existing wings need only the rebuilt client and packaged data
+for the animation, 25 fps atlas and reference lighting fixes.
