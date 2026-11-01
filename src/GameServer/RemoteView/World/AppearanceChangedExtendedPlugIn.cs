@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameServer.RemoteView.World;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.World;
 using MUnique.OpenMU.Network;
@@ -40,14 +41,17 @@ public class AppearanceChangedExtendedPlugIn : IAppearanceChangedPlugIn
             return;
         }
 
+        // Observers see the slot as it looks: an equipped skin replaces the real item, and survives
+        // changes of the real item (durability, re-equipping) underneath it.
+        var visible = CosmeticArmorRules.VisibleEquipment(changedPlayer).FirstOrDefault(i => i.ItemSlot == item.ItemSlot);
         await connection.SendAppearanceChangedExtendedAsync(
             changedPlayer.GetId(this._player),
             item.ItemSlot,
-            (byte)((isEquipped ? item.Definition?.Group : 0xFF) ?? 0xFF),
-            (ushort)(item.Definition?.Number ?? 0xFFFF),
-            item.Level,
-            (byte)(ItemSerializerHelper.GetExcellentByte(item) | ItemSerializerHelper.GetFenrirByte(item)),
-            (byte)(item.ItemSetGroups.FirstOrDefault(set => set.AncientSetDiscriminator != 0)?.AncientSetDiscriminator ?? 0),
+            (byte)(visible?.Definition?.Group ?? 0xFF),
+            (ushort)(visible?.Definition?.Number ?? 0xFFFF),
+            visible?.Level ?? 0,
+            visible is null ? (byte)0 : (byte)(ItemSerializerHelper.GetExcellentByte(visible) | ItemSerializerHelper.GetFenrirByte(visible)),
+            (byte)(visible?.ItemSetGroups.FirstOrDefault(set => set.AncientSetDiscriminator != 0)?.AncientSetDiscriminator ?? 0),
             changedPlayer.SelectedCharacter?.HasFullAncientSetEquipped() is true)
             .ConfigureAwait(false);
     }
