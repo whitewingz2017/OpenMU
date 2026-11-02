@@ -4,9 +4,11 @@
 
 namespace MUnique.OpenMU.Tests;
 
+using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Cosmetics;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
@@ -257,6 +259,27 @@ public class CosmeticArmorTests
         var definition = new BasicModel.ItemDefinition { ItemSlot = slots };
         Assert.That(CosmeticArmorRules.FitsSlot(definition, destination), Is.EqualTo(accepted));
         Assert.That(CosmeticArmorRules.FitsSlot(null, destination), Is.False);
+    }
+
+    [Test]
+    public async Task WornWingSkinGrantsItsMovementSpeedAsync()
+    {
+        const byte wingPart = 7;
+        const float wingSpeed = 15f;
+        var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Definition!.Group = 12;
+        item.Definition.Number = 210;
+        item.Definition.ItemSlot!.ItemSlots.Clear();
+        item.Definition.ItemSlot.ItemSlots.Add(CosmeticArmorRules.FirstSlot + wingPart);
+        item.Definition.BasePowerUpAttributes.Add(new BasicModel.ItemBasePowerUpDefinition { TargetAttribute = Stats.MovementSpeed, BaseValue = wingSpeed, AggregateType = AggregateType.Maximum });
+        var actions = new CosmeticArmorActions();
+        var unequippedSpeed = player.Attributes![Stats.MovementSpeed];
+
+        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, wingPart).ConfigureAwait(false);
+        Assert.That(player.Attributes[Stats.MovementSpeed], Is.EqualTo(wingSpeed));
+
+        await actions.ExecuteAsync(player, 2, 2, 0, wingPart).ConfigureAwait(false);
+        Assert.That(player.Attributes[Stats.MovementSpeed], Is.EqualTo(unequippedSpeed));
     }
 
     private static async Task<(Player Player, Item Item)> CreateAsync()

@@ -33,7 +33,7 @@ public sealed class RiddenMountSpeedUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Ridden Mount Speed";
 
     /// <inheritdoc />
-    public override string Description => "Dark Horse and Fenrir move one step faster; mount companions in the Muun main slot ride at the same speed. Requires the matching TwinMU client.";
+    public override string Description => "Dark Horse and Fenrir move faster; mount companions in the Muun main slot ride at the same speed. Requires the matching TwinMU client.";
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc);

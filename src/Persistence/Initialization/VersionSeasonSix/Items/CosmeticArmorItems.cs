@@ -5,14 +5,34 @@
 namespace MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 
 using System.Text.Json;
+using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.Interfaces;
 using MUnique.OpenMU.Persistence.Initialization.CharacterClasses;
 
 /// <summary>Initializes permanent tradable cosmetic items for the custom client.</summary>
 public static class CosmeticArmorItems
 {
+    /// <summary>The cosmetic part of wing and cape skins.</summary>
+    private const int WingPart = 7;
+
+    /// <summary>The first cosmetic item slot; a skin of part N is worn in this slot plus N.</summary>
+    private const int FirstCosmeticSlot = 240;
+
+    /// <summary>Gives every wing and cape skin the movement speed of normal wings.</summary>
+    /// <param name="context">The configuration context.</param>
+    /// <param name="configuration">The target game configuration.</param>
+    public static void EnsureWingSkinMovementSpeed(IContext context, GameConfiguration configuration)
+    {
+        var wingSkins = configuration.Items.Where(i => i.ItemSlot?.ItemSlots is { Count: 1 } slots && slots.Single() == FirstCosmeticSlot + WingPart);
+        foreach (var definition in wingSkins)
+        {
+            EnsureMovementSpeed(context, configuration, definition);
+        }
+    }
+
     /// <summary>Ensures skin definitions exist without overwriting unrelated items.</summary>
     /// <param name="context">The configuration context.</param>
     /// <param name="configuration">The target game configuration.</param>
@@ -104,7 +124,7 @@ public static class CosmeticArmorItems
             throw new InvalidOperationException($"Item {group}/{number} is already used. Cosmetic items cannot replace it.");
         }
 
-        var slotNumber = 240 + part;
+        var slotNumber = FirstCosmeticSlot + part;
         var slot = configuration.ItemSlotTypes.SingleOrDefault(s => s.ItemSlots.Count == 1 && s.ItemSlots.Single() == slotNumber);
         if (slot is null)
         {
@@ -137,6 +157,10 @@ public static class CosmeticArmorItems
         definition.Name = part == 1 ? $"Set {number} Skin" : name;
 
         EnsureBonuses(configuration, definition, part);
+        if (part == WingPart)
+        {
+            EnsureMovementSpeed(context, configuration, definition);
+        }
 
         if (female)
         {
@@ -155,13 +179,30 @@ public static class CosmeticArmorItems
             return;
         }
 
-        var number = part == 7 ? ItemOptionDefinitionNumbers.Wing3rd
+        var number = part == WingPart ? ItemOptionDefinitionNumbers.Wing3rd
             : definition.Group is 6 or 8 ? ItemOptionDefinitionNumbers.ExcellentDefense
             : definition.Group == 5 ? ItemOptionDefinitionNumbers.ExcellentWizardry : ItemOptionDefinitionNumbers.ExcellentPhysical;
         var options = configuration.ItemOptions.SingleOrDefault(option => option.GetId() == GuidHelper.CreateGuid<ItemOptionDefinition>((short)number));
         if (options is not null && !definition.PossibleItemOptions.Contains(options))
         {
             definition.PossibleItemOptions.Add(options);
+        }
+    }
+
+    private static void EnsureMovementSpeed(IContext context, GameConfiguration configuration, ItemDefinition definition)
+    {
+        foreach (var attribute in new[] { Stats.MovementSpeed, Stats.MovementSpeedUnderwater })
+        {
+            if (definition.BasePowerUpAttributes.Any(p => p.TargetAttribute?.Id == attribute.Id))
+            {
+                continue;
+            }
+
+            var powerUp = context.CreateNew<ItemBasePowerUpDefinition>();
+            powerUp.TargetAttribute = attribute.GetPersistent(configuration);
+            powerUp.BaseValue = MovementSpeedConstants.DefaultWingMovementSpeed;
+            powerUp.AggregateType = AggregateType.Maximum;
+            definition.BasePowerUpAttributes.Add(powerUp);
         }
     }
 

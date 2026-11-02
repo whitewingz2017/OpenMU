@@ -54,6 +54,15 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
 
         if (Cosmetics.CosmeticArmorRules.FitsSlot(item.Definition, item.ItemSlot))
         {
+            // A worn wing skin is drawn as wings by the client, which then runs at wing speed.
+            foreach (var attribute in item.Definition.BasePowerUpAttributes)
+            {
+                foreach (var powerUp in this.GetBasePowerUpWrappers(item, attributeHolder, attribute))
+                {
+                    yield return powerUp;
+                }
+            }
+
             if (Cosmetics.SkinBonuses.IsValid(item))
             {
                 foreach (var powerUp in this.GetPowerUpsOfItemOptions(item, attributeHolder))

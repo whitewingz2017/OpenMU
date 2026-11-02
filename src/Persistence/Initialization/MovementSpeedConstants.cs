@@ -38,7 +38,12 @@ internal static class MovementSpeedConstants
     /// Gets the extra speed of every ridden Dark Horse, Fenrir and mount companion over the original
     /// client (17 and 19). The custom client adds the same value in CharacterMovementSpeed.
     /// </summary>
-    internal const float RiddenMountSpeedBonus = 1f;
+    internal const float RiddenMountSpeedBonus = 2f;
+
+    /// <summary>
+    /// Gets the ridden mount bonus of the first TwinMU release, which existing configurations may carry.
+    /// </summary>
+    internal const float FirstRiddenMountSpeedBonus = 1f;
 
     /// <summary>
     /// Gets the movement speed of horse or fenrir.
