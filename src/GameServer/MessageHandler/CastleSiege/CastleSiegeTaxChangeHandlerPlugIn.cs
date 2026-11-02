@@ -21,6 +21,9 @@ using TaxType = MUnique.OpenMU.GameLogic.CastleSiege.CastleSiegeTaxType;
 internal sealed class CastleSiegeTaxChangeHandlerPlugIn : ISubPacketHandlerPlugIn
 {
     private const short SeniorNumber = 223;
+
+    // The Land of Trials guard's page sets the hunting zone entrance fee, and only that.
+    private const short LandOfTrialsGuardNumber = 220;
     private readonly CastleSiegeTaxRateChangeAction _action = new();
 
     /// <inheritdoc />
@@ -32,13 +35,19 @@ internal sealed class CastleSiegeTaxChangeHandlerPlugIn : ISubPacketHandlerPlugI
     /// <inheritdoc />
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
-        if (packet.Length < CastleSiegeTaxChangeRequest.Length
-            || player.OpenedNpc?.Definition.Number != SeniorNumber)
+        if (packet.Length < CastleSiegeTaxChangeRequest.Length)
         {
             return;
         }
 
         var request = new CastleSiegeTaxChangeRequest(packet);
+        var npcNumber = player.OpenedNpc?.Definition.Number;
+        if (npcNumber != SeniorNumber
+            && (npcNumber != LandOfTrialsGuardNumber || (TaxType)request.TaxType != TaxType.HuntZone))
+        {
+            return;
+        }
+
         _ = await this._action.ChangeAsync(
                 player,
                 CastleSiegeHandlerContext.Get(player),

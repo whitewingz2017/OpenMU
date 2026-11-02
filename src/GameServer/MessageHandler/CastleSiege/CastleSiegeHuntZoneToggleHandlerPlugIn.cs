@@ -20,6 +20,9 @@ using MUnique.OpenMU.PlugIns;
 internal sealed class CastleSiegeHuntZoneToggleHandlerPlugIn : ISubPacketHandlerPlugIn
 {
     private const short SeniorNumber = 223;
+
+    // The Land of Trials guard opens the client's entrance-setting page (its public checkbox).
+    private const short LandOfTrialsGuardNumber = 220;
     private readonly CastleSiegeHuntZoneToggleAction _action = new();
 
     /// <inheritdoc />
@@ -32,7 +35,7 @@ internal sealed class CastleSiegeHuntZoneToggleHandlerPlugIn : ISubPacketHandler
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
         if (packet.Length < CastleSiegeHuntingZoneEntranceSetting.Length
-            || player.OpenedNpc?.Definition.Number != SeniorNumber)
+            || player.OpenedNpc?.Definition.Number is not (SeniorNumber or LandOfTrialsGuardNumber))
         {
             return;
         }
