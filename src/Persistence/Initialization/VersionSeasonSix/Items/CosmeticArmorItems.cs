@@ -72,6 +72,7 @@ public static class CosmeticArmorItems
         }
 
         RestrictWeaponClasses(configuration, imports);
+        RestrictImportedClasses(configuration, imports);
     }
 
     private static void RestrictWeaponClasses(GameConfiguration configuration, FinalMuSkin[] imports)
@@ -95,6 +96,42 @@ public static class CosmeticArmorItems
             };
             definition.QualifiedCharacters.Clear();
             foreach (var characterClass in configuration.DetermineCharacterClasses(classes))
+            {
+                definition.QualifiedCharacters.Add(characterClass);
+            }
+        }
+    }
+
+    private static void RestrictImportedClasses(GameConfiguration configuration, FinalMuSkin[] imports)
+    {
+        foreach (var skin in imports.Where(s => s.Classes is not null))
+        {
+            var definition = configuration.Items.Single(d => d.Group == skin.Group && d.Number == skin.Number);
+            var allowed = CharacterClasses.None;
+            foreach (var (name, requirement) in skin.Classes!)
+            {
+                var family = name switch
+                {
+                    "darkWizard" => CharacterClasses.AllWizards,
+                    "darkKnight" => CharacterClasses.AllKnights,
+                    "fairyElf" => CharacterClasses.AllElfs,
+                    "magicGladiator" => CharacterClasses.AllMGs,
+                    "darkLord" => CharacterClasses.AllLords,
+                    "summoner" => CharacterClasses.AllSummoners,
+                    "rageFighter" => CharacterClasses.AllFighters,
+                    _ => throw new InvalidOperationException($"Unknown cosmetic class {name}."),
+                };
+                allowed |= requirement switch
+                {
+                    1 => family,
+                    2 => family & CharacterClasses.AllMastersAndSecondClass,
+                    3 => family & CharacterClasses.AllMasters,
+                    _ => throw new InvalidOperationException($"Invalid cosmetic class requirement {requirement}."),
+                };
+            }
+
+            definition.QualifiedCharacters.Clear();
+            foreach (var characterClass in configuration.DetermineCharacterClasses(allowed))
             {
                 definition.QualifiedCharacters.Add(characterClass);
             }
@@ -154,7 +191,7 @@ public static class CosmeticArmorItems
         }
 
         (definition.Width, definition.Height) = CosmeticItemDimensions.Get(group, name);
-        definition.Name = part == 1 ? $"Set {number} Skin" : name;
+        definition.Name = part == 1 && (number is 100 or 315) ? $"Set {number} Skin" : name;
 
         EnsureBonuses(configuration, definition, part);
         if (part == WingPart)
@@ -206,5 +243,5 @@ public static class CosmeticArmorItems
         }
     }
 
-    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false);
+    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false, Dictionary<string, int>? Classes = null);
 }

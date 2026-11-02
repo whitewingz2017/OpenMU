@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 using Microsoft.Extensions.Logging.Abstractions;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 using MUnique.OpenMU.Persistence.InMemory;
@@ -46,7 +47,7 @@ internal class CosmeticArmorInitializationTests
 
         Assert.That(configuration.Items.Single(d => d.Group == 4 && d.Number == 100).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 8, 10, 11 }));
         Assert.That(configuration.Items.Single(d => d.Group == 5 && d.Number == 100).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 0, 2, 3, 12, 13 }));
-        Assert.That(configuration.Items.Single(d => d.Group == 5 && d.Number == 302).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 20, 22, 23 }));
+        Assert.That(configuration.Items.Single(d => d.Group == 5 && d.Number == 302).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 23 }));
         Assert.That(configuration.Items.Single(d => d.Group == 0 && d.Number == 101).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 24, 25 }));
         Assert.That(configuration.Items.Single(d => d.Group == 2 && d.Number == 101).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 16, 17 }));
 
@@ -57,7 +58,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(4));
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).All(o => o.OptionType == ItemOptionTypes.Wing), Is.True);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(configuration.Items.Single(d => d.Group == 13 && d.Number == 200)), Is.Empty);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(189));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(444));
     }
 
     [Test]
@@ -78,7 +79,7 @@ internal class CosmeticArmorInitializationTests
             Assert.That(skin.Height, Is.EqualTo(2));
             Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
         }
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(189));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(444));
         Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(10));
         var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
         Assert.Multiple(() =>
@@ -115,7 +116,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(configuration.Items.Count, Is.EqualTo(previousCount + 3));
         Assert.That(configuration.Items.Single(i => i.Group == 12 && i.Number == 371), Is.SameAs(existing));
         Assert.That(existing.GetId(), Is.EqualTo(existingId));
-        Assert.That(entry.Version, Is.EqualTo(10));
+        Assert.That(entry.Version, Is.EqualTo(11));
         Assert.That((await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Count(), Is.EqualTo(1));
     }
 
@@ -154,6 +155,54 @@ internal class CosmeticArmorInitializationTests
         Assert.That(configuration.Items.All(d => !d.Name.ValueInNeutralLanguage.StartsWith("FinalMU ", StringComparison.Ordinal)), Is.True);
     }
 
+    /// <summary>Restores promotion limits and missing catalog items without replacing owned definitions.</summary>
+    [TestCase(20, false)]
+    [TestCase(23, true)]
+    public async Task EquipmentCatalogRetainsSourceClassesAndRepairsPreviousImportsAsync(byte classNumber, bool allowed)
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        await new VersionSeasonSix.DataInitialization(provider, new NullLoggerFactory()).CreateInitialDataAsync(1, true).ConfigureAwait(false);
+        using var context = provider.CreateNewContext();
+        var configuration = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).First();
+        var equipment = configuration.Items.Where(i => i.Number >= 300 && i.Group <= 8 && i.ItemSlot?.ItemSlots.Any(s => s is 241 or 245 or 246) == true).ToArray();
+        Assert.That(equipment, Has.Length.EqualTo(280));
+        Assert.That(equipment.Count(i => i.Group <= 6), Is.EqualTo(141));
+        Assert.That(equipment.Count(i => i.Group == 8 && i.Number != 315), Is.EqualTo(138));
+        Assert.That(equipment.All(i => i.QualifiedCharacters.Count > 0 && i.Width == 2 && i.Height == 2), Is.True);
+        var previous = configuration.Items.Single(i => i.Group == 5 && i.Number == 302);
+        var identity = previous.GetId();
+        previous.QualifiedCharacters.Clear();
+        foreach (var characterClass in configuration.CharacterClasses.Where(c => c.Number is 20 or 22 or 23))
+        {
+            previous.QualifiedCharacters.Add(characterClass);
+        }
+
+        var character = context.CreateNew<Character>();
+        character.CharacterClass = configuration.CharacterClasses.Single(c => c.Number == classNumber);
+        character.Inventory = context.CreateNew<ItemStorage>();
+        var owned = context.CreateNew<Item>();
+        owned.Definition = previous;
+        owned.ItemSlot = 246;
+        character.Inventory.Items.Add(owned);
+        var ownedIdentity = owned.GetId();
+        var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single(e => e.Key == new CosmeticArmorItemsUpdatePlugIn().Key);
+        entry.Version = 10;
+        var added = configuration.Items.Single(i => i.Group == 1 && i.Number == 300);
+        configuration.Items.Remove(added);
+        var update = new CosmeticArmorItemsUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        Assert.That(previous.GetId(), Is.EqualTo(identity));
+        Assert.That(owned.GetId(), Is.EqualTo(ownedIdentity));
+        Assert.That(owned.Definition, Is.SameAs(previous));
+        Assert.That(character.Inventory.Items.Single(), Is.SameAs(owned));
+        Assert.That(owned.ItemSlot == 246, Is.EqualTo(allowed));
+        Assert.That(entry.Version, Is.EqualTo(11));
+        Assert.That(previous.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 23 }));
+        Assert.That(configuration.Items.Count(i => i.Group == 1 && i.Number == 300), Is.EqualTo(1));
+        Assert.That(configuration.Items.Single(i => i.Group == 0 && i.Number == 304).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 25 }));
+    }
+
     private static void AssertReferenceWings(GameConfiguration configuration)
     {
         foreach (var (number, name) in new[] { (382, "rf5 Wing Skin"), (383, "sum7lvl Wing Skin"), (384, "rf7lvl Wing Skin") })
@@ -165,7 +214,10 @@ internal class CosmeticArmorInitializationTests
             Assert.That(wing.Durability, Is.EqualTo(1));
             Assert.That(wing.IsTradable && wing.IsStorable && wing.IsPersonalStoreSellable, Is.True);
             Assert.That(wing.IsDroppable || wing.IsRepairable || wing.IsSellableToNpc, Is.False);
-            Assert.That(wing.BasePowerUpAttributes, Is.Empty);
+            Assert.That(wing.BasePowerUpAttributes.Select(a => a.TargetAttribute?.Id), Is.EquivalentTo(new[]
+            {
+                GameLogic.Attributes.Stats.MovementSpeed.Id, GameLogic.Attributes.Stats.MovementSpeedUnderwater.Id,
+            }));
             var options = configuration.ItemOptions.SingleOrDefault(o => o.GetId() == GuidHelper.CreateGuid<ItemOptionDefinition>(ItemOptionDefinitionNumbers.Wing3rd));
             if (options is not null)
             {

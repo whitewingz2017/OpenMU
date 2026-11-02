@@ -6,12 +6,21 @@ namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic.Attributes;
 
 /// <summary>Provides the ordinary Fenrir dependency to minimal configuration update fixtures.</summary>
 internal static class FenrirMountFixture
 {
     public static void Add(IContext context, GameConfiguration configuration)
     {
+        foreach (var stat in new[] { Stats.MovementSpeed, Stats.MovementSpeedUnderwater })
+        {
+            var attribute = context.CreateNew<MUnique.OpenMU.AttributeSystem.AttributeDefinition>();
+            attribute.Id = stat.Id;
+            attribute.Designation = stat.Designation;
+            configuration.Attributes.Add(attribute);
+        }
+
         foreach (var number in Enum.GetValues<CharacterClasses.CharacterClassNumber>())
         {
             var characterClass = context.CreateNew<CharacterClass>();

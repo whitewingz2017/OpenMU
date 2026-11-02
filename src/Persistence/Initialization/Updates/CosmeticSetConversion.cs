@@ -67,11 +67,11 @@ public static class CosmeticSetConversion
                     mount.ItemSlot = DataModel.InventoryConstants.EquippableSlotsCount;
                 }
 
-                foreach (var weapon in inventory.Where(i => i.ItemSlot is 245 or 246
-                    && i.Definition is { Group: <= 5 } definition && definition.QualifiedCharacters.Count > 0
+                foreach (var skin in inventory.Where(i => i.ItemSlot is 241 or 245 or 246
+                    && i.Definition is { } definition && definition.QualifiedCharacters.Count > 0
                     && (character.CharacterClass is not { } ownerClass || !definition.QualifiedCharacters.Contains(ownerClass))).ToArray())
                 {
-                    weapon.ItemSlot = DataModel.InventoryConstants.EquippableSlotsCount;
+                    skin.ItemSlot = DataModel.InventoryConstants.EquippableSlotsCount;
                 }
 
                 // Retired body slots return to the bag. Existing armor keeps the full-set slot.
