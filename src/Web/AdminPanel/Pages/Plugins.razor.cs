@@ -6,7 +6,6 @@ namespace MUnique.OpenMU.Web.AdminPanel.Pages;
 
 using Microsoft.AspNetCore.Components;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
-using MUnique.OpenMU.Web.AdminPanel.Components.StartingItems;
 using MUnique.OpenMU.Web.Shared.Models;
 using MUnique.OpenMU.Web.Shared.Services;
 
@@ -25,6 +24,9 @@ public partial class Plugins
 
     [Inject]
     private PlugInController PlugInController { get; set; } = null!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
 
     /// <inheritdoc />
     protected override async Task OnParametersSetAsync()
@@ -69,8 +71,13 @@ public partial class Plugins
 
     private Task ShowConfigurationAsync(PlugInConfigurationViewItem plugin)
     {
-        var editor = plugin.ConfigurationType == typeof(StartingItemsConfiguration) ? typeof(StartingItemsEditor) : null;
-        return this.PlugInController.ShowPlugInConfigAsync(plugin, editor);
+        if (plugin.ConfigurationType == typeof(StartingItemsConfiguration))
+        {
+            this.NavigationManager.NavigateTo("starting-items");
+            return Task.CompletedTask;
+        }
+
+        return this.PlugInController.ShowPlugInConfigAsync(plugin);
     }
 
     private void OnPlugInPointSelected(ChangeEventArgs args)

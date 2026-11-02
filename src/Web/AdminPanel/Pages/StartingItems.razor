@@ -1,0 +1,46 @@
+﻿@page "/starting-items"
+@attribute [Authorize(Policy = AdminPolicies.Administrator)]
+
+@using MUnique.OpenMU.GameLogic.PlugIns
+@using MUnique.OpenMU.Persistence
+@using MUnique.OpenMU.Web.AdminPanel.Components.StartingItems
+@using MUnique.OpenMU.Web.AdminPanel.Properties
+
+<PageTitle>OpenMU: @AdministrationResources.StartingItemsName</PageTitle>
+<Breadcrumb IsFirstFromRoot="true" Caption="@AdministrationResources.StartingItemsName" />
+
+<h1>@AdministrationResources.StartingItemsName</h1>
+<p>@AdministrationResources.StartingItemsDescription</p>
+
+@if (!string.IsNullOrEmpty(this._status))
+{
+    <div class="alert @(this._statusIsError ? "alert-danger" : "alert-success")" role="status">@this._status</div>
+}
+
+@if (this._configuration is null || this._gameConfiguration is null || this._plugIn is null)
+{
+    @if (!this._loadFailed)
+    {
+        <p>Loading...</p>
+    }
+
+    return;
+}
+
+@if (!this._plugIn.Configuration.IsActive)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-3">
+        <span class="me-auto">@AdministrationResources.StartingPlugInInactive</span>
+        <button type="button" class="btn btn-success" disabled="@this._saving" @onclick="this.ActivateAsync">Activate</button>
+    </div>
+}
+
+<CascadingValue TValue="IContext" Value="this._persistenceContext">
+    <EditForm Model="this._configuration" OnSubmit="this.SaveAsync">
+        <DataAnnotationsValidator />
+        <StartingItemsEditor Item="this._configuration" Definitions="this._gameConfiguration.Items" />
+        <hr />
+        <button type="submit" class="btn btn-primary me-1" disabled="@this._saving">@Resources.SaveChanges</button>
+        <button type="button" class="btn btn-secondary" disabled="@this._saving" @onclick="this.DiscardAsync">@Resources.DiscardChanges</button>
+    </EditForm>
+</CascadingValue>

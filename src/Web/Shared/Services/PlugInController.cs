@@ -198,12 +198,7 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
             throw new ArgumentException($"{nameof(item.ConfigurationType)} must not be null.", nameof(item));
         }
 
-        await this.RefreshCustomConfigurationAsync(item).ConfigureAwait(true);
-
-        var referenceResolver = new ByDataSourceReferenceHandler(this._dataSource);
-
-        var configuration = item.Configuration.GetConfiguration(item.ConfigurationType, referenceResolver)
-                            ?? Activator.CreateInstance(item.ConfigurationType);
+        var configuration = await this.LoadCustomConfigurationAsync(item).ConfigureAwait(true);
         var parameters = new ModalParameters();
         parameters.Add(nameof(ModalCreateNew<object>.Item), configuration!);
         parameters.Add(nameof(ModalCreateNew<object>.PersistenceContext), await this._dataSource.GetContextAsync().ConfigureAwait(true));
@@ -222,11 +217,39 @@ public class PlugInController : IDataService<PlugInConfigurationViewItem>, ISupp
         var result = await modal.Result.ConfigureAwait(false);
         if (!result.Cancelled)
         {
-            item.Configuration.SetConfiguration(configuration!, referenceResolver);
-            await (await this._dataSource.GetContextAsync().ConfigureAwait(false)).SaveChangesAsync().ConfigureAwait(false);
-
-            this.DataChanged?.Invoke(this, EventArgs.Empty);
+            await this.SaveCustomConfigurationAsync(item, configuration!).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// Loads the latest persisted custom configuration of a plugin, or a new default instance.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    /// <returns>The configuration object.</returns>
+    public async Task<object?> LoadCustomConfigurationAsync(PlugInConfigurationViewItem item)
+    {
+        if (item.ConfigurationType is null)
+        {
+            throw new ArgumentException($"{nameof(item.ConfigurationType)} must not be null.", nameof(item));
+        }
+
+        await this.RefreshCustomConfigurationAsync(item).ConfigureAwait(true);
+        var referenceResolver = new ByDataSourceReferenceHandler(this._dataSource);
+        return item.Configuration.GetConfiguration(item.ConfigurationType, referenceResolver)
+               ?? Activator.CreateInstance(item.ConfigurationType);
+    }
+
+    /// <summary>
+    /// Serializes the custom configuration into the plugin configuration and saves it.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    /// <param name="configuration">The configuration object.</param>
+    public async Task SaveCustomConfigurationAsync(PlugInConfigurationViewItem item, object configuration)
+    {
+        item.Configuration.SetConfiguration(configuration, new ByDataSourceReferenceHandler(this._dataSource));
+        await (await this._dataSource.GetContextAsync().ConfigureAwait(false)).SaveChangesAsync().ConfigureAwait(false);
+
+        this.DataChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>

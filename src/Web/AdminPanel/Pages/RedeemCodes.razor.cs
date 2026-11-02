@@ -83,7 +83,7 @@ public partial class RedeemCodes
             code.Id = id; code.Code = normalized; code.Description = this._input.Description;
             code.Enabled = this._input.Enabled; code.ExpiresAt = this._input.ExpiresAt is { } expires ? DateTime.SpecifyKind(expires, DateTimeKind.Utc) : null;
             code.MaximumUses = this._input.MaximumUses; code.ItemsJson = this._input.ItemsJson;
-            code.WCoinC = this._input.WCoinC; code.WCoinP = this._input.WCoinP; code.GoblinPoints = this._input.GoblinPoints;
+            code.WCoinC = this._input.WCoinC; code.WCoinP = this._input.WCoinP; code.GoblinPoints = this._input.GoblinPoints; code.Zen = this._input.Zen;
             if (this._editingId == null) code.PerCharacter = this._input.PerCharacter;
             code.Revision = Guid.NewGuid();
             if (!await context.SaveChangesAsync().ConfigureAwait(true)) throw new InvalidOperationException("Save was not committed.");

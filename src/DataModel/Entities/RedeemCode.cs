@@ -35,6 +35,8 @@ public class RedeemCode
     public int WCoinP { get; set; }
     /// <summary>Gets or sets the Goblin Points reward.</summary>
     public int GoblinPoints { get; set; }
+    /// <summary>Gets or sets the Zen reward, added to the redeeming character's inventory.</summary>
+    public int Zen { get; set; }
     /// <summary>Gets or sets the concurrency token, replaced by every edit or claim.</summary>
     [ConcurrencyCheck]
     public Guid Revision { get; set; } = Guid.NewGuid();

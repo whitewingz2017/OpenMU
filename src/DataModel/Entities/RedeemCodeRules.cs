@@ -23,11 +23,11 @@ public static class RedeemCodeRules
     public static IReadOnlyList<RedeemItemReward> Rewards(RedeemCode code)
     {
         var items = JsonSerializer.Deserialize<List<RedeemItemReward>>(code.ItemsJson) ?? throw new ArgumentException("Invalid item rewards.");
-        if (code.MaximumUses < 0 || code.WCoinC < 0 || code.WCoinP < 0 || code.GoblinPoints < 0 || items.Count > 32
+        if (code.MaximumUses < 0 || code.WCoinC < 0 || code.WCoinP < 0 || code.GoblinPoints < 0 || code.Zen < 0 || items.Count > 32
             || items.Any(i => i.ItemCode < 0 || i.ItemCode > 8191 || i.Level > 15 || i.Count < 1 || i.Count > 64)
-            || items.Sum(i => (long)i.Count) > 64 || (items.Count == 0 && code.WCoinC == 0 && code.WCoinP == 0 && code.GoblinPoints == 0))
+            || items.Sum(i => (long)i.Count) > 64 || (items.Count == 0 && code.WCoinC == 0 && code.WCoinP == 0 && code.GoblinPoints == 0 && code.Zen == 0))
         {
-            throw new ArgumentException("Choose positive rewards: up to 64 items, levels 0-15, and nonnegative coins/points and limits.");
+            throw new ArgumentException("Choose positive rewards: up to 64 items, levels 0-15, and nonnegative coins/points/Zen and limits.");
         }
         return items;
     }

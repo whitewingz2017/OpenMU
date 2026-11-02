@@ -47,6 +47,12 @@ public sealed class StartingItemsPlugIn : ICharacterCreatedPlugIn, ISupportCusto
             persisted.ItemSlot = item.ItemSlot;
             character.Inventory.Items.Add(persisted);
         }
+
+        if (profile.StartingZen > 0)
+        {
+            var maximum = config.MaximumInventoryMoney > 0 ? config.MaximumInventoryMoney : int.MaxValue;
+            character.Inventory.Money = (int)Math.Min((long)character.Inventory.Money + profile.StartingZen, maximum);
+        }
     }
     private sealed class PlannedStorage : ItemStorage
     {

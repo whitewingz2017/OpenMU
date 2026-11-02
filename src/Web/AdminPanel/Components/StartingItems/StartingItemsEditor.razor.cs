@@ -5,42 +5,39 @@
 namespace MUnique.OpenMU.Web.AdminPanel.Components.StartingItems;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using MUnique.OpenMU.DataModel.Configuration;
-using MUnique.OpenMU.Persistence;
+using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
-using MUnique.OpenMU.Web.Shared.Components.Modal;
 
-/// <summary>Edits starter items by name without creating real inventory objects.</summary>
+/// <summary>Edits the starting items and Zen of each class in expandable sections.</summary>
 public partial class StartingItemsEditor
 {
-    private GameConfiguration? _configuration;
-    private bool _invalid;
+    private readonly HashSet<StartingCharacterClass> _expanded = [];
 
     /// <summary>Gets or sets the editable plugin configuration.</summary>
     [Parameter]
     [EditorRequired]
     public StartingItemsConfiguration Item { get; set; } = null!;
 
-    /// <summary>Gets or sets the modal instance.</summary>
+    /// <summary>Gets or sets the current configuration's item definitions.</summary>
     [Parameter]
-    public ModalInstance Modal { get; set; } = null!;
+    [EditorRequired]
+    public IEnumerable<ItemDefinition> Definitions { get; set; } = [];
 
-    /// <summary>Gets or sets the context for item lookups.</summary>
-    [Parameter]
-    public IContext PersistenceContext { get; set; } = null!;
-
-    [Inject]
-    private IDataSource<GameConfiguration> ConfigurationSource { get; set; } = null!;
-
-    /// <inheritdoc />
-    protected override void OnParametersSet()
+    /// <summary>
+    /// Ensures that every class has exactly one profile and that collections loaded from old JSON aren't null.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <returns>The normalized configuration.</returns>
+    public static StartingItemsConfiguration Normalize(StartingItemsConfiguration? configuration)
     {
-        // Old or cleared JSON fields must remain editable; nothing is saved until Submit.
-        this.Item ??= new StartingItemsConfiguration();
-        this.Item.Classes ??= new StartingItemsConfiguration().Classes;
-        foreach (var profile in this.Item.Classes)
+        configuration ??= new StartingItemsConfiguration();
+        var existing = (configuration.Classes ?? []).Where(c => Enum.IsDefined(c.Class)).GroupBy(c => c.Class).ToDictionary(g => g.Key, g => g.First());
+        configuration.Classes = Enum.GetValues<StartingCharacterClass>()
+            .Select(c => existing.TryGetValue(c, out var profile) ? profile : new StartingClassItems { Class = c, ReplaceLegacyItems = true })
+            .ToList();
+        foreach (var profile in configuration.Classes)
         {
             profile.Items ??= [];
             foreach (var reward in profile.Items)
@@ -48,47 +45,31 @@ public partial class StartingItemsEditor
                 reward.ExcellentOptions ??= [];
             }
         }
+
+        return configuration;
     }
 
-    /// <inheritdoc />
-    protected override async Task OnInitializedAsync()
+    /// <summary>Validates the configuration against the item definitions.</summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="definitions">The item definitions.</param>
+    /// <returns><c>true</c>, if the configuration is valid.</returns>
+    public static bool IsValid(StartingItemsConfiguration configuration, IEnumerable<ItemDefinition> definitions)
     {
-        this._configuration = await this.ConfigurationSource.GetOwnerAsync(Guid.Empty).ConfigureAwait(true);
-    }
-
-    private static void AddItem(StartingClassItems profile)
-    {
-        profile.Items.Add(new StartingItemReward { Number = -1 });
-    }
-
-    private async Task SubmitAsync(EditContext context)
-    {
-        this._invalid = !context.Validate() || !this.IsValid();
-        if (this._invalid)
-        {
-            return;
-        }
-
-        await this.Modal.CloseAsync(ModalResult.Ok(this.Item)).ConfigureAwait(true);
-    }
-
-    private bool IsValid()
-    {
-        if (this.Item.Classes.Select(c => c.Class).Distinct().Count() != this.Item.Classes.Count)
+        if (configuration.Classes.Select(c => c.Class).Distinct().Count() != configuration.Classes.Count)
         {
             return false;
         }
 
-        foreach (var profile in this.Item.Classes)
+        foreach (var profile in configuration.Classes)
         {
-            if (!Enum.IsDefined(profile.Class) || profile.Items.Sum(i => (long)i.Quantity) > 64)
+            if (!Enum.IsDefined(profile.Class) || profile.StartingZen < 0 || profile.Items.Sum(i => (long)i.Quantity) > 64)
             {
                 return false;
             }
 
             foreach (var reward in profile.Items)
             {
-                var definition = this._configuration!.Items.SingleOrDefault(i => i.Group == reward.Group && i.Number == reward.Number);
+                var definition = definitions.SingleOrDefault(i => i.Group == reward.Group && i.Number == reward.Number);
                 if (definition is null || !Validator.TryValidateObject(reward, new ValidationContext(reward), null, true))
                 {
                     return false;
@@ -106,5 +87,23 @@ public partial class StartingItemsEditor
         }
 
         return true;
+    }
+
+    private static string ClassCaption(StartingCharacterClass characterClass)
+    {
+        return Regex.Replace(characterClass.ToString(), "(?<=[a-z])(?=[A-Z])", " ");
+    }
+
+    private static void AddItem(StartingClassItems profile)
+    {
+        profile.Items.Add(new StartingItemReward { Number = -1 });
+    }
+
+    private void ToggleExpanded(StartingCharacterClass characterClass)
+    {
+        if (!this._expanded.Remove(characterClass))
+        {
+            this._expanded.Add(characterClass);
+        }
     }
 }

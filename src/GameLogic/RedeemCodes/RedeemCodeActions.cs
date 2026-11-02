@@ -56,9 +56,12 @@ public sealed class RedeemCodeActions
     private static async ValueTask<string> GrantAsync(Player player, RedeemCode code, Guid receiptId, IReadOnlyList<RedeemItemReward> rewards)
     {
         var account = player.Account!;
-        var oldC = account.WCoinC; var oldP = account.WCoinP; var oldG = account.GoblinPoints;
+        var oldC = account.WCoinC; var oldP = account.WCoinP; var oldG = account.GoblinPoints; var oldZen = player.Money;
         if ((long)oldC + code.WCoinC > int.MaxValue || (long)oldP + code.WCoinP > int.MaxValue || (long)oldG + code.GoblinPoints > int.MaxValue || code.UsedCount == int.MaxValue)
             return "Your reward balance would exceed its limit.";
+        var maximumZen = player.GameContext.Configuration.MaximumInventoryMoney > 0 ? player.GameContext.Configuration.MaximumInventoryMoney : int.MaxValue;
+        if ((long)oldZen + code.Zen > maximumZen)
+            return "Your Zen would exceed the inventory limit. Store some Zen and try again.";
         var definitions = rewards.Select(r => (Reward: r, Definition: player.GameContext.Configuration.Items.FirstOrDefault(d => d.Group * 512 + d.Number == r.ItemCode))).ToList();
         if (definitions.Any(r => r.Definition == null)) return "A reward item is unavailable. Contact an administrator.";
         var added = new List<Item>();
@@ -78,6 +81,7 @@ public sealed class RedeemCodeActions
                 }
             }
             account.WCoinC += code.WCoinC; account.WCoinP += code.WCoinP; account.GoblinPoints += code.GoblinPoints;
+            player.SelectedCharacter!.Inventory!.Money = oldZen + code.Zen;
             claim = player.PersistenceContext.CreateNew<RedeemCodeClaim>();
             claim.Id = receiptId; claim.CodeId = code.Id; claim.AccountId = account.GetId(); claim.CharacterId = player.SelectedCharacter!.GetId();
             claim.CharacterName = player.SelectedCharacter!.Name; claim.RedeemedAt = DateTime.UtcNow;
@@ -96,6 +100,7 @@ public sealed class RedeemCodeActions
             {
                 code.UsedCount = oldCount; code.Revision = oldRevision;
                 account.WCoinC = oldC; account.WCoinP = oldP; account.GoblinPoints = oldG;
+                if (player.SelectedCharacter?.Inventory is { } inventory) inventory.Money = oldZen;
                 foreach (var item in added)
                 {
                     if (player.Inventory!.Items.Contains(item)) await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
@@ -105,7 +110,8 @@ public sealed class RedeemCodeActions
             if (claim != null) player.PersistenceContext.Detach(claim);
         }
         foreach (var item in added) await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(v => v.ItemAppearAsync(item)).ConfigureAwait(false);
-        return "Redeem code claimed successfully. Item and coin/point rewards have been credited.";
+        if (code.Zen > 0) await player.InvokeViewPlugInAsync<IUpdateMoneyPlugIn>(v => v.UpdateMoneyAsync()).ConfigureAwait(false);
+        return "Redeem code claimed successfully. Item, Zen and coin/point rewards have been credited.";
     }
 
     private sealed class Attempt { public DateTime Next { get; set; } }

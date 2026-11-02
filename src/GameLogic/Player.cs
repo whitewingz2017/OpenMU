@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic;
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using MUnique.OpenMU.AttributeSystem;
@@ -135,7 +136,12 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
 
         this.MagicEffectList = new MagicEffectsList(this);
         this._appearanceData = new PlayerAppearanceData(this);
-        this.PlayerState.StateChanged += async args => await (this.GameContext.PlugInManager.GetPlugInPoint<IPlayerStateChangedPlugIn>()?.PlayerStateChangedAsync(this, args.PreviousState, args.CurrentStateState) ?? ValueTask.CompletedTask).ConfigureAwait(false);
+        this.PlayerState.StateChanged += async args =>
+        {
+            // The game context counts its players first, so that the plugins already see the new numbers.
+            this.GameContext.OnPlayerStateChanged(this, args.PreviousState, args.CurrentStateState);
+            await (this.GameContext.PlugInManager.GetPlugInPoint<IPlayerStateChangedPlugIn>()?.PlayerStateChangedAsync(this, args.PreviousState, args.CurrentStateState) ?? ValueTask.CompletedTask).ConfigureAwait(false);
+        };
         this.PlayerState.StateChanges += async args => await (this.GameContext.PlugInManager.GetPlugInPoint<IPlayerStateChangingPlugIn>()?.PlayerStateChangingAsync(this, args) ?? ValueTask.CompletedTask).ConfigureAwait(false);
         this._observerToWorldViewAdapter = new ObserverToWorldViewAdapter(this, this.InfoRange);
         this._muHelperLazy = new Lazy<MuHelper.MuHelper>(() => new MuHelper.MuHelper(this));
@@ -778,7 +784,8 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
             throw new InvalidOperationException("AttributeSystem not set.");
         }
 
-        if (this.IsAttackBlockedBySafezone(attacker))
+        if (this.IsAttackBlockedBySafezone(attacker)
+            || this.IsAttackPreventedByPlugIns(attacker))
         {
             return null;
         }
@@ -2094,6 +2101,25 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         {
             this.Logger.LogError(ex, nameof(this.OnTransformationSkinChanged));
         }
+    }
+
+    /// <summary>
+    /// Determines whether a plugin prevents the attacking player, or the owner of the attacking pet, from damaging this player.
+    /// </summary>
+    /// <param name="attacker">The attacker.</param>
+    /// <returns><c>true</c>, if the attack is prevented; otherwise, <c>false</c>.</returns>
+    private bool IsAttackPreventedByPlugIns(IAttacker attacker)
+    {
+        if ((attacker as Player ?? (attacker as IPlayerSurrogate)?.Owner) is not { } attackerPlayer
+            || attackerPlayer == this
+            || this.GameContext.PlugInManager.GetPlugInPoint<IPlayerAttackRestrictionPlugIn>() is not { } plugInPoint)
+        {
+            return false;
+        }
+
+        var eventArgs = new CancelEventArgs();
+        plugInPoint.CheckAttack(attackerPlayer, this, eventArgs);
+        return eventArgs.Cancel;
     }
 
     /// <summary>

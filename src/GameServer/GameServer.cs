@@ -86,6 +86,7 @@ public sealed class GameServer : IGameServer, IDisposable, IAsyncDisposable, IGa
             this._gameContext = new GameServerContext(gameServerDefinition, guildServer, eventPublisher, loginServer, friendServer, persistenceContextProvider, mapInitializer, loggerFactory, plugInManager, dropGenerator, changeMediator, mapHostLocator);
             this._gameContext.GameMapCreated += (_, _) => this.OnPropertyChanged(nameof(this.Context));
             this._gameContext.GameMapRemoved += (_, _) => this.OnPropertyChanged(nameof(this.Context));
+            this._gameContext.LoggedInPlayerCountChanged += (_, _) => this.OnPropertyChanged(nameof(this.CurrentConnections));
             mapInitializer.PlugInManager = this._gameContext.PlugInManager;
             mapInitializer.PathFinderPool = this._gameContext.PathFinderPool;
         }
@@ -136,7 +137,11 @@ public sealed class GameServer : IGameServer, IDisposable, IAsyncDisposable, IGa
     public int MaximumConnections => this.Context.ServerConfiguration.MaximumPlayers;
 
     /// <inheritdoc/>
-    public int CurrentConnections => this.Context.PlayerCount;
+    /// <remarks>
+    /// These are the logged in players, which are limited by <see cref="MaximumConnections"/>.
+    /// Connections which are still at the login screen are not included.
+    /// </remarks>
+    public int CurrentConnections => this.Context.LoggedInPlayerCount;
 
     /// <inheritdoc/>
     int IManageableServer.Id => this.Id;
@@ -576,7 +581,6 @@ public sealed class GameServer : IGameServer, IDisposable, IAsyncDisposable, IGa
         await player.InvokeViewPlugInAsync<IShowLoginWindowPlugIn>(p => p.ShowLoginWindowAsync()).ConfigureAwait(false);
         await player.PlayerState.TryAdvanceToAsync(PlayerState.LoginScreen).ConfigureAwait(false);
         e.ConntectedPlayer.PlayerDisconnected += this.OnPlayerDisconnectedAsync;
-        this.OnPropertyChanged(nameof(this.CurrentConnections));
     }
 
     private async ValueTask OnPlayerDisconnectedAsync(Player remotePlayer)
@@ -587,7 +591,6 @@ public sealed class GameServer : IGameServer, IDisposable, IAsyncDisposable, IGa
         }
 
         await remotePlayer.DisposeAsync().ConfigureAwait(false);
-        this.OnPropertyChanged(nameof(this.CurrentConnections));
     }
 
     private async ValueTask SetOfflineAtLoginServerAsync(Player player)

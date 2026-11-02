@@ -71,6 +71,49 @@ public class LoginAction
         }
     }
 
+    /// <summary>
+    /// Reserves a place for the player on the game server, see <see cref="IGameContext.TryReserveLoginPlace"/>.
+    /// </summary>
+    /// <param name="player">The player which logs in. It's not logged in yet, so it isn't counted.</param>
+    /// <param name="gameServerContext">The game server context.</param>
+    /// <param name="username">The username.</param>
+    /// <param name="replacedPlayer">The logged in player whose place the player takes over, e.g. its offline player.</param>
+    /// <returns>The reservation, or <c>null</c> when the game server is full.</returns>
+    /// <remarks>
+    /// Only logged in players and logins in progress take a place, so connections which stay at the
+    /// login screen don't.
+    /// </remarks>
+    private static IDisposable? TryReservePlace(Player player, IGameServerContext gameServerContext, string username, Player? replacedPlayer)
+    {
+        var maximumPlayers = gameServerContext.ServerConfiguration.MaximumPlayers;
+        var (reservation, occupiedPlaces) = gameServerContext.TryReserveLoginPlace(maximumPlayers, replacedPlayer);
+        if (reservation is not null)
+        {
+            return reservation;
+        }
+
+        player.Logger.LogInformation(
+            "Login of [{Username}] refused, because the game server is full: {OccupiedPlaces} of {MaximumPlayers} players are logged in or logging in.",
+            username,
+            occupiedPlaces,
+            maximumPlayers);
+        return null;
+    }
+
+    /// <summary>
+    /// Refuses the login, because the game server is full. The connection stays at the login screen.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="context">The context of the state change to <see cref="PlayerState.Authenticated"/>, which doesn't happen.</param>
+    /// <returns>The result of the session establishment.</returns>
+    private static async ValueTask<(bool Success, Account? Account)> RefuseBecauseFullAsync(Player player, StateMachine.StateChangeContext context)
+    {
+        context.Allowed = false;
+        await ReleaseLoginServerRegistrationAsync(player).ConfigureAwait(false);
+        await player.InvokeViewPlugInAsync<IShowLoginResultPlugIn>(p => p.ShowLoginResultAsync(LoginResult.ServerIsFull)).ConfigureAwait(false);
+        return (false, null);
+    }
+
     private async ValueTask<AccountState?> AuthenticateAsync(Player player, string username, string password)
     {
         try
@@ -111,6 +154,8 @@ public class LoginAction
 
     private async ValueTask<(bool Success, Account? Account)> TryEstablishSessionAsync(Player player, string username)
     {
+        // Kept until the state change of the context below is done, see IGameContext.TryReserveLoginPlace.
+        IDisposable? reservedPlace = null;
         try
         {
             await using var context = await player.PlayerState.TryBeginAdvanceToAsync(PlayerState.Authenticated).ConfigureAwait(false);
@@ -128,6 +173,13 @@ public class LoginAction
 
             if (player.GameContext.OfflinePlayerManager.TryGetPlayer(username, out var offlinePlayer))
             {
+                // Reserve the offline player's place before stopping its session.
+                reservedPlace = TryReservePlace(player, gameServerContext, username, offlinePlayer);
+                if (reservedPlace is null)
+                {
+                    return await RefuseBecauseFullAsync(player, context).ConfigureAwait(false);
+                }
+
                 var isTemplateOffline = offlinePlayer!.IsTemplatePlayer;
                 if (!isTemplateOffline)
                 {
@@ -177,6 +229,12 @@ public class LoginAction
                 player.SetLoginServerRegistration(username);
             }
 
+            reservedPlace = TryReservePlace(player, gameServerContext, username, null);
+            if (reservedPlace is null)
+            {
+                return await RefuseBecauseFullAsync(player, context).ConfigureAwait(false);
+            }
+
             return (true, loadedAccount);
         }
         catch (Exception ex)
@@ -185,6 +243,11 @@ public class LoginAction
             await ReleaseLoginServerRegistrationAsync(player).ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IShowLoginResultPlugIn>(p => p.ShowLoginResultAsync(LoginResult.ConnectionError)).ConfigureAwait(false);
             return (false, null);
+        }
+        finally
+        {
+            // After the state change: the context is disposed when the try block is left.
+            reservedPlace?.Dispose();
         }
     }
 

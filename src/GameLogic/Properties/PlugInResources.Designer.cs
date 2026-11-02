@@ -5632,5 +5632,32 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("WorldChatChatCommandPlugIn_Name", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Login Timeout.
+        /// </summary>
+        public static string LoginTimeoutPlugIn_Name {
+            get {
+                return ResourceManager.GetString("LoginTimeoutPlugIn_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnects clients which don&apos;t log in within the configured time after they connected..
+        /// </summary>
+        public static string LoginTimeoutPlugIn_Description {
+            get {
+                return ResourceManager.GetString("LoginTimeoutPlugIn_Description", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout.
+        /// </summary>
+        public static string LoginTimeoutPlugInConfiguration_Timeout_Caption {
+            get {
+                return ResourceManager.GetString("LoginTimeoutPlugInConfiguration_Timeout_Caption", resourceCulture);
+            }
+        }
     }
 }

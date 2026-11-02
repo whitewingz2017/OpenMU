@@ -1356,6 +1356,8 @@
   <data name="BotFeaturePlugIn_Description" xml:space="preserve"><value>Spawns server-side bots which hunt monsters on the maps. Configure the accounts to animate and enable the feature.</value></data>
   <data name="MaximumConnectionsPerIpPlugIn_Name" xml:space="preserve"><value>Maximum Connections Per IP</value></data>
   <data name="MaximumConnectionsPerIpPlugIn_Description" xml:space="preserve"><value>Limits the maximum number of parallel connections from the same IP address.</value></data>
+  <data name="LoginTimeoutPlugIn_Name" xml:space="preserve"><value>Login Timeout</value></data>
+  <data name="LoginTimeoutPlugIn_Description" xml:space="preserve"><value>Disconnects clients which don't log in within the configured time after they connected.</value></data>
   <data name="SpeedHackDetectPlugIn_Name" xml:space="preserve"><value>Speedhack Anti-Cheat</value></data>
   <data name="SpeedHackDetectPlugIn_Description" xml:space="preserve"><value>Detects and prevents player walk and attack speedhacking.</value></data>
   <data name="KanturuGatewayPlugIn_Name" xml:space="preserve"><value>KanturuGatewayPlugIn</value></data>
@@ -1418,6 +1420,7 @@
   <data name="MonsterAttributeScalerConfiguration_DamagePercentage_Caption" xml:space="preserve"><value>Damage Percentage</value></data>
   <data name="MonsterAttributeScalerConfiguration_ScaleAllPercentage_Caption" xml:space="preserve"><value>Scale All Percentage</value></data>
   <data name="MaximumConnectionsPerIpPlugInConfiguration_MaximumConnectionsPerIp_Caption" xml:space="preserve"><value>Maximum Connections Per Ip</value></data>
+  <data name="LoginTimeoutPlugInConfiguration_Timeout_Caption" xml:space="preserve"><value>Timeout</value></data>
   <data name="SpeedHackDetectConfiguration_AttackSpeedMinIntervalMs_Caption" xml:space="preserve"><value>Attack Speed Min Interval Ms</value></data>
   <data name="SpeedHackDetectConfiguration_AttackSpeedScalingFactor_Caption" xml:space="preserve"><value>Attack Speed Scaling Factor</value></data>
   <data name="SpeedHackDetectConfiguration_AttackSpeedBaseDelayMs_Caption" xml:space="preserve"><value>Attack Speed Base Delay Ms</value></data>
@@ -1715,5 +1718,10 @@
   <data name="Admin_StartingClass" xml:space="preserve"><value>Class</value></data>
   <data name="Admin_StartingEnabled" xml:space="preserve"><value>Enabled</value></data>
   <data name="Admin_StartingReplaceLegacy" xml:space="preserve"><value>Replace legacy items</value></data>
-  <data name="Admin_StartingInvalidItems" xml:space="preserve"><value>Check the selected items, supported options, levels, and quantities. Each class must be unique and have at most 64 items.</value></data>
+  <data name="Admin_StartingInvalidItems" xml:space="preserve"><value>Check the selected items, supported options, levels, quantities and Zen. Each class must be unique and have at most 64 items.</value></data>
+  <data name="Admin_StartingZen" xml:space="preserve"><value>Starting Zen</value></data>
+  <data name="Admin_StartingZenDescription" xml:space="preserve"><value>Zen added to the new character's inventory, capped at the maximum inventory money.</value></data>
+  <data name="Admin_StartingItemsList" xml:space="preserve"><value>Items</value></data>
+  <data name="Admin_StartingPlugInInactive" xml:space="preserve"><value>The plugin is inactive, so these settings are not applied to new characters.</value></data>
+  <data name="Admin_StartingSaved" xml:space="preserve"><value>Starting items saved. Restart game servers to apply them.</value></data>
 </root>

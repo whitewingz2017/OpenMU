@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.RedeemCode",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.RedeemCode),
                 baseEntityType,
-                propertyCount: 13,
+                propertyCount: 14,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -129,6 +129,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.RedeemCode).GetField("<WCoinP>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
             wCoinP.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var zen = runtimeEntityType.AddProperty(
+                "Zen",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.RedeemCode).GetProperty("Zen", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.RedeemCode).GetField("<Zen>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            zen.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var key = runtimeEntityType.AddKey(
                 new[] { id });

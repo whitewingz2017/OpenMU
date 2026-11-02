@@ -6,16 +6,16 @@
 <PageTitle>OpenMU: Redeem Codes</PageTitle>
 <Breadcrumb Caption="Redeem Codes" />
 <h1>Redeem Codes</h1>
-<p>Create gift codes with plain item rewards and/or cash shop coins. Every reward and its receipt is saved together. Times below are UTC.</p>
+<p>Create gift codes with plain item rewards, Zen and/or cash shop coins. Every reward and its receipt is saved together. Times below are UTC.</p>
 @if (!string.IsNullOrEmpty(this._status)) { <p role="status" class="alert alert-info">@this._status</p> }
 @if (this._busy) { <p>Loading...</p> }
 else
 {
     <button class="btn btn-secondary mb-3" @onclick="this.NewCode">New code</button>
-    <table class="table table-striped"><thead><tr><th>Code</th><th>Enabled</th><th>Claims</th><th>Expires (UTC)</th><th></th></tr></thead><tbody>
+    <table class="table table-striped"><thead><tr><th>Code</th><th>Enabled</th><th>Zen</th><th>Claims</th><th>Expires (UTC)</th><th></th></tr></thead><tbody>
     @foreach (var gift in this._codes)
     {
-        <tr><td>@gift.Code</td><td>@gift.Enabled</td><td>@gift.UsedCount / @(gift.MaximumUses == 0 ? "Unlimited" : gift.MaximumUses.ToString())</td><td>@gift.ExpiresAt</td><td><button class="btn btn-sm btn-secondary" @onclick="() => this.Edit(gift)">Edit</button></td></tr>
+        <tr><td>@gift.Code</td><td>@gift.Enabled</td><td>@gift.Zen.ToString("N0")</td><td>@gift.UsedCount / @(gift.MaximumUses == 0 ? "Unlimited" : gift.MaximumUses.ToString())</td><td>@gift.ExpiresAt</td><td><button class="btn btn-sm btn-secondary" @onclick="() => this.Edit(gift)">Edit</button></td></tr>
     }
     </tbody></table>
     <EditForm Model="this._input" OnSubmit="this.SaveAsync">
@@ -30,8 +30,9 @@ else
             <label class="col">WCoin C<InputNumber id="redeem-wcoinc" class="form-control" @bind-Value="this._input.WCoinC" min="0" /></label>
             <label class="col">WCoin P<InputNumber class="form-control" @bind-Value="this._input.WCoinP" min="0" /></label>
             <label class="col">Goblin Points<InputNumber class="form-control" @bind-Value="this._input.GoblinPoints" min="0" /></label>
+            <label class="col">Zen<InputNumber id="redeem-zen" class="form-control" @bind-Value="this._input.Zen" min="0" /></label>
         </div>
-        <h3>Item rewards</h3><p>Plain items, with the selected level; maximum 64 items per redemption. Leave empty for a points-only code.</p>
+        <h3>Item rewards</h3><p>Plain items, with the selected level; maximum 64 items per redemption. Leave empty for a Zen/points-only code.</p>
         @foreach (var reward in this._items)
         {
             <div class="row mb-2" @key="reward">

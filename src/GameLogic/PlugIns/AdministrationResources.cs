@@ -51,6 +51,21 @@ public static class AdministrationResources
     /// <summary>Gets the StartingReplaceLegacy caption.</summary>
     public static string StartingReplaceLegacy => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingReplaceLegacy", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingReplaceLegacy";
 
+    /// <summary>Gets the StartingZen caption.</summary>
+    public static string StartingZen => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingZen", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingZen";
+
+    /// <summary>Gets the StartingZenDescription caption.</summary>
+    public static string StartingZenDescription => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingZenDescription", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingZenDescription";
+
+    /// <summary>Gets the StartingItemsList caption.</summary>
+    public static string StartingItemsList => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingItemsList", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingItemsList";
+
+    /// <summary>Gets the StartingPlugInInactive caption.</summary>
+    public static string StartingPlugInInactive => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingPlugInInactive", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingPlugInInactive";
+
+    /// <summary>Gets the StartingSaved caption.</summary>
+    public static string StartingSaved => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingSaved", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingSaved";
+
     /// <summary>Gets the StartingInvalidItems caption.</summary>
     public static string StartingInvalidItems => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingInvalidItems", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingInvalidItems";
 

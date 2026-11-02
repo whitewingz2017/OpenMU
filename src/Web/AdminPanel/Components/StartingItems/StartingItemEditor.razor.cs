@@ -4,6 +4,8 @@
 
 namespace MUnique.OpenMU.Web.AdminPanel.Components.StartingItems;
 
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Microsoft.AspNetCore.Components;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic;
@@ -14,6 +16,7 @@ public partial class StartingItemEditor
 {
     private StartingItemReward? _loadedReward;
     private ItemDefinition? _definition;
+    private ObservableCollection<IncreasableItemOption> _excellentOptions = [];
 
     /// <summary>Gets or sets the editable starter reward.</summary>
     [Parameter]
@@ -48,13 +51,29 @@ public partial class StartingItemEditor
             this.Reward.ExcellentOptions.Clear();
             this.Reward.AdditionalOptionNumber = null;
             this.Reward.AdditionalOptionLevel = 0;
+            this.LoadExcellentOptions();
         }
     }
 
+    /// <summary>
+    /// Gets or sets the selected excellent options.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="MultiLookupField{TObject}"/> adds and removes entries on the bound list itself and
+    /// doesn't raise ValueChanged for the same list instance. So the list must be a stable instance
+    /// which writes its changes back into the reward.
+    /// </remarks>
     private IList<IncreasableItemOption> ExcellentOptions
     {
-        get => this.Options.Where(o => o.OptionType == ItemOptionTypes.Excellent && this.Reward.ExcellentOptions.Contains(o.Number)).ToList();
-        set => this.Reward.ExcellentOptions = value.Select(o => o.Number).ToList();
+        get => this._excellentOptions;
+        set
+        {
+            if (!ReferenceEquals(value, this._excellentOptions))
+            {
+                this.SetExcellentOptions(value);
+                this.SyncExcellentOptions();
+            }
+        }
     }
 
     private IncreasableItemOption? AdditionalOption
@@ -78,6 +97,7 @@ public partial class StartingItemEditor
 
         this._loadedReward = this.Reward;
         this._definition = this.Definitions.SingleOrDefault(i => i.Group == this.Reward.Group && i.Number == this.Reward.Number);
+        this.LoadExcellentOptions();
     }
 
     private static string OptionCaption(IncreasableItemOption? option)
@@ -88,5 +108,27 @@ public partial class StartingItemEditor
         }
 
         return (option.PowerUpDefinition ?? option.LevelDependentOptions.FirstOrDefault()?.PowerUpDefinition)?.ToString() ?? option.ToString();
+    }
+
+    private void LoadExcellentOptions()
+    {
+        this.SetExcellentOptions(this.Options.Where(o => o.OptionType == ItemOptionTypes.Excellent && this.Reward.ExcellentOptions.Contains(o.Number)));
+    }
+
+    private void SetExcellentOptions(IEnumerable<IncreasableItemOption> options)
+    {
+        this._excellentOptions.CollectionChanged -= this.OnExcellentOptionsChanged;
+        this._excellentOptions = new ObservableCollection<IncreasableItemOption>(options);
+        this._excellentOptions.CollectionChanged += this.OnExcellentOptionsChanged;
+    }
+
+    private void OnExcellentOptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.SyncExcellentOptions();
+    }
+
+    private void SyncExcellentOptions()
+    {
+        this.Reward.ExcellentOptions = this._excellentOptions.Select(o => o.Number).Distinct().ToList();
     }
 }

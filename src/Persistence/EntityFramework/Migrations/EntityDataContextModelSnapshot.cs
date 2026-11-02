@@ -4104,6 +4104,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int>("WCoinP")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Zen")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("RedeemCode", "data");
