@@ -17,6 +17,7 @@ public static class CosmeticArmorItems
 {
     /// <summary>The cosmetic part of wing and cape skins.</summary>
     private const int WingPart = 7;
+    private const int PetPart = 8;
 
     /// <summary>The first cosmetic item slot; a skin of part N is worn in this slot plus N.</summary>
     private const int FirstCosmeticSlot = 240;
@@ -148,7 +149,16 @@ public static class CosmeticArmorItems
         bool female = false)
     {
         var definition = configuration.Items.SingleOrDefault(i => i.Group == group && i.Number == number);
-        if (definition is not null && definition.Name.ValueInNeutralLanguage != name
+
+        // An item which already occupies this cosmetic slot is one of these skins, and so is an imported
+        // mount (a copy of the normal Fenrir, see FenrirMountItems); either may be renamed, e.g. to the
+        // FinalMU name of an imported skin. Any other item with this number is not replaced.
+        var fenrirSkill = configuration.Items
+            .SingleOrDefault(i => i.Group == ItemConstants.Fenrir.Group && i.Number == ItemConstants.Fenrir.Number)?.Skill;
+        var isThisSkin = (definition?.ItemSlot?.ItemSlots is { Count: 1 } ownSlots && ownSlots.Single() == FirstCosmeticSlot + part)
+            || (definition is not null && part == PetPart && definition.Group == ItemConstants.Fenrir.Group
+                && definition.Number != ItemConstants.Fenrir.Number && fenrirSkill is not null && definition.Skill == fenrirSkill);
+        if (definition is not null && definition.Name.ValueInNeutralLanguage != name && !isThisSkin
             && !(part == 1 && definition.Name.ValueInNeutralLanguage == $"Set {number} Skin")
             && !(name.EndsWith(" Mount", StringComparison.Ordinal)
                 && definition.Name.ValueInNeutralLanguage is { } previousName

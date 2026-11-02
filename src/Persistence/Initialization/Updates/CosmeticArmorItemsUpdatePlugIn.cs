@@ -21,16 +21,16 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Set 315 Cosmetic Armor";
 
     /// <inheritdoc />
-    public override string Description => "Compacts skins to 2x2 cells with safe storage repacking; adds class-specific weapon skins and class limits; installs full-set skins, standalone Fenrir mounts and the skin shop. Imports all available FinalMU sets, weapons and shields with source class and promotion limits. Incompatible equipped skins return to the bag. Apply with all players offline; free storage space if conversion cannot fit.";
+    public override string Description => "Compacts skins to 2x2 cells with safe storage repacking; adds class-specific weapon skins and class limits; installs full-set skins, standalone Fenrir mounts and the skin shop. Imports all available FinalMU sets, weapons and shields with source class and promotion limits. Incompatible equipped skins return to the bag. Version 12 gives the imported FinalMU skins their FinalMU item names. Apply with all players offline; free storage space if conversion cannot fit.";
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override int Version => 11;
+    public override int Version => 12;
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 11, 2, 0, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 11, 3, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     public override bool IsMandatory => false;
