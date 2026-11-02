@@ -225,6 +225,14 @@ internal sealed class PlayerMapTransitions
         player.ThrowNotInitializedProperty(player.SelectedCharacter is null, nameof(player.SelectedCharacter));
         player.SelectedCharacter.ThrowNotInitializedProperty(player.SelectedCharacter.CurrentMap is null, nameof(player.SelectedCharacter.CurrentMap));
 
+        if (player.PlayerState.CurrentState.IsDisconnectedOrFinished())
+        {
+            // A client-ready packet which is processed after the disconnect must not put the player
+            // back on the map: the teardown already ran, so nothing would ever remove it again and it
+            // stays there as a frozen copy for everybody else.
+            return;
+        }
+
         if (player.CurrentMap is not null)
         {
             // Guard against a repeated F3 12 (client ready after map change) packet.
@@ -254,6 +262,7 @@ internal sealed class PlayerMapTransitions
         }
 
         await player.PlayerState.TryAdvanceToAsync(GameLogic.PlayerState.EnteredWorld).ConfigureAwait(false);
+
         player.IsAlive = true;
 
         if (player.CurrentMiniGame?.GetEntrySpawnPosition(player) is { } spawnPosition)
@@ -262,15 +271,25 @@ internal sealed class PlayerMapTransitions
             player.SelectedCharacter.PositionY = spawnPosition.Y;
         }
 
-        await player.CurrentMap!.AddAsync(player).ConfigureAwait(false);
-        if (!player.CurrentMap.Terrain.WalkMap[player.SelectedCharacter.PositionX, player.SelectedCharacter.PositionY]
+        var enteredMap = player.CurrentMap!;
+        await enteredMap.AddAsync(player).ConfigureAwait(false);
+        if (player.PlayerState.CurrentState.IsDisconnectedOrFinished())
+        {
+            // The disconnect ran while the player was added: its teardown didn't find the player on
+            // the map yet, so it has to be taken out here.
+            await enteredMap.RemoveAsync(player).ConfigureAwait(false);
+            player.SetCurrentMapSilently(null);
+            return;
+        }
+
+        if (!enteredMap.Terrain.WalkMap[player.SelectedCharacter.PositionX, player.SelectedCharacter.PositionY]
             && await this.RecoverFromBlockedSpawnAsync().ConfigureAwait(false))
         {
             // The warp starts another map change, which adds the summon again when it completed.
             return;
         }
 
-        await this._summon.AddToMapAsync(player.CurrentMap).ConfigureAwait(false);
+        await this._summon.AddToMapAsync(enteredMap).ConfigureAwait(false);
         await player.RefreshPurchasedEffectViewsAsync().ConfigureAwait(false);
     }
 
