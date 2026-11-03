@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.Web.Tests.Api;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -178,11 +179,13 @@ public class AccountControllerTests
     }
 
     /// <summary>Starting WCoins are persisted on registration and never credited again for duplicate requests.</summary>
-    [Test]
-    public async Task RegistrationGrantsStartingCoinsOnceAsync()
+    /// <param name="preserveReferences">Whether the settings use the admin panel's reference-preserving JSON format.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task RegistrationGrantsStartingCoinsOnceAsync(bool preserveReferences)
     {
         var plugin = new MUnique.OpenMU.Persistence.BasicModel.PlugInConfiguration { TypeId = typeof(CashShopFeaturePlugIn).GUID, IsActive = true };
-        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = 500, StartingWCoinP = 250 }, null);
+        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = 500, StartingWCoinP = 250 }, preserveReferences ? ReferenceHandler.Preserve : null);
         this._gameConfiguration.PlugInConfigurations.Add(plugin);
         var registration = CreateRegistration("newbie", "secret1", null);
         await this._controller.RegisterAsync(registration, CancellationToken.None).ConfigureAwait(false);
@@ -204,11 +207,13 @@ public class AccountControllerTests
     }
 
     /// <summary>Invalid currency configuration cannot create a partially funded account.</summary>
-    [Test]
-    public async Task NegativeStartingCoinsRejectRegistrationAsync()
+    /// <param name="preserveReferences">Whether the settings use the admin panel's reference-preserving JSON format.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task NegativeStartingCoinsRejectRegistrationAsync(bool preserveReferences)
     {
         var plugin = new MUnique.OpenMU.Persistence.BasicModel.PlugInConfiguration { TypeId = typeof(CashShopFeaturePlugIn).GUID, IsActive = true };
-        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = -1 }, null);
+        plugin.SetConfiguration(new CashShopSettings { StartingWCoinC = -1 }, preserveReferences ? ReferenceHandler.Preserve : null);
         this._gameConfiguration.PlugInConfigurations.Add(plugin);
         Assert.ThrowsAsync<InvalidOperationException>(async () => await this._controller.RegisterAsync(CreateRegistration("newbie", "secret1", null), CancellationToken.None).ConfigureAwait(false));
         Assert.That(await this.GetAccountAsync("newbie").ConfigureAwait(false), Is.Null);

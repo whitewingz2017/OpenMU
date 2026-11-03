@@ -70,7 +70,7 @@ public class AccountController : ControllerBase
             return this.Conflict();
         }
 
-        var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(gameConfiguration);
+        var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(gameConfiguration, new ByDataSourceReferenceHandler(this._gameConfigurationSource));
         var account = context.CreateNew<Account>();
         account.LoginName = registration.LoginName;
         account.PasswordHash = BCrypt.Net.BCrypt.HashPassword(registration.Password);

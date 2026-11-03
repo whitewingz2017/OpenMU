@@ -142,7 +142,7 @@ public class AccountService : IDataService<Account>, ISupportDataChangedNotifica
             var context = await this._dataSource.GetContextAsync().ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
             var configuration = await this._gameConfigurationSource.GetOwnerAsync(Guid.Empty).ConfigureAwait(false);
-            var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(configuration);
+            var (wCoinC, wCoinP) = StartingAccountCoins.GetBalances(configuration, new ByDataSourceReferenceHandler(this._gameConfigurationSource));
             var item = context.CreateNew<Account>();
             item.LoginName = accountParameters.LoginName;
             item.PasswordHash = BCrypt.Net.BCrypt.HashPassword(accountParameters.Password);

@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.CashShop;
 
+using System.Text.Json.Serialization;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>Initializes currency only as part of registering a new account.</summary>
@@ -11,11 +12,15 @@ public static class StartingAccountCoins
 {
     /// <summary>Validates starting balances before a new account is created.</summary>
     /// <param name="configuration">The current game configuration.</param>
+    /// <param name="referenceHandler">
+    /// The reference handler the configuration was saved with. The admin panel writes plugin
+    /// configurations with reference metadata ($id/$values), which can't be read without it.
+    /// </param>
     /// <returns>The WCoin C and WCoin P starting balances.</returns>
-    public static (int WCoinC, int WCoinP) GetBalances(GameConfiguration configuration)
+    public static (int WCoinC, int WCoinP) GetBalances(GameConfiguration configuration, ReferenceHandler referenceHandler)
     {
         var plugin = configuration.PlugInConfigurations.SingleOrDefault(p => p.IsActive && p.TypeId == typeof(CashShopFeaturePlugIn).GUID);
-        var settings = plugin?.GetConfiguration<CashShopSettings>(null);
+        var settings = plugin?.GetConfiguration<CashShopSettings>(referenceHandler);
         if (settings is null)
         {
             return (0, 0);
