@@ -11,6 +11,56 @@ using Basic = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class MuunTests
 {
+    /// <summary>Mounts stay in the bag when normal equipment is requested and still use Muun equipment.</summary>
+    /// <param name="number">The companion item number.</param>
+    /// <param name="mount">Whether the companion is a mount.</param>
+    [TestCase(4, true)]
+    [TestCase(37, true)]
+    [TestCase(300, true)]
+    [TestCase(312, true)]
+    [TestCase(80, false)]
+    public async ValueTask MuunMountsUseMuunEquipmentAndRejectMainPetSlotAsync(short number, bool mount)
+    {
+        var player = await Create().ConfigureAwait(false);
+        var slot = new Basic.ItemSlotType();
+        slot.ItemSlots.Add(MUnique.OpenMU.DataModel.InventoryConstants.PetSlot);
+        var definitionMock = new Mock<Basic.ItemDefinition> { CallBase = true };
+        definitionMock.Setup(d => d.QualifiedCharacters).Returns(new List<MUnique.OpenMU.DataModel.Configuration.CharacterClass> { player.SelectedCharacter!.CharacterClass! });
+        var definition = definitionMock.Object;
+        definition.Group = 13;
+        definition.Number = number;
+        definition.Width = 1;
+        definition.Height = 1;
+        definition.Durability = 100;
+        definition.Name = "Test companion";
+        definition.ItemSlot = slot;
+        if (mount && number != 4)
+        {
+            definition.Skill = new Basic.Skill { DamageType = MUnique.OpenMU.DataModel.Configuration.DamageType.Fenrir };
+        }
+
+        player.GameContext.Configuration.Items.Add(definition);
+        var feature = player.GameContext.FeaturePlugIns.GetPlugIn<MuunFeaturePlugIn>()!;
+        feature.Configuration!.Pets.Add(new MuunDefinition { ItemType = (definition.Group * 512) + number });
+        player.GameContext.PlugInManager.RegisterPlugInAtPlugInPoint<MUnique.OpenMU.GameLogic.PlugIns.IItemMovingPlugIn>(feature);
+        var pet = await BagItem(player, player.GameContext.Configuration.Items.Count - 1).ConfigureAwait(false);
+        var moves = new MUnique.OpenMU.GameLogic.PlayerActions.Items.MoveItemAction();
+        await moves.MoveItemAsync(player, pet.ItemSlot, Storages.Inventory, 20, Storages.Inventory).ConfigureAwait(false);
+        await moves.MoveItemAsync(player, 20, Storages.Inventory, (byte)MUnique.OpenMU.DataModel.InventoryConstants.PetSlot, Storages.Inventory).ConfigureAwait(false);
+        Assert.That(player.Inventory!.GetItem((byte)MUnique.OpenMU.DataModel.InventoryConstants.PetSlot), mount ? Is.Null : Is.SameAs(pet));
+        Assert.That(player.Inventory.GetItem(20), mount ? Is.SameAs(pet) : Is.Null);
+        if (!mount)
+        {
+            return;
+        }
+
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 10, 20, 0).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, 9, 0, 1).ConfigureAwait(false);
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Single(), Is.SameAs(pet));
+        Assert.That(pet.ItemSlot, Is.EqualTo(1));
+    }
+
     [TestCase(0, false)] [TestCase(1, false)] [TestCase(20, false)]
     [TestCase(0, true)] [TestCase(1, true)] [TestCase(20, true)]
     public async Task DirectedDepositPreservesIdentityOrRestoresBag(byte target, bool fail)

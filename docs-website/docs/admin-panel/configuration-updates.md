@@ -63,8 +63,8 @@ characters retain their saved HP when logging in.
 **Muun Companions v6** upgrades imported pets' one-life placeholder definitions
 to 100 life, preserving other configured life values, item IDs and bonuses.
 Apply it with players offline and restart the matching server. Existing copies
-retain their current life; players can use **Restore life** in Muun Inventory
-with the configured repair jewel to fill the new maximum. Custom pet evolution
+retain their current life; players can drag the configured repair jewel onto a
+pet in Muun Inventory to fill the new maximum. Custom pet evolution
 requires a configured base/evolved pair; cosmetic model names do not define one.
 
 The matching client supports dragging pets to Main/Sub or empty collection
@@ -73,6 +73,13 @@ the configured repair jewel or evolution stone from the normal bag onto a Muun.
 Deploy both rebuilt client and server for directed slot placement; this input
 change does not require another schema or configuration update. Materials are
 consumed only after server validation, and failed saves restore the items.
+
+Pet slots use drag and drop without opening a tap menu. When the Muun feature is
+enabled, registered Fenrir mounts and Dark Horse can equip only in Main/Sub Muun;
+the normal inventory's pet slot rejects them. Bag storage, trading and ordinary
+pet equipment remain available. Existing equipped mounts can be moved to the bag
+and then into Muun Inventory. Deploy the rebuilt client and server for this
+restriction; no additional database or configuration update is needed.
 
 ## Preconditions
 
