@@ -414,6 +414,7 @@ public class CastleSiegePlugIn : IPeriodicTaskPlugIn, IObjectAddedToMapPlugIn, I
             case CastleSiegeState.Idle1:
             case CastleSiegeState.Idle2:
             case CastleSiegeState.Idle3:
+                await context.NpcController.SpawnPermanentStructuresAsync().ConfigureAwait(false);
                 break;
             case CastleSiegeState.RegisterGuild:
                 if (!isStartup)
@@ -421,12 +422,15 @@ public class CastleSiegePlugIn : IPeriodicTaskPlugIn, IObjectAddedToMapPlugIn, I
                     await context.LoadAsync().ConfigureAwait(false);
                 }
 
+                await context.NpcController.SpawnPermanentStructuresAsync().ConfigureAwait(false);
                 await this.SendStateNotificationAsync(context).ConfigureAwait(false);
                 break;
             case CastleSiegeState.RegisterMark:
+                await context.NpcController.SpawnPermanentStructuresAsync().ConfigureAwait(false);
                 await this.SendStateNotificationAsync(context).ConfigureAwait(false);
                 break;
             case CastleSiegeState.Notify:
+                await context.NpcController.SpawnPermanentStructuresAsync().ConfigureAwait(false);
                 await CastleSiegeGuildSelector.SelectGuildsAsync(context).ConfigureAwait(false);
                 await this.SendStateNotificationAsync(context).ConfigureAwait(false);
                 break;
@@ -492,6 +496,7 @@ public class CastleSiegePlugIn : IPeriodicTaskPlugIn, IObjectAddedToMapPlugIn, I
                 context.ClearPlayerJoinSides();
                 context.ParticipantTracking.Clear();
                 await context.NpcController.DespawnAllAsync().ConfigureAwait(false);
+                await context.NpcController.SpawnPermanentStructuresAsync().ConfigureAwait(false);
                 context.MiddleOwnerGuildId = null;
                 context.CrownUser = null;
                 context.PreviousCrownUser = null;

@@ -36,23 +36,27 @@ public sealed class CastleSiegeNpcController
     /// Siege machines are intentionally excluded.
     /// </summary>
     /// <returns>A task that represents the asynchronous preparation.</returns>
-    public async ValueTask PrepareAsync()
+    public ValueTask PrepareAsync()
     {
-        foreach (var definition in this._context.Configuration.NpcDefinitions
-                     .Where(definition => !IsMachine(definition)))
-        {
-            var runtime = this.GetOrCreateRuntime(definition);
-            if (runtime.Definition.IsPersistedToDatabase
-                && runtime.PersistedState is { CurrentHp: <= 0 })
-            {
-                runtime.IsAlive = false;
-                continue;
-            }
+        return this.SpawnAsync(definition => !IsMachine(definition));
+    }
 
-            await this.EnsureSpawnedAsync(runtime).ConfigureAwait(false);
+    /// <summary>
+    /// Spawns the castle's gates, guardian statues and gate levers, which stand outside the siege as well,
+    /// so the owner alliance can open and close the gates at any time. Destroyed structures stay down
+    /// until they are bought back.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous spawn operation.</returns>
+    public async ValueTask SpawnPermanentStructuresAsync()
+    {
+        // Unlike the siege phases, the idle phases also run on game servers which don't host the castle map.
+        if (this._context.Configuration.CastleSiegeMapDefinition is not { } mapDefinition
+            || await this._context.GameContext.GetMapAsync(checked((ushort)mapDefinition.Number)).ConfigureAwait(false) is null)
+        {
+            return;
         }
 
-        this.AssociateLevers();
+        await this.SpawnAsync(IsPermanentStructure).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -370,6 +374,12 @@ public sealed class CastleSiegeNpcController
             .ToList();
     }
 
+    private static bool IsPermanentStructure(CastleSiegeNpcDefinition definition)
+    {
+        return definition.IsPersistedToDatabase
+               || definition.MonsterDefinition?.Number == CastleSiegeLever.MonsterNumber;
+    }
+
     private static bool IsMachine(CastleSiegeNpcDefinition definition)
     {
         var monsterNumber = definition.MonsterDefinition?.Number;
@@ -480,6 +490,24 @@ public sealed class CastleSiegeNpcController
 
         return this._context.Configuration.GetUpgrades(monsterNumber, CastleSiegeUpgradeType.Life)?.GetValue(0)
                ?? throw new InvalidOperationException($"Initial health for Castle Siege NPC {monsterNumber} is not configured.");
+    }
+
+    private async ValueTask SpawnAsync(Func<CastleSiegeNpcDefinition, bool> filter)
+    {
+        foreach (var definition in this._context.Configuration.NpcDefinitions.Where(filter))
+        {
+            var runtime = this.GetOrCreateRuntime(definition);
+            if (runtime.Definition.IsPersistedToDatabase
+                && runtime.PersistedState is { CurrentHp: <= 0 })
+            {
+                runtime.IsAlive = false;
+                continue;
+            }
+
+            await this.EnsureSpawnedAsync(runtime).ConfigureAwait(false);
+        }
+
+        this.AssociateLevers();
     }
 
     private async ValueTask EnsureSpawnedAsync(CastleSiegeNpcRuntime runtime)
