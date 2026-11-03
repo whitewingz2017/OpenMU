@@ -28,6 +28,11 @@ internal class MuunItemsUpdateTest
             .CreateInitialDataAsync(1, true).ConfigureAwait(false);
         using var context = provider.CreateNewContext();
         var config = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).First();
+        var companion = config.Items.Single(i => i.Group == 13 && i.Number == 313);
+        var customized = config.Items.Single(i => i.Group == 13 && i.Number == 301);
+        Assert.That(companion.Durability, Is.EqualTo(VersionSeasonSix.Items.MuunItems.DefaultLife));
+        companion.Durability = 1;
+        customized.Durability = 77;
         var previous = config.PlugInConfigurations.SingleOrDefault(p => p.TypeId == typeof(MuunFeaturePlugIn).GUID);
         if (previous is not null) config.PlugInConfigurations.Remove(previous);
         var settings = new MuunConfiguration { Capacity = 66, LifeLossOnDeath = 7 };
@@ -57,6 +62,8 @@ internal class MuunItemsUpdateTest
         await update.ApplyUpdateAsync(context, config).ConfigureAwait(false);
         var result = config.PlugInConfigurations.Single(p => p.TypeId == typeof(MuunFeaturePlugIn).GUID);
         var restored = result.GetConfiguration<MuunConfiguration>(null)!;
+        Assert.That(companion.Durability, Is.EqualTo(VersionSeasonSix.Items.MuunItems.DefaultLife));
+        Assert.That(customized.Durability, Is.EqualTo(77));
         Assert.That(result.IsActive, Is.True);
         if (format is "admin" or "plain")
         {
@@ -75,5 +82,7 @@ internal class MuunItemsUpdateTest
         var saved = result.CustomConfiguration;
         await update.ApplyUpdateAsync(context, config).ConfigureAwait(false);
         Assert.That(result.CustomConfiguration, Is.EqualTo(saved));
+        Assert.That(companion.Durability, Is.EqualTo(VersionSeasonSix.Items.MuunItems.DefaultLife));
+        Assert.That(customized.Durability, Is.EqualTo(77));
     }
 }

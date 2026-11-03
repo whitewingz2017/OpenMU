@@ -58,6 +58,22 @@ The updated server also initializes newly created characters with their class's
 calculated maximum HP and MP instead of fixed base resource values. Existing
 characters retain their saved HP when logging in.
 
+## Muun companion life
+
+**Muun Companions v6** upgrades imported pets' one-life placeholder definitions
+to 100 life, preserving other configured life values, item IDs and bonuses.
+Apply it with players offline and restart the matching server. Existing copies
+retain their current life; players can use **Restore life** in Muun Inventory
+with the configured repair jewel to fill the new maximum. Custom pet evolution
+requires a configured base/evolved pair; cosmetic model names do not define one.
+
+The matching client supports dragging pets to Main/Sub or empty collection
+cells, dragging +0 duplicates onto the same species to level it up, and dragging
+the configured repair jewel or evolution stone from the normal bag onto a Muun.
+Deploy both rebuilt client and server for directed slot placement; this input
+change does not require another schema or configuration update. Materials are
+consumed only after server validation, and failed saves restore the items.
+
 ## Preconditions
 
 If the database is not installed yet, or a schema update is pending, this page

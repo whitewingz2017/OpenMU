@@ -191,7 +191,7 @@ public static class CosmeticArmorItems
             definition.Number = number;
             definition.Name = name;
             definition.ItemSlot = slot;
-            definition.Durability = 1;
+            definition.Durability = part == PetPart ? MuunItems.DefaultLife : (byte)1;
             definition.IsTradable = true;
             definition.IsStorable = true;
             definition.IsPersonalStoreSellable = true;

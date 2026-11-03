@@ -38,6 +38,7 @@ public sealed class MuunView : IMuunView
             RequestId = requestId,
             Status = status == "Ready" ? status : this._player.GetLocalizedMessage(status),
             Enabled = config is not null,
+            SupportsSlotMoves = true,
             Capacity = config?.Capacity ?? 0,
             Items = this._player.SelectedCharacter?.MuunInventory?.Items.OrderBy(i => i.ItemSlot).Select(i => new
             {
@@ -58,6 +59,7 @@ public sealed class MuunView : IMuunView
             // Keep transfers available even if an administrator configures an oversized catalogue.
             data = JsonSerializer.SerializeToUtf8Bytes(new {
                 RequestId = requestId, Status = this._player.GetLocalizedMessage("MuunCatalogueTooLarge"), Enabled = config is not null,
+                SupportsSlotMoves = true,
                 Capacity = config?.Capacity ?? 0,
                 Items = this._player.SelectedCharacter?.MuunInventory?.Items.Select(i => new {
                     Slot = i.ItemSlot, Type = MuunRules.Type(i), Name = "Muun", Level = i.Level, Life = i.Durability,

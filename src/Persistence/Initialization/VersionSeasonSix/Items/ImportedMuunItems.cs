@@ -7,7 +7,7 @@ using MUnique.OpenMU.GameLogic.Muun;
 /// <summary>Registers existing imported companion items with Muun storage without recreating items.</summary>
 public static class ImportedMuunItems
 {
-    /// <summary>Adds missing companion rules, preserving administrators' existing settings and item bonuses.</summary>
+    /// <summary>Adds missing companion rules and upgrades one-life placeholders, preserving other life settings and bonuses.</summary>
     public static void Register(GameConfiguration config, MuunConfiguration settings)
     {
         using var stream = typeof(ImportedMuunItems).Assembly.GetManifestResourceStream("FinalMuCosmeticSkins.json")
@@ -17,8 +17,19 @@ public static class ImportedMuunItems
         var types = catalog.Where(p => p.Part == 8).Select(p => p.Group * 512 + p.Number).Append(13 * 512 + 200).Append(13 * 512 + 4).Append(13 * 512 + 37);
         foreach (var type in types)
         {
-            if (settings.Pets.Any(p => p.ItemType == type)
-                || !config.Items.Any(d => d.Group * 512 + d.Number == type))
+            var definition = config.Items.SingleOrDefault(d => d.Group * 512 + d.Number == type);
+            if (definition is null)
+            {
+                continue;
+            }
+
+            // Imported cosmetics used one life before they participated in Muun death loss.
+            if (definition.Durability == 1)
+            {
+                definition.Durability = MuunItems.DefaultLife;
+            }
+
+            if (settings.Pets.Any(p => p.ItemType == type))
             {
                 continue;
             }

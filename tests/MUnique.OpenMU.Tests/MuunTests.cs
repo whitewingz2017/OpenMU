@@ -11,6 +11,90 @@ using Basic = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class MuunTests
 {
+    [TestCase(0, false)] [TestCase(1, false)] [TestCase(20, false)]
+    [TestCase(0, true)] [TestCase(1, true)] [TestCase(20, true)]
+    public async Task DirectedDepositPreservesIdentityOrRestoresBag(byte target, bool fail)
+    {
+        var player = await Create(); var pet = await BagItem(player, 0); var slot = pet.ItemSlot;
+        var actions = new MuunActions();
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        await actions.ExecuteAsync(player, 1, 10, slot, target);
+        await actions.ExecuteAsync(player, 1, 10, slot, target);
+        Assert.That(pet.ItemSlot, Is.EqualTo(fail ? slot : target));
+        Assert.That(player.Inventory!.Items.Contains(pet), Is.EqualTo(fail));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Contains(pet), Is.EqualTo(!fail));
+    }
+
+    [TestCase(false)] [TestCase(true)]
+    public async Task BagPetReplacesMainAndPreservesPreviousPet(bool fail)
+    {
+        var player = await Create(); var first = await BagItem(player, 0); var second = await BagItem(player, 1);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 10, first.ItemSlot, 0);
+        var bagSlot = second.ItemSlot;
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        await actions.ExecuteAsync(player, 2, 10, bagSlot, 0);
+        Assert.That(first.ItemSlot, Is.EqualTo(fail ? 0 : 2));
+        Assert.That(second.ItemSlot, Is.EqualTo(fail ? bagSlot : 0));
+        Assert.That(player.Inventory!.Items.Contains(second), Is.EqualTo(fail));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Contains(first), Is.True);
+        Assert.That(player.SelectedCharacter.MuunInventory.Items.Contains(second), Is.EqualTo(!fail));
+    }
+
+    [TestCase(false)] [TestCase(true)]
+    public async Task StorageDragAndUnequipUseChosenEmptySlot(bool fail)
+    {
+        var player = await Create(); var pet = await BagItem(player, 0); var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 10, pet.ItemSlot, 20);
+        await actions.ExecuteAsync(player, 2, 9, 20, 40);
+        Assert.That(pet.ItemSlot, Is.EqualTo(40));
+        await actions.ExecuteAsync(player, 3, 3, 40, 1);
+        if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        await actions.ExecuteAsync(player, 4, 9, 1, 22);
+        Assert.That(pet.ItemSlot, Is.EqualTo(fail ? 1 : 22));
+        Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Single(), Is.SameAs(pet));
+    }
+
+    [Test]
+    public async Task DirectedMovesRejectOccupiedStorageInvalidSlotsAndDuplicateEquipment()
+    {
+        var player = await Create(); var first = await BagItem(player, 0); var second = await BagItem(player, 0);
+        var actions = new MuunActions(); var bagSlot = second.ItemSlot;
+        await actions.ExecuteAsync(player, 1, 10, first.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 2, 10, bagSlot, 1);
+        Assert.That(player.Inventory!.Items, Does.Contain(second));
+        await actions.ExecuteAsync(player, 3, 10, bagSlot, 102);
+        Assert.That(player.Inventory.Items, Does.Contain(second));
+        await actions.ExecuteAsync(player, 4, 10, bagSlot, 20);
+        await actions.ExecuteAsync(player, 5, 9, 0, 20);
+        Assert.That(first.ItemSlot, Is.Zero);
+        Assert.That(second.ItemSlot, Is.EqualTo(20));
+        await actions.ExecuteAsync(player, 6, 9, 20, 1);
+        Assert.That(second.ItemSlot, Is.EqualTo(20));
+        await actions.ExecuteAsync(player, 7, 9, 20, 102);
+        Assert.That(second.ItemSlot, Is.EqualTo(20));
+        var third = await BagItem(player, 1);
+        await actions.ExecuteAsync(player, 8, 10, third.ItemSlot, 20);
+        Assert.That(player.Inventory.Items, Does.Contain(third));
+    }
+
+    [Test]
+    public async Task FullCollectionRejectsBagReplacementButAllowsEmptyEquipmentSlot()
+    {
+        var player = await Create();
+        player.GameContext.FeaturePlugIns.GetPlugIn<MuunFeaturePlugIn>()!.Configuration!.Capacity = 3;
+        var first = await BagItem(player, 0); var stored = await BagItem(player, 1); var third = await BagItem(player, 1);
+        var actions = new MuunActions();
+        await actions.ExecuteAsync(player, 1, 10, first.ItemSlot, 0);
+        await actions.ExecuteAsync(player, 2, 10, stored.ItemSlot, 2);
+        await actions.ExecuteAsync(player, 3, 10, third.ItemSlot, 0);
+        Assert.That(first.ItemSlot, Is.Zero);
+        Assert.That(player.Inventory!.Items, Does.Contain(third));
+        await actions.ExecuteAsync(player, 4, 10, third.ItemSlot, 1);
+        Assert.That(third.ItemSlot, Is.EqualTo(1));
+        Assert.That(player.Inventory.Items, Is.Empty);
+    }
+
     [Test]
     public async Task TransfersPreserveIdentityAndRejectReplay()
     {
@@ -88,15 +172,17 @@ public class MuunTests
         Assert.That(player.Inventory!.Items.Contains(item), Is.EqualTo(operation == 1));
         Assert.That(player.SelectedCharacter!.MuunInventory?.Items.Contains(item) ?? false, Is.EqualTo(operation != 1));
     }
-    [TestCase(false)] [TestCase(true)]
-    public async Task DuplicateFeedingCommitsOnceOrRollsBack(bool fail)
+    [TestCase(0, false)] [TestCase(1, false)] [TestCase(2, false)]
+    [TestCase(0, true)] [TestCase(1, true)] [TestCase(2, true)]
+    public async Task DuplicateFeedingCommitsOnceOrRollsBack(byte targetSlot, bool fail)
     {
         var player = await Create(); var first = await BagItem(player, 0); var second = await BagItem(player, 0); var actions = new MuunActions();
         await actions.ExecuteAsync(player, 1, 1, first.ItemSlot, 0); await actions.ExecuteAsync(player, 2, 1, second.ItemSlot, 0);
         var materialSlot = second.ItemSlot;
+        if (targetSlot < 2) await actions.ExecuteAsync(player, 3, 3, first.ItemSlot, targetSlot);
         if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
-        await actions.ExecuteAsync(player, 3, 5, first.ItemSlot, materialSlot);
-        await actions.ExecuteAsync(player, 3, 5, first.ItemSlot, materialSlot);
+        await actions.ExecuteAsync(player, 4, 5, first.ItemSlot, materialSlot);
+        await actions.ExecuteAsync(player, 4, 5, first.ItemSlot, materialSlot);
         Assert.That(first.Level, Is.EqualTo(fail ? 0 : 1));
         Assert.That(player.SelectedCharacter!.MuunInventory!.Items.Contains(second), Is.EqualTo(fail));
         Assert.That(player.Inventory!.Items, Is.Empty);
@@ -147,9 +233,12 @@ public class MuunTests
     {
         var player = await Create(); var pet = await BagItem(player, 0); var actions = new MuunActions();
         await actions.ExecuteAsync(player, 1, 1, pet.ItemSlot, 0); await actions.ExecuteAsync(player, 2, 3, pet.ItemSlot, 0);
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<MUnique.OpenMU.GameLogic.Views.Inventory.IMuunView>()!);
+        view.Invocations.Clear();
         if (fail) CashShopActionsTest.SaveFailingContext.Install(player, () => true);
         await new MuunFeaturePlugIn().AttackableGotKilledAsync(player, null);
         Assert.That(pet.Durability, Is.EqualTo(fail ? 100 : 99));
+        view.Verify(v => v.ShowAsync(0, "Ready"), Times.Once);
     }
     [TestCase(false)] [TestCase(true)]
     public async Task RepairConsumesOnlyOneMaterial(bool fail)
@@ -174,6 +263,7 @@ public class MuunTests
         Assert.That(bytes[0], Is.EqualTo(0xC2)); Assert.That(bytes[3], Is.EqualTo(0xFD)); Assert.That(bytes[4], Is.EqualTo(5));
         using var json = System.Text.Json.JsonDocument.Parse(bytes.AsMemory(5));
         Assert.That(json.RootElement.GetProperty("RequestId").GetUInt32(), Is.EqualTo(7));
+        Assert.That(json.RootElement.GetProperty("SupportsSlotMoves").GetBoolean(), Is.True);
     }
     [TestCase(false)]
     [TestCase(true)]

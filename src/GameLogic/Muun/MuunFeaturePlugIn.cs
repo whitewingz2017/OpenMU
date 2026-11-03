@@ -48,6 +48,7 @@ public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugI
             {
                 if (!committed) for (var i = 0; i < items.Length; i++) items[i].Durability = life[i];
                 MuunBonuses.Refresh(player);
+                await player.InvokeViewPlugInAsync<IMuunView>(v => v.ShowAsync(0, "Ready")).ConfigureAwait(false);
                 await player.ForEachWorldObserverAsync<IMuunView>(v => v.AppearanceAsync(player), true).ConfigureAwait(false);
             }
         }).ConfigureAwait(false);

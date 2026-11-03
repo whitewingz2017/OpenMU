@@ -11,8 +11,11 @@ using MUnique.OpenMU.GameLogic.Views.Inventory;
 /// <summary>Server-owned transfers, equipment, duplicate feeding, evolution and life restoration.</summary>
 public sealed class MuunActions
 {
+    // Fixed operation IDs shared with the extended client packet.
+    private const byte MoveOperation = 9, DepositAtOperation = 10;
+
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
-    /// <summary>Processes 0 refresh, 1 deposit, 2 withdraw, 3 equip, 4 unequip, 5 level, 6 evolve, 7 repair, 8 egg/material exchange.</summary>
+    /// <summary>Processes refresh, transfers, equipment, progression, exchange and directed drag moves.</summary>
     public ValueTask ExecuteAsync(Player player, uint request, byte operation, byte source, byte target)
         => player.RunPersistenceExclusiveAsync(() => this.ExecuteCoreAsync(player, request, operation, source, target));
 
@@ -29,7 +32,7 @@ public sealed class MuunActions
             session.LastRequest = request;
             var config = MuunFeaturePlugIn.Settings(player.GameContext);
             if (config is null) status = "MuunDisabled";
-            else if (operation > 8 || config.Capacity is < 3 or > 120) status = "MuunInvalid";
+            else if (operation > DepositAtOperation || config.Capacity is < 3 or > 120) status = "MuunInvalid";
             else if (operation != 0)
             {
                 if (player.IsTemplatePlayer || player.OpenedNpc is not null || player.TemporaryStorage?.Items.Any() == true
@@ -50,10 +53,11 @@ public sealed class MuunActions
         var character = player.SelectedCharacter!;
         var inventory = player.Inventory!;
         var storage = character.MuunInventory;
-        var item = operation == 1 ? inventory.GetItem(source) : storage?.Items.SingleOrDefault(i => i.ItemSlot == source);
+        var fromBag = operation is 1 or DepositAtOperation;
+        var item = fromBag ? inventory.GetItem(source) : storage?.Items.SingleOrDefault(i => i.ItemSlot == source);
         if (item is null || MuunRules.Find(config, MuunRules.Type(item)) is not { } rule || item.Level > rule.MaximumLevel
             || (operation != 2 && item.ExpiresAtUtc is { } end && end <= DateTime.UtcNow)) return "MuunInvalid";
-        if (operation == 1 && source <= DataModel.InventoryConstants.LastEquippableItemSlotIndex) return "MuunInvalid";
+        if (fromBag && source <= DataModel.InventoryConstants.LastEquippableItemSlotIndex) return "MuunInvalid";
         storage ??= character.MuunInventory = player.PersistenceContext.CreateNew<ItemStorage>();
         var oldSlot = item.ItemSlot; var oldLevel = item.Level; var oldDefinition = item.Definition; var oldLife = item.Durability;
         Item? consumed = null; byte consumedSlot = 0; bool consumedFromBag = false; double consumedLife = 0; bool removedMaterial = false;
@@ -61,15 +65,23 @@ public sealed class MuunActions
         var moved = false; var committed = false;
         try
         {
-            if (operation is 1 or 4)
+            if (operation is 1 or 4 or DepositAtOperation)
             {
                 if (operation == 4 && source >= MuunRules.EquipmentCount) return "MuunInvalid";
-                var free = Enumerable.Range(MuunRules.EquipmentCount, config.Capacity - MuunRules.EquipmentCount)
-                    .FirstOrDefault(s => storage.Items.All(i => i.ItemSlot != s), -1);
-                if (free < 0) return "MuunFull";
-                if (operation == 1) await inventory.RemoveItemAsync(item).ConfigureAwait(false);
-                item.ItemSlot = (byte)free;
-                if (operation == 1) storage.Items.Add(item);
+                var destination = operation == DepositAtOperation ? target : FreeSlot(storage, config);
+                if (destination < 0) return "MuunFull";
+                if (destination >= config.Capacity) return "MuunInvalid";
+                swapped = storage.Items.SingleOrDefault(i => i.ItemSlot == destination);
+                if (destination < MuunRules.EquipmentCount)
+                {
+                    if (!CanEquip(storage, item, destination)) return "MuunEquipInvalid";
+                    if (swapped is not null && FreeSlot(storage, config) < 0) return "MuunFull";
+                }
+                else if (swapped is not null) return "MuunInvalid";
+                if (fromBag) await inventory.RemoveItemAsync(item).ConfigureAwait(false);
+                if (swapped is not null) swapped.ItemSlot = (byte)FreeSlot(storage, config);
+                item.ItemSlot = (byte)destination;
+                if (fromBag) storage.Items.Add(item);
                 moved = true;
             }
             else if (operation == 2)
@@ -78,11 +90,12 @@ public sealed class MuunActions
                 if (!await inventory.AddItemAsync(item).ConfigureAwait(false)) { item.ItemSlot = oldSlot; storage.Items.Add(item); return "MuunBagFull"; }
                 moved = true;
             }
-            else if (operation == 3)
+            else if (operation is 3 or MoveOperation)
             {
-                if (source == target || target >= MuunRules.EquipmentCount
-                    || storage.Items.Any(i => i != item && i.ItemSlot < MuunRules.EquipmentCount && i.Definition == item.Definition)) return "MuunEquipInvalid";
+                if (source == target || target >= config.Capacity || (operation == 3 && target >= MuunRules.EquipmentCount)) return "MuunEquipInvalid";
+                if (target < MuunRules.EquipmentCount && !CanEquip(storage, item, target)) return "MuunEquipInvalid";
                 swapped = storage.Items.SingleOrDefault(i => i.ItemSlot == target);
+                if (target >= MuunRules.EquipmentCount && swapped is not null) return "MuunInvalid";
                 if (swapped is not null) swapped.ItemSlot = source;
                 item.ItemSlot = target; moved = true;
             }
@@ -137,9 +150,10 @@ public sealed class MuunActions
                 if (moved)
                 {
                     if (operation == 2) { await inventory.RemoveItemAsync(item).ConfigureAwait(false); item.ItemSlot = oldSlot; storage.Items.Add(item); }
-                    else if (operation == 1)
+                    else if (fromBag)
                     {
                         storage.Items.Remove(item);
+                        if (swapped is not null) swapped.ItemSlot = target;
                         if (!await inventory.AddItemAsync(oldSlot, item).ConfigureAwait(false)) throw new InvalidOperationException("Muun deposit rollback failed.");
                     }
                     else
@@ -164,6 +178,13 @@ public sealed class MuunActions
             }
         }
     }
+    private static int FreeSlot(ItemStorage storage, MuunConfiguration config)
+        => Enumerable.Range(MuunRules.EquipmentCount, config.Capacity - MuunRules.EquipmentCount)
+            .FirstOrDefault(s => storage.Items.All(i => i.ItemSlot != s), -1);
+
+    private static bool CanEquip(ItemStorage storage, Item item, int target)
+        => !storage.Items.Any(i => i != item && i.ItemSlot < MuunRules.EquipmentCount && i.ItemSlot != target && i.Definition == item.Definition);
+
     private sealed class Session
     {
         public uint LastRequest { get; set; }

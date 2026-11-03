@@ -7,6 +7,9 @@ using MUnique.OpenMU.GameLogic.Attributes;
 /// <summary>Optional Muun definitions, isolated from normal equipment and skin slots.</summary>
 public static class MuunItems
 {
+    /// <summary>Default companion life, allowing the default one-point death loss to be gradual.</summary>
+    public const byte DefaultLife = 100;
+
     /// <summary>Adds missing Muuns without changing administrators' existing bonuses.</summary>
     public static void Ensure(IContext context, GameConfiguration config)
     {
@@ -27,7 +30,7 @@ public static class MuunItems
             }
             var item = context.CreateNew<ItemDefinition>(); item.SetGuid(13, number);
             item.Group = 13; item.Number = number; item.Name = names[i]; item.ItemSlot = slot;
-            item.Width = 2; item.Height = 2; item.Durability = 100;
+            item.Width = 2; item.Height = 2; item.Durability = DefaultLife;
             item.IsTradable = true; item.IsStorable = true; item.IsPersonalStoreSellable = true;
             item.IsSellableToNpc = false; item.IsDroppable = true; item.IsRepairable = false;
             var bonus = context.CreateNew<ItemBasePowerUpDefinition>();
