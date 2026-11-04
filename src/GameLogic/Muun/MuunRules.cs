@@ -4,6 +4,8 @@
 
 namespace MUnique.OpenMU.GameLogic.Muun;
 
+using MUnique.OpenMU.DataModel.Configuration.Items;
+
 /// <summary>Ownership-independent Muun validation shared by actions, bonuses and views.</summary>
 public static class MuunRules
 {
@@ -16,13 +18,20 @@ public static class MuunRules
         => config?.Pets.Where(p => p.ItemType == type).Take(2).ToArray() is { Length: 1 } matches ? matches[0] : null;
     /// <summary>Gets the item type on the custom client.</summary>
     public static int Type(Item item) => (item.Definition!.Group * 512) + item.Definition!.Number;
+
+    /// <summary>Mounts use normal pet equipment, not Main/Sub Muun equipment.</summary>
+    /// <param name="definition">The configured item definition.</param>
+    public static bool IsMount(ItemDefinition? definition)
+        => Cosmetics.FenrirMountRules.IsFenrir(definition)
+            || (definition?.Group == ItemConstants.DarkHorse.Group && definition.Number == ItemConstants.DarkHorse.Number);
+
     /// <summary>Determines whether a stored pet can currently grant its configured bonus.</summary>
     public static bool IsActive(Player player, Item item, MuunDefinition rule)
         => InactiveReason(player, item, rule, DateTime.UtcNow) == MuunInactiveReason.None;
     /// <summary>Gets the first failed condition, checked in the order a player can resolve them.</summary>
     public static MuunInactiveReason InactiveReason(Player player, Item item, MuunDefinition rule, DateTime now)
     {
-        if (item.ItemSlot >= EquipmentCount) return MuunInactiveReason.NotEquipped;
+        if (item.ItemSlot >= EquipmentCount || IsMount(item.Definition)) return MuunInactiveReason.NotEquipped;
         if (item.Durability <= 0) return MuunInactiveReason.NoLife;
         if (item.Level > rule.MaximumLevel) return MuunInactiveReason.LevelTooHigh;
         if (item.ExpiresAtUtc is { } end && end <= now) return MuunInactiveReason.Expired;

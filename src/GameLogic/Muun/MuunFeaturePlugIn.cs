@@ -4,7 +4,6 @@
 
 namespace MUnique.OpenMU.GameLogic.Muun;
 
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
@@ -14,7 +13,7 @@ using MUnique.OpenMU.PlugIns;
 [PlugIn]
 [Display(Name = nameof(MuunResources.Name), Description = nameof(MuunResources.Description), ResourceType = typeof(MuunResources))]
 [Guid("f43252e4-5cbc-46b1-a283-ed91758d58bc")]
-public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugIn, IAttackableGotHitPlugIn, IAttackableGotKilledPlugIn, IItemMovingPlugIn, IPeriodicTaskPlugIn, ISupportCustomConfiguration<MuunConfiguration>, ISupportDefaultCustomConfiguration, IDisabledByDefault
+public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugIn, IAttackableGotHitPlugIn, IAttackableGotKilledPlugIn, IPeriodicTaskPlugIn, ISupportCustomConfiguration<MuunConfiguration>, ISupportDefaultCustomConfiguration, IDisabledByDefault
 {
     private readonly MuunCombat _combat = new();
     /// <inheritdoc />
@@ -26,24 +25,6 @@ public sealed class MuunFeaturePlugIn : IFeaturePlugIn, IPlayerStateChangedPlugI
         => context.FeaturePlugIns.GetPlugIn<MuunFeaturePlugIn>() is { } plugin ? (plugin.Configuration ??= new MuunConfiguration()) : null;
     /// <inheritdoc />
     public object CreateDefaultConfig() => new MuunConfiguration();
-
-    /// <inheritdoc />
-    public void ItemMoving(Player player, Item item, Storages targetStorage, int slot, CancelEventArgs eventArgs)
-    {
-        if (targetStorage != Storages.Inventory
-            || slot > InventoryConstants.LastEquippableItemSlotIndex
-            || item.Definition is not { } definition
-            || MuunRules.Find(Settings(player.GameContext), MuunRules.Type(item)) is null)
-        {
-            return;
-        }
-
-        if (Cosmetics.FenrirMountRules.IsFenrir(definition)
-            || (definition.Group == ItemConstants.DarkHorse.Group && definition.Number == ItemConstants.DarkHorse.Number))
-        {
-            eventArgs.Cancel = true;
-        }
-    }
 
     /// <inheritdoc />
     public async ValueTask AttackableGotKilledAsync(IAttackable killed, IAttacker? killer)

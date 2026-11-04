@@ -58,6 +58,7 @@ public sealed class MuunActions
         if (item is null || MuunRules.Find(config, MuunRules.Type(item)) is not { } rule || item.Level > rule.MaximumLevel
             || (operation != 2 && item.ExpiresAtUtc is { } end && end <= DateTime.UtcNow)) return "MuunInvalid";
         if (fromBag && source <= DataModel.InventoryConstants.LastEquippableItemSlotIndex) return "MuunInvalid";
+        if (fromBag && MuunRules.IsMount(item.Definition)) return "MuunEquipInvalid";
         storage ??= character.MuunInventory = player.PersistenceContext.CreateNew<ItemStorage>();
         var oldSlot = item.ItemSlot; var oldLevel = item.Level; var oldDefinition = item.Definition; var oldLife = item.Durability;
         Item? consumed = null; byte consumedSlot = 0; bool consumedFromBag = false; double consumedLife = 0; bool removedMaterial = false;
@@ -183,7 +184,8 @@ public sealed class MuunActions
             .FirstOrDefault(s => storage.Items.All(i => i.ItemSlot != s), -1);
 
     private static bool CanEquip(ItemStorage storage, Item item, int target)
-        => !storage.Items.Any(i => i != item && i.ItemSlot < MuunRules.EquipmentCount && i.ItemSlot != target && i.Definition == item.Definition);
+        => !MuunRules.IsMount(item.Definition)
+            && !storage.Items.Any(i => i != item && i.ItemSlot < MuunRules.EquipmentCount && i.ItemSlot != target && i.Definition == item.Definition);
 
     private sealed class Session
     {

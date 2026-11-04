@@ -116,7 +116,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(configuration.Items.Count, Is.EqualTo(previousCount + 3));
         Assert.That(configuration.Items.Single(i => i.Group == 12 && i.Number == 371), Is.SameAs(existing));
         Assert.That(existing.GetId(), Is.EqualTo(existingId));
-        Assert.That(entry.Version, Is.EqualTo(11));
+        Assert.That(entry.Version, Is.EqualTo(13));
         Assert.That((await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Count(), Is.EqualTo(1));
     }
 
@@ -197,15 +197,50 @@ internal class CosmeticArmorInitializationTests
         Assert.That(owned.Definition, Is.SameAs(previous));
         Assert.That(character.Inventory.Items.Single(), Is.SameAs(owned));
         Assert.That(owned.ItemSlot == 246, Is.EqualTo(allowed));
-        Assert.That(entry.Version, Is.EqualTo(11));
+        Assert.That(entry.Version, Is.EqualTo(13));
         Assert.That(previous.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 23 }));
         Assert.That(configuration.Items.Count(i => i.Group == 1 && i.Number == 300), Is.EqualTo(1));
         Assert.That(configuration.Items.Single(i => i.Group == 0 && i.Number == 304).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 25 }));
     }
 
+    /// <summary>Fresh and updated imports retain class and promotion limits for each weapon family.</summary>
+    [Test]
+    public async Task WeaponFamilyLimitsRepairUnrestrictedImportsAsync()
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        using var context = provider.CreateNewContext();
+        var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
+        CosmeticArmorItems.Ensure(context, configuration);
+        (byte Group, short Number, byte[] Classes)[] cases = [
+            (4, 303, [11]), (4, 304, [11]), (0, 311, [7]),
+            (1, 304, [3, 7, 13]), (2, 307, [17]), (3, 302, [7, 13]),
+            (5, 306, [3, 13]), (5, 302, [23]), (0, 304, [25]),
+        ];
+        foreach (var (group, number, classes) in cases)
+        {
+            var definition = configuration.Items.Single(i => i.Group == group && i.Number == number);
+            Assert.That(definition.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(classes));
+            definition.QualifiedCharacters.Clear();
+            foreach (var characterClass in configuration.CharacterClasses)
+            {
+                definition.QualifiedCharacters.Add(characterClass);
+            }
+        }
+
+        var update = new CosmeticArmorItemsUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        foreach (var (group, number, classes) in cases)
+        {
+            var definition = configuration.Items.Single(i => i.Group == group && i.Number == number);
+            Assert.That(definition.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(classes));
+        }
+    }
+
     private static void AssertReferenceWings(GameConfiguration configuration)
     {
-        foreach (var (number, name) in new[] { (382, "rf5 Wing Skin"), (383, "sum7lvl Wing Skin"), (384, "rf7lvl Wing Skin") })
+        foreach (var (number, name) in new[] { (382, "Custom Wing 21 Skin"), (383, "Custom Wing 6 Skin"), (384, "Custom Wing 7 Skin") })
         {
             var wing = configuration.Items.Single(i => i.Group == 12 && i.Number == number);
             Assert.That(wing.Name.ValueInNeutralLanguage, Is.EqualTo(name));

@@ -113,6 +113,7 @@ public sealed class MuunView : IMuunView
         foreach (var item in owner.SelectedCharacter?.MuunInventory?.Items ?? [])
         {
             if (item.ItemSlot < pets.Length && MuunRules.Find(config, MuunRules.Type(item)) is not null
+                && !MuunRules.IsMount(item.Definition)
                 && item.Durability > 0 && (item.ExpiresAtUtc is null || item.ExpiresAtUtc > DateTime.UtcNow)) pets[item.ItemSlot] = MuunRules.Type(item);
         }
         var data = JsonSerializer.SerializeToUtf8Bytes(new { Id = owner.GetId(this._player), Name = owner.Name, Pets = pets });

@@ -74,12 +74,19 @@ Deploy both rebuilt client and server for directed slot placement; this input
 change does not require another schema or configuration update. Materials are
 consumed only after server validation, and failed saves restore the items.
 
-Pet slots use drag and drop without opening a tap menu. When the Muun feature is
-enabled, registered Fenrir mounts and Dark Horse can equip only in Main/Sub Muun;
-the normal inventory's pet slot rejects them. Bag storage, trading and ordinary
-pet equipment remain available. Existing equipped mounts can be moved to the bag
-and then into Muun Inventory. Deploy the rebuilt client and server for this
-restriction; no additional database or configuration update is needed.
+Pet slots use drag and drop without opening a tap menu. Fenrir, imported Fenrir
+mounts and Dark Horse equip in the normal inventory's pet slot. They cannot be
+deposited or equipped in Main/Sub Muun. Withdraw any legacy Muun mount to the bag
+before equipping it in normal inventory; items are retained, and mounts awaiting
+withdrawal grant no Muun bonuses. Deploy the rebuilt client and server for this
+correction; no additional database or configuration update is needed.
+
+**Set 315 Cosmetic Armor v13** corrects imported weapon class requirements.
+Source placeholders that allowed unrelated classes are narrowed to the weapon's
+family while retaining promotion requirements. Bows are Elf-only, scepters
+DL-only, gloves RF-only, and summoner sticks/books Summoner-only. Apply while
+players are offline, then restart the rebuilt server. Incompatible equipped
+skins return to the bag without deletion; free bag space before applying.
 
 ## Preconditions
 
