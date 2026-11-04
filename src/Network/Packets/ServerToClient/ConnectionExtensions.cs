@@ -9057,7 +9057,7 @@ public static class ConnectionExtensions
     /// <param name="data">The data.</param>
     /// <remarks>
     /// Is sent by the server when: A combination quote or confirmation completes.
-    /// Causes reaction on client side: The client displays RequestId, Status, Valid, Success, Cost and ExcellentFlags from UTF-8 JSON after inventory synchronization.
+    /// Causes reaction on client side: The client displays RequestId, Status, Valid, Success, Completed, Cost, ExcellentFlags, BaseRate, BonusPerCore, MaximumRate, AvailableCores and SelectedCores from UTF-8 JSON after inventory synchronization. Completed distinguishes a committed failed roll from a rejected request.
     /// </remarks>
     public static async ValueTask SendExcellentCombinationResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
     {

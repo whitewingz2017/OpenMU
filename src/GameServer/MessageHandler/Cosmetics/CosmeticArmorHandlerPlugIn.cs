@@ -33,10 +33,10 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
             return;
         }
 
-        if (packet.Length == ExcellentCombinationRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == ExcellentCombinationRequestExtended.SubCode)
+        if (packet.Length == ExcellentCombinationRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[1] == packet.Length && packet.Span[3] == ExcellentCombinationRequestExtended.SubCode)
         {
             ExcellentCombinationRequestExtended combination = packet;
-            await this._combination.ExecuteAsync(player, combination.RequestId, combination.Operation, combination.PrimarySlot, combination.SecondarySlot).ConfigureAwait(false);
+            await this._combination.ExecuteAsync(player, combination.RequestId, combination.Operation, combination.PrimarySlot, combination.SecondarySlot, combination.CoreCount).ConfigureAwait(false);
             return;
         }
 

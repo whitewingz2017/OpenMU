@@ -5781,11 +5781,12 @@ public static class ConnectionExtensions
     /// <param name="primarySlot">The primary slot.</param>
     /// <param name="secondarySlot">The secondary slot.</param>
     /// <param name="requestId">The request id.</param>
+    /// <param name="coreCount">The core count.</param>
     /// <remarks>
-    /// Is sent by the client when: The client quotes (0) or confirms (1) two inventory items.
+    /// Is sent by the client when: The client quotes (0), confirms (1), or requests rules and core availability (2) two inventory items.
     /// Causes reaction on server side: The server validates the quoted identities, combines at most two excellent options and atomically saves the primary item, material removal and Zen.
     /// </remarks>
-    public static async ValueTask SendExcellentCombinationRequestExtendedAsync(this IConnection? connection, byte @operation, byte @primarySlot, byte @secondarySlot, uint @requestId)
+    public static async ValueTask SendExcellentCombinationRequestExtendedAsync(this IConnection? connection, byte @operation, byte @primarySlot, byte @secondarySlot, uint @requestId, byte @coreCount)
     {
         if (connection is null)
         {
@@ -5800,6 +5801,7 @@ public static class ConnectionExtensions
             packet.PrimarySlot = @primarySlot;
             packet.SecondarySlot = @secondarySlot;
             packet.RequestId = @requestId;
+            packet.CoreCount = @coreCount;
 
             return packet.Header.Length;
         }

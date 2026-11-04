@@ -6,7 +6,7 @@ A combination quote or confirmation completes.
 
 ## Causes the following actions on the client side
 
-The client displays RequestId, Status, Valid, Success, Cost and ExcellentFlags from UTF-8 JSON after inventory synchronization.
+The client displays RequestId, Status, Valid, Success, Completed, Cost, ExcellentFlags, BaseRate, BonusPerCore, MaximumRate, AvailableCores and SelectedCores from UTF-8 JSON after inventory synchronization. Completed distinguishes a committed failed roll from a rejected request.
 
 ## Structure
 

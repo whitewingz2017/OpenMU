@@ -4065,7 +4065,7 @@ public class PacketStructureTests
     public void ExcellentCombinationRequestExtended_PacketSizeValidation()
     {
         // Fixed-length packet validation
-        const int expectedLength = 11;
+        const int expectedLength = 12;
         var actualLength = ExcellentCombinationRequestExtendedRef.Length;
         
         Assert.That(actualLength, Is.EqualTo(expectedLength), 
@@ -4086,6 +4086,10 @@ public class PacketStructureTests
         // Validate field 'RequestId' boundary
         Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
+        
+        // Validate field 'CoreCount' boundary
+        Assert.That(11 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'CoreCount' exceeds packet boundary");
     }
 
     /// <summary>

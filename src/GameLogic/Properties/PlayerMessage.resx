@@ -1085,4 +1085,22 @@ Price: {3}</value></data>
   <data name="MuunSaveFailed" xml:space="preserve"><value>Saving failed. No Muun items or materials were spent.</value></data>
   <data name="MuunMaterialsMissing" xml:space="preserve"><value>Not enough eligible materials in your inventory for this Muun exchange.</value></data>
   <data name="MuunCatalogueTooLarge" xml:space="preserve"><value>Muun inventory refreshed. The server catalogue is too large; ask an administrator to shorten its descriptions.</value></data>
+  <data name="ExcellentCombination_Disabled" xml:space="preserve"><value>Excellent Combination is disabled or its settings are invalid.</value></data>
+  <data name="ExcellentCombination_FailedRequest" xml:space="preserve"><value>Combination request failed. Check inventory before retrying.</value></data>
+  <data name="ExcellentCombination_Replay" xml:space="preserve"><value>Request already processed. Select the items again.</value></data>
+  <data name="ExcellentCombination_Busy" xml:space="preserve"><value>Close other inventory operations before combining.</value></data>
+  <data name="ExcellentCombination_DifferentItems" xml:space="preserve"><value>Select two different items of the same exact equipment type.</value></data>
+  <data name="ExcellentCombination_EquipmentOnly" xml:space="preserve"><value>Only Excellent equipment can be combined.</value></data>
+  <data name="ExcellentCombination_AncientSocket" xml:space="preserve"><value>Ancient and socket items cannot be combined.</value></data>
+  <data name="ExcellentCombination_OptionCount" xml:space="preserve"><value>Main Gear needs one or two Excellent options; Secondary Gear needs exactly one.</value></data>
+  <data name="ExcellentCombination_Unsupported" xml:space="preserve"><value>The item contains unsupported Excellent options.</value></data>
+  <data name="ExcellentCombination_Duplicate" xml:space="preserve"><value>That Excellent option is already on Main Gear.</value></data>
+  <data name="ExcellentCombination_TimedListed" xml:space="preserve"><value>Timed or listed items cannot be combined.</value></data>
+  <data name="ExcellentCombination_NoZen" xml:space="preserve"><value>Not enough Zen.</value></data>
+  <data name="ExcellentCombination_NoCores" xml:space="preserve"><value>Not enough Resonance Cores, or the selected quantity exceeds the rate cap.</value></data>
+  <data name="ExcellentCombination_Ready" xml:space="preserve"><value>Ready. Failure keeps Main Gear and consumes Secondary Gear, selected cores, and Zen.</value></data>
+  <data name="ExcellentCombination_Stale" xml:space="preserve"><value>Items, cores, or settings changed, or quote expired. Select the items again.</value></data>
+  <data name="ExcellentCombination_Success" xml:space="preserve"><value>Combination successful. Secondary Gear, selected cores, and Zen were consumed.</value></data>
+  <data name="ExcellentCombination_Failure" xml:space="preserve"><value>Combination failed. Main Gear was kept; Secondary Gear, selected cores, and Zen were consumed.</value></data>
+  <data name="ExcellentCombination_Configuration" xml:space="preserve"><value>Choose Main Gear, Secondary Gear, and optional Resonance Cores.</value></data>
 </root>

@@ -18222,7 +18222,7 @@ public readonly struct RedeemCodeRequestExtended
 
 
 /// <summary>
-/// Is sent by the client when: The client quotes (0) or confirms (1) two inventory items.
+/// Is sent by the client when: The client quotes (0), confirms (1), or requests rules and core availability (2) two inventory items.
 /// Causes reaction on server side: The server validates the quoted identities, combines at most two excellent options and atomically saves the primary item, material removal and Zen.
 /// </summary>
 public readonly struct ExcellentCombinationRequestExtended
@@ -18275,7 +18275,7 @@ public readonly struct ExcellentCombinationRequestExtended
     /// <summary>
     /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
     /// </summary>
-    public static int Length => 11;
+    public static int Length => 12;
 
     /// <summary>
     /// Gets the header of this packet.
@@ -18316,6 +18316,15 @@ public readonly struct ExcellentCombinationRequestExtended
     {
         get => ReadUInt32LittleEndian(this._data.Span[7..]);
         set => WriteUInt32LittleEndian(this._data.Span[7..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the core count.
+    /// </summary>
+    public byte CoreCount
+    {
+        get => this._data.Span[11];
+        set => this._data.Span[11] = value;
     }
 
     /// <summary>
