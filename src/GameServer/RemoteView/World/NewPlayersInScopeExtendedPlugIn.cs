@@ -101,6 +101,7 @@ public class NewPlayersInScopeExtendedPlugIn : NewPlayersInScopePlugIn, INewPlay
         }
 
         await connection.SendAsync(Write).ConfigureAwait(false);
+        await this.SendCompanionAsync(newPlayer).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -164,5 +165,14 @@ public class NewPlayersInScopeExtendedPlugIn : NewPlayersInScopePlugIn, INewPlay
         }
 
         await connection.SendAsync(Write).ConfigureAwait(false);
+        await this.SendCompanionAsync(newPlayer).ConfigureAwait(false);
+    }
+
+    private ValueTask SendCompanionAsync(Player newPlayer)
+    {
+        var companion = GameLogic.Cosmetics.CosmeticArmorRules.VisibleEquipment(newPlayer)
+            .FirstOrDefault(i => i.ItemSlot == GameLogic.Pets.CompanionEquipmentRules.Slot);
+        return companion is null ? ValueTask.CompletedTask
+            : this.Player.InvokeViewPlugInAsync<IAppearanceChangedPlugIn>(view => view.AppearanceChangedAsync(newPlayer, companion, true));
     }
 }

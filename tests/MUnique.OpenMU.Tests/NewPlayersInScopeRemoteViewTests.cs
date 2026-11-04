@@ -149,6 +149,37 @@ public class NewPlayersInScopeRemoteViewTests
         });
     }
 
+    /// <summary>Companion appearance follows the normal or transformed character without replacing its mount.</summary>
+    /// <param name="transformed">Whether to send a transformed character.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async ValueTask CompanionIsSentAfterCharacterAsync(bool transformed)
+    {
+        var (observer, output) = CreateObserver(ExtendedClient);
+        var added = transformed ? await CreateTransformedPlayerAsync().ConfigureAwait(false)
+            : await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var slot = new MUnique.OpenMU.Persistence.BasicModel.ItemSlotType();
+        slot.ItemSlots.Add(GameLogic.Pets.CompanionEquipmentRules.Slot);
+        var pet = new MUnique.OpenMU.Persistence.BasicModel.Item
+        {
+            Definition = new MUnique.OpenMU.Persistence.BasicModel.ItemDefinition
+            {
+                Group = 13, Number = 200,
+                ItemSlot = slot,
+            },
+            ItemSlot = GameLogic.Pets.CompanionEquipmentRules.Slot,
+            Durability = 1,
+        };
+        added.SelectedCharacter!.Inventory!.Items.Add(pet);
+        await new NewPlayersInScopeExtendedPlugIn(observer).NewPlayersInScopeAsync([added]).ConfigureAwait(false);
+        var packets = SplitPackets(output.ToArray());
+        Assert.That(packets, Has.Count.EqualTo(2));
+        AppearanceChangedExtended appearance = packets[1].AsMemory();
+        Assert.That(appearance.ItemSlot, Is.EqualTo(GameLogic.Pets.CompanionEquipmentRules.Slot));
+        Assert.That(appearance.ItemGroup, Is.EqualTo(13));
+        Assert.That(appearance.ItemNumber, Is.EqualTo(200));
+    }
+
     private static async ValueTask<Player> CreateTransformedPlayerAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
@@ -163,6 +194,7 @@ public class NewPlayersInScopeRemoteViewTests
         var manager = new PlugInManager(null, new NullLoggerFactory(), null, null);
         manager.RegisterPlugIn<IViewPlugIn, AppearanceSerializer>();
         manager.RegisterPlugIn<IViewPlugIn, AppearanceSerializerExtended>();
+        manager.RegisterPlugIn<IViewPlugIn, AppearanceChangedExtendedPlugIn>();
         var gameContext = new Mock<IGameServerContext>();
         gameContext.Setup(c => c.PersistenceContextProvider).Returns(new Mock<IPersistenceContextProvider>().Object);
         gameContext.Setup(c => c.Configuration).Returns(new GameConfiguration());

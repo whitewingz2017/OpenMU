@@ -8,6 +8,7 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.Cosmetics;
+using MUnique.OpenMU.GameLogic.Pets;
 
 /// <summary>Converts every old armor piece into a full-set item without deleting owned items.</summary>
 public static class CosmeticSetConversion
@@ -64,7 +65,8 @@ public static class CosmeticSetConversion
 
                 foreach (var mount in inventory.Where(i => i.ItemSlot == 248 && FenrirMountRules.IsCustom(i.Definition)).ToArray())
                 {
-                    mount.ItemSlot = DataModel.InventoryConstants.EquippableSlotsCount;
+                    mount.ItemSlot = inventory.Any(i => i.ItemSlot == DataModel.InventoryConstants.PetSlot)
+                        ? DataModel.InventoryConstants.EquippableSlotsCount : DataModel.InventoryConstants.PetSlot;
                 }
 
                 foreach (var skin in inventory.Where(i => i.ItemSlot is 241 or 245 or 246

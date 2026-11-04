@@ -48,10 +48,8 @@ public class MuunTests
         await moves.MoveItemAsync(player, 20, Storages.Inventory, (byte)MUnique.OpenMU.DataModel.InventoryConstants.PetSlot, Storages.Inventory).ConfigureAwait(false);
         Assert.That(player.Inventory!.GetItem((byte)MUnique.OpenMU.DataModel.InventoryConstants.PetSlot), Is.SameAs(pet));
         Assert.That(player.Inventory.GetItem(20), Is.Null);
-        if (!mount)
-        {
-            return;
-        }
+
+        if (!mount) return;
 
         var actions = new MuunActions();
         await moves.MoveItemAsync(player, pet.ItemSlot, Storages.Inventory, 20, Storages.Inventory).ConfigureAwait(false);

@@ -2223,7 +2223,13 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
             }
         }
 
-        if (this.Inventory?.GetItem(InventoryConstants.PetSlot) is { Durability: > 0.0 } pet)
+        await this.DecreaseEquippedPetDurabilityAsync(damage).ConfigureAwait(false);
+    }
+
+    private async ValueTask DecreaseEquippedPetDurabilityAsync(float damage)
+    {
+        foreach (var pet in this.Inventory?.EquippedItems.Where(i => i.Durability > 0
+            && (i.ItemSlot == InventoryConstants.PetSlot || i.ItemSlot == Pets.CompanionEquipmentRules.Slot)) ?? [])
         {
             await this.DecreasePetDurabilityAsync(pet, damage).ConfigureAwait(false);
         }

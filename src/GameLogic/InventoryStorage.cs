@@ -68,6 +68,11 @@ public class InventoryStorage : Storage, IInventoryStorage
                     yield return this.ItemArray[i]!;
                 }
             }
+            foreach (var companion in Cosmetics.CosmeticArmorRules.Equipped(this._player)
+                .Where(i => i.ItemSlot == Pets.CompanionEquipmentRules.Slot && Cosmetics.CosmeticArmorRules.CanEquip(this._player, i.Definition)))
+            {
+                yield return companion;
+            }
         }
     }
 
@@ -122,6 +127,10 @@ public class InventoryStorage : Storage, IInventoryStorage
     public override async ValueTask RemoveItemAsync(Item item)
     {
         var isEquippedItem = this.IsWearingSlot(item.ItemSlot);
+        if (item.ItemSlot == Pets.CompanionEquipmentRules.Slot)
+        {
+            this._player.SelectedCharacter?.Inventory?.Items.Remove(item);
+        }
         await base.RemoveItemAsync(item).ConfigureAwait(false);
         if (isEquippedItem && this.EquippedItemsChanged is { } eventHandler)
         {
@@ -149,7 +158,8 @@ public class InventoryStorage : Storage, IInventoryStorage
             return;
         }
 
-        foreach (var item in attributes.ItemPowerUps.Keys.Where(i => Cosmetics.CosmeticArmorRules.GetSlot(i.Definition) is not null).ToArray())
+        foreach (var item in attributes.ItemPowerUps.Keys.Where(i => Cosmetics.CosmeticArmorRules.GetSlot(i.Definition) is not null
+            || Pets.CompanionEquipmentRules.IsOrdinaryPet(i.Definition)).ToArray())
         {
             foreach (var powerUp in attributes.ItemPowerUps[item])
             {
@@ -159,7 +169,9 @@ public class InventoryStorage : Storage, IInventoryStorage
             attributes.ItemPowerUps.Remove(item);
         }
 
-        foreach (var item in Cosmetics.CosmeticArmorRules.Equipped(this._player).Where(i => Cosmetics.CosmeticArmorRules.CanEquip(this._player, i.Definition)))
+        var equipped = Cosmetics.CosmeticArmorRules.Equipped(this._player)
+            .Concat(this.EquippedItems.Where(i => i.ItemSlot == InventoryConstants.PetSlot && Pets.CompanionEquipmentRules.IsOrdinaryPet(i.Definition)));
+        foreach (var item in equipped.Where(i => Cosmetics.CosmeticArmorRules.CanEquip(this._player, i.Definition)))
         {
             attributes.ItemPowerUps[item] = this._gameContext.ItemPowerUpFactory.GetPowerUps(item, attributes).ToList();
         }
@@ -167,7 +179,8 @@ public class InventoryStorage : Storage, IInventoryStorage
 
     private bool IsWearingSlot(int slot)
     {
-        return slot >= FirstEquippableItemSlotIndex && slot <= LastEquippableItemSlotIndex;
+        return (slot >= FirstEquippableItemSlotIndex && slot <= LastEquippableItemSlotIndex)
+            || slot == Pets.CompanionEquipmentRules.Slot;
     }
 
     private async ValueTask UpdateItemsOnChangeAsync(Item item, bool isEquipped)

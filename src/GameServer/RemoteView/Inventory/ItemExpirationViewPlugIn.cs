@@ -32,7 +32,8 @@ public class ItemExpirationViewPlugIn : IItemExpirationViewPlugIn
     /// <inheritdoc />
     public async ValueTask ShowItemExpirationsAsync()
     {
-        var items = this._player.Inventory?.Items.Where(i => i.ExpiresAtUtc is not null).ToList() ?? [];
+        var items = (this._player.Inventory?.Items ?? [])
+            .Concat(GameLogic.Pets.CompanionEquipmentRules.Stored(this._player)).Where(i => i.ExpiresAtUtc is not null).ToList();
         await this._player.Connection.SendCashShopPeriodItemCountAsync((byte)items.Count).ConfigureAwait(false);
         foreach (var item in items)
         {

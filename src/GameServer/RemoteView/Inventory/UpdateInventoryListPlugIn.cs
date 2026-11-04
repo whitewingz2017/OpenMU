@@ -40,11 +40,7 @@ public class UpdateInventoryListPlugIn : IUpdateInventoryListPlugIn
         }
 
         // C4 00 00 00 F3 10 ...
-        var items = (this._player.Inventory?.Items is { } inventoryItems
-                ? inventoryItems.Concat(this._player.ShopStorage?.Items ?? Enumerable.Empty<Item>())
-                : this._player.SelectedCharacter?.Inventory?.Items ?? Enumerable.Empty<Item>())
-            .OrderBy(item => item.ItemSlot)
-            .ToList();
+        var items = GetInventoryItems(this._player);
         int Write()
         {
             var itemSerializer = this._player.ItemSerializer;
@@ -92,4 +88,13 @@ public class UpdateInventoryListPlugIn : IUpdateInventoryListPlugIn
         await PlayerShop.CombinedStorePrices.SendAsync(this._player, this._player).ConfigureAwait(false);
         await this._player.InvokeViewPlugInAsync<IItemExpirationViewPlugIn>(p => p.ShowItemExpirationsAsync()).ConfigureAwait(false);
     }
+
+    /// <summary>Includes full companion data outside the native bag while retaining normal store items.</summary>
+    /// <param name="player">The inventory owner.</param>
+    internal static List<Item> GetInventoryItems(Player player)
+        => (player.Inventory?.Items is { } inventoryItems
+            ? inventoryItems.Concat(player.ShopStorage?.Items ?? Enumerable.Empty<Item>())
+                .Concat(GameLogic.Pets.CompanionEquipmentRules.Stored(player))
+            : player.SelectedCharacter?.Inventory?.Items ?? Enumerable.Empty<Item>())
+            .OrderBy(item => item.ItemSlot).ToList();
 }

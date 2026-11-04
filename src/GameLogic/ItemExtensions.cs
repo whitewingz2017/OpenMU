@@ -284,7 +284,8 @@ public static class ItemExtensions
     /// </returns>
     public static bool DegradesWithDurability(this Item item)
     {
-        return item.ItemSlot != InventoryConstants.PetSlot && !item.IsTrainablePet() && !item.IsTransformationRing();
+        return item.ItemSlot != InventoryConstants.PetSlot && item.ItemSlot != Pets.CompanionEquipmentRules.Slot
+            && !item.IsTrainablePet() && !item.IsTransformationRing();
     }
 
     /// <summary>

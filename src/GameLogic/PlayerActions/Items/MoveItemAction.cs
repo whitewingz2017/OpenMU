@@ -299,7 +299,6 @@ public class MoveItemAction
         if (toStorage.Storage == player.Inventory && toSlot <= LastEquippableItemSlotIndex)
         {
             var itemDefinition = item.Definition;
-
             // Shared weapon definitions can allow either hand for a dual-wield
             // class, without granting that capability to every qualified class.
             if (toSlot == InventoryConstants.RightHandSlot

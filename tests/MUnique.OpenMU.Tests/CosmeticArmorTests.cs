@@ -175,7 +175,7 @@ public class CosmeticArmorTests
         var actions = new CosmeticArmorActions();
         await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, part).ConfigureAwait(false);
         Assert.That(item.ItemSlot, Is.EqualTo(CosmeticArmorRules.FirstSlot + part));
-        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single().ItemSlot, Is.EqualTo(CosmeticArmorRules.GearSlot(part)));
+        Assert.That(CosmeticArmorRules.VisibleEquipment(player).Single().ItemSlot, Is.EqualTo(part == 8 ? GameLogic.Pets.CompanionEquipmentRules.Slot : CosmeticArmorRules.GearSlot(part)));
         await actions.ExecuteAsync(player, 2, 2, 0, part).ConfigureAwait(false);
         Assert.That(CosmeticArmorRules.Equipped(player), Is.Empty);
         Assert.That(player.Inventory!.Items, Does.Contain(item));

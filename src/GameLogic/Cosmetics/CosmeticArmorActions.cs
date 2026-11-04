@@ -57,15 +57,25 @@ public sealed class CosmeticArmorActions
         }
 
         var skinSlot = (byte)(CosmeticArmorRules.FirstSlot + part);
+        var companion = skinSlot == Pets.CompanionEquipmentRules.Slot;
+        if (operation == 1 && persisted.Items.Any(i => i.ItemSlot == skinSlot))
+        {
+            await ShowAsync(player, request, companion ? "Unequip the extra pet first." : "Unequip the current skin first.").ConfigureAwait(false);
+            return;
+        }
+
         var item = operation == 1 ? inventory.GetItem(source) : persisted.Items.SingleOrDefault(i => i.ItemSlot == skinSlot);
         if (item is null || (operation == 1 && !CosmeticArmorRules.CanEquip(player, item.Definition))
-            || (operation == 1 && !SkinBonuses.IsValid(item))
+            || (operation == 1 && (Pets.CompanionEquipmentRules.IsOrdinaryPet(item.Definition)
+                ? !player.CompliesRequirements(item) : !SkinBonuses.IsValid(item)))
             || !CosmeticArmorRules.FitsSlot(item.Definition, skinSlot)
-            || (operation == 1 && (source <= MUnique.OpenMU.DataModel.InventoryConstants.LastEquippableItemSlotIndex
-                || persisted.Items.Any(i => i.ItemSlot == skinSlot)))
+            || (operation == 1 && source <= MUnique.OpenMU.DataModel.InventoryConstants.LastEquippableItemSlotIndex
+                && !(companion && source == MUnique.OpenMU.DataModel.InventoryConstants.PetSlot && Pets.CompanionEquipmentRules.IsOrdinaryPet(item.Definition)))
             || (item.ExpiresAtUtc is { } expires && expires <= DateTime.UtcNow))
         {
-            await ShowAsync(player, request, "That skin cannot be equipped in this slot. Unequip the current skin first.").ConfigureAwait(false);
+            var rejection = companion ? "This extra slot accepts ordinary pets only. Check the pet's requirements and expiration."
+                : "That skin cannot be equipped in this slot.";
+            await ShowAsync(player, request, rejection).ConfigureAwait(false);
             return;
         }
 
@@ -120,14 +130,19 @@ public sealed class CosmeticArmorActions
 
         (inventory as InventoryStorage)?.RefreshCosmeticPowerUps();
         player.OnAppearanceChanged();
-        var slots = part == 1 ? Enumerable.Range(2, 5).Select(slot => (byte)slot) : [CosmeticArmorRules.GearSlot(part)];
+        var slots = companion ? (originalSlot == MUnique.OpenMU.DataModel.InventoryConstants.PetSlot
+            ? new[] { (byte)MUnique.OpenMU.DataModel.InventoryConstants.PetSlot, Pets.CompanionEquipmentRules.Slot } : new[] { Pets.CompanionEquipmentRules.Slot })
+            : part == 1 ? Enumerable.Range(2, 5).Select(slot => (byte)slot) : [CosmeticArmorRules.GearSlot(part)];
         foreach (var slot in slots)
         {
             var changed = new TemporaryItem { ItemSlot = slot };
             await player.ForEachWorldObserverAsync<IAppearanceChangedPlugIn>(v => v.AppearanceChangedAsync(player, changed, true), false).ConfigureAwait(false);
         }
+
         await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(v => v.UpdateInventoryListAsync()).ConfigureAwait(false);
-        await ShowAsync(player, request, operation == 1 ? "Skin equipped." : "Skin returned to inventory.").ConfigureAwait(false);
+        var successStatus = companion ? (operation == 1 ? "Extra pet equipped." : "Extra pet returned to inventory.")
+            : (operation == 1 ? "Skin equipped." : "Skin returned to inventory.");
+        await ShowAsync(player, request, successStatus).ConfigureAwait(false);
     }
 
     private sealed class Session

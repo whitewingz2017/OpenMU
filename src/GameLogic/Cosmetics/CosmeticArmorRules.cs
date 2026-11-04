@@ -53,7 +53,8 @@ public static class CosmeticArmorRules
     /// <param name="definition">The cosmetic item definition.</param>
     /// <param name="slot">The destination inventory slot.</param>
     public static bool FitsSlot(ItemDefinition? definition, byte slot)
-        => GetSlot(definition) is { } configured && (configured == slot || (configured == 245 && slot == 246));
+        => (slot == Pets.CompanionEquipmentRules.Slot && Pets.CompanionEquipmentRules.IsOrdinaryPet(definition))
+            || (GetSlot(definition) is { } configured && (configured == slot || (configured == 245 && slot == 246)));
 
     /// <summary>Gets valid equipped skins from the complete persisted inventory.</summary>
     public static IEnumerable<Item> Equipped(Player player)
@@ -67,6 +68,14 @@ public static class CosmeticArmorRules
         var skins = new Dictionary<byte, ItemDefinition>();
         foreach (var item in Equipped(player).Where(i => CanEquip(player, i.Definition)))
         {
+            if (item.ItemSlot == Pets.CompanionEquipmentRules.Slot)
+            {
+                if (item.Durability > 0)
+                {
+                    yield return item;
+                }
+                continue;
+            }
             if (item.Definition!.Group == 8)
             {
                 foreach (var definition in player.GameContext.Configuration.Items.Where(d => d.Group is >= 7 and <= 11 && d.Number == item.Definition.Number))
@@ -82,7 +91,7 @@ public static class CosmeticArmorRules
 
         foreach (var item in player.Inventory?.EquippedItems ?? [])
         {
-            if (!skins.ContainsKey(item.ItemSlot))
+            if (!skins.ContainsKey(item.ItemSlot) && item.ItemSlot != Pets.CompanionEquipmentRules.Slot)
             {
                 yield return item;
             }

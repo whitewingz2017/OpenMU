@@ -102,3 +102,9 @@ applied on top of a current schema.
   rates, monster stats), you may want to deselect it and merge the change
   yourself in the [game configuration](game-configuration.md).
 * Apply updates during a maintenance window, since a restart is needed anyway.
+
+**Set 315 Cosmetic Armor v14** moves ordinary pets to the small Gear companion
+slot and reserves the large helper slot for mounts. Apply with players offline
+and install the matching client. If the small slot is occupied, the old pet
+returns to the bag; a full bag stops the migration without deleting items.
+Muun equipment remains unchanged.

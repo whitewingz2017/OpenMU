@@ -52,7 +52,8 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
             yield break;
         }
 
-        if (Cosmetics.CosmeticArmorRules.FitsSlot(item.Definition, item.ItemSlot))
+        if (Cosmetics.CosmeticArmorRules.FitsSlot(item.Definition, item.ItemSlot)
+            && !Pets.CompanionEquipmentRules.IsOrdinaryPet(item.Definition))
         {
             // A worn wing skin is drawn as wings by the client, which then runs at wing speed.
             foreach (var attribute in item.Definition.BasePowerUpAttributes)
@@ -74,7 +75,8 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
             yield break;
         }
 
-        if (item.ItemSlot < InventoryConstants.FirstEquippableItemSlotIndex || item.ItemSlot > InventoryConstants.LastEquippableItemSlotIndex)
+        if ((item.ItemSlot < InventoryConstants.FirstEquippableItemSlotIndex || item.ItemSlot > InventoryConstants.LastEquippableItemSlotIndex)
+            && !(item.ItemSlot == Pets.CompanionEquipmentRules.Slot && Pets.CompanionEquipmentRules.IsOrdinaryPet(item.Definition)))
         {
             yield break;
         }

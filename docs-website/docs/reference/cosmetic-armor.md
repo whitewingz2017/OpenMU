@@ -2,7 +2,7 @@
 
 Open inventory and use the header arrows to switch between **Gear** and **Skin**.
 The Skin page has a **full-set armor** slot, right weapon, left weapon/shield,
-wing/cape, and pet. Right-hand weapon skins can also be placed in the left-hand
+and wing/cape. Pets are equipped on Gear. Right-hand weapon skins can also be placed in the left-hand
 slot, including while another weapon skin is in the right hand. Class restrictions
 still apply. The bag stays visible on both pages.
 
@@ -15,6 +15,23 @@ Select an owned skin and choose **Use**, or drag it onto its matching Skin slot.
 Tap an occupied Skin slot to return the item to the bag; make room first.
 Unequip skins before trading, warehousing or listing them in a personal store.
 Skins are permanent and tradable. Players cannot drop them or sell them to NPCs.
+
+## Mount and pet slots
+
+Gear has one large slot for riding helpers (Uniria, Dinorant, Dark Horse,
+Fenrir and custom mounts) and one small slot beside it for ordinary pets
+(Guardian Angel, Imp, Guardian, Panda and other non-mount followers).
+A mount and a pet can be equipped together. Ordinary pets keep their usual
+bonuses and durability rules. Mounts cannot use the small slot; ordinary pets
+cannot use the large slot. The Skin page has no pet slot. Muun equipment is
+unchanged.
+
+Use a bag pet or drag it onto the small Gear slot. Tap an equipped pet to return
+it to the bag; make room first. Install the matching client and apply **Set 315
+Cosmetic Armor version 14** with all players offline, then restart. Existing
+ordinary pets in the large slot move to the small slot, or into the bag when
+it is occupied. If the bag cannot fit them, the update stops without removing
+owned items; free space and retry.
 
 ## Buying and previewing
 
@@ -50,8 +67,7 @@ full bag, invalid bonus or insufficient balance cannot spend WCoinC.
 The Mounts category contains 13 imported Fenrir models. These are actual riding
 items, equipped in the **Gear helper** slot, with the normal Fenrir level/class
 requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cells.
-They have no selectable skin bonus. A cosmetic pet can remain in its separate Skin
-slot while riding. Previewing a mount also previews the rider in the shop window.
+They have no selectable skin bonus. An ordinary or cosmetic pet can remain in the small Gear pet slot while riding. Previewing a mount also previews the rider in the shop window.
 
 Apply **Set 315 Cosmetic Armor version 8** while players are offline and restart.
 Existing floating Fenrir items keep their identities and become mounts; items in

@@ -25,7 +25,7 @@ public static class ItemExpiration
             var changed = await CashShop.PurchasedEffectDelivery.SynchronizeAsync(player, utcNow).ConfigureAwait(false);
             if (player.Inventory is { } inventory)
             {
-                foreach (var item in inventory.Items.Where(i => i.ExpiresAtUtc <= utcNow).ToList())
+                foreach (var item in inventory.Items.Concat(Pets.CompanionEquipmentRules.Stored(player)).Where(i => i.ExpiresAtUtc <= utcNow).ToList())
                 {
                     byte slot = item.ItemSlot;
                     await inventory.RemoveItemAsync(item).ConfigureAwait(false);
