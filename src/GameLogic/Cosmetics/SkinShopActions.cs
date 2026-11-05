@@ -20,7 +20,8 @@ public sealed class SkinShopActions
     /// <param name="itemType">The item group times 512 plus its number.</param>
     /// <param name="bonus">The configured option number, or zero for pets.</param>
     /// <param name="quotedPrice">The WCoinC price displayed by the client.</param>
-    public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, int itemType, byte bonus, int quotedPrice)
+    /// <param name="level">The item level the client previewed (0 to 15), which the bought skin gets.</param>
+    public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, int itemType, byte bonus, int quotedPrice, byte level = 0)
     {
         var status = await player.RunPersistenceExclusiveAsync(async () =>
         {
@@ -45,7 +46,7 @@ public sealed class SkinShopActions
 
             await player.ApplyPendingCashShopCoinGrantsAsync().ConfigureAwait(false);
             return operation == 0 ? "Ready" : operation == 1
-                ? await PurchaseAsync(player, settings, itemType, bonus, quotedPrice).ConfigureAwait(false)
+                ? await PurchaseAsync(player, settings, itemType, bonus, quotedPrice, level).ConfigureAwait(false)
                 : "Unknown skin shop operation.";
         }).ConfigureAwait(false);
 
@@ -53,8 +54,14 @@ public sealed class SkinShopActions
         await player.InvokeViewPlugInAsync<ISkinShopView>(view => view.ShowAsync(requestId, status, operation == 0)).ConfigureAwait(false);
     }
 
-    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, int itemType, byte bonus, int quotedPrice)
+    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, int itemType, byte bonus, int quotedPrice, byte level)
     {
+        const byte MaximumLevel = 15;
+        if (level > MaximumLevel)
+        {
+            return "Choose a level from +0 to +15.";
+        }
+
         var definition = player.GameContext.Configuration.Items.SingleOrDefault(d => (d.Group * 512) + d.Number == itemType);
         if (definition is null || !FenrirMountRules.IsShopItem(definition) || !CosmeticArmorRules.CanEquip(player, definition))
         {
@@ -84,6 +91,7 @@ public sealed class SkinShopActions
         var item = player.PersistenceContext.CreateNew<Item>();
         item.Definition = definition;
         item.Durability = definition.Durability;
+        item.Level = level;
         item.HasSkill = FenrirMountRules.IsCustom(definition) && definition.Skill is not null;
         ItemOptionLink? link = null;
         var committed = false;

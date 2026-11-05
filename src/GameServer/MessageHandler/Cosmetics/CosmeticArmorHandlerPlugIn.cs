@@ -40,7 +40,9 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
             return;
         }
 
-        if (packet.Length == SkinShopRequestExtended.Length && packet.Span[0] == 0xC1 && packet.Span[3] == SkinShopRequestExtended.SubCode)
+        // The current client appends the previewed item level (one byte) to the request; an older one doesn't.
+        if ((packet.Length == SkinShopRequestExtended.Length || packet.Length == SkinShopRequestExtended.Length + 1)
+            && packet.Span[0] == 0xC1 && packet.Span[3] == SkinShopRequestExtended.SubCode)
         {
             SkinShopRequestExtended shop = packet;
             if (shop.QuotedPrice > int.MaxValue)
@@ -48,7 +50,8 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
                 return;
             }
 
-            await this._shop.ExecuteAsync(player, shop.RequestId, shop.Operation, shop.ItemType, shop.Bonus, (int)shop.QuotedPrice).ConfigureAwait(false);
+            var level = packet.Length > SkinShopRequestExtended.Length ? packet.Span[SkinShopRequestExtended.Length] : (byte)0;
+            await this._shop.ExecuteAsync(player, shop.RequestId, shop.Operation, shop.ItemType, shop.Bonus, (int)shop.QuotedPrice, level).ConfigureAwait(false);
             return;
         }
 
