@@ -19,10 +19,11 @@
             <th class="col-1">@typeof(Account).GetPropertyCaption(nameof(Account.LoginName))</th>
             <th class="col-1">@typeof(Account).GetPropertyCaption(nameof(Account.State))</th>
             <th class="col-2">@typeof(Account).GetPropertyCaption(nameof(Account.EMail))</th>
+            <th class="col-1">Playtime</th>
             <th class="col-2">@Resources.Action</th>
         </TableHeader>
         <FilterHeader>
-            <th colspan="4">
+            <th colspan="5">
                 <div class="input-group">
                     <span class="input-group-text"><span class="oi oi-magnifying-glass" aria-hidden="true"></span></span>
                     <input class="form-control small" type="search" autofocus @bind="@this._accountService.SearchFilter" @bind:event="oninput" placeholder="@Resources.Search ..."/>
@@ -33,6 +34,7 @@
             <td>@item.LoginName</td>
             <td>@item.State.GetEnumCaption()</td>
             <td>@item.EMail</td>
+            <td title="@($"{item.PlayTimeSeconds} seconds")">@FormatPlayTime(item.PlayTimeSeconds)</td>
             <td>
                 <NavLink href="@($"edit-account/{item.GetId()}/{typeof(Account).FullName}/{item.GetId()}")" class="btn btn-primary"><span class="oi oi-pencil" aria-hidden="true"></span> @Resources.Edit</NavLink>
                 <AuthorizeView Policy="@AdminPolicies.Operator">
@@ -48,6 +50,18 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </TableFooter>
     </DataTable>
 </div>
+
+@code {
+    // The play time the game server last saved, e.g. "3d 4h 12m".
+    private static string FormatPlayTime(long seconds)
+    {
+        var time = TimeSpan.FromSeconds(seconds);
+        return time.TotalDays >= 1 ? $"{(int)time.TotalDays}d {time.Hours}h {time.Minutes}m"
+            : time.TotalHours >= 1 ? $"{time.Hours}h {time.Minutes}m"
+            : $"{time.Minutes}m";
+    }
+}

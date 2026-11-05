@@ -86,6 +86,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("PlayTimeSeconds")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp with time zone");
 

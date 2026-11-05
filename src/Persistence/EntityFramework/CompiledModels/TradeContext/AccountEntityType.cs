@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Account",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Account),
                 baseEntityType,
-                propertyCount: 20,
+                propertyCount: 21,
                 navigationCount: 3,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -123,6 +123,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("PasswordHash", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<PasswordHash>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
             passwordHash.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var playTimeSeconds = runtimeEntityType.AddProperty(
+                "PlayTimeSeconds",
+                typeof(long),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("PlayTimeSeconds", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<PlayTimeSeconds>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0L);
+            playTimeSeconds.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var registrationDate = runtimeEntityType.AddProperty(
                 "RegistrationDate",

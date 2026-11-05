@@ -165,6 +165,15 @@ public class Account
     public int GoblinPoints { get; set; }
 
     /// <summary>
+    /// Gets or sets the total time in seconds which characters of this account spent in the game.
+    /// </summary>
+    /// <remarks>
+    /// Offline leveling doesn't count. Only the game server changes it, because it may hold the account in memory.
+    /// </remarks>
+    [Browsable(false)]
+    public long PlayTimeSeconds { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this instance is a template account
     /// and therefore read-only within the game server.
     /// </summary>

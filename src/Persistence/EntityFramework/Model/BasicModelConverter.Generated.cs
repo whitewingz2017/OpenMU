@@ -192,6 +192,7 @@ internal sealed class BasicModelConverter
         target.WCoinC = source.WCoinC;
         target.WCoinP = source.WCoinP;
         target.GoblinPoints = source.GoblinPoints;
+        target.PlayTimeSeconds = source.PlayTimeSeconds;
         target.IsTemplate = source.IsTemplate;
         target.IsBot = source.IsBot;
         target.IsNetworkObservationActive = source.IsNetworkObservationActive;
