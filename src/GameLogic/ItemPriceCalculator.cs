@@ -485,7 +485,7 @@ public class ItemPriceCalculator
         }
         else if ((item.Definition.Group == 12
                 && ((item.Definition.Number > 6 && item.Definition.Number < 36)
-                    || (item.Definition.Number > 43 && item.Definition.Number != 50)))
+                    || (item.Definition.Number > 43 && item.Definition.Number != 50 && item.Definition.Number is not (>= 262 and <= 265))))
             || item.Definition.Group == 13
             || item.Definition.Group == 15)
         {

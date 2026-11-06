@@ -255,7 +255,15 @@ public class SimpleItemCraftingHandler : BaseItemCraftingHandler
         }
     }
 
-    private async ValueTask<List<Item>> CreateResultItemsAsync(Player player, IList<CraftingRequiredItemLink> referencedItems, ItemCraftingResultItem craftingResultItem, byte successRate)
+    /// <summary>
+    /// Creates the result items of a crafting result item definition and adds them to the temporary storage.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="referencedItems">The required items.</param>
+    /// <param name="craftingResultItem">The crafting result item.</param>
+    /// <param name="successRate">The success rate.</param>
+    /// <returns>The created items.</returns>
+    protected async ValueTask<List<Item>> CreateResultItemsAsync(Player player, IList<CraftingRequiredItemLink> referencedItems, ItemCraftingResultItem craftingResultItem, byte successRate)
     {
         int resultItemCount = this._settings.MultipleAllowed
             ? referencedItems.FirstOrDefault(r => r.ItemRequirement.Reference > 0)?.Items.Count() ?? 1

@@ -124,6 +124,34 @@ public class Wings : WingsInitializerBase
         return this.CreateSmallWings();
     }
 
+    /// <summary>
+    /// Adds the monster wings (2.5 wings), which are crafted from a second wing or cape and a monster wing material.
+    /// </summary>
+    /// <remarks>
+    /// Values of the Pegasus game server: damage increase grows by 1 % per level like the second wings, the
+    /// absorption by 2 % and the defense by 3 per level. They use the existing tables and the
+    /// additional options of the Wings of Spirits.
+    /// </remarks>
+    /// <returns>The created items. Wings which already exist are not created again.</returns>
+    internal IReadOnlyList<ItemDefinition> AddMonsterWings()
+    {
+        var wingsOfSpirits = this.GameConfiguration.Items.FirstOrDefault(item => item is { Group: 12, Number: 3 });
+        this._absorbByLevelTable = GetBonusTable(wingsOfSpirits, Stats.DamageReceiveDecrement) ?? this.CreateAbsorbBonusPerLevel();
+        this._damageIncreaseByLevelTableSecond = GetBonusTable(wingsOfSpirits, Stats.AttackDamageIncrease) ?? this.CreateDamageIncreaseBonusPerLevelSecondWings();
+        this._defenseBonusByLevelTable = GetBonusTable(wingsOfSpirits, Stats.DefenseBase) ?? this.CreateBonusDefensePerLevel();
+        var wingOptions = wingsOfSpirits?.PossibleItemOptions.FirstOrDefault(o => o.PossibleOptions.Any(p => p.OptionType == ItemOptionTypes.Wing));
+
+        var created = new List<ItemDefinition?>
+        {
+            this.CreateMonsterWing(262, 2, 3, "Cloak of Death", 27, 0, 0, 0, 0, 1, 0, 1, this.BuildOptions((0b00, OptionType.HealthRecover), (0b10, OptionType.PhysDamage)), 21, 13, wingOptions),
+            this.CreateMonsterWing(263, 4, 3, "Wings of Chaos", 46, 0, 2, 0, 1, 0, 0, 0, this.BuildOptions((0b00, OptionType.HealthRecover), (0b10, OptionType.PhysDamage)), 33, 30, wingOptions),
+            this.CreateMonsterWing(264, 4, 3, "Wings of Power", 37, 2, 0, 0, 1, 0, 2, 0, this.BuildOptions((0b00, OptionType.HealthRecover), (0b10, OptionType.WizDamage)), 35, 29, wingOptions),
+            this.CreateMonsterWing(265, 4, 3, "Wings of Life", 37, 0, 0, 2, 0, 0, 0, 0, this.BuildOptions((0b10, OptionType.HealthRecover), (0b00, OptionType.PhysDamage)), 35, 29, wingOptions),
+        };
+
+        return created.OfType<ItemDefinition>().ToList();
+    }
+
     private static ItemLevelBonusTable? GetBonusTable(ItemDefinition? item, AttributeDefinition targetAttribute)
     {
         return item?.BasePowerUpAttributes.FirstOrDefault(powerUp => powerUp.TargetAttribute == targetAttribute)?.BonusPerLevelTable;
@@ -164,6 +192,16 @@ public class Wings : WingsInitializerBase
         var wing = this.CreateWing(number, width, height, name, 1, defense, 200, 1, darkWizardClassLevel, darkKnightClassLevel, elfClassLevel, magicGladiatorClassLevel, darkLordClassLevel, summonerClassLevel, ragefighterClassLevel);
         this.AddDamagePowerUps(wing, damageIncreaseAndAbsorbInitial, damageIncreaseAndAbsorbInitial, this._damageIncreaseByLevelTable);
         return wing;
+    }
+
+    private ItemDefinition? CreateMonsterWing(short number, byte width, byte height, LocalizedString name, int defense, int darkWizardClassLevel, int darkKnightClassLevel, int elfClassLevel, int magicGladiatorClassLevel, int darkLordClassLevel, int summonerClassLevel, int ragefighterClassLevel, IEnumerable<IncreasableItemOption> possibleOptions, int damageIncreaseInitial, int damageAbsorbInitial, ItemOptionDefinition? wingOptions)
+    {
+        if (this.GameConfiguration.Items.Any(item => item.Group == 12 && item.Number == number))
+        {
+            return null;
+        }
+
+        return this.CreateWing(number, width, height, name, 150, defense, 200, 290, darkWizardClassLevel, darkKnightClassLevel, elfClassLevel, magicGladiatorClassLevel, darkLordClassLevel, summonerClassLevel, ragefighterClassLevel, possibleOptions, damageIncreaseInitial, damageAbsorbInitial, this._damageIncreaseByLevelTableSecond!, wingOptions);
     }
 
     private void CreateFeather()
@@ -228,7 +266,7 @@ public class Wings : WingsInitializerBase
         }
     }
 
-    private ItemDefinition CreateWing(byte number, byte width, byte height, LocalizedString name, byte dropLevel, int defense, byte durability, int levelRequirement, int darkWizardClassLevel, int darkKnightClassLevel, int elfClassLevel, int magicGladiatorClassLevel, int darkLordClassLevel, int summonerClassLevel, int ragefighterClassLevel, IEnumerable<IncreasableItemOption> possibleOptions, int damageIncreaseInitial, int damageAbsorbInitial, ItemLevelBonusTable damageIncreasePerLevel, ItemOptionDefinition? wingOptionDefinition, float movementSpeed = MovementSpeedConstants.DefaultWingMovementSpeed)
+    private ItemDefinition CreateWing(short number, byte width, byte height, LocalizedString name, byte dropLevel, int defense, byte durability, int levelRequirement, int darkWizardClassLevel, int darkKnightClassLevel, int elfClassLevel, int magicGladiatorClassLevel, int darkLordClassLevel, int summonerClassLevel, int ragefighterClassLevel, IEnumerable<IncreasableItemOption> possibleOptions, int damageIncreaseInitial, int damageAbsorbInitial, ItemLevelBonusTable damageIncreasePerLevel, ItemOptionDefinition? wingOptionDefinition, float movementSpeed = MovementSpeedConstants.DefaultWingMovementSpeed)
     {
         var wing = this.CreateWing(number, width, height, name, dropLevel, defense, durability, levelRequirement, darkWizardClassLevel, darkKnightClassLevel, elfClassLevel, magicGladiatorClassLevel, darkLordClassLevel, summonerClassLevel, ragefighterClassLevel, movementSpeed);
         if (wingOptionDefinition != null)
@@ -280,7 +318,7 @@ public class Wings : WingsInitializerBase
         return wing;
     }
 
-    private ItemDefinition CreateWing(byte number, byte width, byte height, LocalizedString name, byte dropLevel, int defense, byte durability, int levelRequirement, int darkWizardClassLevel, int darkKnightClassLevel, int elfClassLevel, int magicGladiatorClassLevel, int darkLordClassLevel, int summonerClassLevel, int ragefighterClassLevel, float movementSpeed = MovementSpeedConstants.DefaultWingMovementSpeed)
+    private ItemDefinition CreateWing(short number, byte width, byte height, LocalizedString name, byte dropLevel, int defense, byte durability, int levelRequirement, int darkWizardClassLevel, int darkKnightClassLevel, int elfClassLevel, int magicGladiatorClassLevel, int darkLordClassLevel, int summonerClassLevel, int ragefighterClassLevel, float movementSpeed = MovementSpeedConstants.DefaultWingMovementSpeed)
     {
         var wing = this.Context.CreateNew<ItemDefinition>();
         this.GameConfiguration.Items.Add(wing);
