@@ -10,17 +10,26 @@ using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.CastleSiege.NPC;
 using MUnique.OpenMU.GameLogic.Views.CastleSiege;
+using Nito.AsyncEx;
 
 /// <summary>
 /// Holds the runtime state of Castle Siege for one game context.
 /// </summary>
 /// <remarks>
-/// Runtime registrations and <see cref="ExecutionLock"/> are scoped to this game context. Deployments which run
-/// multiple game-server processes require external coordination when registrations are changed concurrently.
+/// Runtime registrations and <see cref="ExecutionLock"/> are scoped to this game context. The game servers of one
+/// process share the persistent <see cref="CastleSiegeData"/>, so its writes are serialized across them. Deployments
+/// which run multiple game-server processes require external coordination when registrations are changed concurrently.
 /// </remarks>
 public class CastleSiegeContext : IEventStateProvider
 {
     private static readonly TimeSpan JoinSideEffectDuration = TimeSpan.FromDays(7);
+
+    /// <summary>
+    /// Serializes the writes to the shared <see cref="CastleSiegeData"/>: every game server of this process runs its
+    /// own context against it and changes state at the same moment. Two saves of the selected guilds at once both
+    /// inserted the same guilds and broke IX_CastleSiegeGuild_GuildId; serialized, each reads the other's rows first.
+    /// </summary>
+    private static readonly AsyncLock SharedDataWriteLock = new();
 
     private readonly IGameContext _gameContext;
     private readonly TimeProvider _timeProvider;
@@ -325,6 +334,8 @@ public class CastleSiegeContext : IEventStateProvider
             return;
         }
 
+        using var sharedDataLock = await SharedDataWriteLock.LockAsync().ConfigureAwait(false);
+
         using var context = this._gameContext.PersistenceContextProvider.CreateNewTypedContext(typeof(CastleSiegeData), false, this._gameContext.Configuration);
         var persistentData = await context.GetByIdAsync<CastleSiegeData>(this.SiegeData.Id).ConfigureAwait(false)
             ?? throw new InvalidOperationException("The persistent Castle Siege state no longer exists.");
@@ -344,6 +355,8 @@ public class CastleSiegeContext : IEventStateProvider
         {
             return;
         }
+
+        using var sharedDataLock = await SharedDataWriteLock.LockAsync().ConfigureAwait(false);
 
         using var context = this._gameContext.PersistenceContextProvider.CreateNewTypedContext(
             typeof(CastleSiegeData),
@@ -381,6 +394,8 @@ public class CastleSiegeContext : IEventStateProvider
         {
             return;
         }
+
+        using var sharedDataLock = await SharedDataWriteLock.LockAsync().ConfigureAwait(false);
 
         this.NpcController.SynchronizeNpcStates();
         var persistedNpcs = this.NpcController.GetRuntimeSnapshot()
