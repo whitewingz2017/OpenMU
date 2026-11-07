@@ -1731,6 +1731,9 @@
   <data name="ExcellentCombination_MaximumRate" xml:space="preserve"><value>Maximum success rate (%)</value></data>
   <data name="ExcellentCombination_ZenCost" xml:space="preserve"><value>Zen cost per attempt</value></data>
   <data name="RankTitles_Name" xml:space="preserve"><value>Rank Titles</value></data>
+  <data name="RankTitles_Prices" xml:space="preserve"><value>Rank Title Prices</value></data>
+  <data name="RankTitles_Price" xml:space="preserve"><value>WCoinC price (0 disables buying)</value></data>
+  <data name="RankTitles_InvalidCatalog" xml:space="preserve"><value>Each title needs a unique rank ID, a name, and a WCoinC price of zero or more.</value></data>
   <data name="RankTitles_Description" xml:space="preserve"><value>Permanent character titles purchased with WCoinC, with configurable prices and visible badges and auras.</value></data>
   <data name="RankTitles_UpdateName" xml:space="preserve"><value>TwinMU Rank Titles</value></data>
   <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Adds the ten animated TwinMU rank titles at configurable WCoinC prices and preserves existing title settings.</value></data>

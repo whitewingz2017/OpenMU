@@ -4,11 +4,15 @@
 
 namespace MUnique.OpenMU.GameLogic.RankTitles;
 
+using MUnique.OpenMU.DataModel.Composition;
+
 /// <summary>Configures the rank titles offered to custom clients.</summary>
-public sealed class RankTitleSettings
+public sealed class RankTitleSettings : IValidatableObject
 {
     /// <summary>Gets or sets the catalog, using the TwinMU client rank identifiers.</summary>
-    public List<RankTitleOffer> Titles { get; set; } =
+    [MemberOfAggregate]
+    [ScaffoldColumn(true)]
+    public ICollection<RankTitleOffer> Titles { get; set; } =
     [
         new() { Rank = 1, Name = "VIP" },
         new() { Rank = 2, Name = "Fighter" },
@@ -35,4 +39,13 @@ public sealed class RankTitleSettings
     public bool IsValid() => this.Titles is { Count: <= RankTitleFeaturePlugIn.MaximumCatalogTitles }
         && this.Titles.All(title => title is { Rank: > 0 and <= ushort.MaxValue, Price: >= 0, Name.Length: > 0 and <= RankTitleFeaturePlugIn.MaximumTitleNameLength })
         && this.Titles.Select(title => title.Rank).Distinct().Count() == this.Titles.Count;
+
+    /// <inheritdoc />
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!this.IsValid())
+        {
+            yield return new ValidationResult(RankTitleResources.InvalidCatalog, [nameof(this.Titles)]);
+        }
+    }
 }

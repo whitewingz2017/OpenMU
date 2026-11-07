@@ -61,7 +61,7 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         player.Account!.WCoinC = coins;
-        RankTitleFeaturePlugIn.Settings(player.GameContext)!.Titles[0].Price = price;
+        RankTitleFeaturePlugIn.Settings(player.GameContext)!.Titles.First().Price = price;
         await new RankTitleActions().ExecuteAsync(player, 1, 1, 1, price).ConfigureAwait(false);
         Assert.That(player.Account.WCoinC, Is.EqualTo(coins));
         Assert.That(player.SelectedCharacter!.OwnedRankTitlesJson, Is.EqualTo("[]"));

@@ -17,6 +17,7 @@ public sealed class RankTitleOffer
     public string Name { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the WCoinC price. Zero prevents purchases.</summary>
+    [Display(Name = nameof(RankTitleResources.Price), ResourceType = typeof(RankTitleResources))]
     [Range(0, int.MaxValue)]
     public int Price { get; set; } = 100;
 }

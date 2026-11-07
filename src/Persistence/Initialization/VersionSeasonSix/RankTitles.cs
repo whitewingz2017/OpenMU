@@ -44,7 +44,11 @@ public static class RankTitles
             return;
         }
 
-        settings.Titles.AddRange(missing);
+        foreach (var title in missing)
+        {
+            settings.Titles.Add(title);
+        }
+
         if (!settings.IsValid())
         {
             throw new InvalidOperationException("The animated rank titles would produce an invalid catalog. Check the Rank Titles feature configuration.");

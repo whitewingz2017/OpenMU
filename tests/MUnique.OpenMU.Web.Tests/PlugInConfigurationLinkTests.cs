@@ -12,6 +12,7 @@ using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.PlugIns;
+using MUnique.OpenMU.GameLogic.RankTitles;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
@@ -29,6 +30,7 @@ public class PlugInConfigurationLinkTests
     [TestCase(typeof(StartingItemsPlugIn))]
     [TestCase(typeof(ZenDropPlugIn))]
     [TestCase(typeof(CashShopFeaturePlugIn))]
+    [TestCase(typeof(RankTitleFeaturePlugIn))]
     public async Task ResolvesTypeAndSavedIdsAsync(Type type)
     {
         var configuration = new Basic.GameConfiguration();
@@ -51,6 +53,7 @@ public class PlugInConfigurationLinkTests
     [TestCase(typeof(StartingItemsPlugIn))]
     [TestCase(typeof(ZenDropPlugIn))]
     [TestCase(typeof(CashShopFeaturePlugIn))]
+    [TestCase(typeof(RankTitleFeaturePlugIn))]
     public void MenuQueryOpensConfiguration(Type type)
     {
         using var context = new BunitContext();
@@ -76,7 +79,9 @@ public class PlugInConfigurationLinkTests
         Assert.That(controller.NameFilter, Is.Not.Empty);
         var expectedEditor = type == typeof(StartingItemsPlugIn)
             ? typeof(MUnique.OpenMU.Web.AdminPanel.Components.StartingItems.StartingItemsEditor)
-            : typeof(MUnique.OpenMU.Web.Shared.Components.Form.Modal.ModalCreateNew<>).MakeGenericType(type == typeof(ZenDropPlugIn) ? typeof(ZenDropConfiguration) : typeof(CashShopSettings));
+            : typeof(MUnique.OpenMU.Web.Shared.Components.Form.Modal.ModalCreateNew<>).MakeGenericType(
+                type == typeof(ZenDropPlugIn) ? typeof(ZenDropConfiguration) :
+                type == typeof(RankTitleFeaturePlugIn) ? typeof(RankTitleSettings) : typeof(CashShopSettings));
         modal.Verify(m => m.Show(expectedEditor, It.IsAny<string>(), It.IsAny<ModalParameters>(), It.IsAny<ModalOptions>()), Times.Once);
     }
 }

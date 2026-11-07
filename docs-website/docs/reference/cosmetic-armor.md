@@ -59,6 +59,11 @@ so enable **Rank Titles** before using the shop. Edit each
 `Titles` entry's `Price` in the **Rank Titles** feature plugin configuration.
 A zero price prevents purchases while keeping owned titles available to equip.
 Keep `Rank` IDs aligned with the desktop and mobile `RankTitles.json` files.
+Open **Game Configuration → Rank Title Prices** to edit prices. Expand
+**Titles**, change each title's **WCoinC price**, and submit the form.
+A zero price disables new purchases. Players can refresh the Rank Shop to
+see the saved prices. The badge appearance, animated effects, and display
+size are configured in the desktop and mobile `RankTitles.json` catalogs.
 
 ## Buying and previewing
 

@@ -42,9 +42,9 @@ public class RankTitleInitializationTests
         AssertCatalog(configuration);
         var feature = configuration.PlugInConfigurations.Single();
         var settings = new RankTitleSettings();
-        settings.Titles.RemoveAll(title => title.Rank > 9);
-        settings.Titles[0].Price = 321;
-        settings.Titles[^1].Price = 456;
+        settings.Titles = settings.Titles.Where(title => title.Rank <= 9).ToList();
+        settings.Titles.First().Price = 321;
+        settings.Titles.Last().Price = 456;
         feature.IsActive = false;
         using var dataSource = new GameConfigurationDataSource(new NullLogger<GameConfigurationDataSource>(), provider);
         feature.SetConfiguration(settings, new ByDataSourceReferenceHandler(dataSource));
@@ -56,8 +56,8 @@ public class RankTitleInitializationTests
         Assert.That(feature.CustomConfiguration, Is.EqualTo(updated));
         var titles = feature.GetConfiguration<RankTitleSettings>(null)!.Titles;
         Assert.That(titles.Select(title => title.Rank), Is.EqualTo(Enumerable.Range(1, 18)));
-        Assert.That(titles[0].Price, Is.EqualTo(321));
-        Assert.That(titles[8].Price, Is.EqualTo(456));
+        Assert.That(titles.First().Price, Is.EqualTo(321));
+        Assert.That(titles.ElementAt(8).Price, Is.EqualTo(456));
         Assert.That(titles.Skip(9).All(title => title.Price == 100), Is.True);
     }
 
