@@ -5,6 +5,12 @@ For the progress of the project as a whole, please have a look at the [projects 
 In this document we track the progress of the packet handlers.
 Each packet handler requires some game logic behind it.
 
+The custom-client Rank Shop is implemented through `C1 FD 08` for catalog,
+purchase and equipment requests, `C2 FD 08` for account WCoinC, prices and
+ownership, and `C2 FD 07` for active-title appearances on entry into view and
+after changes. Titles persist per character and purchases save ownership with
+the coin deduction.
+
 The custom C# client's Event Timer is implemented through `C1 FB 20` (request)
 and `C2 FB 21` (schedule snapshot). It reads active periodic event schedules on
 the player's game server, including the server time zone, server restrictions,

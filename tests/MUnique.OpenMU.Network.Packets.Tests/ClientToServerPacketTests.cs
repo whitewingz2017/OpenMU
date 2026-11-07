@@ -4255,4 +4255,34 @@ public class PacketStructureTests
         Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for RankTitleRequestExtended.
+    /// </summary>
+    [Test]
+    public void RankTitleRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 15;
+        var actualLength = RankTitleRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'Rank' boundary
+        Assert.That(5 + 2, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Rank' exceeds packet boundary");
+        
+        // Validate field 'QuotedPrice' boundary
+        Assert.That(7 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'QuotedPrice' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(11 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

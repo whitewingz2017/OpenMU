@@ -6003,4 +6003,38 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="RankTitleRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="rank">The rank.</param>
+    /// <param name="quotedPrice">The quoted price.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the rank shop (0), purchases a permanent title (1), or equips an owned title or zero to unequip (2).
+    /// Causes reaction on server side: The server checks ownership, the quoted WCoinC price, account balance and replay sequence. It saves purchases atomically and sends the entire shop with the matching RequestId.
+    /// </remarks>
+    public static async ValueTask SendRankTitleRequestExtendedAsync(this IConnection? connection, byte @operation, ushort @rank, uint @quotedPrice, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = RankTitleRequestExtendedRef.Length;
+            var packet = new RankTitleRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.Rank = @rank;
+            packet.QuotedPrice = @quotedPrice;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

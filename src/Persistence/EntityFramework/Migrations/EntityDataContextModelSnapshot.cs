@@ -1048,6 +1048,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("ActiveRankTitle")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("CharacterClassId")
                         .HasColumnType("uuid");
 
@@ -1097,6 +1100,12 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
+
+                    b.Property<string>("OwnedRankTitlesJson")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("[]");
 
                     b.Property<int>("PlayerKillCount")
                         .HasColumnType("integer");

@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.DataModel.Entities;
 
+using System.ComponentModel;
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.Interfaces;
@@ -203,6 +204,14 @@ public class Character
     /// Gets or sets the number of inventory extensions.
     /// </summary>
     public int InventoryExtensions { get; set; }
+
+    /// <summary>Gets or sets the permanently owned rank identifiers as a JSON array.</summary>
+    [Browsable(false)]
+    public string OwnedRankTitlesJson { get; set; } = "[]";
+
+    /// <summary>Gets or sets the equipped rank identifier, or zero for none.</summary>
+    [Range(0, ushort.MaxValue)]
+    public int ActiveRankTitle { get; set; }
 
     /// <summary>
     /// Gets or sets the key configuration, which is set by the client and just saved as is.

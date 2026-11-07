@@ -23,7 +23,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Character",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character),
                 baseEntityType,
-                propertyCount: 28,
+                propertyCount: 30,
                 navigationCount: 11,
                 foreignKeyCount: 6,
                 unnamedIndexCount: 7,
@@ -45,6 +45,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 typeof(Guid?),
                 nullable: true);
             accountId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var activeRankTitle = runtimeEntityType.AddProperty(
+                "ActiveRankTitle",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("ActiveRankTitle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<ActiveRankTitle>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            activeRankTitle.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var characterClassId = runtimeEntityType.AddProperty(
                 "CharacterClassId",
@@ -172,6 +180,15 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<Name>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 maxLength: 10);
             name.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var ownedRankTitlesJson = runtimeEntityType.AddProperty(
+                "OwnedRankTitlesJson",
+                typeof(string),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("OwnedRankTitlesJson", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<OwnedRankTitlesJson>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd);
+            ownedRankTitlesJson.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+            ownedRankTitlesJson.AddAnnotation("Relational:DefaultValue", "[]");
 
             var playerKillCount = runtimeEntityType.AddProperty(
                 "PlayerKillCount",

@@ -1730,4 +1730,8 @@
   <data name="ExcellentCombination_BonusPerCore" xml:space="preserve"><value>Bonus per Resonance Core (%)</value></data>
   <data name="ExcellentCombination_MaximumRate" xml:space="preserve"><value>Maximum success rate (%)</value></data>
   <data name="ExcellentCombination_ZenCost" xml:space="preserve"><value>Zen cost per attempt</value></data>
+  <data name="RankTitles_Name" xml:space="preserve"><value>Rank Titles</value></data>
+  <data name="RankTitles_Description" xml:space="preserve"><value>Permanent character titles purchased with WCoinC, with configurable prices and visible badges and auras.</value></data>
+  <data name="RankTitles_UpdateName" xml:space="preserve"><value>TwinMU Rank Titles</value></data>
+  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Enables the eight TwinMU rank titles at configurable WCoinC prices. Existing title settings are preserved.</value></data>
 </root>

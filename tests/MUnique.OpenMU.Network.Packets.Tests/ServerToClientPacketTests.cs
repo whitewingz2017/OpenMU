@@ -8915,4 +8915,36 @@ public class PacketStructureTests
         Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
             "GetRequiredSize calculation incorrect for binary field");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for RankTitleResponseExtended.
+    /// </summary>
+    [Test]
+    public void RankTitleResponseExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = RankTitleResponseExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 5;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
+
+    /// <summary>
+    /// Tests the packet size calculation for RankTitleAppearanceExtended.
+    /// </summary>
+    [Test]
+    public void RankTitleAppearanceExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = RankTitleAppearanceExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 5;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
 }

@@ -19,12 +19,25 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly CosmeticArmorActions _actions = new();
     private readonly GameLogic.Muun.MuunActions _muun = new();
     private readonly SkinShopActions _shop = new();
+    private readonly GameLogic.RankTitles.RankTitleActions _rankTitles = new();
     private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
+        if (packet.Length == RankTitleRequestExtended.Length && packet.Span[0] == RankTitleRequestExtended.HeaderType
+            && packet.Span[1] == packet.Length && packet.Span[3] == RankTitleRequestExtended.SubCode)
+        {
+            RankTitleRequestExtended rankRequest = packet;
+            if (rankRequest.QuotedPrice <= int.MaxValue)
+            {
+                await this._rankTitles.ExecuteAsync(player, rankRequest.RequestId, rankRequest.Operation, rankRequest.Rank, (int)rankRequest.QuotedPrice).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
         if (packet.Length == MuunRequestExtended.Length && packet.Span[0] == 0xC1
             && packet.Span[1] == packet.Length && packet.Span[3] == MuunRequestExtended.SubCode)
         {

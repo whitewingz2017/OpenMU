@@ -4348,6 +4348,19 @@
 <Packet><HeaderType>C1HeaderWithSubCode</HeaderType><Code>FE</Code><SubCode>02</SubCode><Name>StoreMailClaimRequest</Name><Length>6</Length><Direction>ClientToServer</Direction><SentWhen>A TwinMU personal-store or mail operation is requested.</SentWhen><CausedReaction>The server validates ownership and all payment components.</CausedReaction><Fields><Field><Index>4</Index><Type>ShortLittleEndian</Type><Name>LetterIndex</Name></Field></Fields></Packet>
 <Packet><HeaderType>C1HeaderWithSubCode</HeaderType><Code>FE</Code><SubCode>03</SubCode><Name>StoreMailBuyRequest</Name><Length>17</Length><Direction>ClientToServer</Direction><SentWhen>The buyer confirms a personal-store purchase for mail delivery.</SentWhen><CausedReaction>All required currencies are charged and the exact item is attached to buyer mail atomically.</CausedReaction><Fields><Field><Index>4</Index><Type>ShortLittleEndian</Type><Name>PlayerId</Name></Field><Field><Index>6</Index><Type>String</Type><Length>10</Length><Name>PlayerName</Name></Field><Field><Index>16</Index><Type>Byte</Type><Name>Slot</Name></Field></Fields></Packet>
   <Packet><HeaderType>C1HeaderWithSubCode</HeaderType><Code>FD</Code><SubCode>05</SubCode><Name>MuunRequestExtended</Name><Length>11</Length><Direction>ClientToServer</Direction><SentWhen>A custom client requests Muun operations or a Muun appearance changes.</SentWhen><CausedReaction>Operations: 0 refresh, 1 deposit bag source, 2 withdraw stored source, 3 equip stored source to target 0 or 1, 4 unequip source, 5 feed target duplicate to source, 6 evolve source using target bag stone, 7 repair source using target bag material, 8 exchange bag material in source using the recipe index in target, 9 move stored source to the chosen Muun target slot, 10 deposit bag source into the chosen Muun target slot. Operation 9 swaps occupied equipment slots and rejects occupied collection cells. Operation 10 moves displaced equipment into a free collection cell and rejects replacement when collection storage is full. Responses contain authoritative UTF-8 JSON with species catalogue and exchange recipes. Appearance packets identify the player and two visible pet types, or AttackTarget and MuunSlot for a server-authorized assisted monster attack.</CausedReaction><Fields><Field><Index>4</Index><Type>Byte</Type><Name>Operation</Name></Field><Field><Index>5</Index><Type>Byte</Type><Name>SourceSlot</Name></Field><Field><Index>6</Index><Type>Byte</Type><Name>TargetSlot</Name></Field><Field><Index>7</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field></Fields></Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>08</SubCode><Name>RankTitleRequestExtended</Name><Length>15</Length>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>The custom client loads the rank shop (0), purchases a permanent title (1), or equips an owned title or zero to unequip (2).</SentWhen>
+      <CausedReaction>The server checks ownership, the quoted WCoinC price, account balance and replay sequence. It saves purchases atomically and sends the entire shop with the matching RequestId.</CausedReaction>
+      <Fields>
+        <Field><Index>4</Index><Type>Byte</Type><Name>Operation</Name></Field>
+        <Field><Index>5</Index><Type>ShortLittleEndian</Type><Name>Rank</Name></Field>
+        <Field><Index>7</Index><Type>IntegerLittleEndian</Type><Name>QuotedPrice</Name></Field>
+        <Field><Index>11</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
+      </Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

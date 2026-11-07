@@ -18982,6 +18982,119 @@ public readonly struct MuunRequestExtended
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(MuunRequestExtended packet) => packet._data; 
 }
+
+
+/// <summary>
+/// Is sent by the client when: The custom client loads the rank shop (0), purchases a permanent title (1), or equips an owned title or zero to unequip (2).
+/// Causes reaction on server side: The server checks ownership, the quoted WCoinC price, account balance and replay sequence. It saves purchases atomically and sends the entire shop with the matching RequestId.
+/// </summary>
+public readonly struct RankTitleRequestExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RankTitleRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public RankTitleRequestExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RankTitleRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private RankTitleRequestExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (byte)Math.Min(data.Length, Length);
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC1;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x08;
+
+    /// <summary>
+    /// Gets the initial length of this data packet. When the size is dynamic, this value may be bigger than actually needed.
+    /// </summary>
+    public static int Length => 15;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C1HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data.Span[4];
+        set => this._data.Span[4] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the rank.
+    /// </summary>
+    public ushort Rank
+    {
+        get => ReadUInt16LittleEndian(this._data.Span[5..]);
+        set => WriteUInt16LittleEndian(this._data.Span[5..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the quoted price.
+    /// </summary>
+    public uint QuotedPrice
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[7..]);
+        set => WriteUInt32LittleEndian(this._data.Span[7..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[11..]);
+        set => WriteUInt32LittleEndian(this._data.Span[11..], value);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="RankTitleRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator RankTitleRequestExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="RankTitleRequestExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(RankTitleRequestExtended packet) => packet._data; 
+}
     /// <summary>
     /// The state of the trade button.
     /// </summary>

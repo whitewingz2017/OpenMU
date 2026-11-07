@@ -1103,4 +1103,15 @@ Price: {3}</value></data>
   <data name="ExcellentCombination_Success" xml:space="preserve"><value>Combination successful. Secondary Gear, selected cores, and Zen were consumed.</value></data>
   <data name="ExcellentCombination_Failure" xml:space="preserve"><value>Combination failed. Main Gear was kept; Secondary Gear, selected cores, and Zen were consumed.</value></data>
   <data name="ExcellentCombination_Configuration" xml:space="preserve"><value>Choose Main Gear, Secondary Gear, and optional Resonance Cores.</value></data>
+  <data name="RankTitles_Invalid" xml:space="preserve"><value>Select a valid rank title.</value></data>
+  <data name="RankTitles_Retry" xml:space="preserve"><value>Request already processed. Refresh the Rank Shop.</value></data>
+  <data name="RankTitles_Disabled" xml:space="preserve"><value>Rank titles are disabled or their catalog is invalid on this server.</value></data>
+  <data name="RankTitles_InvalidData" xml:space="preserve"><value>Your rank titles could not be read. Contact the server administrator.</value></data>
+  <data name="RankTitles_CloseWindows" xml:space="preserve"><value>Close shop, trade, warehouse and mixing operations first.</value></data>
+  <data name="RankTitles_PriceChanged" xml:space="preserve"><value>This title is not for sale or its price changed. Refresh the Rank Shop.</value></data>
+  <data name="RankTitles_Owned" xml:space="preserve"><value>You already own this title. Equip it from My Ranks.</value></data>
+  <data name="RankTitles_Insufficient" xml:space="preserve"><value>Not enough WCoinC.</value></data>
+  <data name="RankTitles_SaveFailed" xml:space="preserve"><value>Saving failed. Your rank title purchase or equipment change was rolled back.</value></data>
+  <data name="RankTitles_Purchased" xml:space="preserve"><value>Title purchased. Equip it from My Ranks.</value></data>
+  <data name="RankTitles_Equipped" xml:space="preserve"><value>Your equipped title was updated.</value></data>
 </root>

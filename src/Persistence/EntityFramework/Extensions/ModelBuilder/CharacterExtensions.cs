@@ -28,6 +28,7 @@ internal static class CharacterExtensions
         }
 
         builder.Property(character => character.CharacterSlot).IsRequired();
+        builder.Property(character => character.OwnedRankTitlesJson).IsRequired().HasDefaultValue("[]");
         builder.HasMany(character => character.RawLetters).WithOne(letter => letter.Receiver!).OnDelete(DeleteBehavior.Cascade);
     }
 

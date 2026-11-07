@@ -50,8 +50,8 @@ public class NewPlayersInScopePlugIn : INewPlayersInScopePlugIn
         foreach (var owner in newPlayers)
         {
             await this.Player.InvokeViewPlugInAsync<GameLogic.Views.Inventory.IMuunView>(view => view.AppearanceAsync(owner)).ConfigureAwait(false);
+            await this.Player.InvokeViewPlugInAsync<GameLogic.Views.Inventory.IRankTitleView>(view => view.AppearanceAsync(owner)).ConfigureAwait(false);
         }
-
 
         if (shopPlayers != null)
         {

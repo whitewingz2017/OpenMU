@@ -33,6 +33,29 @@ ordinary pets in the large slot move to the small slot, or into the bag when
 it is occupied. If the bag cannot fit them, the update stops without removing
 owned items; free space and retry.
 
+## Rank titles
+
+Open **Rank Shop** from the window menu or the modern theme's **Rank** button.
+The **Shop** tab lists VIP, Fighter, Legend, TwinMU, Slayer, Hunter, PvP King and
+Top Tier, using client rank IDs 1 through 8. All eight initially cost **100
+WCoinC**, matching the skin shop's default price. This uses the account's WCoinC
+balance and applies pending coin grants before checking the balance.
+
+Titles are permanent and owned per character. Buying a title deducts WCoinC
+and saves ownership together. **My Ranks → Equip** shows its badge and aura to
+you and nearby players. **Unequip** hides it. Titles grant no combat bonuses.
+The server rejects repeat purchases, unowned equipment, changed prices and
+insufficient funds. Failed saves restore the balance and title state.
+
+Deploy the updated server and apply the **RankTitles** database schema migration
+through the normal server database update flow. Existing Season 6 servers must
+also apply **TwinMU Rank Titles** in **Updates**, then restart the game server.
+Fresh configurations include its default settings with the feature disabled,
+so enable **Rank Titles** before using the shop. Edit each
+`Titles` entry's `Price` in the **Rank Titles** feature plugin configuration.
+A zero price prevents purchases while keeping owned titles available to equip.
+Keep `Rank` IDs aligned with the desktop and mobile `RankTitles.json` files.
+
 ## Buying and previewing
 
 On the Skin page, tap **Skin Shop**. The window has three columns: categories

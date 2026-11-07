@@ -9252,4 +9252,60 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="RankTitleResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A rank shop request has been processed.
+    /// Causes reaction on client side: The client displays UTF-8 JSON containing RequestId, Status, Balance (account WCoinC), Active and Ranks (Rank, Price, Owned and Name).
+    /// </remarks>
+    public static async ValueTask SendRankTitleResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = RankTitleResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new RankTitleResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="RankTitleAppearanceExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A player enters view or changes their equipped rank title.
+    /// Causes reaction on client side: The custom client reads UTF-8 JSON with a Ranks array containing Id, Name and Rank for each player. Rank zero clears the title.
+    /// </remarks>
+    public static async ValueTask SendRankTitleAppearanceExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = RankTitleAppearanceExtendedRef.GetRequiredSize(data.Length);
+            var packet = new RankTitleAppearanceExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}
