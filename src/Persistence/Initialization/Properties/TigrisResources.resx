@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="TigrisHelm" xml:space="preserve"><value>Tigris Helm</value></data>
+  <data name="TigrisArmor" xml:space="preserve"><value>Tigris Armor</value></data>
+  <data name="TigrisPants" xml:space="preserve"><value>Tigris Pants</value></data>
+  <data name="TigrisBoots" xml:space="preserve"><value>Tigris Boots</value></data>
+  <data name="TigrisSet" xml:space="preserve"><value>Tigris Set</value></data>
+  <data name="PanteraClaws" xml:space="preserve"><value>Pantera Claws</value></data>
+  <data name="TigrisSocketItems_Name" xml:space="preserve"><value>Tigris Socket Equipment</value></data>
+  <data name="TigrisSocketItems_Description" xml:space="preserve"><value>Adds the four-piece Rage Fighter Tigris socket set and Pantera Claws. Uses Phoenix Soul base stats and three sockets. Install matching PC and mobile assets; apply with players offline.</value></data>
+</root>

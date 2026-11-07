@@ -10,6 +10,9 @@ One armor skin changes the appearance of the helmet, armor, pants, gloves and
 boots together. Wings, weapons, shields and pets remain separate items. Real
 combat equipment stays equipped underneath the skins. Set 315 is restricted to
 Elf and Summoner, including their promotions; Set 100 is unrestricted.
+Nearby players see the equipped skin's upgrade level on every piece of a full
+set, including its +15 appearance, both when entering view and when skins change.
+Deploy the updated server and reconnect to refresh existing appearances.
 
 Select an owned skin and choose **Use**, or drag it onto its matching Skin slot.
 Tap an occupied Skin slot to return the item to the bag; make room first.

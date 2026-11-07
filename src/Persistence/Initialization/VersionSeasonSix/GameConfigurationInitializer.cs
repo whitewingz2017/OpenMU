@@ -85,6 +85,7 @@ public class GameConfigurationInitializer : GameConfigurationInitializerBase
         this.AssignCharacterClassHomeMaps();
         this.WireRenaDropToEventMaps();
         new SocketSystem(this.Context, this.GameConfiguration).Initialize();
+        TigrisSocketItems.Ensure(this.Context, this.GameConfiguration);
         new ChaosMixes(this.Context, this.GameConfiguration).Initialize();
         new Gates(this.Context, this.GameConfiguration).Initialize();
         new Quest(this.Context, this.GameConfiguration).Initialize();

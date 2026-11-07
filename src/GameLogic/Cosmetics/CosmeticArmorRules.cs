@@ -65,7 +65,7 @@ public static class CosmeticArmorRules
     /// <summary>Gets visible equipment without changing the items supplying combat attributes.</summary>
     public static IEnumerable<Item> VisibleEquipment(Player player)
     {
-        var skins = new Dictionary<byte, ItemDefinition>();
+        var skins = new Dictionary<byte, (ItemDefinition Definition, byte Level)>();
         foreach (var item in Equipped(player).Where(i => CanEquip(player, i.Definition)))
         {
             if (item.ItemSlot == Pets.CompanionEquipmentRules.Slot)
@@ -80,12 +80,12 @@ public static class CosmeticArmorRules
             {
                 foreach (var definition in player.GameContext.Configuration.Items.Where(d => d.Group is >= 7 and <= 11 && d.Number == item.Definition.Number))
                 {
-                    skins[(byte)(definition.Group - 5)] = definition;
+                    skins[(byte)(definition.Group - 5)] = (definition, item.Level);
                 }
             }
             else
             {
-                skins[GearSlot(item.ItemSlot - FirstSlot)] = item.Definition;
+                skins[GearSlot(item.ItemSlot - FirstSlot)] = (item.Definition, item.Level);
             }
         }
 
@@ -99,7 +99,7 @@ public static class CosmeticArmorRules
 
         foreach (var entry in skins)
         {
-            yield return new TemporaryItem { Definition = entry.Value, ItemSlot = entry.Key };
+            yield return new TemporaryItem { Definition = entry.Value.Definition, ItemSlot = entry.Key, Level = entry.Value.Level };
         }
     }
 }

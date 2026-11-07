@@ -229,6 +229,7 @@ public class CosmeticArmorTests
     public async Task WeaponSkinFitsEitherHandAndSurvivesReloadAsync(byte part)
     {
         var (player, item) = await CreateAsync().ConfigureAwait(false);
+        item.Level = 15;
         item.Definition!.Group = 0;
         item.Definition.ItemSlot!.ItemSlots.Clear();
         item.Definition.ItemSlot.ItemSlots.Add(245);
@@ -239,6 +240,7 @@ public class CosmeticArmorTests
         var visible = CosmeticArmorRules.VisibleEquipment(player).Single();
         Assert.That(visible.ItemSlot, Is.EqualTo(CosmeticArmorRules.GearSlot(part)));
         Assert.That(visible.Definition, Is.SameAs(item.Definition));
+        Assert.That(visible.Level, Is.EqualTo(item.Level));
         _ = new InventoryStorage(player, player.GameContext);
         Assert.That(CosmeticArmorRules.Equipped(player).Single(), Is.SameAs(item));
         await actions.ExecuteAsync(player, 2, 2, 0, part).ConfigureAwait(false);

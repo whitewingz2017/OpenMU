@@ -180,6 +180,62 @@ public class NewPlayersInScopeRemoteViewTests
         Assert.That(appearance.ItemNumber, Is.EqualTo(200));
     }
 
+    /// <summary>Observers receive the same custom set and level both on entry and equipment changes.</summary>
+    /// <param name="level">The equipped skin's upgrade level.</param>
+    [TestCase(0)]
+    [TestCase(15)]
+    public async ValueTask CustomSetKeepsItsModelsAndLevelForObserversAsync(byte level)
+    {
+        const short setNumber = 418;
+        var (observer, output) = CreateObserver(ExtendedClient);
+        var added = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var skinSlot = new MUnique.OpenMU.Persistence.BasicModel.ItemSlotType();
+        skinSlot.ItemSlots.Add(GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1);
+        for (byte group = 7; group <= 11; ++group)
+        {
+            added.GameContext.Configuration.Items.Add(new MUnique.OpenMU.Persistence.BasicModel.ItemDefinition
+            {
+                Group = group, Number = setNumber, ItemSlot = group == 8 ? skinSlot : null,
+            });
+        }
+
+        var skin = new MUnique.OpenMU.Persistence.BasicModel.Item
+        {
+            Definition = added.GameContext.Configuration.Items.Single(i => i.Group == 8 && i.Number == setNumber),
+            ItemSlot = GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1,
+            Level = level,
+            Durability = 1,
+        };
+        added.SelectedCharacter!.Inventory!.Items.Add(skin);
+        await new NewPlayersInScopeExtendedPlugIn(observer).NewPlayersInScopeAsync([added]).ConfigureAwait(false);
+        for (byte slot = 2; slot <= 6; ++slot)
+        {
+            await new AppearanceChangedExtendedPlugIn(observer).AppearanceChangedAsync(added, new TemporaryItem { ItemSlot = slot }, true).ConfigureAwait(false);
+        }
+
+        var packets = SplitPackets(output.ToArray());
+        Assert.That(packets, Has.Count.EqualTo(6));
+        AddCharacterToScopeExtended initial = packets[0].AsMemory();
+        for (var part = 0; part < 5; ++part)
+        {
+            var offset = 8 + part * 3; // Class/flags, two weapons, then five armor pieces.
+            var appearance = initial.AppearanceAndEffects.ToArray();
+            AppearanceChangedExtended changed = packets[part + 1].AsMemory();
+            Assert.Multiple(() =>
+            {
+                Assert.That(appearance[offset] >> 4, Is.EqualTo(7 + part));
+                Assert.That(((appearance[offset] & 0xF) << 8) | appearance[offset + 1], Is.EqualTo(setNumber));
+                Assert.That(appearance[offset + 2] >> 4, Is.EqualTo(level == 15 ? 7 : 0));
+                Assert.That(changed.ItemSlot, Is.EqualTo(2 + part));
+                Assert.That(changed.ItemGroup, Is.EqualTo(7 + part));
+                Assert.That(changed.ItemNumber, Is.EqualTo(setNumber));
+                Assert.That(changed.ItemLevel, Is.EqualTo(level));
+            });
+        }
+
+        Assert.That(skin.Level, Is.EqualTo(level));
+    }
+
     private static async ValueTask<Player> CreateTransformedPlayerAsync()
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
