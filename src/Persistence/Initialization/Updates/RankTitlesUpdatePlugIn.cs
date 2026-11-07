@@ -28,6 +28,12 @@ public sealed class RankTitlesUpdatePlugIn : UpdatePlugInBase
     public override DateTime CreatedAt => new(2026, 11, 7, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
+    public override int Version => 2;
+
+    /// <inheritdoc />
+    public override DateTime UpdatedAt => new(2026, 11, 7, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
     public override bool IsMandatory => false;
 
     /// <inheritdoc />

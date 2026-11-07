@@ -1733,5 +1733,5 @@
   <data name="RankTitles_Name" xml:space="preserve"><value>Rank Titles</value></data>
   <data name="RankTitles_Description" xml:space="preserve"><value>Permanent character titles purchased with WCoinC, with configurable prices and visible badges and auras.</value></data>
   <data name="RankTitles_UpdateName" xml:space="preserve"><value>TwinMU Rank Titles</value></data>
-  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Enables the eight TwinMU rank titles at configurable WCoinC prices. Existing title settings are preserved.</value></data>
+  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Adds the ten animated TwinMU rank titles at configurable WCoinC prices and preserves existing title settings.</value></data>
 </root>

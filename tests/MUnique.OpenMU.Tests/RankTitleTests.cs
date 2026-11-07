@@ -20,18 +20,19 @@ using MUnique.OpenMU.Persistence;
 public class RankTitleTests
 {
     /// <summary>Concurrent requests and a second purchase never charge twice for the same title.</summary>
-    [Test]
-    public async Task PurchaseReplayAndEquipAsync()
+    [TestCase(1)]
+    [TestCase(18)]
+    public async Task PurchaseReplayAndEquipAsync(int rank)
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var actions = new RankTitleActions();
-        await Task.WhenAll(actions.ExecuteAsync(player, 1, 1, 1, 100).AsTask(),
-            actions.ExecuteAsync(player, 1, 1, 1, 100).AsTask()).ConfigureAwait(false);
-        await actions.ExecuteAsync(player, 2, 1, 1, 100).ConfigureAwait(false);
+        await Task.WhenAll(actions.ExecuteAsync(player, 1, 1, rank, 100).AsTask(),
+            actions.ExecuteAsync(player, 1, 1, rank, 100).AsTask()).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, 1, rank, 100).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(400));
-        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { 1 }));
-        await actions.ExecuteAsync(player, 3, 2, 1, 0).ConfigureAwait(false);
-        Assert.That(RankTitleRules.Active(player), Is.EqualTo(1));
+        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { rank }));
+        await actions.ExecuteAsync(player, 3, 2, rank, 0).ConfigureAwait(false);
+        Assert.That(RankTitleRules.Active(player), Is.EqualTo(rank));
         await actions.ExecuteAsync(player, 4, 2, 0, 0).ConfigureAwait(false);
         Assert.That(RankTitleRules.Active(player), Is.Zero);
         Assert.That(player.Account.WCoinC, Is.EqualTo(400));
@@ -40,7 +41,7 @@ public class RankTitleTests
     /// <summary>Forged identifiers, prices, equipment and operations never spend coins or grant titles.</summary>
     [TestCase(1, 1, 99)]
     [TestCase(1, 1, -1)]
-    [TestCase(1, 9, 100)]
+    [TestCase(1, 19, 100)]
     [TestCase(2, 1, 0)]
     [TestCase(2, 0, 100)]
     [TestCase(3, 1, 100)]

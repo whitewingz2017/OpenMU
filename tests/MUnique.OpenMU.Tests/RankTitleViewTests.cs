@@ -14,7 +14,7 @@ using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 [TestFixture]
 public class RankTitleViewTests
 {
-    /// <summary>The FD 08 response contains account WCoinC, the matching request and all eight prices.</summary>
+    /// <summary>The FD 08 response contains account WCoinC, the matching request and all title prices.</summary>
     [TestCase(0)]
     [TestCase(1234)]
     public async Task ShopResponseUsesAccountBalanceAsync(int balance)
@@ -36,7 +36,7 @@ public class RankTitleViewTests
             Assert.That(response.GetProperty("Status").GetString(), Is.EqualTo("Ready"));
             Assert.That(response.GetProperty("Active").GetInt32(), Is.Zero);
             var ranks = response.GetProperty("Ranks").EnumerateArray().ToArray();
-            Assert.That(ranks.Select(rank => rank.GetProperty("Rank").GetInt32()), Is.EqualTo(Enumerable.Range(1, 8)));
+            Assert.That(ranks.Select(rank => rank.GetProperty("Rank").GetInt32()), Is.EqualTo(Enumerable.Range(1, 18)));
             Assert.That(ranks.All(rank => rank.GetProperty("Price").GetInt32() == 100), Is.True);
             Assert.That(ranks.All(rank => !rank.GetProperty("Owned").GetBoolean()), Is.True);
         }

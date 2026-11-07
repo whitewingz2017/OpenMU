@@ -7,7 +7,7 @@ namespace MUnique.OpenMU.GameLogic.RankTitles;
 /// <summary>Configures the rank titles offered to custom clients.</summary>
 public sealed class RankTitleSettings
 {
-    /// <summary>Gets or sets the catalog, using the eight TwinMU client rank identifiers.</summary>
+    /// <summary>Gets or sets the catalog, using the TwinMU client rank identifiers.</summary>
     public List<RankTitleOffer> Titles { get; set; } =
     [
         new() { Rank = 1, Name = "VIP" },
@@ -18,6 +18,16 @@ public sealed class RankTitleSettings
         new() { Rank = 6, Name = "Hunter" },
         new() { Rank = 7, Name = "PvP King" },
         new() { Rank = 8, Name = "Top Tier" },
+        new() { Rank = 9, Name = "Destroyer" },
+        new() { Rank = 10, Name = "TwinMU III" },
+        new() { Rank = 11, Name = "Hokage" },
+        new() { Rank = 12, Name = "Hero" },
+        new() { Rank = 13, Name = "Godlike" },
+        new() { Rank = 14, Name = "Elite" },
+        new() { Rank = 15, Name = "TwinMU II" },
+        new() { Rank = 16, Name = "Soul Reaper" },
+        new() { Rank = 17, Name = "Playboy" },
+        new() { Rank = 18, Name = "Immortal" },
     ];
 
     /// <summary>Checks uniqueness and bounds, including the size of the catalog response.</summary>
