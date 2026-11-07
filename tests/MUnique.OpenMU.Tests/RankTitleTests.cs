@@ -42,6 +42,7 @@ public class RankTitleTests
     [TestCase(1, 1, 99)]
     [TestCase(1, 1, -1)]
     [TestCase(1, 19, 100)]
+    [TestCase(1, 10, 100)]
     [TestCase(2, 1, 0)]
     [TestCase(2, 0, 100)]
     [TestCase(3, 1, 100)]

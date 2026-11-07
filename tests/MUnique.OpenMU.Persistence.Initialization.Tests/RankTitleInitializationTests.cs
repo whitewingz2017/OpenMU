@@ -17,7 +17,7 @@ using MUnique.OpenMU.PlugIns;
 [TestFixture]
 public class RankTitleInitializationTests
 {
-    /// <summary>Fresh Season 6 servers include the same eighteen ranks as the custom clients.</summary>
+    /// <summary>Fresh Season 6 servers include the same seventeen ranks as the custom clients.</summary>
     [Test]
     public async Task FreshConfigurationContainsTitlesAsync()
     {
@@ -45,6 +45,8 @@ public class RankTitleInitializationTests
         settings.Titles = settings.Titles.Where(title => title.Rank <= 9).ToList();
         settings.Titles.First().Price = 321;
         settings.Titles.Last().Price = 456;
+        settings.Titles.Add(new RankTitleOffer { Rank = 10, Name = "TwinMU III", Price = 789 });
+        settings.Titles.Add(new RankTitleOffer { Rank = 15, Name = "TwinMU II", Price = 654 });
         feature.IsActive = false;
         using var dataSource = new GameConfigurationDataSource(new NullLogger<GameConfigurationDataSource>(), provider);
         feature.SetConfiguration(settings, new ByDataSourceReferenceHandler(dataSource));
@@ -55,10 +57,12 @@ public class RankTitleInitializationTests
         Assert.That(feature.IsActive, Is.False);
         Assert.That(feature.CustomConfiguration, Is.EqualTo(updated));
         var titles = feature.GetConfiguration<RankTitleSettings>(null)!.Titles;
-        Assert.That(titles.Select(title => title.Rank), Is.EqualTo(Enumerable.Range(1, 18)));
+        Assert.That(titles.Select(title => title.Rank).Order(), Is.EqualTo(Enumerable.Range(1, 18).Where(rank => rank != 10)));
         Assert.That(titles.First().Price, Is.EqualTo(321));
         Assert.That(titles.ElementAt(8).Price, Is.EqualTo(456));
-        Assert.That(titles.Skip(9).All(title => title.Price == 100), Is.True);
+        Assert.That(titles.Single(title => title.Rank == 15).Name, Is.EqualTo("Beta Tester"));
+        Assert.That(titles.Single(title => title.Rank == 15).Price, Is.EqualTo(654));
+        Assert.That(titles.Where(title => title.Rank > 9 && title.Rank != 15).All(title => title.Price == 100), Is.True);
     }
 
     private static void AssertCatalog(GameConfiguration configuration, bool active = true, ReferenceHandler? referenceHandler = null)
@@ -67,7 +71,7 @@ public class RankTitleInitializationTests
         Assert.That(feature.IsActive, Is.EqualTo(active));
         var settings = feature.GetConfiguration<RankTitleSettings>(referenceHandler)!;
         Assert.That(settings.IsValid(), Is.True);
-        Assert.That(settings.Titles.Select(title => title.Rank), Is.EqualTo(Enumerable.Range(1, 18)));
+        Assert.That(settings.Titles.Select(title => title.Rank), Is.EqualTo(Enumerable.Range(1, 18).Where(rank => rank != 10)));
         Assert.That(settings.Titles.All(title => title.Price == 100), Is.True);
     }
 }

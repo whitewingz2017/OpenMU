@@ -41,7 +41,7 @@ public class RankTitlePricesFormTests
         var table = form.FindComponent<ItemTable<RankTitleOffer>>();
         table.Find("h5 button").Click();
         var priceFields = form.FindAll("input[id='Price']").ToArray();
-        Assert.That(priceFields, Has.Length.EqualTo(18));
+        Assert.That(priceFields, Has.Length.EqualTo(17));
         priceFields[0].Change("275");
         priceFields[^1].Change("0");
         Assert.That(configuration.Titles.Count(title => title.Price == 275), Is.EqualTo(1));

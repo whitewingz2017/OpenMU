@@ -1736,5 +1736,5 @@
   <data name="RankTitles_InvalidCatalog" xml:space="preserve"><value>Each title needs a unique rank ID, a name, and a WCoinC price of zero or more.</value></data>
   <data name="RankTitles_Description" xml:space="preserve"><value>Permanent character titles purchased with WCoinC, with configurable prices and visible badges and auras.</value></data>
   <data name="RankTitles_UpdateName" xml:space="preserve"><value>TwinMU Rank Titles</value></data>
-  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Adds the ten animated TwinMU rank titles at configurable WCoinC prices and preserves existing title settings.</value></data>
+  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Updates the nine animated TwinMU rank titles, removes TwinMU III and names Beta Tester. Existing prices are preserved.</value></data>
 </root>

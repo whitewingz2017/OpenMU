@@ -13,6 +13,8 @@ using MUnique.OpenMU.PlugIns;
 public static class RankTitles
 {
     private const int FirstAnimatedTitleRank = 9;
+    private const int RemovedTwinMuTitleRank = 10;
+    private const int BetaTesterRank = 15;
 
     /// <summary>Installs the catalog or adds missing animated titles to existing settings.</summary>
     /// <param name="context">The configuration context.</param>
@@ -39,9 +41,21 @@ public static class RankTitles
 
         var missing = defaults.Titles.Where(title => title.Rank >= FirstAnimatedTitleRank)
             .ExceptBy(settings.Titles.Select(title => title.Rank), title => title.Rank).ToArray();
-        if (missing.Length == 0)
+        var retired = settings.Titles.Where(title => title.Rank == RemovedTwinMuTitleRank).ToArray();
+        var betaTester = settings.Titles.FirstOrDefault(title => title.Rank == BetaTesterRank && title.Name == "TwinMU II");
+        if (missing.Length == 0 && retired.Length == 0 && betaTester is null)
         {
             return;
+        }
+
+        foreach (var title in retired)
+        {
+            settings.Titles.Remove(title);
+        }
+
+        if (betaTester is { })
+        {
+            betaTester.Name = defaults.Titles.Single(title => title.Rank == BetaTesterRank).Name;
         }
 
         foreach (var title in missing)
