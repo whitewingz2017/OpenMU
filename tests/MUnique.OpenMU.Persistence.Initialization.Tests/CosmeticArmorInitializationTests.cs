@@ -116,7 +116,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(configuration.Items.Count, Is.EqualTo(previousCount + 3));
         Assert.That(configuration.Items.Single(i => i.Group == 12 && i.Number == 371), Is.SameAs(existing));
         Assert.That(existing.GetId(), Is.EqualTo(existingId));
-        Assert.That(entry.Version, Is.EqualTo(15));
+        Assert.That(entry.Version, Is.EqualTo(new CosmeticArmorItemsUpdatePlugIn().Version));
         Assert.That((await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Count(), Is.EqualTo(1));
     }
 
@@ -197,7 +197,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(owned.Definition, Is.SameAs(previous));
         Assert.That(character.Inventory.Items.Single(), Is.SameAs(owned));
         Assert.That(owned.ItemSlot == 246, Is.EqualTo(allowed));
-        Assert.That(entry.Version, Is.EqualTo(15));
+        Assert.That(entry.Version, Is.EqualTo(new CosmeticArmorItemsUpdatePlugIn().Version));
         Assert.That(previous.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 23 }));
         Assert.That(configuration.Items.Count(i => i.Group == 1 && i.Number == 300), Is.EqualTo(1));
         Assert.That(configuration.Items.Single(i => i.Group == 0 && i.Number == 304).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 25 }));
@@ -286,7 +286,7 @@ internal class CosmeticArmorInitializationTests
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         Assert.That(pet.ItemSlot, Is.EqualTo(DataModel.InventoryConstants.PetSlot));
-        Assert.That(entry.Version, Is.EqualTo(15));
+        Assert.That(entry.Version, Is.EqualTo(new CosmeticArmorItemsUpdatePlugIn().Version));
         _ = new GameLogic.Storage(DataModel.InventoryConstants.InventoryRows * DataModel.InventoryConstants.RowSize,
             0, DataModel.InventoryConstants.EquippableSlotsCount, character.Inventory);
 
@@ -346,10 +346,53 @@ internal class CosmeticArmorInitializationTests
         Assert.That(item.HasSkill, Is.True);
         Assert.That(item.Durability, Is.EqualTo(255));
         Assert.That(item.ItemSlot == DataModel.InventoryConstants.PetSlot, Is.EqualTo(slot == 8 || (slot == 248 && !occupied)));
-        Assert.That(entry.Version, Is.EqualTo(15));
+        Assert.That(entry.Version, Is.EqualTo(new CosmeticArmorItemsUpdatePlugIn().Version));
         item.Durability = 200;
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         Assert.That(item.Durability, Is.EqualTo(200));
+    }
+
+    [Test]
+    public async Task VersionFifteenAddsMissingSetVisualsWithoutChangingOwnedArmorAsync()
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        using var context = provider.CreateNewContext();
+        var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
+        var update = new CosmeticArmorItemsUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        foreach (var visual in configuration.Items.Where(d => d.Group is >= 7 and <= 11 && d.ItemSlot is null).ToArray())
+        {
+            configuration.Items.Remove(visual);
+            await context.DeleteAsync(visual).ConfigureAwait(false);
+        }
+
+        var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
+        entry.Version = 15;
+        var armor = configuration.Items.Single(d => d.Group == 8 && d.Number == 418);
+        var armorId = armor.GetId();
+        var character = context.CreateNew<Character>();
+        character.CharacterClass = armor.QualifiedCharacters.FirstOrDefault();
+        character.Inventory = context.CreateNew<ItemStorage>();
+        var item = context.CreateNew<Item>();
+        item.Definition = armor;
+        item.ItemSlot = GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1;
+        item.Level = 15;
+        item.Durability = 1;
+        character.Inventory.Items.Add(item);
+
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        AssertSkins(configuration);
+        var count = configuration.Items.Count;
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        Assert.That(configuration.Items.Count, Is.EqualTo(count));
+        Assert.That(entry.Version, Is.EqualTo(16));
+        Assert.That(armor.GetId(), Is.EqualTo(armorId));
+        Assert.That(item.Definition, Is.SameAs(armor));
+        Assert.That(item.ItemSlot, Is.EqualTo(GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1));
+        Assert.That(item.Level, Is.EqualTo(15));
+        Assert.That(item.Durability, Is.EqualTo(1));
+        Assert.That(character.Inventory.Items.Single(), Is.SameAs(item));
     }
 
     private static void AssertReferenceWings(GameConfiguration configuration)
@@ -378,6 +421,22 @@ internal class CosmeticArmorInitializationTests
 
     private static void AssertSkins(GameConfiguration configuration)
     {
+        foreach (var (number, groups) in new[] { (418, new byte[] { 7, 8, 9, 10, 11 }), (303, new byte[] { 8, 9, 10, 11 }) })
+        {
+            var definitions = configuration.Items.Where(i => i.Number == number && i.Group is >= 7 and <= 11).ToArray();
+            Assert.That(definitions.Select(d => d.Group), Is.EquivalentTo(groups));
+            var armor = definitions.Single(d => d.Group == 8);
+            foreach (var visual in definitions.Where(d => d.Group != 8))
+            {
+                Assert.That(visual.ItemSlot, Is.Null);
+                Assert.That(GameLogic.Cosmetics.CosmeticArmorRules.GetSlot(visual), Is.Null);
+                Assert.That(visual.QualifiedCharacters, Is.EquivalentTo(armor.QualifiedCharacters));
+                Assert.That(visual.BasePowerUpAttributes, Is.Empty);
+                Assert.That(visual.IsDroppable || visual.IsSellableToNpc || visual.IsTradable
+                    || visual.IsStorable || visual.IsPersonalStoreSellable || visual.IsRepairable, Is.False);
+            }
+        }
+
         AssertReferenceWings(configuration);
         var original = configuration.Items.Single(d => d.Group == 13 && d.Number == 37);
         var mounts = configuration.Items.Where(GameLogic.Cosmetics.FenrirMountRules.IsCustom).ToArray();

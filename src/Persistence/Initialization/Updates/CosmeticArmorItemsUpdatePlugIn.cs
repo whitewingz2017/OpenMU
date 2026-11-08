@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.Persistence.Initialization.Updates;
 
+using System.Globalization;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.PlugIns;
@@ -21,16 +22,17 @@ public sealed class CosmeticArmorItemsUpdatePlugIn : UpdatePlugInBase
     public override string Name => "Set 315 Cosmetic Armor";
 
     /// <inheritdoc />
-    public override string Description => "Compacts skins to 2x2 cells with safe storage repacking; adds class-specific weapon skins and class limits; installs full-set skins, standalone Fenrir mounts and the skin shop. Imports all available FinalMU sets, weapons and shields with source class and promotion limits. Incompatible equipped skins return to the bag. Version 15 restores normal pets in the original slot, adds an independent extra pet, and converts Malfurion and Phantom Horse to riding mounts while preserving owned items; includes the version 13 weapon family corrections. Apply with all players offline; free storage space if conversion cannot fit.";
+    public override string Description => Properties.PlugInResources.ResourceManager
+        .GetString("CosmeticArmorItemsUpdatePlugIn_Description", CultureInfo.CurrentUICulture) ?? string.Empty;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2026, 10, 28, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override int Version => 15;
+    public override int Version => 16;
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 11, 4, 0, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 11, 8, 0, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     public override bool IsMandatory => false;

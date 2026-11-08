@@ -181,23 +181,29 @@ public class NewPlayersInScopeRemoteViewTests
     }
 
     /// <summary>Observers receive the same custom set and level both on entry and equipment changes.</summary>
+    /// <param name="setNumber">The imported armor skin, including a set without a helmet.</param>
     /// <param name="level">The equipped skin's upgrade level.</param>
-    [TestCase(0)]
-    [TestCase(15)]
-    public async ValueTask CustomSetKeepsItsModelsAndLevelForObserversAsync(byte level)
+    [TestCase(418, 0)]
+    [TestCase(418, 15)]
+    [TestCase(303, 0)]
+    [TestCase(303, 15)]
+    public async ValueTask CustomSetKeepsItsModelsAndLevelForObserversAsync(short setNumber, byte level)
     {
-        const short setNumber = 418;
         var (observer, output) = CreateObserver(ExtendedClient);
         var added = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
-        var skinSlot = new MUnique.OpenMU.Persistence.BasicModel.ItemSlotType();
-        skinSlot.ItemSlots.Add(GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1);
-        for (byte group = 7; group <= 11; ++group)
+        var provider = new MUnique.OpenMU.Persistence.InMemory.InMemoryPersistenceContextProvider();
+        await new MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.DataInitialization(provider, new NullLoggerFactory())
+            .CreateInitialDataAsync(1, true).ConfigureAwait(false);
+        using var context = provider.CreateNewContext();
+        var configuration = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).Single();
+        added.GameContext.Configuration.Items.Clear();
+        foreach (var definition in configuration.Items.Where(d => d.Number == setNumber && d.Group is >= 7 and <= 11))
         {
-            added.GameContext.Configuration.Items.Add(new MUnique.OpenMU.Persistence.BasicModel.ItemDefinition
-            {
-                Group = group, Number = setNumber, ItemSlot = group == 8 ? skinSlot : null,
-            });
+            added.GameContext.Configuration.Items.Add(definition);
         }
+
+        var armor = added.GameContext.Configuration.Items.Single(d => d.Group == 8);
+        added.SelectedCharacter!.CharacterClass = armor.QualifiedCharacters.First();
 
         var skin = new MUnique.OpenMU.Persistence.BasicModel.Item
         {
@@ -223,13 +229,14 @@ public class NewPlayersInScopeRemoteViewTests
             AppearanceChangedExtended changed = packets[part + 1].AsMemory();
             Assert.Multiple(() =>
             {
-                Assert.That(appearance[offset] >> 4, Is.EqualTo(7 + part));
-                Assert.That(((appearance[offset] & 0xF) << 8) | appearance[offset + 1], Is.EqualTo(setNumber));
-                Assert.That(appearance[offset + 2] >> 4, Is.EqualTo(level == 15 ? 7 : 0));
+                var present = part != 0 || setNumber != 303;
+                Assert.That(appearance[offset] >> 4, Is.EqualTo(present ? 7 + part : 0xF));
+                Assert.That(((appearance[offset] & 0xF) << 8) | appearance[offset + 1], Is.EqualTo(present ? setNumber : 0xFFF));
+                Assert.That(appearance[offset + 2] >> 4, Is.EqualTo(present && level == 15 ? 7 : 0));
                 Assert.That(changed.ItemSlot, Is.EqualTo(2 + part));
-                Assert.That(changed.ItemGroup, Is.EqualTo(7 + part));
-                Assert.That(changed.ItemNumber, Is.EqualTo(setNumber));
-                Assert.That(changed.ItemLevel, Is.EqualTo(level));
+                Assert.That(changed.ItemGroup, Is.EqualTo(present ? 7 + part : 0xFF));
+                Assert.That(changed.ItemNumber, Is.EqualTo(present ? setNumber : 0xFFFF));
+                Assert.That(changed.ItemLevel, Is.EqualTo(present ? level : 0));
             });
         }
 

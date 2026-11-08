@@ -75,6 +75,45 @@ public static class CosmeticArmorItems
 
         RestrictWeaponClasses(configuration, imports);
         RestrictImportedClasses(configuration, imports);
+        EnsureSetVisuals(context, configuration, imports);
+    }
+
+    private static void EnsureSetVisuals(IContext context, GameConfiguration configuration, FinalMuSkin[] imports)
+    {
+        foreach (var skin in imports.Where(s => s.Group == 8 && s.Part == 1))
+        {
+            var armor = configuration.Items.Single(d => d.Group == skin.Group && d.Number == skin.Number);
+            string[] parts = ["Helm", "Armor", "Pants", "Gloves", "Boots"];
+            for (var part = 0; part < parts.Length; ++part)
+            {
+                var group = (byte)(7 + part);
+                if ((skin.ArmorMask & (1 << part)) == 0 || configuration.Items.Any(d => d.Group == group && d.Number == skin.Number))
+                {
+                    continue;
+                }
+
+                // Observers need each model defined, but only the armor is an equippable skin.
+                var visual = context.CreateNew<ItemDefinition>();
+                visual.SetGuid(group, skin.Number);
+                visual.Group = group;
+                visual.Number = skin.Number;
+                visual.Name = $"{skin.Name} ({parts[part]} visual)";
+                visual.Width = armor.Width;
+                visual.Height = armor.Height;
+                visual.IsTradable = false;
+                visual.IsDroppable = false;
+                visual.IsSellableToNpc = false;
+                visual.IsStorable = false;
+                visual.IsPersonalStoreSellable = false;
+                visual.IsRepairable = false;
+                foreach (var characterClass in armor.QualifiedCharacters)
+                {
+                    visual.QualifiedCharacters.Add(characterClass);
+                }
+
+                configuration.Items.Add(visual);
+            }
+        }
     }
 
     private static void RestrictWeaponClasses(GameConfiguration configuration, FinalMuSkin[] imports)
@@ -254,5 +293,5 @@ public static class CosmeticArmorItems
         }
     }
 
-    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false, Dictionary<string, int>? Classes = null);
+    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false, Dictionary<string, int>? Classes = null, int ArmorMask = 0);
 }
