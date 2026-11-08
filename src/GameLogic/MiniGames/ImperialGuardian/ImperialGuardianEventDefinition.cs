@@ -1,4 +1,4 @@
-﻿// <copyright file="ImperialGuardianEventDefinition.cs" company="MUnique">
+// <copyright file="ImperialGuardianEventDefinition.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -27,13 +27,14 @@ public class ImperialGuardianEventDefinition
     public TimeSpan StandbyDuration { get; set; } = TimeSpan.FromSeconds(60);
 
     /// <summary>
-    /// Gets or sets the time in which the monsters of a zone have to be killed.
+    /// Gets or sets the time in which the monsters and blocking gates must be destroyed and the next portal entered.
     /// </summary>
     public TimeSpan ZoneDuration { get; set; } = TimeSpan.FromMinutes(10);
 
     /// <summary>
-    /// Gets or sets a value indicating whether the next zone starts as soon as the monsters of a zone are killed.
-    /// Otherwise, it starts when the time of the zone is over, like in the original game.
+    /// Gets or sets a value indicating whether automatic zone progression was enabled in older versions.
+    /// Retained for configuration compatibility.
+    /// Zone progression now always requires destroying the blocking gates and entering the portal.
     /// </summary>
     public bool StartNextZoneWhenCleared { get; set; } = true;
 

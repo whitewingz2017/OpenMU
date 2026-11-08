@@ -165,6 +165,34 @@ public class JewelBankTests
         view.Verify(v => v.ShowAsync(1, It.IsAny<string>(), It.Is<IReadOnlyList<MUnique.OpenMU.GameLogic.JewelBank.JewelBankRow>>(rows => rows.Count == 1 && rows[0].Name == "Jewel of Bless")), Times.Once);
     }
 
+    /// <summary>Gemstone singles and bundles use the same conserved bank transfers.</summary>
+    [Test]
+    public async Task GemstoneDepositAndWithdrawPreserveCountAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var single = player.GameContext.Configuration.Items.First();
+        single.Number = 41;
+        single.Name = "Gemstone";
+        var bundle = player.GameContext.Configuration.Items.Last();
+        bundle.Number = 139;
+        var itemId = (single.Group * 512) + single.Number;
+        var configuration = new JewelBankConfiguration();
+        await AddAsync(player, single).ConfigureAwait(false);
+        await AddAsync(player, bundle, 1).ConfigureAwait(false);
+        var actions = new JewelBankActions();
+        await actions.ExecuteAsync(player, configuration, 1, 1, itemId, 0).ConfigureAwait(false);
+        var ledger = JsonSerializer.Deserialize<Dictionary<string, int>>(player.Account!.JewelBankBalances)!;
+        Assert.That(ledger[$"{itemId}:0"], Is.EqualTo(21));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        await actions.ExecuteAsync(player, configuration, 2, 2, itemId, 10).ConfigureAwait(false);
+        ledger = JsonSerializer.Deserialize<Dictionary<string, int>>(player.Account.JewelBankBalances)!;
+        Assert.That(ledger[$"{itemId}:0"], Is.EqualTo(11));
+        Assert.That(player.Inventory.Items.Count(), Is.EqualTo(10));
+        Assert.That(player.Inventory.Items.All(i => i.Definition == single && i.Level == 0), Is.True);
+        var view = Mock.Get(player.ViewPlugIns.GetPlugIn<IJewelBankView>()!);
+        view.Verify(v => v.ShowAsync(2, It.IsAny<string>(), It.Is<IReadOnlyList<JewelBankRow>>(rows => rows.Count == 1 && rows[0].Item == itemId && rows[0].Name == "Gemstone" && rows[0].Balance == 11)), Times.Once);
+    }
+
     private static int Balance(Player player)
     {
         var ledger = JsonSerializer.Deserialize<Dictionary<string, int>>(player.Account!.JewelBankBalances)!;

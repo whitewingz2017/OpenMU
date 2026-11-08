@@ -246,3 +246,19 @@ A monster's `ViewRange` limits acquisition of new targets, including player summ
 For area skills with `UseTargetAreaFilter`, distance-dependent hit chance is measured from the aimed ground tile to the victim. For other area skills it remains measured from the caster. This prevents an accurately aimed Flame from losing almost all of its hits merely because the caster is several tiles away. The area diameter, hit count, hit delay, and damage formulas remain configurable.
 
 These corrections require deploying the updated game-server binaries and restarting the game server. They do not require a database configuration update, and updating only the client does not apply them.
+
+## Imperial Guardian (Gaion) zone progression
+
+On every event day, killing the last monster unlocks the remaining gates and
+keeps the current zone's time limit running. Destroy the middle and last blocking
+gates, then enter the portal. The next zone's standby countdown begins when the
+first player finishes entering it; party members can follow without restarting
+that countdown. The final zone still completes when its last monster dies.
+
+`ZoneDuration` includes the fights, gates, and portal entry. `StandbyDuration`
+controls the gathering time in subsequent zones. The legacy
+`StartNextZoneWhenCleared` setting no longer causes automatic progression.
+Zone portals use the event map's configured enter gates in gate-number order.
+
+Deploy the updated server binaries to apply this to both PC and mobile clients.
+No client packet change or database update is required.

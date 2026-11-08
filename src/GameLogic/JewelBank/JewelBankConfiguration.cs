@@ -14,5 +14,5 @@ public class JewelBankConfiguration
     public int MaximumBalance { get; set; } = 1_000_000;
 
     /// <summary>Gets or sets the supported identifiers (group * 512 + number).</summary>
-    public int[] Items { get; set; } = [7181, 7182, 6159, 7184, 7190, 7199, 7210];
+    public int[] Items { get; set; } = [7181, 7182, 6159, 7184, 7190, 7199, 7209, 7210];
 }

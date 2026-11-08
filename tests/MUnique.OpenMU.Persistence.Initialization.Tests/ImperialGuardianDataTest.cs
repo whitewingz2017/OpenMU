@@ -1,4 +1,4 @@
-﻿// <copyright file="ImperialGuardianDataTest.cs" company="MUnique">
+// <copyright file="ImperialGuardianDataTest.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -115,6 +115,17 @@ internal class ImperialGuardianDataTest
         {
             Assert.That(map.MonsterSpawns.Select(spawn => spawn.SpawnTrigger), Is.All.EqualTo(SpawnTrigger.OnceAtWaveStart), $"Spawns of map {map.Number}");
             Assert.That(map.SafezoneMap?.Number, Is.EqualTo(DeviasNumber), $"Safezone of map {map.Number}");
+            var expectedPortals = map.Number switch
+            {
+                69 => new byte[] { 202, 179 },
+                70 => new byte[] { 35, 121 },
+                71 => new byte[] { 222, 165 },
+                72 => new byte[] { 32, 145, 241 },
+                _ => throw new InvalidOperationException(),
+            };
+            var portals = map.EnterGates.OrderBy(gate => gate.Number).ToArray();
+            Assert.That(portals.Select(gate => gate.TargetGate?.Map), Is.All.SameAs(map));
+            Assert.That(portals.Select(gate => gate.TargetGate!.X1), Is.EqualTo(expectedPortals), $"Portal route of map {map.Number}");
         }
 
         Assert.That(gameConfiguration.Monsters.Single(monster => monster.Number == JerintNumber).NpcWindow, Is.EqualTo(NpcWindow.JerintGaionEvententry));

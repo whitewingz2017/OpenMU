@@ -1,4 +1,4 @@
-﻿// <copyright file="ImperialGuardianContext.cs" company="MUnique">
+// <copyright file="ImperialGuardianContext.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -19,7 +19,8 @@ using MUnique.OpenMU.GameLogic.NPC;
 /// appear, which have to be killed within a limited time. The gates of a zone block the way. The gate at
 /// the entrance can be attacked as soon as the monsters appear, the other gates and the statues when all
 /// monsters are killed. The event is completed when the monsters of the last zone are killed, and fails
-/// when the time of a zone is over or when all players left.
+/// when the time of a zone is over or when all players left. Between zones, players must destroy the
+/// blocking gates and enter the portal before the next standby time begins.
 /// </remarks>
 public sealed class ImperialGuardianContext : MiniGameContext
 {
@@ -47,7 +48,10 @@ public sealed class ImperialGuardianContext : MiniGameContext
 
     private readonly ConcurrentDictionary<ImperialGuardianGate, byte> _gates = new();
 
+    private readonly ExitGate[] _zonePortalTargets;
+
     private int _zone;
+    private int _enteredZone;
     private TimerState _timer;
     private ImperialGuardianMonsterScaling? _monsterScaling;
 
@@ -75,6 +79,13 @@ public sealed class ImperialGuardianContext : MiniGameContext
             .Select(spawn => (spawn.WaveNumber % 10) + 1)
             .DefaultIfEmpty(0)
             .Max());
+
+        // The configured enter gate numbers follow the route through the zones on each event map.
+        this._zonePortalTargets = this.Map.Definition.EnterGates
+            .Where(gate => gate.TargetGate?.Map == this.Map.Definition)
+            .OrderBy(gate => gate.Number)
+            .Select(gate => gate.TargetGate!)
+            .ToArray();
         this._weather = (ImperialGuardianWeather)Rand.NextInt(0, 4);
         this._timer = new TimerState(ImperialGuardianTimerType.Standby, this.EnterEndsAtUtc.Add(CountdownDuration));
 
@@ -110,6 +121,35 @@ public sealed class ImperialGuardianContext : MiniGameContext
     /// Gets the number of the monsters of the current zone, which are still alive.
     /// </summary>
     public int RemainingMonsterCount => this._zoneMonsters.Keys.Count(monster => monster.IsAlive);
+
+    /// <summary>
+    /// Checks whether the player may enter the configured zone portal.
+    /// </summary>
+    /// <param name="targetGate">The portal destination.</param>
+    /// <returns>Whether the portal leads to a cleared zone's successor.</returns>
+    internal bool CanEnterZonePortal(ExitGate targetGate)
+    {
+        var portalZone = Array.IndexOf(this._zonePortalTargets, targetGate);
+        var zone = this.Zone;
+        if (!this.IsEventRunning || portalZone < 0 || portalZone > zone)
+        {
+            return false;
+        }
+
+        // Party members may follow through an already cleared zone without restarting standby.
+        if (portalZone < zone)
+        {
+            return true;
+        }
+
+        var timer = Volatile.Read(ref this._timer);
+        var waveNumber = ImperialGuardianEventDefinition.GetWaveNumber(this.Day, zone);
+        return zone < this.ZoneCount - 1
+               && timer.Type == ImperialGuardianTimerType.TimeAttack
+               && DateTime.UtcNow < timer.EndsAtUtc
+               && this.RemainingMonsterCount == 0
+               && !this._gates.Keys.Any(gate => gate.SpawnArea.WaveNumber == waveNumber && gate.IsBlocking && gate.IsAlive);
+    }
 
     /// <inheritdoc />
     protected override async ValueTask OnGameStartAsync(ICollection<Player> players)
@@ -148,6 +188,21 @@ public sealed class ImperialGuardianContext : MiniGameContext
         if (blockedAreas.Count > 0)
         {
             await player.InvokeViewPlugInAsync<IChangeTerrainAttributesViewPlugin>(p => p.ChangeAttributesAsync(GateTerrainAttribute, true, blockedAreas)).ConfigureAwait(false);
+        }
+
+        var openedAreas = this._gates.Keys.Where(gate => gate.IsBlocking && !gate.IsAlive).Select(gate => gate.GetBlockedArea()).ToList();
+        if (openedAreas.Count > 0)
+        {
+            await player.InvokeViewPlugInAsync<IChangeTerrainAttributesViewPlugin>(p => p.ChangeAttributesAsync(GateTerrainAttribute, false, openedAreas)).ConfigureAwait(false);
+        }
+
+        var zone = this.Zone;
+        if (this._zonePortalTargets.ElementAtOrDefault(zone) is { } target
+            && player.Position.X >= target.X1 && player.Position.X <= target.X2
+            && player.Position.Y >= target.Y1 && player.Position.Y <= target.Y2
+            && this.CanEnterZonePortal(target))
+        {
+            Interlocked.CompareExchange(ref this._enteredZone, zone + 1, zone);
         }
 
         await this.ShowZoneAsync(player).ConfigureAwait(false);
@@ -211,9 +266,9 @@ public sealed class ImperialGuardianContext : MiniGameContext
             {
                 if (zone > 0)
                 {
+                    this.SetTimer(ImperialGuardianTimerType.Standby, this._definition.StandbyDuration);
                     Volatile.Write(ref this._zone, zone);
                     await this.SpawnGatesAsync(zone).ConfigureAwait(false);
-                    this.SetTimer(ImperialGuardianTimerType.Standby, this._definition.StandbyDuration);
                     await this.ForEachPlayerAsync(player => this.ShowZoneAsync(player).AsTask()).ConfigureAwait(false);
                     await this.DelayWithSkipAsync(this._definition.StandbyDuration, cancellationToken).ConfigureAwait(false);
                 }
@@ -223,7 +278,7 @@ public sealed class ImperialGuardianContext : MiniGameContext
                 await this.SpawnMonstersAsync(zone).ConfigureAwait(false);
 
                 var isLastZone = zone == this.ZoneCount - 1;
-                if (!await this.WaitUntilZoneIsClearedAsync(isLastZone, cancellationToken).ConfigureAwait(false))
+                if (!await this.WaitUntilZoneIsClearedAsync(cancellationToken).ConfigureAwait(false))
                 {
                     await this.FailAsync().ConfigureAwait(false);
                     return;
@@ -239,6 +294,11 @@ public sealed class ImperialGuardianContext : MiniGameContext
                 this.Logger.LogDebug("{context}: Zone {zone} cleared.", this, zone);
                 await this.ForEachPlayerAsync(player => player.InvokeViewPlugInAsync<IImperialGuardianViewPlugIn>(p =>
                     p.ShowResultAsync(ImperialGuardianResult.ZoneCleared, 0)).AsTask()).ConfigureAwait(false);
+                if (!await this.WaitUntilNextZoneEnteredAsync(zone, cancellationToken).ConfigureAwait(false))
+                {
+                    await this.FailAsync().ConfigureAwait(false);
+                    return;
+                }
             }
         }
         catch (OperationCanceledException)
@@ -255,7 +315,7 @@ public sealed class ImperialGuardianContext : MiniGameContext
     /// Waits until the monsters of the zone are killed.
     /// </summary>
     /// <returns><c>true</c>, if the monsters were killed in time; otherwise, <c>false</c>.</returns>
-    private async ValueTask<bool> WaitUntilZoneIsClearedAsync(bool isLastZone, CancellationToken cancellationToken)
+    private async ValueTask<bool> WaitUntilZoneIsClearedAsync(CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(TimerInterval);
         while (await timer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
@@ -267,12 +327,47 @@ public sealed class ImperialGuardianContext : MiniGameContext
 
             var isCleared = this.RemainingMonsterCount == 0;
             var isTimeOver = DateTime.UtcNow >= Volatile.Read(ref this._timer).EndsAtUtc;
-            if (isCleared && (isLastZone || this._definition.StartNextZoneWhenCleared || isTimeOver))
+            if (isCleared)
             {
                 return true;
             }
 
             if (isTimeOver)
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private async ValueTask<bool> WaitUntilNextZoneEnteredAsync(int zone, CancellationToken cancellationToken)
+    {
+        using var timer = new PeriodicTimer(TimerInterval);
+        while (await timer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
+        {
+            if (Volatile.Read(ref this._enteredZone) > zone)
+            {
+                return true;
+            }
+
+            if (DateTime.UtcNow >= Volatile.Read(ref this._timer).EndsAtUtc)
+            {
+                return false;
+            }
+
+            // A same-map portal warp temporarily sets IsAlive to false while the client loads.
+            var hasActivePlayer = false;
+            await this.ForEachPlayerAsync(player =>
+            {
+                if (player.IsAlive || player.PlayerState.CurrentState == PlayerState.ChangingMap)
+                {
+                    hasActivePlayer = true;
+                }
+
+                return Task.CompletedTask;
+            }).ConfigureAwait(false);
+            if (!hasActivePlayer)
             {
                 return false;
             }
@@ -322,7 +417,8 @@ public sealed class ImperialGuardianContext : MiniGameContext
 
     private void SetGatesAttackable(ICollection<short> monsterNumbers)
     {
-        foreach (var gate in this._gates.Keys.Where(gate => monsterNumbers.Contains(gate.Definition.Number)))
+        var waveNumber = ImperialGuardianEventDefinition.GetWaveNumber(this.Day, this.Zone);
+        foreach (var gate in this._gates.Keys.Where(gate => gate.SpawnArea.WaveNumber == waveNumber && monsterNumbers.Contains(gate.Definition.Number)))
         {
             gate.IsAttackable = true;
         }
@@ -371,6 +467,7 @@ public sealed class ImperialGuardianContext : MiniGameContext
 
     private async ValueTask SpawnMonstersAsync(int zone)
     {
+        this._zoneMonsters.Clear();
         foreach (var spawnArea in this.GetZoneSpawns(zone).Where(spawn => !this.IsGate(spawn.MonsterDefinition!)))
         {
             var definition = spawnArea.MonsterDefinition!;

@@ -1,10 +1,12 @@
-﻿// <copyright file="ImperialGuardianFeaturePlugIn.cs" company="MUnique">
+// <copyright file="ImperialGuardianFeaturePlugIn.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace MUnique.OpenMU.GameLogic.MiniGames.ImperialGuardian;
 
+using System.ComponentModel;
 using System.Runtime.InteropServices;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
@@ -14,7 +16,7 @@ using MUnique.OpenMU.PlugIns;
 [PlugIn]
 [Display(Name = nameof(PlugInResources.ImperialGuardianFeaturePlugIn_Name), Description = nameof(PlugInResources.ImperialGuardianFeaturePlugIn_Description), ResourceType = typeof(PlugInResources))]
 [Guid("7E3B9C15-2D84-4F60-A1B7-5C9E0D6F2A38")]
-public class ImperialGuardianFeaturePlugIn : IFeaturePlugIn, ISupportCustomConfiguration<ImperialGuardianEventDefinition>, ISupportDefaultCustomConfiguration
+public class ImperialGuardianFeaturePlugIn : IFeaturePlugIn, IWarpGateEnteringPlugIn, ISupportCustomConfiguration<ImperialGuardianEventDefinition>, ISupportDefaultCustomConfiguration
 {
     /// <inheritdoc />
     public ImperialGuardianEventDefinition? Configuration { get; set; }
@@ -27,6 +29,17 @@ public class ImperialGuardianFeaturePlugIn : IFeaturePlugIn, ISupportCustomConfi
     public static ImperialGuardianEventDefinition GetEventDefinition(IGameContext gameContext)
     {
         return gameContext.FeaturePlugIns.GetPlugIn<ImperialGuardianFeaturePlugIn>()?.Configuration ?? new ImperialGuardianEventDefinition();
+    }
+
+    /// <inheritdoc />
+    public ValueTask WarpGateEnteringAsync(Player player, ExitGate targetGate, CancelEventArgs eventArgs)
+    {
+        if (player.CurrentMiniGame is ImperialGuardianContext game && targetGate.Map == game.Map.Definition)
+        {
+            eventArgs.Cancel |= !game.CanEnterZonePortal(targetGate);
+        }
+
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc />

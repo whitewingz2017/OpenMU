@@ -32,8 +32,10 @@ before upgrading. A running older server does not support the new requests.
 The **Jewel Bank** packet handler exposes a custom configuration in the plugin
 settings: `Enabled`, `MaximumBalance` (default 1,000,000 per jewel), and `Items`.
 Identifiers use `group * 512 + number`. Default entries are Bless, Soul, Chaos,
-Life, Creation, Guardian and Harmony. Only configured 1-by-1 single jewels at
+Life, Creation, Guardian, Gemstone and Harmony. Gemstone is item **7209** (group 14, number 41). Only configured 1-by-1 single jewels at
 level zero are accepted; bundle definitions come from `GameConfiguration.JewelMixes`.
+Existing servers can apply **Add Gemstone to Jewel Bank** in configuration updates, or append **7209** to the Jewel Bank plugin's `Items` list. The optional update preserves activation, limits and the other allowed items. Rebuild and restart the server after deploying the update. No additional database migration is needed.
+
 The **Jewel Bank View** plugin sends results only to clients which request them.
 
 Account balances and inventory changes are saved through the same player context
