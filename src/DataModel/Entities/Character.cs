@@ -213,6 +213,26 @@ public class Character
     [Range(0, ushort.MaxValue)]
     public int ActiveRankTitle { get; set; }
 
+    /// <summary>Gets or sets whether the player explicitly hides titles, including automatically earned badges.</summary>
+    public bool HideRankTitle { get; set; }
+
+    /// <summary>Gets or sets the number of completed duel victories.</summary>
+    [Range(0, int.MaxValue)]
+    public int DuelWins { get; set; }
+
+    /// <summary>Gets or sets when the latest duel victory was earned, to resolve tied standings.</summary>
+    public DateTime? LastDuelWinUtc { get; set; }
+
+    /// <summary>Gets or sets the UTC start of the local server week counted by <see cref="WeeklyPlayerKills"/>.</summary>
+    public DateTime? PlayerKillWeekStartUtc { get; set; }
+
+    /// <summary>Gets or sets this week's player kills, independently of the PK penalty.</summary>
+    [Range(0, int.MaxValue)]
+    public int WeeklyPlayerKills { get; set; }
+
+    /// <summary>Gets or sets when this week's latest kill was earned, to resolve tied standings.</summary>
+    public DateTime? LastWeeklyPlayerKillUtc { get; set; }
+
     /// <summary>
     /// Gets or sets the key configuration, which is set by the client and just saved as is.
     /// </summary>

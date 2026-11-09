@@ -378,6 +378,22 @@ public partial class PlayerInMemoryContext : InMemoryContext, IPlayerContext
     }
 
     /// <inheritdoc />
+    public async ValueTask<(string? DuelLeader, string? KillLeader)> GetCompetitiveRankLeadersAsync(DateTime weekStartUtc, CancellationToken cancellationToken = default)
+    {
+        var accounts = await this.Provider.GetRepository<Account>().GetAllAsync(cancellationToken).ConfigureAwait(false);
+        var characters = accounts.Where(account => !account.IsBot && !account.IsTemplate)
+            .SelectMany(account => account.Characters)
+            .Where(character => character.CharacterStatus == DataModel.Entities.CharacterStatus.Normal).ToArray();
+        var duelLeader = characters.Where(character => character.DuelWins > 0)
+            .OrderByDescending(character => character.DuelWins).ThenBy(character => character.LastDuelWinUtc).ThenBy(character => character.Name, StringComparer.Ordinal)
+            .Select(character => character.Name).FirstOrDefault();
+        var killLeader = characters.Where(character => character.PlayerKillWeekStartUtc == weekStartUtc && character.WeeklyPlayerKills > 0)
+            .OrderByDescending(character => character.WeeklyPlayerKills).ThenBy(character => character.LastWeeklyPlayerKillUtc).ThenBy(character => character.Name, StringComparer.Ordinal)
+            .Select(character => character.Name).FirstOrDefault();
+        return (duelLeader, killLeader);
+    }
+
+    /// <inheritdoc />
     public async ValueTask<IReadOnlyList<CharacterSummary>> GetCharacterRankingAsync(
         Guid levelAttributeId,
         Guid masterLevelAttributeId,

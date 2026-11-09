@@ -40,7 +40,7 @@ public sealed class RankTitleActions
         var offer = settings.Titles.SingleOrDefault(title => title.Rank == rank);
         if (operation == 1)
         {
-            if (offer is null || offer.Price <= 0 || quotedPrice != offer.Price || owned.Count >= RankTitleFeaturePlugIn.MaximumOwnedTitles)
+            if (RankTitleRules.IsEarned(rank) || offer is null || offer.Price <= 0 || quotedPrice != offer.Price || owned.Count >= RankTitleFeaturePlugIn.MaximumOwnedTitles)
             {
                 return "RankTitles_PriceChanged";
             }
@@ -57,7 +57,7 @@ public sealed class RankTitleActions
 
             owned.Add(rank);
         }
-        else if (operation != 2 || quotedPrice != 0 || (rank != 0 && (offer is null || !owned.Contains(rank))))
+        else if (operation != 2 || quotedPrice != 0 || (rank != 0 && (offer is null || !RankTitleRules.CanEquip(player, rank, owned))))
         {
             return "RankTitles_Invalid";
         }
@@ -72,6 +72,7 @@ public sealed class RankTitleActions
         var oldBalance = account.WCoinC;
         var oldOwned = character.OwnedRankTitlesJson;
         var oldActive = character.ActiveRankTitle;
+        var oldHidden = character.HideRankTitle;
         var committed = false;
         try
         {
@@ -83,6 +84,7 @@ public sealed class RankTitleActions
             else
             {
                 character.ActiveRankTitle = rank;
+                character.HideRankTitle = rank == 0;
             }
 
             committed = await player.SaveProgressAsync().ConfigureAwait(false);
@@ -100,6 +102,7 @@ public sealed class RankTitleActions
                 account.WCoinC = oldBalance;
                 character.OwnedRankTitlesJson = oldOwned;
                 character.ActiveRankTitle = oldActive;
+                character.HideRankTitle = oldHidden;
             }
         }
     }
@@ -126,6 +129,11 @@ public sealed class RankTitleActions
 
         session.LastRequest = requestId;
         await player.ApplyPendingCashShopCoinGrantsAsync().ConfigureAwait(false);
+        if (player.GameContext.FeaturePlugIns.GetPlugIn<RankTitleFeaturePlugIn>() is { } feature)
+        {
+            await feature.RefreshLeadersAsync(player.GameContext).ConfigureAwait(false);
+        }
+
         if (RankTitleFeaturePlugIn.Settings(player.GameContext) is not { } settings)
         {
             return "RankTitles_Disabled";

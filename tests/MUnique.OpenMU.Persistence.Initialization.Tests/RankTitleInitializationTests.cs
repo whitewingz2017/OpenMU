@@ -28,6 +28,13 @@ public class RankTitleInitializationTests
         using var dataSource = new GameConfigurationDataSource(new NullLogger<GameConfigurationDataSource>(), provider);
         await dataSource.GetOwnerAsync(configuration.GetId()).ConfigureAwait(false);
         AssertCatalog(configuration, false, new ByDataSourceReferenceHandler(dataSource));
+        Assert.That(configuration.MaximumSocketCountDrop, Is.EqualTo(2));
+        foreach (var item in configuration.Items.Where(item => item.MaximumSockets > 0
+            || item.PossibleItemOptions.Any(option => option.PossibleOptions.Any(possible => possible.OptionType == DataModel.Configuration.Items.ItemOptionTypes.GuardianOption))))
+        {
+            var luck = item.PossibleItemOptions.Single(option => option.PossibleOptions.Any(possible => possible.OptionType == DataModel.Configuration.Items.ItemOptionTypes.Luck));
+            Assert.That(luck.AddChance, Is.EqualTo(.30f), item.Name.ToString());
+        }
     }
 
     /// <summary>Installing twice does not duplicate the feature or replace prices chosen by the owner.</summary>
@@ -43,7 +50,8 @@ public class RankTitleInitializationTests
         var feature = configuration.PlugInConfigurations.Single();
         var settings = new RankTitleSettings();
         settings.Titles = settings.Titles.Where(title => title.Rank <= 9).ToList();
-        settings.Titles.First().Price = 321;
+        settings.Titles.Single(title => title.Rank == 2).Price = 321;
+        settings.Titles.First().Price = 999;
         settings.Titles.Last().Price = 456;
         settings.Titles.Add(new RankTitleOffer { Rank = 10, Name = "TwinMU III", Price = 789 });
         settings.Titles.Add(new RankTitleOffer { Rank = 15, Name = "TwinMU II", Price = 654 });
@@ -58,8 +66,8 @@ public class RankTitleInitializationTests
         Assert.That(feature.CustomConfiguration, Is.EqualTo(updated));
         var titles = feature.GetConfiguration<RankTitleSettings>(null)!.Titles;
         Assert.That(titles.Select(title => title.Rank).Order(), Is.EqualTo(Enumerable.Range(1, 18).Where(rank => rank != 10)));
-        Assert.That(titles.First().Price, Is.EqualTo(321));
-        Assert.That(titles.ElementAt(8).Price, Is.EqualTo(456));
+        Assert.That(titles.Single(title => title.Rank == 2).Price, Is.EqualTo(321));
+        Assert.That(titles.Where(title => RankTitleRules.IsEarned(title.Rank)).All(title => title.Price == 0), Is.True);
         Assert.That(titles.Single(title => title.Rank == 15).Name, Is.EqualTo("Beta Tester"));
         Assert.That(titles.Single(title => title.Rank == 15).Price, Is.EqualTo(654));
         Assert.That(titles.Where(title => title.Rank > 9 && title.Rank != 15).All(title => title.Price == 100), Is.True);
@@ -72,6 +80,6 @@ public class RankTitleInitializationTests
         var settings = feature.GetConfiguration<RankTitleSettings>(referenceHandler)!;
         Assert.That(settings.IsValid(), Is.True);
         Assert.That(settings.Titles.Select(title => title.Rank), Is.EqualTo(Enumerable.Range(1, 18).Where(rank => rank != 10)));
-        Assert.That(settings.Titles.All(title => title.Price == 100), Is.True);
+        Assert.That(settings.Titles.All(title => title.Price == (RankTitleRules.IsEarned(title.Rank) ? 0 : 100)), Is.True);
     }
 }

@@ -1128,6 +1128,12 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
         }
     }
 
+    /// <summary>Gets a player in this player's view.</summary>
+    /// <param name="playerId">The target identifier.</param>
+    /// <returns>The observed player, or null.</returns>
+    public ValueTask<Player?> GetObservedPlayerWithIdAsync(ushort playerId) =>
+        this._observerToWorldViewAdapter.GetObservedPlayerWithIdAsync(playerId);
+
     /// <inheritdoc/>
     public async ValueTask AddObserverAsync(IWorldObserver observer)
     {

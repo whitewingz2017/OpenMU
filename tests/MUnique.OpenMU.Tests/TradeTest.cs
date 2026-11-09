@@ -1,4 +1,4 @@
-﻿// <copyright file="TradeTest.cs" company="MUnique">
+// <copyright file="TradeTest.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -6,13 +6,17 @@ namespace MUnique.OpenMU.Tests;
 
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.PlayerActions.Items;
 using MUnique.OpenMU.GameLogic.PlayerActions.Trade;
 using MUnique.OpenMU.GameLogic.Views.Trade;
+using MUnique.OpenMU.GameServer.MessageHandler.Trade;
+using TradeRequest = MUnique.OpenMU.Network.Packets.ClientToServer.TradeRequest;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Persistence.InMemory;
 using MUnique.OpenMU.PlugIns;
@@ -23,6 +27,51 @@ using MUnique.OpenMU.PlugIns;
 [TestFixture]
 public class TradeTest
 {
+    /// <summary>Trading uses the requester's view even before the target starts observing it.</summary>
+    [Test]
+    public async ValueTask VisiblePartnerReceivesTradeRequestAsync()
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var partner = await PlayerTestHelper.CreatePlayerAsync(player.GameContext).ConfigureAwait(false);
+        player.IsAlive = true;
+        partner.IsAlive = true;
+        await player.CurrentMap!.AddAsync(partner).ConfigureAwait(false);
+        await player.NewLocateablesInScopeAsync([partner]).ConfigureAwait(false);
+        await player.RemoveObserverAsync(partner).ConfigureAwait(false);
+        Assert.That(await player.GetObservingPlayerWithIdAsync(partner.Id).ConfigureAwait(false), Is.Null);
+        var buffer = new byte[TradeRequest.Length];
+        TradeRequest request = new(buffer);
+        request.PlayerId = partner.Id;
+        await new TradeRequestHandlerPlugIn().HandlePacketAsync(player, buffer).ConfigureAwait(false);
+        Assert.That(player.TradingPartner, Is.SameAs(partner));
+        Mock.Get(partner.ViewPlugIns.GetPlugIn<IShowTradeRequestPlugIn>()!).Verify(view => view.ShowTradeRequestAsync(player), Times.Once);
+    }
+
+    /// <summary>A target outside the requester's view cannot receive a trade request.</summary>
+    /// <param name="invisible">Whether the target is present but invisible.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async ValueTask UnseenPartnerCannotReceiveTradeRequestAsync(bool invisible)
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var partner = await PlayerTestHelper.CreatePlayerAsync(player.GameContext).ConfigureAwait(false);
+        if (invisible)
+        {
+            partner.Attributes!.AddElement(new SimpleElement(1, AggregateType.AddRaw), Stats.IsInvisible);
+            Assert.That(partner.IsInvisible, Is.True);
+            await player.NewLocateablesInScopeAsync([partner]).ConfigureAwait(false);
+        }
+        else
+        {
+            await partner.CurrentMap!.RemoveAsync(partner).ConfigureAwait(false);
+        }
+        var buffer = new byte[TradeRequest.Length];
+        TradeRequest request = new(buffer);
+        request.PlayerId = partner.Id;
+        await new TradeRequestHandlerPlugIn().HandlePacketAsync(player, buffer).ConfigureAwait(false);
+        Assert.That(player.TradingPartner, Is.Null);
+    }
+
     /// <summary>
     /// Tests the trade request.
     /// </summary>

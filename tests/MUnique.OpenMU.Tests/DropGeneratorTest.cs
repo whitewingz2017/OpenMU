@@ -16,6 +16,29 @@ using MUnique.OpenMU.GameLogic.Attributes;
 [TestFixture]
 public class DropGeneratorTest
 {
+    /// <summary>Both normal and excellent box drops obey the cap and use one 30% luck roll.</summary>
+    [TestCase(SpecialItemType.RandomItem, 1, true)]
+    [TestCase(SpecialItemType.RandomItem, 2, false)]
+    [TestCase(SpecialItemType.Excellent, 5, true)]
+    public void SocketDropCapAndLuckChance(SpecialItemType type, byte capacity, bool lucky)
+    {
+        var configuration = new Persistence.BasicModel.GameConfiguration { MaximumSocketCountDrop = 2 };
+        var definition = new Persistence.BasicModel.ItemDefinition { MaximumSockets = capacity, MaximumItemLevel = 15 };
+        var option = new Persistence.BasicModel.ItemOptionDefinition { AddsRandomly = true, AddChance = .30f, MaximumOptionsPerItem = 1 };
+        option.PossibleOptions.Add(new Persistence.BasicModel.IncreasableItemOption { OptionType = ItemOptionTypes.Luck });
+        definition.PossibleItemOptions.Add(option);
+        var group = new Persistence.BasicModel.ItemDropItemGroup { ItemType = type };
+        group.PossibleItems.Add(definition);
+        var random = new Mock<IRandomizer>();
+        random.Setup(r => r.NextInt(It.IsAny<int>(), It.IsAny<int>())).Returns((int min, int max) => max - 1);
+        random.Setup(r => r.NextRandomBool(It.IsAny<double>())).Returns(lucky);
+        var item = new DefaultDropGenerator(configuration, random.Object).GenerateItemDrop(group)!;
+        Assert.That(item.SocketCount, Is.EqualTo(Math.Min(2, (int)capacity)));
+        Assert.That(item.ItemOptions.Any(link => link.ItemOption?.OptionType == ItemOptionTypes.Luck), Is.EqualTo(lucky));
+        random.Verify(r => r.NextRandomBool((double).30f), Times.Once);
+        Assert.That(definition.MaximumSockets, Is.EqualTo(capacity));
+    }
+
     /// <summary>
     /// Tests if the drop fails because the randomizer returns a number which causes a fail.
     /// </summary>

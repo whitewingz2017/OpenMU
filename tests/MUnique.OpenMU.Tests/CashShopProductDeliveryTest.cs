@@ -36,6 +36,27 @@ public class CashShopProductDeliveryTest
 
     private readonly CashShopActions _actions = new();
 
+    /// <summary>Activating a Gold Ticket consumes it once and saves account VIP for its purchased duration.</summary>
+    [Test]
+    public async Task GoldTicketActivatesVipFromCashShopStorageAsync()
+    {
+        var player = await this.CreatePlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<ICashShopProductDeliveryPlugIn, GoldTicketVipDeliveryPlugIn>();
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var package = CreatePackage(77, GoldTicketVipDeliveryPlugIn.GoldTicket);
+        package.Products.Single().Duration = TimeSpan.FromDays(7);
+        player.GameContext.Configuration.CashShopConfiguration!.Packages.Add(package);
+        await AddStorageItemAsync(player, 77).ConfigureAwait(false);
+        var before = DateTime.UtcNow;
+        await this._actions.UseStorageItemAsync(player, 0, 77).ConfigureAwait(false);
+        var expiry = player.Account!.VipExpiresAtUtc;
+        Assert.That(expiry, Is.GreaterThanOrEqualTo(before.AddDays(7)));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(await GetStorageItemsAsync(player).ConfigureAwait(false), Is.Empty);
+        await this._actions.UseStorageItemAsync(player, 0, 77).ConfigureAwait(false);
+        Assert.That(player.Account.VipExpiresAtUtc, Is.EqualTo(expiry));
+    }
+
     /// <summary>
     /// Tests that using a Vault Expansion Certificate extends the vault instead of adding an item to the inventory,
     /// and that a second certificate can't be used then and stays in the storage.

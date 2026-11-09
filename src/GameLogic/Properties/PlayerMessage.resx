@@ -1114,4 +1114,6 @@ Price: {3}</value></data>
   <data name="RankTitles_SaveFailed" xml:space="preserve"><value>Saving failed. Your rank title purchase or equipment change was rolled back.</value></data>
   <data name="RankTitles_Purchased" xml:space="preserve"><value>Title purchased. Equip it from My Ranks.</value></data>
   <data name="RankTitles_Equipped" xml:space="preserve"><value>Your equipped title was updated.</value></data>
+  <data name="PlayerKilledMailSubject" xml:space="preserve"><value>Player death notification</value></data>
+  <data name="PlayerKilledMailBody" xml:space="preserve"><value>You were killed by {0}.</value></data>
 </root>

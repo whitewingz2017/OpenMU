@@ -1,12 +1,15 @@
-﻿// <copyright file="EnterImperialGuardianAction.cs" company="MUnique">
+// <copyright file="EnterImperialGuardianAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.MiniGames;
 
+using System.Threading;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.CashShop;
+using MUnique.OpenMU.GameLogic.MiniGames;
 using MUnique.OpenMU.GameLogic.MiniGames.ImperialGuardian;
+using MUnique.OpenMU.GameLogic.Offline;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
 /// <summary>
@@ -50,42 +53,27 @@ public class EnterImperialGuardianAction
     /// <param name="player">The player.</param>
     public async ValueTask TryEnterAsync(Player player)
     {
+        if (player.CurrentMiniGame is not null)
+        {
+            return;
+        }
+
+        var party = player.Party;
+        var members = party?.PartyList.OfType<Player>().ToArray() ?? [];
         var eventDefinition = ImperialGuardianFeaturePlugIn.GetEventDefinition(player.GameContext);
         var day = GetDay(player.GameContext, eventDefinition);
-        var definition = player.GameContext.Configuration.MiniGameDefinitions
-            .FirstOrDefault(d => d.Type == MiniGameType.ImperialGuardian && d.GameLevel == day);
-        if (definition is null)
+        await player.RunPersistenceExclusiveAsync(() => this.TryEnterPlayerAsync(player, day)).ConfigureAwait(false);
+        if (player.CurrentMiniGame is not ImperialGuardianContext game || party is null || player.Party != party)
         {
-            await ShowResultAsync(player, ImperialGuardianEnterResult.NotOpen, day).ConfigureAwait(false);
             return;
         }
 
-        if (eventDefinition.IsPartyRequired && player.Party is null)
+        foreach (var member in members.Where(member => member != player && member is not OfflinePlayer))
         {
-            await ShowResultAsync(player, ImperialGuardianEnterResult.PartyRequired, day).ConfigureAwait(false);
-            return;
-        }
-
-        if (FindTicket(player, day) is not { } ticket)
-        {
-            await ShowResultAsync(player, ImperialGuardianEnterResult.MissingTicket, day).ConfigureAwait(false);
-            return;
-        }
-
-        if ((player.Attributes?[Stats.Level] ?? 0) < definition.MinimumCharacterLevel)
-        {
-            // The client doesn't show a message for this result.
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.ImperialGuardianLevelTooLow), definition.MinimumCharacterLevel).ConfigureAwait(false);
-            await ShowResultAsync(player, ImperialGuardianEnterResult.CharacterLevelTooLow, day).ConfigureAwait(false);
-            return;
-        }
-
-        await this._enterAction.TryEnterMiniGameAsync(player, MiniGameType.ImperialGuardian, day, UndefinedTicketSlot).ConfigureAwait(false);
-        if (player.CurrentMiniGame is ImperialGuardianContext)
-        {
-            if (!CashShopEventPasses.IsReusable(player, ticket, MiniGameType.ImperialGuardian, day))
+            // Each entry runs after releasing the requester's lock; opposing party requests cannot deadlock.
+            using (ExecutionContext.SuppressFlow())
             {
-                await ConsumeTicketAsync(player, ticket).ConfigureAwait(false);
+                _ = Task.Run(() => this.BringPartyMemberAsync(member, party, day, game));
             }
         }
     }
@@ -127,5 +115,75 @@ public class EnterImperialGuardianAction
         }
 
         await player.DestroyInventoryItemAsync(ticket).ConfigureAwait(false);
+    }
+
+    private async Task BringPartyMemberAsync(Player member, GameLogic.Party party, byte day, MiniGameContext game)
+    {
+        try
+        {
+            await member.RunPersistenceExclusiveAsync(async () =>
+            {
+                if (member.Party != party || member.GameContext.MiniGames.TryGetRunningMiniGame(game.Definition, member) != game
+                    || member.PlayerState.CurrentState != PlayerState.EnteredWorld || !member.IsAlive
+                    || member.OpenedNpc is not null || member.ShopStorage?.StoreOpen is true)
+                {
+                    return;
+                }
+
+                await this.TryEnterPlayerAsync(member, day).ConfigureAwait(false);
+            }).ConfigureAwait(false);
+        }
+        catch (Exception exception)
+        {
+            member.Logger.LogError(exception, "Failed to bring party member {Name} into Imperial Guardian.", member.Name);
+        }
+    }
+
+    private async ValueTask TryEnterPlayerAsync(Player player, byte day)
+    {
+        if (player.CurrentMiniGame is not null || player.SelectedCharacter?.CharacterClass is null
+            || player.Attributes is null || !player.IsAlive
+            || player.PlayerState.CurrentState is not { } state
+            || (state != PlayerState.EnteredWorld && state != PlayerState.NpcDialogOpened))
+        {
+            return;
+        }
+
+        var eventDefinition = ImperialGuardianFeaturePlugIn.GetEventDefinition(player.GameContext);
+        var definition = player.GameContext.Configuration.MiniGameDefinitions
+            .FirstOrDefault(d => d.Type == MiniGameType.ImperialGuardian && d.GameLevel == day);
+        if (definition is null)
+        {
+            await ShowResultAsync(player, ImperialGuardianEnterResult.NotOpen, day).ConfigureAwait(false);
+            return;
+        }
+
+        if (eventDefinition.IsPartyRequired && player.Party is null)
+        {
+            await ShowResultAsync(player, ImperialGuardianEnterResult.PartyRequired, day).ConfigureAwait(false);
+            return;
+        }
+
+        if (FindTicket(player, day) is not { } ticket)
+        {
+            await ShowResultAsync(player, ImperialGuardianEnterResult.MissingTicket, day).ConfigureAwait(false);
+            return;
+        }
+
+        if ((player.Attributes?[Stats.Level] ?? 0) < definition.MinimumCharacterLevel)
+        {
+            // The client doesn't show a message for this result.
+            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.ImperialGuardianLevelTooLow), definition.MinimumCharacterLevel).ConfigureAwait(false);
+            await ShowResultAsync(player, ImperialGuardianEnterResult.CharacterLevelTooLow, day).ConfigureAwait(false);
+            return;
+        }
+
+        if (await this._enterAction.TryEnterMiniGameAsync(player, MiniGameType.ImperialGuardian, day, UndefinedTicketSlot).ConfigureAwait(false))
+        {
+            if (!CashShopEventPasses.IsReusable(player, ticket, MiniGameType.ImperialGuardian, day))
+            {
+                await ConsumeTicketAsync(player, ticket).ConfigureAwait(false);
+            }
+        }
     }
 }

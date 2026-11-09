@@ -203,9 +203,9 @@ internal class CosmeticArmorInitializationTests
         Assert.That(configuration.Items.Single(i => i.Group == 0 && i.Number == 304).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 25 }));
     }
 
-    /// <summary>Fresh and updated imports retain class and promotion limits for each weapon family.</summary>
+    /// <summary>Fresh and updated imports retain class and promotion limits for weapons and armor models.</summary>
     [Test]
-    public async Task WeaponFamilyLimitsRepairUnrestrictedImportsAsync()
+    public async Task ModelClassLimitsRepairUnrestrictedImportsAsync()
     {
         var provider = new InMemoryPersistenceContextProvider();
         using var context = provider.CreateNewContext();
@@ -216,6 +216,7 @@ internal class CosmeticArmorInitializationTests
             (4, 303, [11]), (4, 304, [11]), (0, 311, [7]),
             (1, 304, [3, 7, 13]), (2, 307, [17]), (3, 302, [7, 13]),
             (5, 306, [3, 13]), (5, 302, [23]), (0, 304, [25]),
+            (8, 344, [11, 23]), (8, 345, [11, 23]), (8, 327, [3, 7, 13, 17, 25]),
         ];
         foreach (var (group, number, classes) in cases)
         {
@@ -386,7 +387,7 @@ internal class CosmeticArmorInitializationTests
         var count = configuration.Items.Count;
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         Assert.That(configuration.Items.Count, Is.EqualTo(count));
-        Assert.That(entry.Version, Is.EqualTo(16));
+        Assert.That(entry.Version, Is.EqualTo(17));
         Assert.That(armor.GetId(), Is.EqualTo(armorId));
         Assert.That(item.Definition, Is.SameAs(armor));
         Assert.That(item.ItemSlot, Is.EqualTo(GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1));
@@ -397,7 +398,7 @@ internal class CosmeticArmorInitializationTests
 
     private static void AssertReferenceWings(GameConfiguration configuration)
     {
-        foreach (var (number, name) in new[] { (382, "Custom Wing 21 Skin"), (383, "Custom Wing 6 Skin"), (384, "Custom Wing 7 Skin") })
+        foreach (var (number, name) in new[] { (382, "Custom Wing 21"), (383, "Custom Wing 6"), (384, "Custom Wing 7") })
         {
             var wing = configuration.Items.Single(i => i.Group == 12 && i.Number == number);
             Assert.That(wing.Name.ValueInNeutralLanguage, Is.EqualTo(name));
@@ -421,6 +422,12 @@ internal class CosmeticArmorInitializationTests
 
     private static void AssertSkins(GameConfiguration configuration)
     {
+        foreach (var number in new short[] { 344, 345 })
+        {
+            var femaleArmor = configuration.Items.Single(d => d.Group == 8 && d.Number == number);
+            Assert.That(femaleArmor.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 11, 23 }));
+        }
+
         foreach (var (number, groups) in new[] { (418, new byte[] { 7, 8, 9, 10, 11 }), (303, new byte[] { 8, 9, 10, 11 }) })
         {
             var definitions = configuration.Items.Where(i => i.Number == number && i.Group is >= 7 and <= 11).ToArray();

@@ -32,8 +32,8 @@ internal class TradeRequestHandlerPlugIn : IPacketHandlerPlugIn
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
         TradeRequest message = packet;
-        var partner = await player.GetObservingPlayerWithIdAsync(message.PlayerId).ConfigureAwait(false);
-        if (partner is null)
+        var partner = await player.GetObservedPlayerWithIdAsync(message.PlayerId).ConfigureAwait(false);
+        if (partner is null || partner == player || partner.CurrentMap != player.CurrentMap || !partner.IsAlive)
         {
             await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.TradePartnerNotFound)).ConfigureAwait(false);
             return;

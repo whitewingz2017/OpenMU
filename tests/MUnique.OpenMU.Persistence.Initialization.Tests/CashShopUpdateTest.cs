@@ -1,4 +1,4 @@
-﻿// <copyright file="CashShopUpdateTest.cs" company="MUnique">
+// <copyright file="CashShopUpdateTest.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -125,7 +125,7 @@ internal class CashShopUpdateTest
         await update.ApplyUpdateAsync(context, gameConfiguration).ConfigureAwait(false);
         Assert.That(packages, Has.All.Matches<CashShopPackage>(p => p.IsForSale));
         Assert.That(gameConfiguration.PlugInConfigurations.Count, Is.EqualTo(pluginCount));
-        Assert.That(update.Version, Is.EqualTo(6));
+        Assert.That(update.Version, Is.EqualTo(7));
     }
 
     /// <summary>
@@ -238,8 +238,8 @@ internal class CashShopUpdateTest
     {
         var (context, gameConfiguration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
         using var _ = context;
-        // These script products are Gold Channel access and the undefined Premium Service.
-        int[] deferred = [528, 149, 1352, 526, 527, 98, 912, 913, 914, 915];
+        // Premium Service has no configured benefits.
+        int[] deferred = [149];
         var unavailable = gameConfiguration.CashShopConfiguration!.Packages
             .SelectMany(package => package.Products.Where(product => !deferred.Contains(product.ProductSequence) && !product.CanBeDelivered())
                 .Select(product => $"{package.Name}: product {product.ProductSequence}, price {product.PriceSequence}, item {product.ItemDefinition}"))

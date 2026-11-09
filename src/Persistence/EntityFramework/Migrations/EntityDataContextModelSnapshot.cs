@@ -109,6 +109,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("VipExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("WCoinC")
                         .HasColumnType("integer");
 
@@ -1066,8 +1069,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<Guid?>("CurrentMapId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("DuelWins")
+                        .HasColumnType("integer");
+
                     b.Property<long>("Experience")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("HideRankTitle")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("InventoryExtensions")
                         .HasColumnType("integer");
@@ -1080,6 +1089,12 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.Property<byte[]>("KeyConfiguration")
                         .HasColumnType("bytea");
+
+                    b.Property<DateTime?>("LastDuelWinUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastWeeklyPlayerKillUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("LevelUpPoints")
                         .HasColumnType("integer");
@@ -1110,6 +1125,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int>("PlayerKillCount")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("PlayerKillWeekStartUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<byte>("Pose")
                         .HasColumnType("smallint");
 
@@ -1137,6 +1155,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<int>("UsedNegFruitPoints")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WeeklyPlayerKills")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -1156,6 +1177,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.HasIndex("SkinInventoryId")
                         .IsUnique();
+
+                    b.HasIndex("DuelWins", "LastDuelWinUtc");
+
+                    b.HasIndex("PlayerKillWeekStartUtc", "WeeklyPlayerKills", "LastWeeklyPlayerKillUtc");
 
                     b.ToTable("Character", "data");
                 });
@@ -1868,6 +1893,9 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
 
                     b.Property<int>("MaximumPasswordLength")
                         .HasColumnType("integer");
+
+                    b.Property<byte?>("MaximumSocketCountDrop")
+                        .HasColumnType("smallint");
 
                     b.Property<int>("MaximumVaultMoney")
                         .HasColumnType("integer");

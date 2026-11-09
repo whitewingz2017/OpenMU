@@ -1,4 +1,4 @@
-﻿// <copyright file="SkillsInitializer.cs" company="MUnique">
+// <copyright file="SkillsInitializer.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -454,6 +454,7 @@ internal class SkillsInitializer : SkillsInitializerBase
         this.InitializeEffects();
         this.MapSkillsToEffects();
         this.InitializeMasterSkillData();
+        SupportBuffDurations.Apply(this.Context, this.GameConfiguration);
         MasterSkillPassivePowerUps.AddMissing(this.Context, this.GameConfiguration);
         this.CreateSpecialSummonMonsters();
         this.CreateSkillCombos();

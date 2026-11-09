@@ -22,7 +22,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Account",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Account),
                 baseEntityType,
-                propertyCount: 21,
+                propertyCount: 22,
                 navigationCount: 4,
                 foreignKeyCount: 1,
                 unnamedIndexCount: 2,
@@ -179,6 +179,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForAccountCo
                 propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("VaultPassword", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<VaultPassword>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
             vaultPassword.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var vipExpiresAtUtc = runtimeEntityType.AddProperty(
+                "VipExpiresAtUtc",
+                typeof(DateTime?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("VipExpiresAtUtc", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<VipExpiresAtUtc>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            vipExpiresAtUtc.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var wCoinC = runtimeEntityType.AddProperty(
                 "WCoinC",

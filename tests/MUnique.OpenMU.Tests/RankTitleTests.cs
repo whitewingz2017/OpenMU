@@ -20,7 +20,7 @@ using MUnique.OpenMU.Persistence;
 public class RankTitleTests
 {
     /// <summary>Concurrent requests and a second purchase never charge twice for the same title.</summary>
-    [TestCase(1)]
+    [TestCase(2)]
     [TestCase(18)]
     public async Task PurchaseReplayAndEquipAsync(int rank)
     {
@@ -62,8 +62,8 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         player.Account!.WCoinC = coins;
-        RankTitleFeaturePlugIn.Settings(player.GameContext)!.Titles.First().Price = price;
-        await new RankTitleActions().ExecuteAsync(player, 1, 1, 1, price).ConfigureAwait(false);
+        RankTitleFeaturePlugIn.Settings(player.GameContext)!.Titles.Single(title => title.Rank == 2).Price = price;
+        await new RankTitleActions().ExecuteAsync(player, 1, 1, 2, price).ConfigureAwait(false);
         Assert.That(player.Account.WCoinC, Is.EqualTo(coins));
         Assert.That(player.SelectedCharacter!.OwnedRankTitlesJson, Is.EqualTo("[]"));
     }
@@ -75,11 +75,11 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var character = player.SelectedCharacter!;
-        character.OwnedRankTitlesJson = equip ? "[1]" : "[]";
+        character.OwnedRankTitlesJson = equip ? "[2]" : "[]";
         CashShopActionsTest.SaveFailingContext.Install(player, () => true);
-        await new RankTitleActions().ExecuteAsync(player, 1, equip ? (byte)2 : (byte)1, 1, equip ? 0 : 100).ConfigureAwait(false);
+        await new RankTitleActions().ExecuteAsync(player, 1, equip ? (byte)2 : (byte)1, 2, equip ? 0 : 100).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(500));
-        Assert.That(character.OwnedRankTitlesJson, Is.EqualTo(equip ? "[1]" : "[]"));
+        Assert.That(character.OwnedRankTitlesJson, Is.EqualTo(equip ? "[2]" : "[]"));
         Assert.That(character.ActiveRankTitle, Is.Zero);
         Mock.Get(player.ViewPlugIns.GetPlugIn<IRankTitleView>()!)
             .Verify(view => view.ShowAsync(1, "RankTitles_SaveFailed"), Times.Once);
@@ -94,7 +94,7 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         player.SelectedCharacter!.OwnedRankTitlesJson = owned;
-        await new RankTitleActions().ExecuteAsync(player, 1, 1, 1, 100).ConfigureAwait(false);
+        await new RankTitleActions().ExecuteAsync(player, 1, 1, 2, 100).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(500));
         Assert.That(player.SelectedCharacter.OwnedRankTitlesJson, Is.EqualTo(owned));
     }
@@ -116,7 +116,7 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var actions = new RankTitleActions();
-        await actions.ExecuteAsync(player, 9, 1, 1, 100).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 9, 1, 2, 100).ConfigureAwait(false);
         var nextPlayer = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
         var nextCharacter = nextPlayer.SelectedCharacter!;
         await player.SetSelectedCharacterAsync(nextCharacter).ConfigureAwait(false);
@@ -138,11 +138,11 @@ public class RankTitleTests
         grant.CreatedAt = DateTime.UtcNow;
         await player.PersistenceContext.SaveChangesAsync().ConfigureAwait(false);
         var actions = new RankTitleActions();
-        await actions.ExecuteAsync(player, 1, 1, 1, 100).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 1, 1, 2, 100).ConfigureAwait(false);
         await actions.ExecuteAsync(player, 2, 0, 0, 0).ConfigureAwait(false);
         Assert.That(player.Account.WCoinC, Is.EqualTo(50));
         Assert.That(grant.AppliedAt, Is.Not.Null);
-        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { 1 }));
+        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { 2 }));
     }
 
     /// <summary>A fresh action session still reads permanent ownership and equipped rank.</summary>
@@ -150,9 +150,9 @@ public class RankTitleTests
     public async Task NewSessionRetainsOwnedTitleAsync()
     {
         var player = await CreateAsync().ConfigureAwait(false);
-        await new RankTitleActions().ExecuteAsync(player, 1, 1, 1, 100).ConfigureAwait(false);
-        await new RankTitleActions().ExecuteAsync(player, 1, 2, 1, 0).ConfigureAwait(false);
-        Assert.That(RankTitleRules.Active(player), Is.EqualTo(1));
+        await new RankTitleActions().ExecuteAsync(player, 1, 1, 2, 100).ConfigureAwait(false);
+        await new RankTitleActions().ExecuteAsync(player, 1, 2, 2, 0).ConfigureAwait(false);
+        Assert.That(RankTitleRules.Active(player), Is.EqualTo(2));
         Assert.That(player.Account!.WCoinC, Is.EqualTo(400));
     }
 
@@ -162,10 +162,10 @@ public class RankTitleTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var bytes = new byte[RankTitleRequestExtended.Length];
-        var request = new RankTitleRequestExtended(bytes) { Operation = 1, Rank = 1, QuotedPrice = 100, RequestId = 7 };
+        var request = new RankTitleRequestExtended(bytes) { Operation = 1, Rank = 2, QuotedPrice = 100, RequestId = 7 };
         await new CosmeticArmorHandlerPlugIn().HandlePacketAsync(player, bytes).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(400));
-        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { 1 }));
+        Assert.That(JsonSerializer.Deserialize<int[]>(player.SelectedCharacter!.OwnedRankTitlesJson), Is.EqualTo(new[] { 2 }));
         Mock.Get(player.ViewPlugIns.GetPlugIn<IRankTitleView>()!)
             .Verify(view => view.ShowAsync(request.RequestId, "RankTitles_Purchased"), Times.Once);
     }

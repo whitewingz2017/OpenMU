@@ -14,6 +14,12 @@ using MUnique.OpenMU.Interfaces;
 /// </summary>
 public interface IPlayerContext : IContext
 {
+    /// <summary>Gets the unique duel and current-week kill leaders, excluding bots and template accounts.</summary>
+    /// <param name="weekStartUtc">The UTC instant at which the server's current week started.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The leaders' names, or null when there is no qualifying score.</returns>
+    ValueTask<(string? DuelLeader, string? KillLeader)> GetCompetitiveRankLeadersAsync(DateTime weekStartUtc, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Gets the letter body by the id of its header.
     /// </summary>

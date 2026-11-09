@@ -22,7 +22,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.GameConfiguration",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.GameConfiguration),
                 baseEntityType,
-                propertyCount: 31,
+                propertyCount: 32,
                 navigationCount: 24,
                 foreignKeyCount: 3,
                 unnamedIndexCount: 3,
@@ -246,6 +246,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.GameConfiguration).GetField("<MaximumPasswordLength>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
             maximumPasswordLength.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var maximumSocketCountDrop = runtimeEntityType.AddProperty(
+                "MaximumSocketCountDrop",
+                typeof(byte?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.GameConfiguration).GetProperty("MaximumSocketCountDrop", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.GameConfiguration).GetField("<MaximumSocketCountDrop>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            maximumSocketCountDrop.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var maximumVaultMoney = runtimeEntityType.AddProperty(
                 "MaximumVaultMoney",

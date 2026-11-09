@@ -43,7 +43,8 @@ public static class RankTitles
             .ExceptBy(settings.Titles.Select(title => title.Rank), title => title.Rank).ToArray();
         var retired = settings.Titles.Where(title => title.Rank == RemovedTwinMuTitleRank).ToArray();
         var betaTester = settings.Titles.FirstOrDefault(title => title.Rank == BetaTesterRank && title.Name == "TwinMU II");
-        if (missing.Length == 0 && retired.Length == 0 && betaTester is null)
+        var earned = settings.Titles.Where(title => RankTitleRules.IsEarned(title.Rank) && title.Price != 0).ToArray();
+        if (missing.Length == 0 && retired.Length == 0 && betaTester is null && earned.Length == 0)
         {
             return;
         }
@@ -51,6 +52,11 @@ public static class RankTitles
         foreach (var title in retired)
         {
             settings.Titles.Remove(title);
+        }
+
+        foreach (var title in earned)
+        {
+            title.Price = 0;
         }
 
         if (betaTester is { })

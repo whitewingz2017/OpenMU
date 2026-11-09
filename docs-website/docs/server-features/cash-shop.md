@@ -246,3 +246,15 @@ server log, and search for that message immediately after trying SHOP. The
 `Client version changed` warning is a packet-handler refresh and does not identify
 an access denial. Rebuild, deploy, and restart the server to enable this diagnostic;
 no APK change is needed.
+
+### Gold Channel Ticket VIP
+
+Activating a Gold Channel Ticket from cash-shop storage grants account-wide VIP
+for the purchased duration. Additional tickets extend the remaining time. This
+grants eligibility for the VIP rank badge and uses the existing ticket prices
+and duration choices. Enable **Gold Ticket VIP** and **Rank Titles**; existing
+servers need **Add cash shop** version 7 and the
+**EarnedRankStandingsAndEquipmentDrops** database migration.
+The account expiry is `VipExpiresAtUtc` in UTC, which website integrations or
+administrators can also set. The existing `IsVip` account attribute still grants
+VIP eligibility. This change does not configure separate Gold-only channels.

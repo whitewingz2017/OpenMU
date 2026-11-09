@@ -247,7 +247,36 @@ For area skills with `UseTargetAreaFilter`, distance-dependent hit chance is mea
 
 These corrections require deploying the updated game-server binaries and restarting the game server. They do not require a database configuration update, and updating only the client does not apply them.
 
-## Imperial Guardian (Gaion) zone progression
+## Guild admission and trading
+
+Guild Masters and Assistant Guild Masters can receive and accept membership
+requests. Battle Masters and ordinary members cannot admit applicants. Both the
+applicant and the receiving officer must be available when the request is accepted.
+
+Trade requests resolve the target from the requesting player's view. A visible
+player can receive a request without first moving to refresh the other player's
+view. Busy, unavailable, and unseen targets remain ineligible.
+
+## Player-cast support buff duration
+
+All Season 6 player-cast support buffs, including their master versions, last
+60 seconds. Buff strength, costs, and targeting restrictions remain unchanged.
+Duration bonuses from energy, level, or master skills no longer extend them.
+Instant healing, item effects, passive skills, and hostile debuffs keep their own
+rules.
+
+Fresh databases include these durations. On an existing database, apply the
+optional **Set support buffs to one minute** configuration update, then restart
+the game server. This update replaces customized support buff durations.
+
+## Imperial Guardian (Gaion) party entry and zone progression
+
+When any party member enters through Jerint, other available party members with
+their own valid ticket automatically join that same run. Each entrant consumes
+one ticket use; reusable cash-shop passes keep their normal behavior. A member
+without a valid ticket, below the event's level requirement, dead, trading,
+using an NPC window, or already in another event remains outside. Entry still
+obeys capacity and the event's opening period.
 
 On every event day, killing the last monster unlocks the remaining gates and
 keeps the current zone's time limit running. Destroy the middle and last blocking

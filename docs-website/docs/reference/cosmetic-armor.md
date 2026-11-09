@@ -42,22 +42,38 @@ owned items; free space and retry.
 ## Rank titles
 
 Open **Rank Shop** from the window menu or the modern theme's **Rank** button.
-The **Shop** tab lists VIP, Fighter, Legend, TwinMU, Slayer, Hunter, PvP King and
-Top Tier, using client rank IDs 1 through 8. Animated badges use IDs 9 through
-18 for Destroyer, Hokage, Hero, Godlike, Elite, Beta Tester, Soul Reaper,
-Playboy and Immortal. Rank 10 (TwinMU III) is retired. All seventeen initially cost **100 WCoinC**,
-matching the skin shop's default price. This uses the account's WCoinC
-balance and applies pending coin grants before checking the balance.
+The **Shop** tab offers fourteen titles for WCoinC. VIP (rank 1), PvP King
+(rank 7), and Destroyer (rank 9) are earned and appear in **My Ranks** only while
+eligible. Rank 10 is retired. Other titles initially cost **100 WCoinC** each.
+Purchases apply pending coin grants and save the payment and permanent
+character ownership together.
 
-Titles are permanent and owned per character. Buying a title deducts WCoinC
-and saves ownership together. **My Ranks → Equip** shows its badge and aura to
-you and nearby players. **Unequip** hides it. Titles grant no combat bonuses.
-The server rejects repeat purchases, unowned equipment, changed prices and
-insufficient funds. Failed saves restore the balance and title state.
+VIP follows account VIP status. Activating a Gold Channel Ticket grants VIP
+for the product's configured duration; additional tickets extend the remaining
+time. An administrator or website integration can set the account's
+`VipExpiresAtUtc` in UTC or use the existing `IsVip` account attribute.
+PvP King belongs to the player with the most completed duel wins. Cancelled
+duels do not add wins. Destroyer belongs to the current week's leading player
+killer. Weeks begin Monday at midnight in the server's local time zone. Ties go
+to whoever reached the score first. Standings include offline players and survive
+restarts. Other game servers synchronize within five seconds.
+Duel wins start accumulating after deployment; older duel results were not stored.
+
+**Equip** shows a selected eligible title. Earned titles appear automatically
+when no eligible title is selected, with Destroyer taking priority over PvP King
+and VIP. **Unequip** hides all titles until another is equipped. Titles grant no
+combat bonuses. Static badges are 10% smaller, while GIF badges display at
+80 by 20 units with a two-unit upward offset in both clients.
+
+Player deaths caused by another player also send mailbox mail naming the killer.
+Self deaths and deaths to monsters do not send this mail or count toward
+Destroyer. Repeated player kills, including duel kills, count toward the weekly
+standings. The PK penalty remains separate from these statistics.
 
 Deploy the updated server and apply the **RankTitles** database schema migration
-through the normal server database update flow. Existing Season 6 servers must
-also apply **TwinMU Rank Titles** version 3 in **Updates**, then restart the
+and **EarnedRankStandingsAndEquipmentDrops** through the normal server database
+update flow. Gold Ticket purchases also require **Add cash shop** version 7. Existing Season 6 servers must
+also apply **TwinMU Rank Titles** version 4 in **Updates**, then restart the
 game server. The update installs the current titles and retires TwinMU III while preserving custom prices
 and the active state of existing configurations.
 Fresh configurations include its default settings with the feature disabled,
@@ -73,16 +89,12 @@ size are configured in the desktop and mobile `RankTitles.json` catalogs.
 
 ## Buying and previewing
 
-On the Skin page, tap **Skin Shop**. The window has three columns: categories
-on the left, actual item models in the middle, and your character preview on
-the right. The larger preview starts with your character wearing no equipment
-and shows only the selected skin. Use its arrows to rotate the character, and
-the **Preview +** minus/plus buttons to view enhancement levels +0 through +15.
-This changes the preview only; purchased skins remain +0.
-Choose one bonus from the dropdown below the preview frame, review the price,
-then tap **Buy**. Close or Escape ends the preview. It never changes the character
-in the game world, equips an item, or grants attributes. The purchased item and its chosen bonus arrive together
-in your inventory. The bonus stays on that item when traded or stored.
+On the Skin page, tap **Skin Shop**. The shop shows eight items in four columns,
+with your character preview on the right. Each item has its own Buy button below
+the preview and name. Buy opens a bonus selection popup; select a bonus and
+confirm the purchase there, or Cancel to leave without buying. Item cards and
+the large preview show weapons, wings, pets, and mounts with your character.
+Drag left or right to rotate the large preview; on mobile, swipe.
 
 The Weapons category has a type filter for swords, maces, spears, bows,
 staffs/sticks, scepters, books and RF gloves. Weapons that your class cannot
@@ -232,3 +244,17 @@ are included in the matching client data. Publish the server and apply
 **Set 315 Cosmetic Armor version 10** with all players offline before creating
 or selling them. Existing wings need only the rebuilt client and packaged data
 for the animation, 25 fps atlas and reference lighting fixes.
+
+The shop combines local and server class requirements, including promotion
+limits. All-class placeholder sets use the reviewed male or female model
+family; specific class requirements from the reference are retained. Apply
+**Set 315 Cosmetic Armor version 17** for matching server restrictions. Owned
+items remain accessible in Skin Inventory for removal or trade.
+
+## Equipment drop options
+
+Apply **380 and socket equipment drop options** to an existing Season 6 database.
+Newly initialized servers already include it. Level-380 equipment (identified by
+its Guardian option eligibility) and socket equipment roll luck once at 30%.
+Newly generated socket drops, including boxes, have at most two socket slots.
+The item definition retains its crafting capacity, and existing items are unchanged.

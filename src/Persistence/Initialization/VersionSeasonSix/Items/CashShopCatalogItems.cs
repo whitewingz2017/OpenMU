@@ -73,6 +73,7 @@ internal class CashShopCatalogItems(IContext context, GameConfiguration gameConf
         (13, 115, 1, 1),
         (13, 122, 1, 1),
         (13, 123, 1, 1),
+        (13, 124, 1, 1),
         (13, 127, 1, 1),
         (13, 128, 1, 1),
         (13, 129, 1, 1),

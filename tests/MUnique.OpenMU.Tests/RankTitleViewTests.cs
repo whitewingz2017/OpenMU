@@ -37,7 +37,7 @@ public class RankTitleViewTests
             Assert.That(response.GetProperty("Active").GetInt32(), Is.Zero);
             var ranks = response.GetProperty("Ranks").EnumerateArray().ToArray();
             Assert.That(ranks.Select(rank => rank.GetProperty("Rank").GetInt32()), Is.EqualTo(Enumerable.Range(1, 18).Where(rank => rank != 10)));
-            Assert.That(ranks.All(rank => rank.GetProperty("Price").GetInt32() == 100), Is.True);
+            Assert.That(ranks.All(rank => rank.GetProperty("Price").GetInt32() == (RankTitleRules.IsEarned(rank.GetProperty("Rank").GetInt32()) ? 0 : 100)), Is.True);
             Assert.That(ranks.All(rank => !rank.GetProperty("Owned").GetBoolean()), Is.True);
         }
     }
@@ -49,8 +49,8 @@ public class RankTitleViewTests
     {
         var owner = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
         owner.GameContext.FeaturePlugIns.AddPlugIn(new RankTitleFeaturePlugIn(), true);
-        owner.SelectedCharacter!.OwnedRankTitlesJson = owned ? "[1]" : "[]";
-        owner.SelectedCharacter.ActiveRankTitle = 1;
+        owner.SelectedCharacter!.OwnedRankTitlesJson = owned ? "[2]" : "[]";
+        owner.SelectedCharacter.ActiveRankTitle = 2;
         var (observer, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
         using (output)
         {
@@ -61,7 +61,7 @@ public class RankTitleViewTests
             var title = json.RootElement.GetProperty("Ranks")[0];
             Assert.That(title.GetProperty("Id").GetUInt16(), Is.EqualTo(owner.GetId(observer)));
             Assert.That(title.GetProperty("Name").GetString(), Is.EqualTo(owner.Name));
-            Assert.That(title.GetProperty("Rank").GetInt32(), Is.EqualTo(owned ? 1 : 0));
+            Assert.That(title.GetProperty("Rank").GetInt32(), Is.EqualTo(owned ? 2 : 0));
         }
     }
 }

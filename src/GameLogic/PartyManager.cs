@@ -53,6 +53,30 @@ public sealed class PartyManager : IPartyManager
         await member.InvokeViewPlugInAsync<IPartyHealthViewPlugIn>(p => p.UpdatePartyHealthAsync()).ConfigureAwait(false);
     }
 
+    /// <inheritdoc />
+    public async ValueTask RemoveExpiredMembersAsync(TimeSpan timeout, DateTime utcNow)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(timeout, TimeSpan.Zero);
+        foreach (var party in this._partyByCharacterName.Values.Distinct().ToArray())
+        {
+            foreach (var snapshot in party.PartyList.OfType<OfflinePartyMember>())
+            {
+                if (utcNow - snapshot.DisconnectedAtUtc >= timeout)
+                {
+                    await party.KickMySelfAsync(snapshot).ConfigureAwait(false);
+                }
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    void IPartyManager.TrackMembership(string characterName, Party party)
+        => this._partyByCharacterName[characterName] = party;
+
+    /// <inheritdoc />
+    void IPartyManager.UntrackMembership(string characterName)
+        => this._partyByCharacterName.TryRemove(characterName, out _);
+
     private async ValueTask RemoveOtherCharactersAsync(IPartyMember member)
     {
         if (member is not Player { Account: { } account } || string.IsNullOrEmpty(account.LoginName))
@@ -71,12 +95,4 @@ public sealed class PartyManager : IPartyManager
             }
         }
     }
-
-    /// <inheritdoc />
-    void IPartyManager.TrackMembership(string characterName, Party party)
-        => this._partyByCharacterName[characterName] = party;
-
-    /// <inheritdoc />
-    void IPartyManager.UntrackMembership(string characterName)
-        => this._partyByCharacterName.TryRemove(characterName, out _);
 }

@@ -23,6 +23,13 @@ public interface IPartyManager
     ValueTask OnMemberReconnectedAsync(IPartyMember member);
 
     /// <summary>
+    /// Removes disconnected members whose reconnect reservation has expired.
+    /// </summary>
+    /// <param name="timeout">The time a disconnected member may retain its slot.</param>
+    /// <param name="utcNow">The current UTC time.</param>
+    ValueTask RemoveExpiredMembersAsync(TimeSpan timeout, DateTime utcNow);
+
+    /// <summary>
     /// Registers that a character belongs to a party. Called by <see cref="Party"/> internally
     /// when members are added, replaced, or removed.
     /// </summary>

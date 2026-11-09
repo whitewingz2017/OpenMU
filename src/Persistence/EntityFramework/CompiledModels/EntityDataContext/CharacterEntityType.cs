@@ -23,10 +23,10 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Character",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Character),
                 baseEntityType,
-                propertyCount: 30,
+                propertyCount: 36,
                 navigationCount: 11,
                 foreignKeyCount: 6,
-                unnamedIndexCount: 7,
+                unnamedIndexCount: 9,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -93,6 +93,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 nullable: true);
             currentMapId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
+            var duelWins = runtimeEntityType.AddProperty(
+                "DuelWins",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("DuelWins", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<DuelWins>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            duelWins.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
             var experience = runtimeEntityType.AddProperty(
                 "Experience",
                 typeof(long),
@@ -100,6 +108,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<Experience>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0L);
             experience.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var hideRankTitle = runtimeEntityType.AddProperty(
+                "HideRankTitle",
+                typeof(bool),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("HideRankTitle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<HideRankTitle>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: false);
+            hideRankTitle.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var inventoryExtensions = runtimeEntityType.AddProperty(
                 "InventoryExtensions",
@@ -132,6 +148,22 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<KeyConfiguration>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             keyConfiguration.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var lastDuelWinUtc = runtimeEntityType.AddProperty(
+                "LastDuelWinUtc",
+                typeof(DateTime?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("LastDuelWinUtc", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<LastDuelWinUtc>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            lastDuelWinUtc.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var lastWeeklyPlayerKillUtc = runtimeEntityType.AddProperty(
+                "LastWeeklyPlayerKillUtc",
+                typeof(DateTime?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("LastWeeklyPlayerKillUtc", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<LastWeeklyPlayerKillUtc>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            lastWeeklyPlayerKillUtc.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var levelUpPoints = runtimeEntityType.AddProperty(
                 "LevelUpPoints",
@@ -197,6 +229,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<PlayerKillCount>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: 0);
             playerKillCount.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var playerKillWeekStartUtc = runtimeEntityType.AddProperty(
+                "PlayerKillWeekStartUtc",
+                typeof(DateTime?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("PlayerKillWeekStartUtc", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<PlayerKillWeekStartUtc>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            playerKillWeekStartUtc.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var pose = runtimeEntityType.AddProperty(
                 "Pose",
@@ -270,6 +310,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 sentinel: 0);
             usedNegFruitPoints.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
+            var weeklyPlayerKills = runtimeEntityType.AddProperty(
+                "WeeklyPlayerKills",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetProperty("WeeklyPlayerKills", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Character).GetField("<WeeklyPlayerKills>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            weeklyPlayerKills.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
             var key = runtimeEntityType.AddKey(
                 new[] { id });
             runtimeEntityType.SetPrimaryKey(key);
@@ -298,6 +346,12 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var index5 = runtimeEntityType.AddIndex(
                 new[] { skinInventoryId },
                 unique: true);
+
+            var index6 = runtimeEntityType.AddIndex(
+                new[] { duelWins, lastDuelWinUtc });
+
+            var index7 = runtimeEntityType.AddIndex(
+                new[] { playerKillWeekStartUtc, weeklyPlayerKills, lastWeeklyPlayerKillUtc });
 
             return runtimeEntityType;
         }

@@ -1,4 +1,4 @@
-﻿// <copyright file="EnterMiniGameAction.cs" company="MUnique">
+// <copyright file="EnterMiniGameAction.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -27,7 +27,8 @@ public class EnterMiniGameAction
     /// <param name="miniGameType">The mini game type.</param>
     /// <param name="gameLevel">The mini game level.</param>
     /// <param name="gameTicketInventoryIndex">The inventory index of the ticket.</param>
-    public async ValueTask TryEnterMiniGameAsync(Player player, MiniGameType miniGameType, int gameLevel, byte gameTicketInventoryIndex)
+    /// <returns>Whether the player successfully entered.</returns>
+    public async ValueTask<bool> TryEnterMiniGameAsync(Player player, MiniGameType miniGameType, int gameLevel, byte gameTicketInventoryIndex)
     {
         if (player.SelectedCharacter?.CharacterClass is null)
         {
@@ -41,7 +42,7 @@ public class EnterMiniGameAction
             || player.CurrentMiniGame is not null)
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.Failed)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         var isSpecialCharacter = player.SelectedCharacter.IsSpecialCharacter();
@@ -52,13 +53,13 @@ public class EnterMiniGameAction
         if (characterLevel < minLevel || (requiresMasterLevel && player.SelectedCharacter?.CharacterClass?.IsMasterClass is not true))
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.CharacterLevelTooLow)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         if (characterLevel > maxLevel)
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.CharacterLevelTooHigh)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         // The mini game entrance warps the player directly, so the requirements of the map
@@ -71,31 +72,31 @@ public class EnterMiniGameAction
         {
             await player.ShowBlueMessageAsync(requirementError).ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.Failed)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         if (!this.CheckTicketItem(miniGameDefinition, player, gameTicketInventoryIndex, out var ticketItem))
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.Failed)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         if (!this.CheckEntranceFee(miniGameDefinition, player, out var entranceFee))
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.NotEnoughMoney)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         if (!this.CheckPlayerKillState(miniGameDefinition, player))
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.PlayerKillerCantEnter)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         if (player.GuildWarContext is { State: GuildWarState.Started or GuildWarState.Requested })
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.Failed)).ConfigureAwait(false);
-            return;
+            return false;
         }
 
         // TODO: Check Duel state when duels are implemented
@@ -107,7 +108,7 @@ public class EnterMiniGameAction
                 && !IsJoinableRunningGame(player, miniGameDefinition))
             {
                 await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, EnterResult.NotOpen)).ConfigureAwait(false);
-                return;
+                return false;
             }
         }
 
@@ -156,6 +157,8 @@ public class EnterMiniGameAction
         {
             await player.InvokeViewPlugInAsync<IShowMiniGameEnterResultPlugIn>(p => p.ShowResultAsync(miniGameType, enterResult)).ConfigureAwait(false);
         }
+
+        return enterResult == EnterResult.Success;
     }
 
     /// <summary>

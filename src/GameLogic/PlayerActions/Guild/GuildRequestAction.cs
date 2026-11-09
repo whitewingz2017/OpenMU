@@ -35,10 +35,10 @@ public class GuildRequestAction
 
         var guildMaster = player.CurrentMap?.GetObject(guildMasterId) as Player;
 
-        if (guildMaster?.GuildStatus?.Position != GuildPosition.GuildMaster)
+        if (guildMaster?.GuildStatus?.Position is not (GuildPosition.GuildMaster or GuildPosition.AssistantMaster))
         {
             await player.InvokeViewPlugInAsync<IGuildJoinResponsePlugIn>(p => p.ShowGuildJoinResponseAsync(GuildRequestAnswerResult.NotTheGuildMaster)).ConfigureAwait(false);
-            return; // targeted player not in a guild or not the guild master
+            return;
         }
 
         if (await IsGuildJoinDeniedAsync(player, guildMaster).ConfigureAwait(false))
@@ -46,7 +46,9 @@ public class GuildRequestAction
             return;
         }
 
-        if (guildMaster.LastGuildRequester != null || player.PlayerState.CurrentState != PlayerState.EnteredWorld)
+        if (guildMaster.LastGuildRequester != null
+            || guildMaster.PlayerState.CurrentState != PlayerState.EnteredWorld
+            || player.PlayerState.CurrentState != PlayerState.EnteredWorld)
         {
             await player.InvokeViewPlugInAsync<IGuildJoinResponsePlugIn>(p => p.ShowGuildJoinResponseAsync(GuildRequestAnswerResult.GuildMasterOrRequesterIsBusy)).ConfigureAwait(false);
             return;

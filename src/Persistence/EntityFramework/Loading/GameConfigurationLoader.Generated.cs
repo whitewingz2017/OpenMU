@@ -13,7 +13,7 @@ internal sealed partial class GameConfigurationLoader
 {
     private static readonly string[] Statements =
     [
-        "select \"Id\", \"AreaSkillHitsPlayer\", \"CashShopConfigurationId\", \"CastleSiegeConfigurationId\", \"CharacterNameRegex\", \"ClampMoneyOnPickup\", \"DamagePerOneItemDurability\", \"DamagePerOnePetDurability\", \"DuelConfigurationId\", \"ExcellentItemDropLevelDelta\", \"ExperienceFormula\", \"ExperienceRate\", \"HitsPerOneItemDurability\", \"InfoRange\", \"ItemDropDuration\", \"LetterSendPrice\", \"MasterExperienceFormula\", \"MasterExperienceRate\", \"MaximumCharactersPerAccount\", \"MaximumInventoryMoney\", \"MaximumItemOptionLevelDrop\", \"MaximumLetters\", \"MaximumLevel\", \"MaximumMasterLevel\", \"MaximumPartySize\", \"MaximumPasswordLength\", \"MaximumVaultMoney\", \"MinimumMonsterLevelForMasterExperience\", \"PreventExperienceOverflow\", \"RecoveryInterval\", \"ShouldDropMoney\" from config.\"GameConfiguration\"",
+        "select \"Id\", \"AreaSkillHitsPlayer\", \"CashShopConfigurationId\", \"CastleSiegeConfigurationId\", \"CharacterNameRegex\", \"ClampMoneyOnPickup\", \"DamagePerOneItemDurability\", \"DamagePerOnePetDurability\", \"DuelConfigurationId\", \"ExcellentItemDropLevelDelta\", \"ExperienceFormula\", \"ExperienceRate\", \"HitsPerOneItemDurability\", \"InfoRange\", \"ItemDropDuration\", \"LetterSendPrice\", \"MasterExperienceFormula\", \"MasterExperienceRate\", \"MaximumCharactersPerAccount\", \"MaximumInventoryMoney\", \"MaximumItemOptionLevelDrop\", \"MaximumLetters\", \"MaximumLevel\", \"MaximumMasterLevel\", \"MaximumPartySize\", \"MaximumPasswordLength\", \"MaximumSocketCountDrop\", \"MaximumVaultMoney\", \"MinimumMonsterLevelForMasterExperience\", \"PreventExperienceOverflow\", \"RecoveryInterval\", \"ShouldDropMoney\" from config.\"GameConfiguration\"",
         "select \"Id\", \"Description\", \"Designation\", \"GameConfigurationId\", \"MaximumValue\" from config.\"AttributeDefinition\"",
         "select \"Id\", \"BannerSaleZone\", \"BannerYear\", \"BannerYearId\", \"ScriptSaleZone\", \"ScriptYear\", \"ScriptYearId\" from config.\"CashShopConfiguration\"",
         "select \"Id\", \"CashShopConfigurationId\", \"CoinType\", \"IsBundle\", \"IsForSale\", \"IsGiftable\", \"Name\", \"PackageSequence\", \"Price\" from config.\"CashShopPackage\"",
@@ -371,11 +371,12 @@ internal sealed partial class GameConfigurationLoader
             entity.MaximumMasterLevel = reader.GetInt16(23);
             entity.MaximumPartySize = (global::System.Byte)reader.GetInt16(24);
             entity.MaximumPasswordLength = reader.GetInt32(25);
-            entity.MaximumVaultMoney = reader.GetInt32(26);
-            entity.MinimumMonsterLevelForMasterExperience = (global::System.Byte)reader.GetInt16(27);
-            entity.PreventExperienceOverflow = reader.GetBoolean(28);
-            entity.RecoveryInterval = reader.GetInt32(29);
-            entity.ShouldDropMoney = reader.GetBoolean(30);
+            if (!reader.IsDBNull(26)) { entity.MaximumSocketCountDrop = (global::System.Byte)reader.GetInt16(26); }
+            entity.MaximumVaultMoney = reader.GetInt32(27);
+            entity.MinimumMonsterLevelForMasterExperience = (global::System.Byte)reader.GetInt16(28);
+            entity.PreventExperienceOverflow = reader.GetBoolean(29);
+            entity.RecoveryInterval = reader.GetInt32(30);
+            entity.ShouldDropMoney = reader.GetBoolean(31);
             this._GameConfiguration[entity.Id] = entity;
             this._GameConfigurationRows.Add((entity, reader.IsDBNull(2) ? null : reader.GetGuid(2), reader.IsDBNull(3) ? null : reader.GetGuid(3), reader.IsDBNull(8) ? null : reader.GetGuid(8)));
         }

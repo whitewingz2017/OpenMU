@@ -39,6 +39,7 @@ public class DefaultDropGenerator : IDropGenerator
 
     private readonly byte _maxItemOptionLevelDrop;
     private readonly byte _excellentItemDropLevelDelta;
+    private readonly byte? _maximumSocketCountDrop;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultDropGenerator" /> class.
@@ -48,6 +49,7 @@ public class DefaultDropGenerator : IDropGenerator
     public DefaultDropGenerator(GameConfiguration config, IRandomizer randomizer)
     {
         this._excellentItemDropLevelDelta = config.ExcellentItemDropLevelDelta;
+        this._maximumSocketCountDrop = config.MaximumSocketCountDrop;
         this._randomizer = randomizer;
         this._maxItemOptionLevelDrop = IsValidOptionLevelDrop(config.MaximumItemOptionLevelDrop)
             ? config.MaximumItemOptionLevelDrop
@@ -167,7 +169,8 @@ public class DefaultDropGenerator : IDropGenerator
 
         if (item.Definition.MaximumSockets > 0)
         {
-            item.SocketCount = this._randomizer.NextInt(1, item.Definition.MaximumSockets + 1);
+            var maximum = Math.Min(item.Definition.MaximumSockets, this._maximumSocketCountDrop ?? item.Definition.MaximumSockets);
+            item.SocketCount = this._randomizer.NextInt(1, maximum + 1);
         }
 
         if (item.CanHaveSkill())

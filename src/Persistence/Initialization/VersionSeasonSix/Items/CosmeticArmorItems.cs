@@ -43,23 +43,23 @@ public static class CosmeticArmorItems
         string[] parts = ["Helm", "Armor", "Pants", "Gloves", "Boots"];
         for (var part = 0; part < parts.Length; part++)
         {
-            EnsureItem(context, configuration, (byte)(7 + part), 315, $"Set 315 Skin {parts[part]}", part, true);
-            EnsureItem(context, configuration, (byte)(7 + part), 100, $"Set 100 {parts[part]} Skin", part);
+            EnsureItem(context, configuration, (byte)(7 + part), 315, $"Set 315 {parts[part]}", part, true);
+            EnsureItem(context, configuration, (byte)(7 + part), 100, $"Mythical Lazy Wind {parts[part]}", part);
         }
 
-        EnsureItem(context, configuration, 0, 100, "Sword Skin", 5);
-        EnsureItem(context, configuration, 2, 100, "Mace Skin", 5);
-        EnsureItem(context, configuration, 4, 100, "Bow Skin", 6);
-        EnsureItem(context, configuration, 5, 100, "Staff Skin", 5);
-        EnsureItem(context, configuration, 6, 100, "Shield Skin", 6);
-        EnsureItem(context, configuration, 0, 101, "Sacred Glove Skin", 5);
-        EnsureItem(context, configuration, 2, 101, "Battle Scepter Skin", 5);
-        EnsureItem(context, configuration, 5, 101, "Summoner Book Skin", 6);
-        EnsureItem(context, configuration, 12, 180, "Cape Skin", 7);
-        EnsureItem(context, configuration, 12, 200, "Wing Skin", 7);
-        EnsureItem(context, configuration, 12, 210, "Wing 210 Skin", 7);
-        EnsureItem(context, configuration, 12, 213, "Cape 213 Skin", 7);
-        EnsureItem(context, configuration, 13, 200, "Pet 208 Skin", 8);
+        EnsureItem(context, configuration, 0, 100, "Mythical Sonic Blade", 5);
+        EnsureItem(context, configuration, 2, 100, "Mace", 5);
+        EnsureItem(context, configuration, 4, 100, "Bow", 6);
+        EnsureItem(context, configuration, 5, 100, "Mythical Miracle Staff", 5);
+        EnsureItem(context, configuration, 6, 100, "Mythical Lazy Wind Shield", 6);
+        EnsureItem(context, configuration, 0, 101, "Holy Storm Claw", 5);
+        EnsureItem(context, configuration, 2, 101, "Master Scepter", 5);
+        EnsureItem(context, configuration, 5, 101, "Summoner Book", 6);
+        EnsureItem(context, configuration, 12, 180, "Cape", 7);
+        EnsureItem(context, configuration, 12, 200, "Wing", 7);
+        EnsureItem(context, configuration, 12, 210, "Wing 210", 7);
+        EnsureItem(context, configuration, 12, 213, "Cape 213", 7);
+        EnsureItem(context, configuration, 13, 200, "Pet 208", 8);
         using var catalog = typeof(CosmeticArmorItems).Assembly.GetManifestResourceStream("FinalMuCosmeticSkins.json")
             ?? throw new InvalidOperationException("The FinalMU cosmetic catalog is missing.");
         var imports = JsonSerializer.Deserialize<FinalMuSkin[]>(catalog)
@@ -241,7 +241,7 @@ public static class CosmeticArmorItems
         }
 
         (definition.Width, definition.Height) = CosmeticItemDimensions.Get(group, name);
-        definition.Name = part == 1 && (number is 100 or 315) ? $"Set {number} Skin" : name;
+        definition.Name = name;
 
         EnsureBonuses(configuration, definition, part);
         if (part == WingPart)

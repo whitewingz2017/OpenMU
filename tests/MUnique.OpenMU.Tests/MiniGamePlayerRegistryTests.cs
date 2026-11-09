@@ -32,6 +32,19 @@ public class MiniGamePlayerRegistryTests
         Assert.That(result, Is.EqualTo(EnterResult.Success));
     }
 
+    /// <summary>Concurrent duplicate requests register a player only once.</summary>
+    [Test]
+    public async ValueTask DuplicatePlayerEntryIsRejectedAsync()
+    {
+        var registry = new MiniGamePlayerRegistry(this.CreateDefinition());
+        var player = CreatePlayer();
+        var results = await Task.WhenAll(
+            registry.TryEnterAsync(player, _ => ValueTask.FromResult(true)).AsTask(),
+            registry.TryEnterAsync(player, _ => ValueTask.FromResult(true)).AsTask()).ConfigureAwait(false);
+        Assert.That(results.Count(result => result == EnterResult.Success), Is.EqualTo(1));
+        Assert.That(results.Count(result => result == EnterResult.Failed), Is.EqualTo(1));
+    }
+
     /// <summary>
     /// Tests that entering fails once the entrance has been closed.
     /// </summary>

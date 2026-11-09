@@ -49,7 +49,7 @@ public sealed class RankTitleView : IRankTitleView
             Status = messageKey is null ? "Ready" : this._player.GetLocalizedMessage(messageKey),
             Balance = this._player.Account?.WCoinC ?? 0,
             Active = RankTitleRules.Active(this._player),
-            Ranks = (settings?.Titles ?? []).Select(title => new { title.Rank, title.Price, Owned = owned.Contains(title.Rank), title.Name }),
+            Ranks = (settings?.Titles ?? []).Select(title => new { title.Rank, Price = RankTitleRules.IsEarned(title.Rank) ? 0 : title.Price, Owned = RankTitleRules.CanEquip(this._player, title.Rank, owned), title.Name }),
         });
         await connection.SendAsync(() =>
         {

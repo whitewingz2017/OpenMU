@@ -1,4 +1,4 @@
-﻿// <copyright file="ObserverToWorldViewAdapter.cs" company="MUnique">
+// <copyright file="ObserverToWorldViewAdapter.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -215,6 +215,15 @@ public sealed class ObserverToWorldViewAdapter : AsyncDisposable, IBucketMapObse
         }
 
         await newItems.ForEachAsync(item => item.AddObserverAsync(this._adaptee)).ConfigureAwait(false);
+    }
+
+    /// <summary>Gets a player visible to this observer, rather than a player observing it.</summary>
+    /// <param name="playerId">The target identifier.</param>
+    /// <returns>The observed player, or null.</returns>
+    internal async ValueTask<Player?> GetObservedPlayerWithIdAsync(ushort playerId)
+    {
+        using var readerLock = await this._observingLock.ReaderLockAsync().ConfigureAwait(false);
+        return this._observingObjects.OfType<Player>().FirstOrDefault(player => player.Id == playerId && !player.IsInvisible);
     }
 
     /// <summary>

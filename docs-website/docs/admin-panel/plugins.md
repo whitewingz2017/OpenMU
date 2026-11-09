@@ -168,6 +168,17 @@ accounts are unchanged. Creating or deleting characters grants no WCoins.
 This requires the updated AdminPanel; external registration tools which write
 directly to the database must initialize the balances themselves.
 
+## Party reconnect timeout
+
+The **Party Auto-Rejoin** plugin reserves a disconnected character's party slot for
+**15 minutes** by default. Reconnecting within this window restores the character
+to the same party. After the timeout, the member is removed and the remaining
+players receive the updated party list. A two-member party disbands when its
+disconnected member expires. Intentional logout removes the character immediately.
+
+Keep this plugin active and use **Reconnect timeout** to adjust the window.
+Offline leveling characters which remain active in the world are unaffected.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

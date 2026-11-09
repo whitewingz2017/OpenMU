@@ -1,4 +1,4 @@
-﻿// <copyright file="GuildActionTest.cs" company="MUnique">
+// <copyright file="GuildActionTest.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -93,6 +93,43 @@ public class GuildActionTest : GuildTestBase
         Assert.That(this._player.GuildStatus, Is.Not.Null);
         Assert.That(this._player.GuildStatus!.GuildId, Is.Not.EqualTo(0));
         Mock.Get(this._player.ViewPlugIns.GetPlugIn<IGuildJoinResponsePlugIn>()!).Verify(g => g!.ShowGuildJoinResponseAsync(GuildRequestAnswerResult.Accepted), Times.Once);
+    }
+
+    /// <summary>Assistants can admit members; other ranks cannot.</summary>
+    /// <param name="position">The recipient's guild position.</param>
+    /// <param name="allowed">Whether admission is permitted.</param>
+    [TestCase(GuildPosition.AssistantMaster, true)]
+    [TestCase(GuildPosition.BattleMaster, false)]
+    [TestCase(GuildPosition.NormalMember, false)]
+    public async ValueTask GuildAdmissionPermissionAsync(GuildPosition position, bool allowed)
+    {
+        this._guildMasterPlayer.GuildStatus = new GuildMemberStatus(this._guildMasterPlayer.GuildStatus!.GuildId, position);
+        await this.RequestGuildAndRespondAsync(true).ConfigureAwait(false);
+        Assert.That(this._player.GuildStatus is not null, Is.EqualTo(allowed));
+    }
+
+    /// <summary>A busy applicant cannot be admitted after requesting membership.</summary>
+    [Test]
+    public async ValueTask BusyApplicantCannotBeAcceptedAsync()
+    {
+        this._guildMasterPlayer.GuildStatus = new GuildMemberStatus(this._guildMasterPlayer.GuildStatus!.GuildId, GuildPosition.AssistantMaster);
+        await new GuildRequestAction().RequestGuildAsync(this._player, this._guildMasterPlayer.Id).ConfigureAwait(false);
+        await this._player.PlayerState.TryAdvanceToAsync(PlayerState.TradeRequested).ConfigureAwait(false);
+        await new GuildRequestAnswerAction().AnswerRequestAsync(this._guildMasterPlayer, true).ConfigureAwait(false);
+        Assert.That(this._player.GuildStatus, Is.Null);
+        Assert.That(this._guildMasterPlayer.LastGuildRequester, Is.Null);
+    }
+
+    /// <summary>Admission permission is checked again when an officer answers.</summary>
+    [Test]
+    public async ValueTask DemotedAssistantCannotAcceptApplicantAsync()
+    {
+        var guildId = this._guildMasterPlayer.GuildStatus!.GuildId;
+        this._guildMasterPlayer.GuildStatus = new GuildMemberStatus(guildId, GuildPosition.AssistantMaster);
+        await new GuildRequestAction().RequestGuildAsync(this._player, this._guildMasterPlayer.Id).ConfigureAwait(false);
+        this._guildMasterPlayer.GuildStatus = new GuildMemberStatus(guildId, GuildPosition.NormalMember);
+        await new GuildRequestAnswerAction().AnswerRequestAsync(this._guildMasterPlayer, true).ConfigureAwait(false);
+        Assert.That(this._player.GuildStatus, Is.Null);
     }
 
     /// <summary>

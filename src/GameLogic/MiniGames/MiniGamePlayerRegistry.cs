@@ -72,6 +72,11 @@ internal sealed class MiniGamePlayerRegistry
                 return EnterResult.NotOpen;
             }
 
+            if (player.CurrentMiniGame is not null || this._players.Contains(player))
+            {
+                return EnterResult.Failed;
+            }
+
             if (this._players.Count >= this._definition.MaximumPlayerCount)
             {
                 return EnterResult.Full;

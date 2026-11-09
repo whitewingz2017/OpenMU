@@ -210,6 +210,9 @@ public class Account
     [MemberOfAggregate]
     public virtual ICollection<StatAttribute> Attributes { get; protected set; } = null!;
 
+    /// <summary>Gets or sets when the account-wide VIP access from Gold Channel Tickets expires.</summary>
+    public DateTime? VipExpiresAtUtc { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

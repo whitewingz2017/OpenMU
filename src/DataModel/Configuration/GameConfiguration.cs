@@ -177,6 +177,10 @@ public partial class GameConfiguration
     /// <remarks>Default value is 3.</remarks>
     public byte MaximumItemOptionLevelDrop { get; set; }
 
+    /// <summary>Gets or sets the socket limit for newly generated drops. Null uses the item's full capacity.</summary>
+    [Range(1, 5)]
+    public byte? MaximumSocketCountDrop { get; set; }
+
     /// <summary>
     /// Gets or sets the accumulated damage which needs to be done to decrease <see cref="Item.Durability"/> of a defending item by 1.
     /// </summary>

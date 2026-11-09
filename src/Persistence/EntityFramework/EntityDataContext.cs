@@ -118,6 +118,8 @@ public class EntityDataContext : ExtendedTypeContext
             entity.HasKey(total => total.ItemCode);
             entity.Property(total => total.ItemCode).ValueGeneratedNever();
         });
+        modelBuilder.Entity<Character>().HasIndex(character => new { character.DuelWins, character.LastDuelWinUtc });
+        modelBuilder.Entity<Character>().HasIndex(character => new { character.PlayerKillWeekStartUtc, character.WeeklyPlayerKills, character.LastWeeklyPlayerKillUtc });
         modelBuilder.Entity<AppearanceData>(o => o.Ignore(p => p.CharacterStatus)); // todo
         modelBuilder.Ignore<ConstantElement>();
         modelBuilder.Ignore<SimpleElement>();

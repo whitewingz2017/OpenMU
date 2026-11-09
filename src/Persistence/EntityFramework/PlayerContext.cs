@@ -539,6 +539,26 @@ internal partial class PlayerContext : CachingEntityFrameworkContext, IPlayerCon
     }
 
     /// <inheritdoc />
+    public async ValueTask<(string? DuelLeader, string? KillLeader)> GetCompetitiveRankLeadersAsync(DateTime weekStartUtc, CancellationToken cancellationToken = default)
+    {
+        using var l = await this.LockAsync(cancellationToken).ConfigureAwait(false);
+        using (this.RepositoryProvider.ContextStack.UseContext(this))
+        {
+            var characters = this.Context.Set<Account>()
+                .Where(account => !account.IsBot && !account.IsTemplate)
+                .SelectMany(account => account.RawCharacters)
+                .Where(character => character.CharacterStatus == DataModel.Entities.CharacterStatus.Normal);
+            var duelLeader = await characters.Where(character => character.DuelWins > 0)
+                .OrderByDescending(character => character.DuelWins).ThenBy(character => character.LastDuelWinUtc).ThenBy(character => character.Name)
+                .Select(character => character.Name).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+            var killLeader = await characters.Where(character => character.PlayerKillWeekStartUtc == weekStartUtc && character.WeeklyPlayerKills > 0)
+                .OrderByDescending(character => character.WeeklyPlayerKills).ThenBy(character => character.LastWeeklyPlayerKillUtc).ThenBy(character => character.Name)
+                .Select(character => character.Name).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+            return (duelLeader, killLeader);
+        }
+    }
+
+    /// <inheritdoc />
     public async ValueTask<IReadOnlyList<CharacterSummary>> GetCharacterRankingAsync(
         Guid levelAttributeId,
         Guid masterLevelAttributeId,

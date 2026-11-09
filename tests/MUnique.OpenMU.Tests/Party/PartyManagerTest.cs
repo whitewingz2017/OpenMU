@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Tests;
 using Microsoft.Extensions.Logging.Abstractions;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.Persistence.InMemory;
 using MUnique.OpenMU.PlugIns;
 
@@ -192,6 +193,67 @@ public class PartyManagerTest
 
         Assert.That(party.PartyList.Any(m => m.Name == oldName), Is.EqualTo(!sameAccount));
         Assert.That(otherCharacter.Party, Is.Null);
+    }
+
+    /// <summary>
+    /// A disconnected member retains its slot only within the reconnect timeout.
+    /// </summary>
+    [TestCase(-1, false)]
+    [TestCase(0, true)]
+    [TestCase(1, true)]
+    public async ValueTask OfflineReservationExpiresAfterTimeoutAsync(int secondsAfterTimeout, bool expired)
+    {
+        var (party, member, remaining) = await this.CreatePartyWithTwoMembersAsync().ConfigureAwait(false);
+        await party.LeaveTemporarilyAsync(member).ConfigureAwait(false);
+        var snapshot = (OfflinePartyMember)party.PartyList[0];
+        var timeout = new PartyAutoRejoinPlugInConfiguration().ReconnectTimeout;
+        Assert.That(timeout, Is.EqualTo(TimeSpan.FromMinutes(15)));
+
+        await this._partyManager.RemoveExpiredMembersAsync(timeout, snapshot.DisconnectedAtUtc + timeout + TimeSpan.FromSeconds(secondsAfterTimeout)).ConfigureAwait(false);
+
+        Assert.That(party.PartyList.Contains(snapshot), Is.EqualTo(!expired));
+        Assert.That(remaining.Party, expired ? Is.Null : Is.SameAs(party));
+        await this._partyManager.OnMemberReconnectedAsync(member).ConfigureAwait(false);
+        Assert.That(member.Party, expired ? Is.Null : Is.SameAs(party));
+    }
+
+    /// <summary>
+    /// Cleanup does not remove a member who has already reconnected.
+    /// </summary>
+    [Test]
+    public async ValueTask ReconnectedMemberSurvivesReservationCleanupAsync()
+    {
+        var (party, member, _) = await this.CreatePartyWithTwoMembersAsync().ConfigureAwait(false);
+        await party.LeaveTemporarilyAsync(member).ConfigureAwait(false);
+        var snapshot = (OfflinePartyMember)party.PartyList[0];
+        await this._partyManager.OnMemberReconnectedAsync(member).ConfigureAwait(false);
+        var timeout = new PartyAutoRejoinPlugInConfiguration().ReconnectTimeout;
+
+        await this._partyManager.RemoveExpiredMembersAsync(timeout, snapshot.DisconnectedAtUtc + timeout).ConfigureAwait(false);
+
+        Assert.That(party.PartyList, Contains.Item(member));
+        Assert.That(member.Party, Is.SameAs(party));
+    }
+
+    /// <summary>
+    /// Expiring a disconnected leader leaves the other members together with a new leader.
+    /// </summary>
+    [Test]
+    public async ValueTask ExpiredLeaderIsRemovedWithoutDisbandingRemainingMembersAsync()
+    {
+        var (party, leader, remaining) = await this.CreatePartyWithTwoMembersAsync().ConfigureAwait(false);
+        var third = await this.CreatePartyMemberAsync().ConfigureAwait(false);
+        await party.AddAsync(third).ConfigureAwait(false);
+        await party.LeaveTemporarilyAsync(leader).ConfigureAwait(false);
+        var snapshot = (OfflinePartyMember)party.PartyList[0];
+        var timeout = new PartyAutoRejoinPlugInConfiguration().ReconnectTimeout;
+
+        await this._partyManager.RemoveExpiredMembersAsync(timeout, snapshot.DisconnectedAtUtc + timeout).ConfigureAwait(false);
+
+        Assert.That(party.PartyList, Has.Count.EqualTo(2));
+        Assert.That(party.PartyMaster, Is.SameAs(remaining));
+        Assert.That(remaining.Party, Is.SameAs(party));
+        Assert.That(third.Party, Is.SameAs(party));
     }
 
     private async ValueTask<(Party Party, Player Member1, Player Member2)> CreatePartyWithTwoMembersAsync()

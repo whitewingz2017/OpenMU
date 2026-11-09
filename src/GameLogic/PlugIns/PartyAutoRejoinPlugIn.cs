@@ -18,8 +18,12 @@ using MUnique.OpenMU.PlugIns;
     Description = nameof(PlugInResources.PartyAutoRejoinPlugIn_Description),
     ResourceType = typeof(PlugInResources))]
 [Guid("013406B3-02AD-45EF-906B-177CBEC9B2D4")]
-public sealed class PartyAutoRejoinPlugIn : IPlayerStateChangedPlugIn
+public sealed class PartyAutoRejoinPlugIn : IPlayerStateChangedPlugIn, IPeriodicTaskPlugIn,
+    ISupportCustomConfiguration<PartyAutoRejoinPlugInConfiguration>, ISupportDefaultCustomConfiguration
 {
+    /// <inheritdoc />
+    public PartyAutoRejoinPlugInConfiguration? Configuration { get; set; }
+
     /// <inheritdoc />
     public async ValueTask PlayerStateChangedAsync(Player player, State previousState, State currentState)
     {
@@ -30,4 +34,19 @@ public sealed class PartyAutoRejoinPlugIn : IPlayerStateChangedPlugIn
 
         await player.GameContext.PartyManager.OnMemberReconnectedAsync(player).ConfigureAwait(false);
     }
+
+    /// <inheritdoc />
+    public ValueTask ExecuteTaskAsync(GameContext gameContext)
+    {
+        var configuration = this.Configuration ??= new PartyAutoRejoinPlugInConfiguration();
+        return gameContext.PartyManager.RemoveExpiredMembersAsync(configuration.ReconnectTimeout, DateTime.UtcNow);
+    }
+
+    /// <inheritdoc />
+    public void ForceStart()
+    {
+    }
+
+    /// <inheritdoc />
+    public object CreateDefaultConfig() => new PartyAutoRejoinPlugInConfiguration();
 }

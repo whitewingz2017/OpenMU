@@ -14,15 +14,15 @@ public sealed class RankTitleSettings : IValidatableObject
     [ScaffoldColumn(true)]
     public ICollection<RankTitleOffer> Titles { get; set; } =
     [
-        new() { Rank = 1, Name = "VIP" },
+        new() { Rank = 1, Name = "VIP", Price = 0 },
         new() { Rank = 2, Name = "Fighter" },
         new() { Rank = 3, Name = "Legend" },
         new() { Rank = 4, Name = "TwinMU" },
         new() { Rank = 5, Name = "Slayer" },
         new() { Rank = 6, Name = "Hunter" },
-        new() { Rank = 7, Name = "PvP King" },
+        new() { Rank = 7, Name = "PvP King", Price = 0 },
         new() { Rank = 8, Name = "Top Tier" },
-        new() { Rank = 9, Name = "Destroyer" },
+        new() { Rank = 9, Name = "Destroyer", Price = 0 },
         new() { Rank = 11, Name = "Hokage" },
         new() { Rank = 12, Name = "Hero" },
         new() { Rank = 13, Name = "Godlike" },

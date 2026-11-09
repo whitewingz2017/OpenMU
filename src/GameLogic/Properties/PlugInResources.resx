@@ -1734,7 +1734,9 @@
   <data name="RankTitles_Prices" xml:space="preserve"><value>Rank Title Prices</value></data>
   <data name="RankTitles_Price" xml:space="preserve"><value>WCoinC price (0 disables buying)</value></data>
   <data name="RankTitles_InvalidCatalog" xml:space="preserve"><value>Each title needs a unique rank ID, a name, and a WCoinC price of zero or more.</value></data>
-  <data name="RankTitles_Description" xml:space="preserve"><value>Permanent character titles purchased with WCoinC, with configurable prices and visible badges and auras.</value></data>
+  <data name="RankTitles_Description" xml:space="preserve"><value>Purchased titles plus VIP, highest duel wins and current-week kill leader badges. Competitive standings survive restarts; weekly kills reset Monday at server midnight.</value></data>
   <data name="RankTitles_UpdateName" xml:space="preserve"><value>TwinMU Rank Titles</value></data>
-  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Updates the nine animated TwinMU rank titles, removes TwinMU III and names Beta Tester. Existing prices are preserved.</value></data>
+  <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Updates the TwinMU catalog and reserves VIP, PvP King and Destroyer for earned eligibility. Other customized prices are preserved.</value></data>
+  <data name="GoldTicketVipDeliveryPlugIn_Name" xml:space="preserve"><value>Gold Ticket VIP</value></data>
+  <data name="GoldTicketVipDeliveryPlugIn_Description" xml:space="preserve"><value>Activates account-wide VIP and its rank title for the purchased Gold Channel Ticket duration. Additional tickets extend the remaining time.</value></data>
 </root>

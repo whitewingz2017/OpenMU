@@ -38,9 +38,9 @@ public class GuildRequestAnswerAction
             return;
         }
 
-        if (player.GuildStatus?.Position != GuildPosition.GuildMaster)
+        if (player.GuildStatus?.Position is not (GuildPosition.GuildMaster or GuildPosition.AssistantMaster))
         {
-            player.Logger.LogWarning("Suspicious request for player with name: {0} (player is not a guild master), could be hack attempt.", player.Name);
+            player.Logger.LogWarning("Suspicious guild admission by player {Name} without admission permission.", player.Name);
             await lastGuildRequester.InvokeViewPlugInAsync<IGuildJoinResponsePlugIn>(p => p.ShowGuildJoinResponseAsync(GuildRequestAnswerResult.NotTheGuildMaster)).ConfigureAwait(false);
             return;
         }
@@ -49,6 +49,8 @@ public class GuildRequestAnswerAction
             || lastGuildRequester.PlayerState.CurrentState != PlayerState.EnteredWorld)
         {
             await lastGuildRequester.InvokeViewPlugInAsync<IGuildJoinResponsePlugIn>(p => p.ShowGuildJoinResponseAsync(GuildRequestAnswerResult.GuildMasterOrRequesterIsBusy)).ConfigureAwait(false);
+            player.LastGuildRequester = null;
+            return;
         }
 
         if (accept
