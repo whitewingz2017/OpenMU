@@ -216,7 +216,10 @@ internal class CosmeticArmorInitializationTests
             (4, 303, [11]), (4, 304, [11]), (0, 311, [7]),
             (1, 304, [3, 7, 13]), (2, 307, [17]), (3, 302, [7, 13]),
             (5, 306, [3, 13]), (5, 302, [23]), (0, 304, [25]),
-            (8, 344, [11, 23]), (8, 345, [11, 23]), (8, 394, [11, 23]), (8, 327, [3, 7, 13, 17, 25]),
+            (8, 344, [11, 23]), (8, 391, [11, 23]), (8, 392, [11, 23]), (8, 393, [11, 23]),
+            (8, 394, [11, 23]), (8, 396, [11, 23]), (8, 405, [11, 23]),
+            (8, 345, [3, 7, 13, 17, 25]), (8, 355, [3, 7, 13, 17, 25]), (8, 427, [3, 7, 13, 17, 25]),
+            (8, 327, [3, 7, 13, 17, 25]),
             (12, 359, [4, 6, 7]), (12, 360, [16, 17]), (12, 361, [0, 2, 3]),
             (12, 362, [8, 10, 11]), (12, 363, [12, 13]), (12, 364, [12, 13]), (12, 366, [20, 22, 23]),
             (12, 382, [24, 25]), (12, 383, [20, 22, 23]), (12, 384, [24, 25]),
@@ -423,13 +426,24 @@ internal class CosmeticArmorInitializationTests
         }
     }
 
-    private static void AssertSkins(GameConfiguration configuration)
+    private static void AssertArmorModelClasses(GameConfiguration configuration)
     {
-        foreach (var number in new short[] { 344, 345 })
+        foreach (var number in new short[] { 344, 390, 391, 392, 393, 394, 396, 405 })
         {
             var femaleArmor = configuration.Items.Single(d => d.Group == 8 && d.Number == number);
             Assert.That(femaleArmor.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 11, 23 }));
         }
+
+        foreach (var number in new short[] { 345, 352, 355, 356, 357, 382, 385, 403, 407, 416, 417, 424, 425, 426, 427 })
+        {
+            var maleArmor = configuration.Items.Single(d => d.Group == 8 && d.Number == number);
+            Assert.That(maleArmor.QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 3, 7, 13, 17, 25 }));
+        }
+    }
+
+    private static void AssertSkins(GameConfiguration configuration)
+    {
+        AssertArmorModelClasses(configuration);
 
         foreach (var (number, groups) in new[] { (418, new byte[] { 7, 8, 9, 10, 11 }), (303, new byte[] { 8, 9, 10, 11 }) })
         {

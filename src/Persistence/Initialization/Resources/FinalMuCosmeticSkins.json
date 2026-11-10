@@ -3256,8 +3256,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -3400,8 +3403,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 30
@@ -3460,8 +3466,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -3478,8 +3487,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -3496,8 +3508,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4003,8 +4018,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4063,8 +4081,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4183,11 +4204,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4204,11 +4222,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4225,11 +4240,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4285,11 +4297,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4423,8 +4432,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4462,11 +4474,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4501,8 +4510,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4684,8 +4696,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 30
@@ -4702,8 +4717,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 30
@@ -4843,8 +4861,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4861,8 +4882,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4879,8 +4903,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4897,8 +4924,11 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "fairyElf": 3,
-      "summoner": 3
+      "darkWizard": 3,
+      "darkKnight": 3,
+      "magicGladiator": 3,
+      "darkLord": 3,
+      "rageFighter": 3
     },
     "Family": 0,
     "ArmorMask": 31
