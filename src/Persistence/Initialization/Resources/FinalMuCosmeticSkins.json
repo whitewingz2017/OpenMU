@@ -4246,11 +4246,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -5885,8 +5882,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "darkKnight": 1
+    }
+},
   {
     "Group": 12,
     "Number": 360,
@@ -5898,8 +5898,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "darkLord": 1
+    }
+},
   {
     "Group": 12,
     "Number": 361,
@@ -5911,8 +5914,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "darkWizard": 1
+    }
+},
   {
     "Group": 12,
     "Number": 362,
@@ -5924,8 +5930,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "fairyElf": 1
+    }
+},
   {
     "Group": 12,
     "Number": 363,
@@ -5937,8 +5946,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "magicGladiator": 1
+    }
+},
   {
     "Group": 12,
     "Number": 364,
@@ -5950,8 +5962,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "magicGladiator": 1
+    }
+},
   {
     "Group": 12,
     "Number": 365,
@@ -5976,8 +5991,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "summoner": 1
+    }
+},
   {
     "Group": 12,
     "Number": 367,
@@ -6184,8 +6202,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "rageFighter": 1
+    }
+},
   {
     "Group": 12,
     "Number": 383,
@@ -6197,8 +6218,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "summoner": 1
+    }
+},
   {
     "Group": 12,
     "Number": 384,
@@ -6210,8 +6234,11 @@
     "Scale": 0.5,
     "Height": 70.0,
     "Mount": false,
-    "Floating": false
-  },
+    "Floating": false,
+    "Classes": {
+      "rageFighter": 1
+    }
+},
   {
     "Group": 13,
     "Number": 300,

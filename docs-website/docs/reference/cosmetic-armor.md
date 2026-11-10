@@ -248,8 +248,11 @@ for the animation, 25 fps atlas and reference lighting fixes.
 The shop combines local and server class requirements, including promotion
 limits. All-class placeholder sets use the reviewed male or female model
 family; specific class requirements from the reference are retained. Apply
-**Set 315 Cosmetic Armor version 17** for matching server restrictions. Owned
-items remain accessible in Skin Inventory for removal or trade.
+**Set 315 Cosmetic Armor version 18** for matching server restrictions. Owned
+items remain accessible in Skin Inventory for removal or trade. Armor 69 (8:394)
+is restricted to High Elf and Dimension Master. The DK, DL, DW, Elf, MG,
+Summoner and Rage Fighter wing variants use their matching class; incompatible
+skins do not appear on your character or in its preview.
 
 ## Equipment drop options
 

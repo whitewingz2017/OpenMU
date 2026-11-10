@@ -216,7 +216,10 @@ internal class CosmeticArmorInitializationTests
             (4, 303, [11]), (4, 304, [11]), (0, 311, [7]),
             (1, 304, [3, 7, 13]), (2, 307, [17]), (3, 302, [7, 13]),
             (5, 306, [3, 13]), (5, 302, [23]), (0, 304, [25]),
-            (8, 344, [11, 23]), (8, 345, [11, 23]), (8, 327, [3, 7, 13, 17, 25]),
+            (8, 344, [11, 23]), (8, 345, [11, 23]), (8, 394, [11, 23]), (8, 327, [3, 7, 13, 17, 25]),
+            (12, 359, [4, 6, 7]), (12, 360, [16, 17]), (12, 361, [0, 2, 3]),
+            (12, 362, [8, 10, 11]), (12, 363, [12, 13]), (12, 364, [12, 13]), (12, 366, [20, 22, 23]),
+            (12, 382, [24, 25]), (12, 383, [20, 22, 23]), (12, 384, [24, 25]),
         ];
         foreach (var (group, number, classes) in cases)
         {
@@ -387,7 +390,7 @@ internal class CosmeticArmorInitializationTests
         var count = configuration.Items.Count;
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         Assert.That(configuration.Items.Count, Is.EqualTo(count));
-        Assert.That(entry.Version, Is.EqualTo(17));
+        Assert.That(entry.Version, Is.EqualTo(update.Version));
         Assert.That(armor.GetId(), Is.EqualTo(armorId));
         Assert.That(item.Definition, Is.SameAs(armor));
         Assert.That(item.ItemSlot, Is.EqualTo(GameLogic.Cosmetics.CosmeticArmorRules.FirstSlot + 1));
