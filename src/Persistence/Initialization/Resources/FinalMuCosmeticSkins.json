@@ -4315,11 +4315,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4354,11 +4351,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -4411,11 +4405,8 @@
     "Mount": false,
     "Floating": false,
     "Classes": {
-      "darkWizard": 3,
-      "darkKnight": 3,
-      "magicGladiator": 3,
-      "darkLord": 3,
-      "rageFighter": 3
+      "fairyElf": 3,
+      "summoner": 3
     },
     "Family": 0,
     "ArmorMask": 31
@@ -5916,7 +5907,7 @@
     "Classes": {
       "darkKnight": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 360,
@@ -5932,7 +5923,7 @@
     "Classes": {
       "darkLord": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 361,
@@ -5948,7 +5939,7 @@
     "Classes": {
       "darkWizard": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 362,
@@ -5964,7 +5955,7 @@
     "Classes": {
       "fairyElf": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 363,
@@ -5980,7 +5971,7 @@
     "Classes": {
       "magicGladiator": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 364,
@@ -5996,7 +5987,7 @@
     "Classes": {
       "magicGladiator": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 365,
@@ -6025,7 +6016,7 @@
     "Classes": {
       "summoner": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 367,
@@ -6236,7 +6227,7 @@
     "Classes": {
       "rageFighter": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 383,
@@ -6252,7 +6243,7 @@
     "Classes": {
       "summoner": 1
     }
-},
+  },
   {
     "Group": 12,
     "Number": 384,
@@ -6268,7 +6259,7 @@
     "Classes": {
       "rageFighter": 1
     }
-},
+  },
   {
     "Group": 13,
     "Number": 300,

@@ -1,0 +1,46 @@
+@using MUnique.OpenMU.GameLogic.Cosmetics
+@using MUnique.OpenMU.Web.Shared.Properties
+
+<details class="mb-3">
+    <summary>@Text("Defaults")</summary>
+    <NumberField Label="@Text("Sets")" @bind-Value="this.Item.ArmorPrice" Min="0" />
+    <NumberField Label="@Text("Wings")" @bind-Value="this.Item.WingPrice" Min="0" />
+    <NumberField Label="@Text("Weapons")" @bind-Value="this.Item.WeaponPrice" Min="0" />
+    <NumberField Label="@Text("Shields")" @bind-Value="this.Item.ShieldPrice" Min="0" />
+    <NumberField Label="@Text("Pets")" @bind-Value="this.Item.PetPrice" Min="0" />
+    <NumberField Label="@Text("Mounts")" @bind-Value="this.Item.MountPrice" Min="0" />
+</details>
+
+@foreach (var category in Enum.GetValues<SkinShopCategory>())
+{
+    <details class="card mb-3" @key="category" open="@(category == SkinShopCategory.Sets)">
+        <summary class="card-header">@Text(category.ToString())</summary>
+        <div class="card-body">
+            <label class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" checked="@(!this.Item.DisabledCategories.Contains(category))"
+                       @onchange="args => this.SetCategoryEnabled(category, args.Value is true)" />
+                @Text("CategoryEnabled")
+            </label>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("Price")</th></tr></thead>
+                    <tbody>
+                        @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderBy(d => d.Number))
+                        {
+                            var type = (definition.Group * 512) + definition.Number;
+                            var sale = this.Item.Items[type];
+                            <tr @key="type">
+                                <td><InputCheckbox id="@($"skin-sale-{type}")" class="form-check-input" @bind-Value="sale.Enabled" aria-label="@(Text("Sell") + " " + definition.Name.ValueInNeutralLanguage)" /></td>
+                                <td><label for="@($"skin-sale-{type}")">@definition.Name.ValueInNeutralLanguage</label> <small class="text-muted">(@definition.Group:@definition.Number)</small></td>
+                                <td>
+                                    <InputNumber id="@($"skin-price-{type}")" class="form-control" @bind-Value="sale.Price" min="0" max="@int.MaxValue" aria-label="@(Text("Price") + " " + definition.Name.ValueInNeutralLanguage)" />
+                                    <ValidationMessage For="@(() => sale.Price)" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </details>
+}

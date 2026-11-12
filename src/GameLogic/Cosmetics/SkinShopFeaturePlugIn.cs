@@ -7,7 +7,7 @@ namespace MUnique.OpenMU.GameLogic.Cosmetics;
 using System.Runtime.InteropServices;
 using MUnique.OpenMU.PlugIns;
 
-/// <summary>Enables the skin shop and exposes category prices in the administration panel.</summary>
+/// <summary>Enables the skin shop and exposes category and individual prices in the administration panel.</summary>
 [PlugIn]
 [Display(Name = "Skin Shop", Description = "Permanent tradable skins, with a chosen normal item bonus, paid in WCoinC.")]
 [Guid("a38877e0-c239-40b4-91ea-45a8a7f814c7")]

@@ -2435,4 +2435,61 @@
   <data name="LeaderboardGames" xml:space="preserve">
     <value>Games</value>
   </data>
+  <data name="SkinShopTitle" xml:space="preserve">
+    <value>Skin Shop</value>
+  </data>
+  <data name="SkinShopDescription" xml:space="preserve">
+    <value>Enable categories and check the skins you want to sell. Set each price in WCoinC. Unchecked skins remain preview only; owned skins are kept. Category default price zero disables that category.</value>
+  </data>
+  <data name="SkinShopSets" xml:space="preserve">
+    <value>Sets</value>
+  </data>
+  <data name="SkinShopWings" xml:space="preserve">
+    <value>Wings</value>
+  </data>
+  <data name="SkinShopWeapons" xml:space="preserve">
+    <value>Weapons</value>
+  </data>
+  <data name="SkinShopShields" xml:space="preserve">
+    <value>Shields</value>
+  </data>
+  <data name="SkinShopPets" xml:space="preserve">
+    <value>Pets</value>
+  </data>
+  <data name="SkinShopMounts" xml:space="preserve">
+    <value>Mounts</value>
+  </data>
+  <data name="SkinShopCategoryEnabled" xml:space="preserve">
+    <value>Enable sales in this category</value>
+  </data>
+  <data name="SkinShopSell" xml:space="preserve">
+    <value>Sell</value>
+  </data>
+  <data name="SkinShopItem" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="SkinShopPrice" xml:space="preserve">
+    <value>Price (WCoinC)</value>
+  </data>
+  <data name="SkinShopDefaults" xml:space="preserve">
+    <value>Category default prices (zero disables sales)</value>
+  </data>
+  <data name="SkinShopInactive" xml:space="preserve">
+    <value>The Skin Shop plugin is inactive. Activate it on the Plugins page to allow purchases.</value>
+  </data>
+  <data name="SkinShopMissing" xml:space="preserve">
+    <value>The Skin Shop plugin was not found. Apply the cosmetic armor configuration update first.</value>
+  </data>
+  <data name="SkinShopLoadFailed" xml:space="preserve">
+    <value>Could not load the skin shop settings. Check the server logs.</value>
+  </data>
+  <data name="SkinShopSaveFailed" xml:space="preserve">
+    <value>Could not save the skin shop settings. Check the server logs.</value>
+  </data>
+  <data name="SkinShopInvalid" xml:space="preserve">
+    <value>Prices must be non-negative whole numbers. Check the highlighted fields.</value>
+  </data>
+  <data name="SkinShopSaved" xml:space="preserve">
+    <value>Skin shop settings saved. Players should refresh the shop to see the changes.</value>
+  </data>
 </root>

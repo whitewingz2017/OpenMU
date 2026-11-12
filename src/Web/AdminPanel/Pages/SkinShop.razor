@@ -1,0 +1,30 @@
+@page "/skin-shop"
+@attribute [Authorize(Policy = AdminPolicies.Administrator)]
+@using MUnique.OpenMU.Web.AdminPanel.Components.SkinShop
+@using MUnique.OpenMU.Web.AdminPanel.Properties
+
+<PageTitle>OpenMU: @SkinShopEditor.Text("Title")</PageTitle>
+<Breadcrumb IsFirstFromRoot="true" Caption="@SkinShopEditor.Text("Title")" />
+<h1>@SkinShopEditor.Text("Title")</h1>
+<p>@SkinShopEditor.Text("Description")</p>
+
+@if (!string.IsNullOrEmpty(this._status))
+{
+    <div class="alert @(this._statusIsError ? "alert-danger" : "alert-success")" role="status">@this._status</div>
+}
+@if (this._configuration is null || this._gameConfiguration is null || this._plugIn is null)
+{
+    return;
+}
+@if (!this._plugIn.Configuration.IsActive)
+{
+    <p class="alert alert-warning">@SkinShopEditor.Text("Inactive")</p>
+}
+<EditForm Model="this._configuration" OnSubmit="this.SaveAsync">
+    <DataAnnotationsValidator />
+    <fieldset disabled="@this._saving">
+        <SkinShopEditor Item="this._configuration" Definitions="this._gameConfiguration.Items" />
+        <button type="submit" class="btn btn-primary me-1">@Resources.SaveChanges</button>
+        <button type="button" class="btn btn-secondary" @onclick="this.DiscardAsync">@Resources.DiscardChanges</button>
+    </fieldset>
+</EditForm>

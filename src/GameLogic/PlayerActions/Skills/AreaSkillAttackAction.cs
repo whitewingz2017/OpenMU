@@ -21,6 +21,7 @@ public class AreaSkillAttackAction
 {
     private const int UndefinedTarget = 0xFFFF;
     private const short ElectricSpikeSkillId = 65;
+    private const short TripleShotSkillId = 24;
 
     private static readonly ConcurrentDictionary<AreaSkillSettings, FrustumBasedTargetFilter> FrustumFilters = new();
 
@@ -137,7 +138,8 @@ public class AreaSkillAttackAction
             return true;
         }
 
-        return !settings.UseDeferredHits
+        return settings.ProjectileCount <= 1
+               && !settings.UseDeferredHits
                && settings.DelayPerOneDistance <= TimeSpan.Zero
                && settings.MinimumNumberOfHitsPerTarget == 1
                && settings.MaximumNumberOfHitsPerTarget == 1
@@ -268,7 +270,13 @@ public class AreaSkillAttackAction
             // Order targets by distance to process nearest targets first
             orderedTargets.Sort((a, b) => player.GetDistanceTo(a).CompareTo(player.GetDistanceTo(b)));
             filter = FrustumFilters.GetOrAdd(areaSkillSettings, static s => new FrustumBasedTargetFilter(s.FrustumStartWidth, s.FrustumEndWidth, s.FrustumDistance, s.ProjectileCount));
-            extraProjectiles += (int)player.Attributes![Stats.ExtraProjectiles];
+
+            // Extra Projectiles belongs to Triple Shot Mastery.
+            if (skillEntry.GetBaseSkill().Number == TripleShotSkillId)
+            {
+                extraProjectiles = (int)player.Attributes![Stats.ExtraProjectiles];
+            }
+
             projectileCount = areaSkillSettings.ProjectileCount + extraProjectiles;
             attackRounds = 1; // One attack round per projectile
             maxAttacks = projectileCount;

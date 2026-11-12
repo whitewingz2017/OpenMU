@@ -248,7 +248,7 @@ for the animation, 25 fps atlas and reference lighting fixes.
 The shop combines local and server class requirements, including promotion
 limits. All-class placeholder sets use the reviewed male or female model
 family; specific class requirements from the reference are retained. Apply
-**Set 315 Cosmetic Armor version 19** for matching server restrictions. Owned
+**Set 315 Cosmetic Armor version 20** for matching server restrictions. Owned
 items remain accessible in Skin Inventory for removal or trade. Armor 69 (8:394)
 is restricted to High Elf and Dimension Master. The complete model review also
 corrects female Armor 66, 67, 68, 71 and 80, and male sets that were previously
@@ -263,3 +263,26 @@ Newly initialized servers already include it. Level-380 equipment (identified by
 its Guardian option eligibility) and socket equipment roll luck once at 30%.
 Newly generated socket drops, including boxes, have at most two socket slots.
 The item definition retains its crafting capacity, and existing items are unchanged.
+
+
+## Skin shop availability and individual prices
+
+Open **Game Configuration > Skin Shop** in the administration panel. Each category
+has an enable-sales checkbox. Each skin has its own **Sell** checkbox and WCoinC
+price. To sell only Immortal WareWolf Armor, enable Sets, uncheck the other set
+rows, and set its price. Save changes and have players refresh their shop.
+Unchecked items and disabled categories remain preview only; owned skins stay
+available for equipping, removal and trading. A category default price of zero
+also disables all sales in that category. Defaults fill unconfigured entries;
+existing individual prices are retained. A stale quoted price or disabled sale
+is rejected before spending coins. Restart game servers if live plugin reload
+is unavailable in your deployment.
+
+The character preview's +0–+15 controls are visual only. A separate +0–+15 selector
+in the purchase popup sets the bought skin's level, including wings. It starts at
++0 whenever the popup opens.
+
+Apply **Set 315 Cosmetic Armor version 20** with all players offline for female
+Armor 72 (8:397), Armor 74 (8:399) and Armor 77 (8:402), restricted to High Elf and
+Dimension Master. The update preserves existing shop settings and returns
+incompatible equipped skins to storage as in earlier versions.

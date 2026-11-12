@@ -105,6 +105,9 @@ Route `edit-config-grid/…Skill/`
 Damage, mana and ability cost, range, target restrictions, the classes which can
 learn a skill, the master skill definitions and their dependencies.
 
+In Season 6, Multi Shot fires four projectiles across a cone. An enemy can
+take more than one hit when the projectile lanes overlap on its tile.
+
 ## Items
 
 Route `edit-config-grid/…ItemDefinition/`

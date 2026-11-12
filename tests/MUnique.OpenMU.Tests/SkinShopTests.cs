@@ -16,6 +16,76 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class SkinShopTests
 {
+    /// <summary>Only the authoritative item and category settings can enable a quoted purchase.</summary>
+    [TestCase(true, false, 175, true)]
+    [TestCase(false, false, 175, false)]
+    [TestCase(true, true, 175, false)]
+    [TestCase(true, false, 100, false)]
+    [TestCase(true, false, 0, false)]
+    public async Task IndividualSaleSettingsAreEnforcedAsync(bool enabled, bool categoryDisabled, int quote, bool accepted)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var settings = SkinShopFeaturePlugIn.GetSettings(player.GameContext)!;
+        settings.Items[4196] = new SkinShopItemSettings { Enabled = enabled, Price = 175 };
+        if (categoryDisabled)
+        {
+            settings.DisabledCategories.Add(SkinShopCategory.Sets);
+        }
+
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, quote, 15).ConfigureAwait(false);
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 325 : 500));
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
+        if (accepted)
+        {
+            Assert.That(player.Inventory.Items.Single().Level, Is.EqualTo(15));
+        }
+    }
+
+    /// <summary>Every skin category supports an individual price, disable flag and category gate.</summary>
+    [TestCase(8, SkinShopCategory.Sets)]
+    [TestCase(12, SkinShopCategory.Wings)]
+    [TestCase(0, SkinShopCategory.Weapons)]
+    [TestCase(6, SkinShopCategory.Shields)]
+    [TestCase(13, SkinShopCategory.Pets)]
+    public void IndividualPriceSupportsAllCosmeticCategories(byte group, SkinShopCategory category)
+    {
+        var settings = new SkinShopSettings();
+        var definition = new BasicModel.ItemDefinition { Group = group, Number = 100 };
+        var type = (group * 512) + definition.Number;
+        Assert.That(SkinShopSettings.Category(definition), Is.EqualTo(category));
+        Assert.That(settings.Price(definition), Is.EqualTo(100));
+        settings.Items[type] = new SkinShopItemSettings { Price = 175 };
+        Assert.That(settings.Price(definition), Is.EqualTo(175));
+        settings.DisabledCategories.Add(category);
+        Assert.That(settings.Price(definition), Is.Zero);
+        settings.DisabledCategories.Clear();
+        settings.Items[type].Enabled = false;
+        Assert.That(settings.Price(definition), Is.Zero);
+        settings.Items[type].Enabled = true;
+        settings.Items[type].Price = -1;
+        Assert.That(settings.Price(definition), Is.Zero);
+        settings.Items[type].Price = 0;
+        Assert.That(settings.Price(definition), Is.Zero);
+    }
+
+    /// <summary>Purchases persist the chosen level and reject levels outside the client range.</summary>
+    [TestCase(0, true)]
+    [TestCase(1, true)]
+    [TestCase(15, true)]
+    [TestCase(16, false)]
+    [TestCase(255, false)]
+    public async Task PurchaseLevelIsValidatedAsync(byte level, bool accepted)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, 100, level).ConfigureAwait(false);
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 400 : 500));
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
+        if (accepted)
+        {
+            Assert.That(player.Inventory.Items.Single().Level, Is.EqualTo(level));
+        }
+    }
+
     /// <summary>A replay or concurrent duplicate never spends WCoinC twice.</summary>
     [Test]
     public async Task PurchaseAndReplayAreAtomicAsync()

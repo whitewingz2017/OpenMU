@@ -1819,4 +1819,61 @@
   <data name="LeaderboardGames" xml:space="preserve">
     <value>场次</value>
   </data>
+  <data name="SkinShopTitle" xml:space="preserve">
+    <value>外观商店</value>
+  </data>
+  <data name="SkinShopDescription" xml:space="preserve">
+    <value>启用分类并勾选需要出售的外观，为每个外观设置 WCoinC 价格。未勾选的外观仅可预览，已拥有的外观会保留。分类默认价格为零时该分类停止出售。</value>
+  </data>
+  <data name="SkinShopSets" xml:space="preserve">
+    <value>套装</value>
+  </data>
+  <data name="SkinShopWings" xml:space="preserve">
+    <value>翅膀</value>
+  </data>
+  <data name="SkinShopWeapons" xml:space="preserve">
+    <value>武器</value>
+  </data>
+  <data name="SkinShopShields" xml:space="preserve">
+    <value>盾牌</value>
+  </data>
+  <data name="SkinShopPets" xml:space="preserve">
+    <value>宠物</value>
+  </data>
+  <data name="SkinShopMounts" xml:space="preserve">
+    <value>坐骑</value>
+  </data>
+  <data name="SkinShopCategoryEnabled" xml:space="preserve">
+    <value>允许出售该分类</value>
+  </data>
+  <data name="SkinShopSell" xml:space="preserve">
+    <value>出售</value>
+  </data>
+  <data name="SkinShopItem" xml:space="preserve">
+    <value>物品</value>
+  </data>
+  <data name="SkinShopPrice" xml:space="preserve">
+    <value>价格（WCoinC）</value>
+  </data>
+  <data name="SkinShopDefaults" xml:space="preserve">
+    <value>分类默认价格（零表示停止出售）</value>
+  </data>
+  <data name="SkinShopInactive" xml:space="preserve">
+    <value>外观商店插件未启用。请在插件页面启用后再购买。</value>
+  </data>
+  <data name="SkinShopMissing" xml:space="preserve">
+    <value>未找到外观商店插件，请先应用外观套装配置更新。</value>
+  </data>
+  <data name="SkinShopLoadFailed" xml:space="preserve">
+    <value>无法加载外观商店设置，请检查服务器日志。</value>
+  </data>
+  <data name="SkinShopSaveFailed" xml:space="preserve">
+    <value>无法保存外观商店设置，请检查服务器日志。</value>
+  </data>
+  <data name="SkinShopInvalid" xml:space="preserve">
+    <value>价格必须为非负整数，请检查标记的字段。</value>
+  </data>
+  <data name="SkinShopSaved" xml:space="preserve">
+    <value>外观商店设置已保存，玩家刷新商店后即可看到变更。</value>
+  </data>
 </root>

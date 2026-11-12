@@ -71,6 +71,12 @@ public partial class Plugins
 
     private Task ShowConfigurationAsync(PlugInConfigurationViewItem plugin)
     {
+        if (plugin.ConfigurationType == typeof(MUnique.OpenMU.GameLogic.Cosmetics.SkinShopSettings))
+        {
+            this.NavigationManager.NavigateTo("skin-shop");
+            return Task.CompletedTask;
+        }
+
         if (plugin.ConfigurationType == typeof(StartingItemsConfiguration))
         {
             this.NavigationManager.NavigateTo("starting-items");

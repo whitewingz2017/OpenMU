@@ -17,6 +17,42 @@ using MUnique.OpenMU.Persistence.InMemory;
 [TestFixture]
 internal class AreaSkillSettingsUpdateTest
 {
+    /// <summary>Fresh installations use the four-projectile Multi Shot spread.</summary>
+    [Test]
+    public async Task FreshMultiShotUsesFourProjectilesAsync()
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        AssertMultiShot(configuration);
+    }
+
+    /// <summary>Version six repairs Multi Shot and keeps existing settings on reapplication.</summary>
+    /// <param name="missingSettings">Whether Multi Shot had any previous area settings.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task VersionSixRepairsMultiShotAsync(bool missingSettings)
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+        var update = new AddAreaSkillSettingsUpdatePlugIn();
+        var installed = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).First(e => e.Key == update.Key);
+        installed.Version = 5;
+
+        var multiShot = configuration.Skills.First(s => s.Number == (short)SkillNumber.MultiShot);
+        multiShot.AreaSkillSettings!.ProjectileCount = 1;
+        if (missingSettings)
+        {
+            multiShot.AreaSkillSettings = null;
+        }
+
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        AssertMultiShot(configuration);
+        var settings = multiShot.AreaSkillSettings;
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        AssertMultiShot(configuration);
+        Assert.That(multiShot.AreaSkillSettings, Is.SameAs(settings));
+    }
+
     /// <summary>Fresh installations must damage all monsters within the small Flame area.</summary>
     [Test]
     public async Task FreshFlameHasGuaranteedAreaHitAsync()
@@ -110,6 +146,14 @@ internal class AreaSkillSettingsUpdateTest
         Assert.That(iceStorm.AreaSkillSettings?.DelayBetweenHits, Is.EqualTo(TimeSpan.Zero));
         Assert.That(gameConfiguration.Skills.First(s => s.Number == (short)SkillNumber.TripleShot).AreaSkillSettings?.ProjectileCount, Is.EqualTo(3));
         Assert.That((await context.GetAsync<AreaSkillSettings>().ConfigureAwait(false)).Count(), Is.EqualTo(settingsCount));
+    }
+
+    private static void AssertMultiShot(GameConfiguration configuration)
+    {
+        var skill = configuration.Skills.First(s => s.Number == (short)SkillNumber.MultiShot);
+        Assert.That(skill.SkillType, Is.EqualTo(SkillType.AreaSkillAutomaticHits));
+        Assert.That(skill.AreaSkillSettings!.UseFrustumFilter, Is.True);
+        Assert.That(skill.AreaSkillSettings.ProjectileCount, Is.EqualTo(4));
     }
 
     private static void AssertFlame(GameConfiguration configuration)

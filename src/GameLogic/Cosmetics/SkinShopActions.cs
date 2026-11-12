@@ -20,7 +20,7 @@ public sealed class SkinShopActions
     /// <param name="itemType">The item group times 512 plus its number.</param>
     /// <param name="bonus">The configured option number, or zero for pets.</param>
     /// <param name="quotedPrice">The WCoinC price displayed by the client.</param>
-    /// <param name="level">The item level the client previewed (0 to 15), which the bought skin gets.</param>
+    /// <param name="level">The level selected in the purchase popup (0 to 15).</param>
     public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, int itemType, byte bonus, int quotedPrice, byte level = 0)
     {
         var status = await player.RunPersistenceExclusiveAsync(async () =>

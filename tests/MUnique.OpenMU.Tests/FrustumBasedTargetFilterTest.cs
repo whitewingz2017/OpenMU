@@ -156,6 +156,23 @@ internal class FrustumBasedTargetFilterTest
         Assert.That(result, Is.False);
     }
 
+    /// <summary>Overlapping Multi Shot lanes can hit one monster more than once.</summary>
+    /// <param name="x">The monster's X tile.</param>
+    /// <param name="y">The monster's Y tile.</param>
+    /// <param name="hits">The number of projectiles intersecting the monster.</param>
+    [TestCase(100, 100, 4)]
+    [TestCase(100, 103, 2)]
+    [TestCase(110, 103, 0)]
+    public void MultiShotCountsEachProjectile(byte x, byte y, int hits)
+    {
+        var filter = new FrustumBasedTargetFilter(1f, 6f, 7f, 4);
+        var attacker = CreateLocateable(100, 100);
+        var monster = CreateLocateable(x, y);
+        var actual = Enumerable.Range(0, filter.ProjectileCount)
+            .Count(projectile => filter.IsTargetWithinBounds(attacker, monster, 128, projectile));
+        Assert.That(actual, Is.EqualTo(hits));
+    }
+
     private static ILocateable CreateLocateable(byte x, byte y)
     {
         var mock = new Mock<ILocateable>();

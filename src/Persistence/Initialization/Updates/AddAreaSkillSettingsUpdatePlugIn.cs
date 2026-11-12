@@ -19,6 +19,7 @@ using MUnique.OpenMU.PlugIns;
 /// Version 4 repairs Flame and its master variants to hit every monster in a small area.
 /// Upgrading from version 3 only changes Flame, preserving other customized skills.
 /// Version 5 removes distance-based target rejection inside Flame's impact radius.
+/// Version 6 gives Multi Shot four projectiles.
 /// </remarks>
 [PlugIn]
 [Display(Name = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Name), Description = nameof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources.AddAreaSkillSettingsUpdatePlugIn_Description), ResourceType = typeof(MUnique.OpenMU.Persistence.Initialization.Properties.PlugInResources))]
@@ -48,13 +49,13 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
     public override bool IsMandatory => false;
 
     /// <inheritdoc />
-    public override int Version => 5;
+    public override int Version => 6;
 
     /// <inheritdoc />
     public override DateTime CreatedAt => new(2024, 10, 25, 19, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
-    public override DateTime UpdatedAt => new(2026, 10, 18, 3, 0, 0, DateTimeKind.Utc);
+    public override DateTime UpdatedAt => new(2026, 11, 12, 12, 0, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration, int? installedVersion)
@@ -64,24 +65,25 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
             await this.ApplyAsync(context, gameConfiguration).ConfigureAwait(false);
         }
 
-        // Version 4 only repairs Flame, preserving unrelated owner customizations.
-        foreach (var skill in gameConfiguration.Skills.Where(s => s.Number is (short)SkillNumber.Flame or (short)SkillNumber.FlameStrengthener or (short)SkillNumber.FlameStrengthenerDuelMaster))
+        if (installedVersion is null or < 5)
         {
-            var settings = skill.AreaSkillSettings ?? context.CreateNew<AreaSkillSettings>();
-            skill.AreaSkillSettings = settings;
-            skill.SkillType = SkillType.AreaSkillAutomaticHits;
-            settings.UseTargetAreaFilter = true;
-            settings.UseFrustumFilter = false;
-            settings.TargetAreaDiameter = 3;
-            settings.UseDeferredHits = true;
-            settings.DelayPerOneDistance = TimeSpan.Zero;
-            settings.DelayBetweenHits = TimeSpan.FromMilliseconds(500);
-            settings.MinimumNumberOfHitsPerTarget = 1;
-            settings.MaximumNumberOfHitsPerTarget = 2;
-            settings.MinimumNumberOfHitsPerAttack = 0;
-            settings.MaximumNumberOfHitsPerAttack = 0;
-            settings.HitChancePerDistanceMultiplier = 1f;
+            RepairFlame(context, gameConfiguration);
         }
+
+        var multiShot = gameConfiguration.Skills.FirstOrDefault(s => s.Number == (short)SkillNumber.MultiShot);
+        if (multiShot is null)
+        {
+            return;
+        }
+
+        if (multiShot.AreaSkillSettings is null)
+        {
+            this.AddAreaSkillSettings(gameConfiguration, context, SkillNumber.MultiShot, true, 1f, 6f, 7f);
+        }
+
+        multiShot.SkillType = SkillType.AreaSkillAutomaticHits;
+        multiShot.AreaSkillSettings!.UseFrustumFilter = true;
+        multiShot.AreaSkillSettings.ProjectileCount = 4;
     }
 
     /// <inheritdoc />
@@ -123,6 +125,27 @@ public class AddAreaSkillSettingsUpdatePlugIn : UpdatePlugInBase
 
         this.FixHellfireDecayAndIceStorm(context, gameConfiguration);
         EnsureTripleShotProjectileCount(gameConfiguration);
+    }
+
+    private static void RepairFlame(IContext context, GameConfiguration gameConfiguration)
+    {
+        foreach (var skill in gameConfiguration.Skills.Where(s => s.Number is (short)SkillNumber.Flame or (short)SkillNumber.FlameStrengthener or (short)SkillNumber.FlameStrengthenerDuelMaster))
+        {
+            var settings = skill.AreaSkillSettings ?? context.CreateNew<AreaSkillSettings>();
+            skill.AreaSkillSettings = settings;
+            skill.SkillType = SkillType.AreaSkillAutomaticHits;
+            settings.UseTargetAreaFilter = true;
+            settings.UseFrustumFilter = false;
+            settings.TargetAreaDiameter = 3;
+            settings.UseDeferredHits = true;
+            settings.DelayPerOneDistance = TimeSpan.Zero;
+            settings.DelayBetweenHits = TimeSpan.FromMilliseconds(500);
+            settings.MinimumNumberOfHitsPerTarget = 1;
+            settings.MaximumNumberOfHitsPerTarget = 2;
+            settings.MinimumNumberOfHitsPerAttack = 0;
+            settings.MaximumNumberOfHitsPerAttack = 0;
+            settings.HitChancePerDistanceMultiplier = 1f;
+        }
     }
 
     /// <summary>
