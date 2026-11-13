@@ -2014,6 +2014,24 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Hard server style: field maps keep only one of every ten single spawn points per monster type, and spawn areas hold at most three monsters. Event and quest maps are not changed. Replaces customized spawn quantities on field maps..
+        /// </summary>
+        public static string SparseFieldSpawnsUpdatePlugIn_Description {
+            get {
+                return ResourceManager.GetString("SparseFieldSpawnsUpdatePlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse field monster spawns.
+        /// </summary>
+        public static string SparseFieldSpawnsUpdatePlugIn_Name {
+            get {
+                return ResourceManager.GetString("SparseFieldSpawnsUpdatePlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This updates the spawn points of NPCs. 1) Crywolf-Statues are fixed. 2) Wandering merchants and Marlon. 3) Spawn trigger in chaos castle 1.
         /// </summary>
         public static string SpawnFixesUpdatePlugIn_Description {

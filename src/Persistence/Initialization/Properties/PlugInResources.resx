@@ -385,4 +385,6 @@
   <data name="SetSupportBuffDurationUpdatePlugIn_Description" xml:space="preserve"><value>Sets all player-cast support buffs, including master variants, to exactly 60 seconds. Removes duration bonuses while preserving buff strength. Replaces customized support buff durations.</value></data>
   <data name="SetEquipmentDropOptionsUpdatePlugIn_Name" xml:space="preserve"><value>380 and socket equipment drop options</value></data>
   <data name="SetEquipmentDropOptionsUpdatePlugIn_Description" xml:space="preserve"><value>Sets a 30% luck chance for level-380 and socket equipment, and limits newly dropped equipment to two sockets. Existing items and crafting capacity are unchanged.</value></data>
+  <data name="SparseFieldSpawnsUpdatePlugIn_Name" xml:space="preserve"><value>Sparse field monster spawns</value></data>
+  <data name="SparseFieldSpawnsUpdatePlugIn_Description" xml:space="preserve"><value>Hard server style: field maps keep only one of every ten single spawn points per monster type, and spawn areas hold at most three monsters. Event and quest maps are not changed. Replaces customized spawn quantities on field maps.</value></data>
 </root>
