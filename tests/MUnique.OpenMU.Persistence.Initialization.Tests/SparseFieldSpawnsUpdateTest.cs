@@ -10,13 +10,13 @@ using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Persistence.InMemory;
 
 /// <summary>
-/// Tests that the optional sparse field spawns update thins out the field maps only.
+/// Tests that the optional sparse field spawns update thins out the floors of the field maps only.
 /// </summary>
 [TestFixture]
 internal class SparseFieldSpawnsUpdateTest
 {
     /// <summary>
-    /// Field maps are thinned out, while every monster type of a field map keeps at least one monster.
+    /// Field maps are thinned out, while every monster type of a floor keeps at least one monster.
     /// </summary>
     [Test]
     public async Task FieldMapsAreThinnedOutAsync()
@@ -34,16 +34,37 @@ internal class SparseFieldSpawnsUpdateTest
             Assert.That(after[mapNumber], Is.LessThanOrEqualTo(count));
         }
 
-        Assert.That(after.Values.Sum(), Is.LessThan(before.Values.Sum() / 5));
+        Assert.That(after.Values.Sum(), Is.LessThan(before.Values.Sum() / 3));
         foreach (var map in configuration.Maps)
         {
-            var fieldSpawns = map.MonsterSpawns.Where(s => SparseFieldSpawnsUpdatePlugIn.IsFieldMonsterSpawn(map, s)).ToList();
-            Assert.That(fieldSpawns.Where(s => !SparseFieldSpawnsUpdatePlugIn.IsSpot(s)).Select(s => s.Quantity), Has.All.LessThanOrEqualTo(SparseFieldSpawnsUpdatePlugIn.MaximumAreaQuantity));
-            foreach (var monsterSpawns in fieldSpawns.GroupBy(s => s.MonsterDefinition))
+            foreach (var (_, floorSpawns) in GetFloors(configuration, map))
             {
-                Assert.That(monsterSpawns.Sum(s => (int)s.Quantity), Is.GreaterThan(0), $"No {monsterSpawns.Key!.Designation} left on map {map.Number}");
+                foreach (var monsterSpawns in floorSpawns.GroupBy(s => s.MonsterDefinition))
+                {
+                    Assert.That(monsterSpawns.Sum(s => (int)s.Quantity), Is.GreaterThan(0), $"No {monsterSpawns.Key!.Designation} left on map {map.Number}");
+                }
             }
         }
+    }
+
+    /// <summary>
+    /// Lost Tower 7 keeps about <see cref="SparseFieldSpawnsUpdatePlugIn.MonstersPerFloor"/> monsters.
+    /// </summary>
+    [Test]
+    public async Task LostTowerSevenKeepsAFloorOfMonstersAsync()
+    {
+        var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
+        using var _ = context;
+
+        await new SparseFieldSpawnsUpdatePlugIn().ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+
+        var lostTower = configuration.Maps.First(m => m.Number == 4);
+        var floors = GetFloors(configuration, lostTower);
+        Assert.That(floors, Has.Count.EqualTo(7));
+
+        // The warp destination of Lost Tower 7 is at 8, 85.
+        var lostTowerSeven = floors.Single(floor => floor.Gate is { X1: 8, Y1: 85 }).Spawns.Sum(s => (int)s.Quantity);
+        Assert.That(lostTowerSeven, Is.InRange(30, SparseFieldSpawnsUpdatePlugIn.MonstersPerFloor));
     }
 
     /// <summary>
@@ -64,21 +85,33 @@ internal class SparseFieldSpawnsUpdateTest
     }
 
     /// <summary>
-    /// Applying the update a second time changes nothing.
+    /// Applying the update again, e.g. over the quantities which version 1 left, leads to the same state.
     /// </summary>
     [Test]
-    public async Task SecondApplicationChangesNothingAsync()
+    public async Task ReapplicationLeadsToTheSameStateAsync()
     {
         var (context, configuration) = await CreateSeason6ConfigurationAsync().ConfigureAwait(false);
         using var _ = context;
         var update = new SparseFieldSpawnsUpdatePlugIn();
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         var quantities = configuration.Maps.SelectMany(m => m.MonsterSpawns).ToDictionary(s => s, s => s.Quantity);
+        foreach (var map in configuration.Maps)
+        {
+            foreach (var spawn in map.MonsterSpawns.Where(s => SparseFieldSpawnsUpdatePlugIn.IsFieldMonsterSpawn(map, s)))
+            {
+                spawn.Quantity = SparseFieldSpawnsUpdatePlugIn.IsSpot(spawn) ? (short)(spawn.X1 % 2) : (short)3;
+            }
+        }
 
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
 
         Assert.That(quantities.Where(pair => pair.Key.Quantity != pair.Value), Is.Empty);
     }
+
+    private static IReadOnlyList<(ExitGate? Gate, List<MonsterSpawnArea> Spawns)> GetFloors(GameConfiguration configuration, GameMapDefinition map)
+        => SparseFieldSpawnsUpdatePlugIn.GetFloors(
+            SparseFieldSpawnsUpdatePlugIn.GetFloorGates(configuration, map),
+            map.MonsterSpawns.Where(s => SparseFieldSpawnsUpdatePlugIn.IsFieldMonsterSpawn(map, s)).ToList());
 
     private static Dictionary<short, int> CountFieldMonstersPerMap(GameConfiguration configuration)
         => configuration.Maps

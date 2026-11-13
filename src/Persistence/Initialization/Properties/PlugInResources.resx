@@ -386,5 +386,5 @@
   <data name="SetEquipmentDropOptionsUpdatePlugIn_Name" xml:space="preserve"><value>380 and socket equipment drop options</value></data>
   <data name="SetEquipmentDropOptionsUpdatePlugIn_Description" xml:space="preserve"><value>Sets a 30% luck chance for level-380 and socket equipment, and limits newly dropped equipment to two sockets. Existing items and crafting capacity are unchanged.</value></data>
   <data name="SparseFieldSpawnsUpdatePlugIn_Name" xml:space="preserve"><value>Sparse field monster spawns</value></data>
-  <data name="SparseFieldSpawnsUpdatePlugIn_Description" xml:space="preserve"><value>Hard server style: field maps keep only one of every ten single spawn points per monster type, and spawn areas hold at most three monsters. Event and quest maps are not changed. Replaces customized spawn quantities on field maps.</value></data>
+  <data name="SparseFieldSpawnsUpdatePlugIn_Description" xml:space="preserve"><value>Hard server style: every floor of a field map (each warp destination, e.g. Lost Tower 7) spawns about 40 single monsters, spread evenly over the floor. Event and quest maps are not changed. Replaces customized spawn quantities on field maps.</value></data>
 </root>

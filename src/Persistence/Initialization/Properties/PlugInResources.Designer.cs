@@ -2014,7 +2014,7 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Hard server style: field maps keep only one of every ten single spawn points per monster type, and spawn areas hold at most three monsters. Event and quest maps are not changed. Replaces customized spawn quantities on field maps..
+        ///   Looks up a localized string similar to Hard server style: every floor of a field map (each warp destination, e.g. Lost Tower 7) spawns about 40 single monsters, spread evenly over the floor. Event and quest maps are not changed. Replaces customized spawn quantities on field maps..
         /// </summary>
         public static string SparseFieldSpawnsUpdatePlugIn_Description {
             get {
