@@ -395,6 +395,12 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
     {
         try
         {
+            if (this.IsDisposed || this.IsDisposing)
+            {
+                // E.g. its spawn area got reduced by a configuration change while it was dead.
+                return;
+            }
+
             if (!this.ShouldRespawn)
             {
                 await this.RemoveFromMapAndDisposeAsync().ConfigureAwait(false);
