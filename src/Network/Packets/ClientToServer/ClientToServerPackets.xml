@@ -4361,6 +4361,18 @@
         <Field><Index>11</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
       </Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C1HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>09</SubCode><Name>DailyRewardRequestExtended</Name><Length>10</Length>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>The custom client loads the daily login reward calendar (0) or claims the reward of the given day of the current month (1).</SentWhen>
+      <CausedReaction>The server checks the server's current day, the account's claimed days, inventory room and the replay sequence. It grants the configured zen, cash shop coins and item atomically and sends the calendar with the matching RequestId.</CausedReaction>
+      <Fields>
+        <Field><Index>4</Index><Type>Byte</Type><Name>Operation</Name></Field>
+        <Field><Index>5</Index><Type>Byte</Type><Name>Day</Name></Field>
+        <Field><Index>6</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
+      </Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

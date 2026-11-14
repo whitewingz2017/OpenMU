@@ -6037,4 +6037,36 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="DailyRewardRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="day">The day.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the daily login reward calendar (0) or claims the reward of the given day of the current month (1).
+    /// Causes reaction on server side: The server checks the server's current day, the account's claimed days, inventory room and the replay sequence. It grants the configured zen, cash shop coins and item atomically and sends the calendar with the matching RequestId.
+    /// </remarks>
+    public static async ValueTask SendDailyRewardRequestExtendedAsync(this IConnection? connection, byte @operation, byte @day, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = DailyRewardRequestExtendedRef.Length;
+            var packet = new DailyRewardRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.Day = @day;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

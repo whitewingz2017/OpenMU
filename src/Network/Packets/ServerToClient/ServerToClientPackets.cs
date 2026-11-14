@@ -43103,6 +43103,93 @@ public readonly struct RankTitleAppearanceExtended
         
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
+
+
+/// <summary>
+/// Is sent by the server when: A player enters the game world with the daily login rewards enabled, or a daily reward request has been processed.
+/// Causes reaction on client side: The client displays UTF-8 JSON containing RequestId (zero when entering the world), Status, Enabled, Month (year times 100 plus month), Today, DaysInMonth, ClaimedMask (bit 0 is day 1) and Days (Day, Zen, WCoinC, WCoinP, GoblinPoints and an optional Item with ItemType, Name, Level, Durability, Luck, Skill, Option and Excellent). It opens the calendar by itself when today's reward can be claimed.
+/// </summary>
+public readonly struct DailyRewardResponseExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DailyRewardResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public DailyRewardResponseExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DailyRewardResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private DailyRewardResponseExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x09;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(5).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="DailyRewardResponseExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator DailyRewardResponseExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="DailyRewardResponseExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(DailyRewardResponseExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 5;
+}
     /// <summary>
     /// Describes the gens type.
     /// </summary>

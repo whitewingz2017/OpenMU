@@ -1739,4 +1739,21 @@
   <data name="RankTitles_UpdateDescription" xml:space="preserve"><value>Updates the TwinMU catalog and reserves VIP, PvP King and Destroyer for earned eligibility. Other customized prices are preserved.</value></data>
   <data name="GoldTicketVipDeliveryPlugIn_Name" xml:space="preserve"><value>Gold Ticket VIP</value></data>
   <data name="GoldTicketVipDeliveryPlugIn_Description" xml:space="preserve"><value>Activates account-wide VIP and its rank title for the purchased Gold Channel Ticket duration. Additional tickets extend the remaining time.</value></data>
+  <data name="DailyRewards_Name" xml:space="preserve"><value>Daily Login Rewards</value></data>
+  <data name="DailyRewards_Description" xml:space="preserve"><value>Each account claims the reward of the current day of the month once, in the client's daily reward window. Unclaimed days are lost and the calendar starts over every month. Days follow the server's local time.</value></data>
+  <data name="DailyRewards_MenuCaption" xml:space="preserve"><value>Daily Login Rewards</value></data>
+  <data name="DailyRewards_Days" xml:space="preserve"><value>Rewards per day</value></data>
+  <data name="DailyRewards_InvalidCalendar" xml:space="preserve"><value>Configure each day from 1 to 31 at most once, with amounts of zero or more, an item level up to 15, an option level up to 7 and excellent flags up to 63.</value></data>
+  <data name="DailyRewards_Day" xml:space="preserve"><value>Day of month</value></data>
+  <data name="DailyRewards_Zen" xml:space="preserve"><value>Zen</value></data>
+  <data name="DailyRewards_WCoinC" xml:space="preserve"><value>WCoinC</value></data>
+  <data name="DailyRewards_WCoinP" xml:space="preserve"><value>WCoinP</value></data>
+  <data name="DailyRewards_GoblinPoints" xml:space="preserve"><value>Goblin Points</value></data>
+  <data name="DailyRewards_Item" xml:space="preserve"><value>Item</value></data>
+  <data name="DailyRewards_ItemLevel" xml:space="preserve"><value>Item level</value></data>
+  <data name="DailyRewards_ItemQuantity" xml:space="preserve"><value>Item quantity (stackable items, 0 = full stack)</value></data>
+  <data name="DailyRewards_ItemSkill" xml:space="preserve"><value>Item skill</value></data>
+  <data name="DailyRewards_ItemLuck" xml:space="preserve"><value>Item luck</value></data>
+  <data name="DailyRewards_ItemOption" xml:space="preserve"><value>Item option level (1 = +4)</value></data>
+  <data name="DailyRewards_ItemExcellentOptions" xml:space="preserve"><value>Item excellent options (flags 1, 2, 4, 8, 16, 32)</value></data>
 </root>

@@ -4285,4 +4285,30 @@ public class PacketStructureTests
         Assert.That(11 + 4, Is.LessThanOrEqualTo(expectedLength), 
             "Field 'RequestId' exceeds packet boundary");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for DailyRewardRequestExtended.
+    /// </summary>
+    [Test]
+    public void DailyRewardRequestExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 10;
+        var actualLength = DailyRewardRequestExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Operation' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Operation' exceeds packet boundary");
+        
+        // Validate field 'Day' boundary
+        Assert.That(5 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Day' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(6 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
 }

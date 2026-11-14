@@ -1116,4 +1116,15 @@ Price: {3}</value></data>
   <data name="RankTitles_Equipped" xml:space="preserve"><value>Your equipped title was updated.</value></data>
   <data name="PlayerKilledMailSubject" xml:space="preserve"><value>Player death notification</value></data>
   <data name="PlayerKilledMailBody" xml:space="preserve"><value>You were killed by {0}.</value></data>
+  <data name="DailyReward_CloseWindows" xml:space="preserve"><value>Close shop, trade, warehouse and mixing windows first.</value></data>
+  <data name="DailyReward_NotToday" xml:space="preserve"><value>A new day has started. The calendar was refreshed; claim today's reward.</value></data>
+  <data name="DailyReward_AlreadyClaimed" xml:space="preserve"><value>Today's reward was already claimed on this account. Come back tomorrow.</value></data>
+  <data name="DailyReward_NoReward" xml:space="preserve"><value>There is no reward for today.</value></data>
+  <data name="DailyReward_ZenLimit" xml:space="preserve"><value>You can't carry more zen. Store some zen first.</value></data>
+  <data name="DailyReward_InventoryFull" xml:space="preserve"><value>Make room in your inventory first.</value></data>
+  <data name="DailyReward_Claimed" xml:space="preserve"><value>Reward claimed. Come back tomorrow.</value></data>
+  <data name="DailyReward_SaveFailed" xml:space="preserve"><value>Saving failed. Your reward was not claimed; try again.</value></data>
+  <data name="DailyReward_Invalid" xml:space="preserve"><value>The daily reward can't be claimed right now.</value></data>
+  <data name="DailyReward_Retry" xml:space="preserve"><value>Request already processed. Reopen the daily rewards.</value></data>
+  <data name="DailyReward_Disabled" xml:space="preserve"><value>Daily login rewards are disabled on this server.</value></data>
 </root>

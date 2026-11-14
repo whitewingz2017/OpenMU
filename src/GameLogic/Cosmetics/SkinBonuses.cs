@@ -4,16 +4,34 @@
 
 namespace MUnique.OpenMU.GameLogic.Cosmetics;
 
+using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic.Attributes;
 
-/// <summary>Restricts skin bonuses to one of the configured normal item options.</summary>
+/// <summary>Restricts skin bonuses to one of the configured normal item options which increase HP, mana or zen.</summary>
 public static class SkinBonuses
 {
+    /// <summary>
+    /// The attributes a skin bonus may increase: maximum HP and mana and the zen amount of armor,
+    /// HP and mana after a monster kill of weapons, and the full HP and mana recovery of wings.
+    /// </summary>
+    private static readonly IReadOnlySet<Guid> AllowedAttributeIds = new HashSet<Guid>(new AttributeDefinition[]
+    {
+        Stats.MaximumHealth,
+        Stats.MaximumMana,
+        Stats.MoneyAmountRate,
+        Stats.HealthAfterMonsterKillMultiplier,
+        Stats.ManaAfterMonsterKillMultiplier,
+        Stats.FullyRecoverHealthAfterHitChance,
+        Stats.FullyRecoverManaAfterHitChance,
+    }.Select(attribute => attribute.Id));
+
     /// <summary>Gets the server-authoritative choices for this skin.</summary>
     /// <param name="definition">The skin definition.</param>
     public static IEnumerable<IncreasableItemOption> Choices(ItemDefinition definition)
         => definition.PossibleItemOptions.SelectMany(group => group.PossibleOptions)
-            .Where(option => option.OptionType == ItemOptionTypes.Excellent || option.OptionType == ItemOptionTypes.Wing);
+            .Where(option => option.OptionType == ItemOptionTypes.Excellent || option.OptionType == ItemOptionTypes.Wing)
+            .Where(option => option.PowerUpDefinition?.TargetAttribute is { } attribute && AllowedAttributeIds.Contains(attribute.Id));
 
     /// <summary>Resolves one GM excellent bit flag, choosing the first configured bonus when omitted.</summary>
     /// <param name="definition">The skin definition.</param>

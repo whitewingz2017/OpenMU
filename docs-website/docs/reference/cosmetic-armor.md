@@ -142,14 +142,22 @@ A chosen excellent option changes the skin bonus only. It does not add an
 Excellent name prefix, a green name, or excellent mesh tint. Normal model glow
 and imported effects remain unchanged.
 
-A full-set armor skin has **one standard excellent defense option**, applied
-once for the whole set. Weapon skins offer the normal physical or wizardry
-excellent options for their type. Shields use normal excellent defense options.
-Wing and cape skins offer the normal third-wing options: 5% ignore defense,
-5% complete damage reflection, 5% full HP recovery, or 5% full MP recovery.
+A skin bonus only increases HP, mana or zen. A full-set armor skin has **one
+standard excellent defense option**, applied once for the whole set: max HP
++4%, max mana +4% or zen +40%. Shields offer the same three. Weapon skins offer
+HP or mana recovery after a monster kill. Wing and cape skins offer the
+third-wing options 5% full HP recovery or 5% full MP recovery. The other
+options of those items (defense rate, damage decrease, reflection, attack
+speed, damage, excellent damage, ignore defense) are not offered for skins.
 These are the server's existing item options and normal values; no custom
 percentage bonuses are invented. Administrators can edit those option
 definitions in the normal game configuration.
+
+Apply version 21 of the **Set 315 Cosmetic Armor** configuration update with
+all players offline when upgrading an existing server. Owned skins whose bonus
+is no longer offered get the skin's first allowed bonus instead (zen +40% for
+armor and shields, mana after a kill for weapons, full HP recovery for wings),
+so they stay equippable.
 
 Each non-pet skin carries one selected option. Its bonus applies only while
 validly equipped in Skin, in addition to the real gear's attributes. It stops

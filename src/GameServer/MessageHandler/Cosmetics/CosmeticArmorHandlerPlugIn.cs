@@ -20,6 +20,7 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.Muun.MuunActions _muun = new();
     private readonly SkinShopActions _shop = new();
     private readonly GameLogic.RankTitles.RankTitleActions _rankTitles = new();
+    private readonly GameLogic.DailyRewards.DailyRewardActions _dailyRewards = new();
     private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
@@ -35,6 +36,14 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
                 await this._rankTitles.ExecuteAsync(player, rankRequest.RequestId, rankRequest.Operation, rankRequest.Rank, (int)rankRequest.QuotedPrice).ConfigureAwait(false);
             }
 
+            return;
+        }
+
+        if (packet.Length == DailyRewardRequestExtended.Length && packet.Span[0] == DailyRewardRequestExtended.HeaderType
+            && packet.Span[1] == packet.Length && packet.Span[3] == DailyRewardRequestExtended.SubCode)
+        {
+            DailyRewardRequestExtended dailyRewardRequest = packet;
+            await this._dailyRewards.ExecuteAsync(player, dailyRewardRequest.RequestId, dailyRewardRequest.Operation, dailyRewardRequest.Day).ConfigureAwait(false);
             return;
         }
 

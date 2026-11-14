@@ -15261,6 +15261,14 @@
       <CausedReaction>The custom client reads UTF-8 JSON with a Ranks array containing Id, Name and Rank for each player. Rank zero clears the title.</CausedReaction>
       <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>09</SubCode><Name>DailyRewardResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A player enters the game world with the daily login rewards enabled, or a daily reward request has been processed.</SentWhen>
+      <CausedReaction>The client displays UTF-8 JSON containing RequestId (zero when entering the world), Status, Enabled, Month (year times 100 plus month), Today, DaysInMonth, ClaimedMask (bit 0 is day 1) and Days (Day, Zen, WCoinC, WCoinP, GoblinPoints and an optional Item with ItemType, Name, Level, Durability, Luck, Skill, Option and Excellent). It opens the calendar by itself when today's reward can be claimed.</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

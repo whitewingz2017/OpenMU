@@ -34,7 +34,9 @@ internal class CosmeticArmorInitializationTests
         foreach (var group in new byte[] { 0, 5, 6, 8 })
         {
             var definition = configuration.Items.Single(d => d.Group == group && d.Number == 100);
-            Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(definition).Count(), Is.EqualTo(6));
+
+            // Armor offers max HP, max mana and zen; weapons HP and mana after a monster kill.
+            Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(definition).Count(), Is.EqualTo(group is 6 or 8 ? 3 : 2));
             Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(definition).All(o => o.OptionType == ItemOptionTypes.Excellent), Is.True);
         }
 
@@ -42,7 +44,7 @@ internal class CosmeticArmorInitializationTests
         {
             var skin = configuration.Items.Single(d => d.Group == group && d.Number == 101);
             Assert.That(skin.QualifiedCharacters, Is.Not.Empty);
-            Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(skin).Count(), Is.EqualTo(6));
+            Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(skin).Count(), Is.EqualTo(2));
         }
 
         Assert.That(configuration.Items.Single(d => d.Group == 4 && d.Number == 100).QualifiedCharacters.Select(c => c.Number), Is.EquivalentTo(new byte[] { 8, 10, 11 }));
@@ -55,7 +57,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(book.PossibleItemOptions.Single().GetId(), Is.EqualTo(GuidHelper.CreateGuid<ItemOptionDefinition>(ItemOptionDefinitionNumbers.ExcellentWizardry)));
 
         var wing = configuration.Items.Single(d => d.Group == 12 && d.Number == 210);
-        Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(4));
+        Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(2));
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).All(o => o.OptionType == ItemOptionTypes.Wing), Is.True);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(configuration.Items.Single(d => d.Group == 13 && d.Number == 200)), Is.Empty);
         Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(442));
@@ -403,6 +405,46 @@ internal class CosmeticArmorInitializationTests
         Assert.That(character.Inventory.Items.Single(), Is.SameAs(item));
     }
 
+    /// <summary>Owned skins with a bonus which is no longer allowed keep an allowed bonus, so they stay equippable.</summary>
+    [Test]
+    public async Task DisallowedOwnedSkinBonusIsReplacedAsync()
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        await new VersionSeasonSix.DataInitialization(provider, new NullLoggerFactory()).CreateInitialDataAsync(1, true).ConfigureAwait(false);
+        using var context = provider.CreateNewContext();
+        var configuration = (await context.GetAsync<GameConfiguration>().ConfigureAwait(false)).First();
+        var armor = configuration.Items.Single(d => d.Group == 8 && d.Number == 100);
+        var allowed = GameLogic.Cosmetics.SkinBonuses.Choices(armor).OrderBy(o => o.Number).ToArray();
+        var disallowed = armor.PossibleItemOptions.SelectMany(o => o.PossibleOptions).First(o => o.OptionType == ItemOptionTypes.Excellent && !allowed.Contains(o));
+
+        var character = context.CreateNew<Character>();
+        character.Inventory = context.CreateNew<ItemStorage>();
+        var withDisallowed = context.CreateNew<Item>();
+        withDisallowed.Definition = armor;
+        withDisallowed.ItemSlot = 12;
+        var link = context.CreateNew<ItemOptionLink>();
+        link.ItemOption = disallowed;
+        link.Level = 1;
+        withDisallowed.ItemOptions.Add(link);
+        var withAllowed = context.CreateNew<Item>();
+        withAllowed.Definition = armor;
+        withAllowed.ItemSlot = 14;
+        var allowedLink = context.CreateNew<ItemOptionLink>();
+        allowedLink.ItemOption = allowed.Last();
+        allowedLink.Level = 1;
+        withAllowed.ItemOptions.Add(allowedLink);
+        character.Inventory.Items.Add(withDisallowed);
+        character.Inventory.Items.Add(withAllowed);
+
+        var update = new CosmeticArmorItemsUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+
+        Assert.That(withDisallowed.ItemOptions.Single().ItemOption, Is.SameAs(allowed.First()));
+        Assert.That(GameLogic.Cosmetics.SkinBonuses.IsValid(withDisallowed), Is.True);
+        Assert.That(withAllowed.ItemOptions.Single().ItemOption, Is.SameAs(allowed.Last()));
+    }
+
     private static void AssertReferenceWings(GameConfiguration configuration)
     {
         foreach (var (number, name) in new[] { (382, "Custom Wing 21"), (383, "Custom Wing 6"), (384, "Custom Wing 7") })
@@ -422,7 +464,7 @@ internal class CosmeticArmorInitializationTests
             if (options is not null)
             {
                 Assert.That(wing.PossibleItemOptions, Is.EquivalentTo(new[] { options }));
-                Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(4));
+                Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(2));
             }
         }
     }

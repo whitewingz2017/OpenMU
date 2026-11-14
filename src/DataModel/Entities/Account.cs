@@ -174,6 +174,21 @@ public class Account
     public long PlayTimeSeconds { get; set; }
 
     /// <summary>
+    /// Gets or sets the month of the daily login rewards in <see cref="DailyRewardClaimedDays"/>,
+    /// as year times 100 plus month in the server's local time, e.g. 202611.
+    /// </summary>
+    /// <remarks>A different month means that no reward of the current month was claimed yet.</remarks>
+    [Browsable(false)]
+    public int DailyRewardMonth { get; set; }
+
+    /// <summary>
+    /// Gets or sets the days of <see cref="DailyRewardMonth"/> whose daily login reward was claimed;
+    /// bit 0 is the first day of the month.
+    /// </summary>
+    [Browsable(false)]
+    public int DailyRewardClaimedDays { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this instance is a template account
     /// and therefore read-only within the game server.
     /// </summary>

@@ -9308,4 +9308,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="DailyRewardResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A player enters the game world with the daily login rewards enabled, or a daily reward request has been processed.
+    /// Causes reaction on client side: The client displays UTF-8 JSON containing RequestId (zero when entering the world), Status, Enabled, Month (year times 100 plus month), Today, DaysInMonth, ClaimedMask (bit 0 is day 1) and Days (Day, Zen, WCoinC, WCoinP, GoblinPoints and an optional Item with ItemType, Name, Level, Durability, Luck, Skill, Option and Excellent). It opens the calendar by itself when today's reward can be claimed.
+    /// </remarks>
+    public static async ValueTask SendDailyRewardResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = DailyRewardResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new DailyRewardResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

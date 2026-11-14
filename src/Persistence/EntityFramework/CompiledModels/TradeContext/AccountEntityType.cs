@@ -21,7 +21,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.Account",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.Account),
                 baseEntityType,
-                propertyCount: 22,
+                propertyCount: 24,
                 navigationCount: 3,
                 unnamedIndexCount: 1,
                 keyCount: 1);
@@ -44,6 +44,22 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<ChatBanUntil>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             chatBanUntil.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var dailyRewardClaimedDays = runtimeEntityType.AddProperty(
+                "DailyRewardClaimedDays",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("DailyRewardClaimedDays", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<DailyRewardClaimedDays>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            dailyRewardClaimedDays.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var dailyRewardMonth = runtimeEntityType.AddProperty(
+                "DailyRewardMonth",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetProperty("DailyRewardMonth", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.Account).GetField("<DailyRewardMonth>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            dailyRewardMonth.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var eMail = runtimeEntityType.AddProperty(
                 "EMail",

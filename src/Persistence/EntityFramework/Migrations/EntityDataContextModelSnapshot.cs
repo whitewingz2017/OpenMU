@@ -47,6 +47,12 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.Property<DateTime?>("ChatBanUntil")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("DailyRewardClaimedDays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DailyRewardMonth")
+                        .HasColumnType("integer");
+
                     b.Property<string>("EMail")
                         .IsRequired()
                         .HasColumnType("text");

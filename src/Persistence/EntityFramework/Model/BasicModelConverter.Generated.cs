@@ -193,6 +193,8 @@ internal sealed class BasicModelConverter
         target.WCoinP = source.WCoinP;
         target.GoblinPoints = source.GoblinPoints;
         target.PlayTimeSeconds = source.PlayTimeSeconds;
+        target.DailyRewardMonth = source.DailyRewardMonth;
+        target.DailyRewardClaimedDays = source.DailyRewardClaimedDays;
         target.IsTemplate = source.IsTemplate;
         target.IsBot = source.IsBot;
         target.IsNetworkObservationActive = source.IsNetworkObservationActive;

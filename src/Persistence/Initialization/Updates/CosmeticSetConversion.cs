@@ -20,6 +20,7 @@ public static class CosmeticSetConversion
     {
         var changes = new List<(Item Item, ItemDefinition Definition, byte Slot, double Durability, bool HasSkill)>();
         var addedOptions = new List<(Item Item, ItemOptionLink Link)>();
+        var replacedOptions = new List<(ItemOptionLink Link, IncreasableItemOption? Option, int Level)>();
         var definitions = configuration.Items.Where(d => (d.ItemSlot?.ItemSlots.Any(slot => slot is >= 240 and <= 248) == true || FenrirMountRules.IsCustom(d))).ToDictionary(d => d.GetId());
         try
         {
@@ -52,6 +53,15 @@ public static class CosmeticSetConversion
                     link.Level = 1;
                     item.ItemOptions.Add(link);
                     addedOptions.Add((item, link));
+                }
+                else if (item.ItemOptions.Count == 1 && !SkinBonuses.Choices(item.Definition).Contains(item.ItemOptions.Single().ItemOption)
+                    && SkinBonuses.Choices(item.Definition).OrderBy(o => o.Number).FirstOrDefault() is { } allowedOption)
+                {
+                    // A bonus which skins can no longer have is replaced by the first allowed one, so the skin stays equippable.
+                    var link = item.ItemOptions.Single();
+                    replacedOptions.Add((link, link.ItemOption, link.Level));
+                    link.ItemOption = allowedOption;
+                    link.Level = 1;
                 }
             }
 
@@ -94,6 +104,12 @@ public static class CosmeticSetConversion
                 change.Item.ItemSlot = change.Slot;
                 change.Item.Durability = change.Durability;
                 change.Item.HasSkill = change.HasSkill;
+            }
+
+            foreach (var replaced in replacedOptions)
+            {
+                replaced.Link.ItemOption = replaced.Option;
+                replaced.Link.Level = replaced.Level;
             }
 
             foreach (var added in addedOptions)

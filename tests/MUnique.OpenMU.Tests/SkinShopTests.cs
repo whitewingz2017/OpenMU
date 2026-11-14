@@ -98,11 +98,11 @@ public class SkinShopTests
         Assert.That(item.ItemOptions.Single().ItemOption!.Number, Is.EqualTo(4));
         Assert.That(SkinBonuses.IsValid(item), Is.True);
         await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
-        Assert.That(player.Attributes![Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes![Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
         _ = new InventoryStorage(player, player.GameContext);
-        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
         await new CosmeticArmorActions().ExecuteAsync(player, 1, 2, 0, 1).ConfigureAwait(false);
-        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.Zero);
+        Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.Zero);
         Assert.That(item.ItemOptions.Single().ItemOption!.Number, Is.EqualTo(4));
     }
 
@@ -230,33 +230,29 @@ public class SkinShopTests
         var baseDamage = player.Attributes![Stats.MinimumPhysBaseDmgByWeapon];
         var actions = new CosmeticArmorActions();
         await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 6).ConfigureAwait(false);
-        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
         Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage));
         _ = new InventoryStorage(player, player.GameContext);
-        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
         await actions.ExecuteAsync(player, 2, 2, 0, 6).ConfigureAwait(false);
-        Assert.That(player.Attributes[Stats.ArmorDamageDecrease], Is.Zero);
+        Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.Zero);
     }
 
-    /// <summary>The chosen excellent chance is visible in the authoritative total and survives inventory reload.</summary>
-    [Test]
-    public async Task ExcellentSkinBonusIsIncludedInCombatStatisticsAsync()
+    /// <summary>Only bonuses which increase HP, mana or zen are offered; a skin without one is sold without a bonus.</summary>
+    /// <param name="bonus">The requested bonus.</param>
+    /// <param name="accepted">Whether the purchase is accepted.</param>
+    [TestCase(4, false)]
+    [TestCase(0, true)]
+    public async Task OtherBonusesAreNotOfferedAsync(byte bonus, bool accepted)
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var definition = player.GameContext.Configuration.Items.Single();
-        var option = definition.PossibleItemOptions.Single().PossibleOptions.Single();
-        option.PowerUpDefinition!.TargetAttribute = Stats.ExcellentDamageChance;
-        option.PowerUpDefinition.Boost!.ConstantValue.Value = 0.10f;
-        var baseline = player.Attributes![Stats.ExcellentDamageChance];
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, (8 * 512) + 100, 4, 100).ConfigureAwait(false);
-        var item = player.Inventory!.Items.Single();
-        var actions = new CosmeticArmorActions();
-        await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
-        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo((baseline + 0.10f) * 100).Within(0.001));
-        _ = new InventoryStorage(player, player.GameContext);
-        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo((baseline + 0.10f) * 100).Within(0.001));
-        await actions.ExecuteAsync(player, 2, 2, 0, 1).ConfigureAwait(false);
-        Assert.That(CharacterCombatStatistics.Create(player)["Excellent damage rate (%)"], Is.EqualTo(baseline * 100).Within(0.001));
+        definition.PossibleItemOptions.Single().PossibleOptions.Single().PowerUpDefinition!.TargetAttribute = Stats.ExcellentDamageChance;
+        Assert.That(SkinBonuses.Choices(definition), Is.Empty);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, (8 * 512) + 100, bonus, 100).ConfigureAwait(false);
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 400 : 500));
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
+        Assert.That(player.Inventory.Items.SelectMany(i => i.ItemOptions), Is.Empty);
     }
 
     private static async Task<Player> CreateAsync(int price = 100)
@@ -276,7 +272,7 @@ public class SkinShopTests
             OptionType = ItemOptionTypes.Excellent,
             PowerUpDefinition = new BasicModel.PowerUpDefinition
             {
-                TargetAttribute = Stats.ArmorDamageDecrease,
+                TargetAttribute = Stats.HealthAfterMonsterKillMultiplier,
                 Boost = new BasicModel.PowerUpDefinitionValue { ConstantValue = { Value = 0.04f, AggregateType = AggregateType.AddRaw } },
             },
         });
