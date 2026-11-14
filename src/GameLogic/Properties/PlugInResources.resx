@@ -1724,6 +1724,11 @@
   <data name="Admin_StartingItemsList" xml:space="preserve"><value>Items</value></data>
   <data name="Admin_StartingPlugInInactive" xml:space="preserve"><value>The plugin is inactive, so these settings are not applied to new characters.</value></data>
   <data name="Admin_StartingSaved" xml:space="preserve"><value>Starting items saved. Restart game servers to apply them.</value></data>
+  <data name="ResonanceCoreDrop_Name" xml:space="preserve"><value>Resonance Core drops</value></data>
+  <data name="ResonanceCoreDrop_Description" xml:space="preserve"><value>Drops the Resonance Core: rarely from any monster, and from each configured boss at most once per day, on a random kill of that day.</value></data>
+  <data name="ResonanceCoreDrop_MonsterDropChance" xml:space="preserve"><value>Drop chance of other monsters (%)</value></data>
+  <data name="ResonanceCoreDrop_BossDropChance" xml:space="preserve"><value>Drop chance per boss kill (%)</value></data>
+  <data name="ResonanceCoreDrop_BossMonsterNumbers" xml:space="preserve"><value>Boss monster numbers (one drop per boss and day)</value></data>
   <data name="ExcellentCombination_Name" xml:space="preserve"><value>Excellent Combination</value></data>
   <data name="ExcellentCombination_Description" xml:space="preserve"><value>Combine excellent options using Resonance Cores and configurable success rates.</value></data>
   <data name="ExcellentCombination_BaseRate" xml:space="preserve"><value>Base success rate (%)</value></data>
