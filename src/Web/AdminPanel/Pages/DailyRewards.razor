@@ -1,0 +1,142 @@
+@page "/daily-rewards"
+@attribute [Authorize(Policy = AdminPolicies.Administrator)]
+@using MUnique.OpenMU.GameLogic.DailyRewards
+@using MUnique.OpenMU.Web.AdminPanel.Properties
+
+<PageTitle>OpenMU: @Text("Title")</PageTitle>
+<Breadcrumb IsFirstFromRoot="true" Caption="@Text("Title")" />
+<h1>@Text("Title")</h1>
+<p>@Text("Description")</p>
+
+@if (!string.IsNullOrEmpty(this._status))
+{
+    <div class="alert @(this._statusIsError ? "alert-danger" : "alert-success")" role="status">@this._status</div>
+}
+@if (this._configuration is null || this._gameConfiguration is null || this._plugIn is null)
+{
+    return;
+}
+
+<div class="daily-toolbar">
+    @if (this._plugIn.IsActive)
+    {
+        <span class="badge bg-success">@Text("Active")</span>
+        <button type="button" class="btn btn-sm btn-outline-secondary" disabled="@this._saving" @onclick="() => this.SetActiveAsync(false)">@Text("Deactivate")</button>
+    }
+    else
+    {
+        <span class="badge bg-secondary">@Text("Inactive")</span>
+        <button type="button" class="btn btn-sm btn-outline-success" disabled="@this._saving" @onclick="() => this.SetActiveAsync(true)">@Text("Activate")</button>
+    }
+    <span class="daily-legend"><span class="daily-swatch set"></span>@Text("LegendSet") <span class="daily-swatch unset"></span>@Text("LegendUnset")</span>
+    <span class="text-muted">@string.Format(Text("ConfiguredCount"), this.ConfiguredCount)</span>
+</div>
+
+<div class="daily-calendar" role="list">
+    @foreach (var day in this._configuration.Days.OrderBy(d => d.Day))
+    {
+        <button type="button" role="listitem" @key="day.Day" class="daily-slot @(day.HasReward ? "set" : "unset") @(this._editing == day ? "editing" : string.Empty)"
+                @onclick="() => this.Edit(day)" aria-label="@(Text("Day") + " " + day.Day)">
+            <span class="daily-slot-day">@day.Day</span>
+            @if (day.HasReward)
+            {
+                @foreach (var line in Summary(day))
+                {
+                    <span class="daily-slot-line">@line</span>
+                }
+            }
+            else
+            {
+                <span class="daily-slot-empty">@Text("Empty")</span>
+            }
+        </button>
+    }
+</div>
+<p class="text-muted small">@Text("MonthNote")</p>
+
+<div class="daily-actions">
+    <button type="button" class="btn btn-primary me-1" disabled="@this._saving" @onclick="this.SaveAsync">@Resources.SaveChanges</button>
+    <button type="button" class="btn btn-secondary" disabled="@this._saving" @onclick="this.DiscardAsync">@Resources.DiscardChanges</button>
+</div>
+
+@if (this._editing is { } editing)
+{
+    var definition = editing.Item;
+    <div class="daily-backdrop" @onclick="this.CloseEditor"></div>
+    <div class="daily-editor card" role="dialog" aria-modal="true" aria-labelledby="daily-editor-title">
+        <div class="card-header d-flex align-items-center">
+            <h5 id="daily-editor-title" class="mb-0 flex-grow-1">@string.Format(Text("EditTitle"), editing.Day)</h5>
+            <button type="button" class="btn-close" aria-label="@Text("Done")" @onclick="this.CloseEditor"></button>
+        </div>
+        <div class="card-body">
+            <div class="row g-2 mb-3">
+                <div class="col-sm-6"><label class="form-label" for="daily-zen">@DailyRewardResources.Zen</label><input id="daily-zen" type="number" class="form-control" min="0" @bind="editing.Zen" /></div>
+                <div class="col-sm-6"><label class="form-label" for="daily-wcoinc">@DailyRewardResources.WCoinC</label><input id="daily-wcoinc" type="number" class="form-control" min="0" @bind="editing.WCoinC" /></div>
+                <div class="col-sm-6"><label class="form-label" for="daily-wcoinp">@DailyRewardResources.WCoinP</label><input id="daily-wcoinp" type="number" class="form-control" min="0" @bind="editing.WCoinP" /></div>
+                <div class="col-sm-6"><label class="form-label" for="daily-goblin">@DailyRewardResources.GoblinPoints</label><input id="daily-goblin" type="number" class="form-control" min="0" @bind="editing.GoblinPoints" /></div>
+            </div>
+
+            <fieldset class="daily-item-box">
+                <legend class="form-label">@DailyRewardResources.Item</legend>
+                @if (definition is null)
+                {
+                    <input type="search" class="form-control mb-2" placeholder="@Text("SearchItem")" aria-label="@Text("SearchItem")"
+                           @bind="this._itemSearch" @bind:event="oninput" />
+                    <select class="form-select" size="8" aria-label="@DailyRewardResources.Item" @onchange="args => this.SelectItem(editing, args.Value as string)">
+                        @foreach (var match in this.ItemMatches())
+                        {
+                            <option value="@((match.Group * 512) + match.Number)">@match.Name.ValueInNeutralLanguage (@match.Group:@match.Number)</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="flex-grow-1">@definition.Name.ValueInNeutralLanguage <small class="text-muted">(@definition.Group:@definition.Number)</small></strong>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => this.RemoveItem(editing)">@Text("RemoveItem")</button>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-sm-4"><label class="form-label" for="daily-level">@DailyRewardResources.ItemLevel</label><input id="daily-level" type="number" class="form-control" min="0" max="@Math.Min((int)definition.MaximumItemLevel, 15)" @bind="editing.ItemLevel" /></div>
+                        @if (IsStackable(definition))
+                        {
+                            <div class="col-sm-4"><label class="form-label" for="daily-quantity">@DailyRewardResources.ItemQuantity</label><input id="daily-quantity" type="number" class="form-control" min="0" max="@definition.Durability" @bind="editing.ItemQuantity" /></div>
+                        }
+                        @if (HasNormalOption(definition))
+                        {
+                            <div class="col-sm-4"><label class="form-label" for="daily-option">@DailyRewardResources.ItemOption</label><input id="daily-option" type="number" class="form-control" min="0" max="7" @bind="editing.ItemOption" /></div>
+                        }
+                    </div>
+                    <div class="mt-2">
+                        @if (definition.Skill is not null)
+                        {
+                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="editing.ItemSkill" />@DailyRewardResources.ItemSkill</label>
+                        }
+                        @if (HasLuck(definition))
+                        {
+                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="editing.ItemLuck" />@DailyRewardResources.ItemLuck</label>
+                        }
+                    </div>
+                    @if (Bonuses(definition) is { Count: > 0 } bonuses)
+                    {
+                        <div class="mt-2">
+                            <div class="form-label">@(IsSkin(definition) ? Text("SkinBonus") : Text("Excellent"))</div>
+                            @foreach (var bonus in bonuses)
+                            {
+                                var flag = (byte)(1 << (bonus.Number - 1));
+                                <label class="form-check" @key="bonus.Number">
+                                    <input type="checkbox" class="form-check-input" checked="@((editing.ItemExcellentOptions & flag) != 0)"
+                                           @onchange="args => this.SetBonus(editing, definition, flag, args.Value is true)" />
+                                    @Label(bonus)
+                                </label>
+                            }
+                        </div>
+                    }
+                }
+            </fieldset>
+        </div>
+        <div class="card-footer d-flex">
+            <button type="button" class="btn btn-outline-danger me-auto" @onclick="() => this.Clear(editing)">@Text("ClearDay")</button>
+            <button type="button" class="btn btn-primary" @onclick="this.CloseEditor">@Text("Done")</button>
+        </div>
+    </div>
+}

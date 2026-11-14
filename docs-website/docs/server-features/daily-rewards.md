@@ -31,22 +31,22 @@ Today's card is gold, claimed days are green and missed days are red.
 
 ## Configuration
 
-The feature is disabled by default. In the admin panel:
+The feature is disabled by default. In the admin panel, open
+**Configuration > Daily Login Rewards**:
 
-1. Open **Configuration > Daily Login Rewards**.
-2. Activate the plugin.
-3. Edit **Rewards per day**. Each entry has a day of the month (1 to 31) and
-   the amounts of zen, WCoinC, WCoinP and Goblin Points. Optionally choose an
-   item with its level, quantity (stackable items such as potions; 0 gives a
-   full stack), skill, luck, option level (1 is +4) and excellent options.
-   Excellent options are flags like those of the GM item command: 1, 2, 4, 8,
-   16 and 32 for the first to sixth option, added together. A skin receives the
-   allowed bonus of its flag.
-4. Save.
+1. Click **Activate**.
+2. The page shows the month as a calendar of 31 slots. Green slots have a
+   reward and list it; red slots are empty.
+3. Click a slot to set that day's reward: the amounts of zen, WCoinC, WCoinP and
+   Goblin Points, and optionally an item. Search the item by name or by
+   `group:number`, then set its level, quantity (stackable items such as potions;
+   0 gives a full stack), skill, luck, option level (1 is +4) and excellent
+   options. A skin offers its allowed bonuses instead, and takes one of them.
+   **Clear day** empties the slot.
+4. Click **Save changes**. **Discard changes** reloads the saved rewards.
 
-A day without an entry, or with an entry that grants nothing, has no reward.
-Days 29 to 31 only appear in months which have them. Each day can be
-configured once; the settings are rejected otherwise.
+A red slot has no reward. Days 29 to 31 only appear in months which have
+them.
 
 The claimed days are stored with the account. Existing servers need the
 `DailyLoginRewards` database migration, which the server applies on start when

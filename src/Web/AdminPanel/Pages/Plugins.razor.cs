@@ -77,6 +77,12 @@ public partial class Plugins
             return Task.CompletedTask;
         }
 
+        if (plugin.ConfigurationType == typeof(MUnique.OpenMU.GameLogic.DailyRewards.DailyRewardSettings))
+        {
+            this.NavigationManager.NavigateTo("daily-rewards");
+            return Task.CompletedTask;
+        }
+
         if (plugin.ConfigurationType == typeof(StartingItemsConfiguration))
         {
             this.NavigationManager.NavigateTo("starting-items");
