@@ -796,4 +796,16 @@
   </data>
   <data name="ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn_Name" xml:space="preserve"><value>Wachen von Castle Siege konfigurieren</value></data>
   <data name="ConfigureCastleSiegeGuardTalkPlugInsUpdatePlugIn_Description" xml:space="preserve"><value>Die Gardisten an der Brücke der Karte von Castle Siege öffnen das Anmeldefenster, und die Wache am Eingang zum Land der Prüfungen wird zu einem passiven NPC, der den Dialog des Landes der Prüfungen öffnet.</value></data>
+  <data name="FieldMonsterSpawnsUpdatePlugInBase_Name" xml:space="preserve">
+    <value>Doppelte Monster-Spawns von Dungeon und Lost Tower entfernen</value>
+  </data>
+  <data name="FieldMonsterSpawnsUpdatePlugInBase_Description" xml:space="preserve">
+    <value>Entfernt die doppelt definierten Monster-Spawns: 254 im Dungeon, der deshalb doppelt so viele Monster wie vorgesehen hatte, und 2 im Lost Tower. Andere Spawns bleiben erhalten.</value>
+  </data>
+  <data name="FieldMonsterSpawnsUpdatePlugInSeason6_Name" xml:space="preserve">
+    <value>Season-6-Monster-Spawns von Devias, Noria und Elfenland</value>
+  </data>
+  <data name="FieldMonsterSpawnsUpdatePlugInSeason6_Description" xml:space="preserve">
+    <value>Ersetzt die Monster-Spawns von Devias, Noria und Elfenland, die über Viertel der Karte verteilt sind, durch die Season-6-Aufteilung mit kleineren Bereichen und einzelnen Punkten. Fügt die Spinnen in Noria und Elfenland hinzu. Angepasste Spawns der Feldmonster dieser Karten werden überschrieben. Entfernt außerdem die doppelten Monster-Spawns von Dungeon (254) und Lost Tower (2).</value>
+  </data>
 </root>

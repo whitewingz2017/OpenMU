@@ -2014,20 +2014,56 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Hard server style: every floor of a field map (each warp destination, e.g. Lost Tower 7) spawns about 40 single monsters, spread evenly over the floor. Event and quest maps are not changed. Replaces customized spawn quantities on field maps..
+        ///   Looks up a localized string similar to Sets the number of monsters of each automatic monster spawn of the field maps back to the default, e.g. after the spawns were thinned out. Devias, Noria and Elvenland are reset by the Season 6 monster spawns update, which this update depends on. Event maps are not changed. Customized quantities are overwritten..
         /// </summary>
-        public static string SparseFieldSpawnsUpdatePlugIn_Description {
+        public static string RestoreFieldSpawnQuantitiesUpdatePlugIn_Description {
             get {
-                return ResourceManager.GetString("SparseFieldSpawnsUpdatePlugIn_Description", resourceCulture);
+                return ResourceManager.GetString("RestoreFieldSpawnQuantitiesUpdatePlugIn_Description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sparse field monster spawns.
+        ///   Looks up a localized string similar to Restore default monster quantities of the field maps.
         /// </summary>
-        public static string SparseFieldSpawnsUpdatePlugIn_Name {
+        public static string RestoreFieldSpawnQuantitiesUpdatePlugIn_Name {
             get {
-                return ResourceManager.GetString("SparseFieldSpawnsUpdatePlugIn_Name", resourceCulture);
+                return ResourceManager.GetString("RestoreFieldSpawnQuantitiesUpdatePlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string for FieldMonsterSpawnsUpdatePlugInBase_Name.
+        /// </summary>
+        public static string FieldMonsterSpawnsUpdatePlugInBase_Name {
+            get {
+                return ResourceManager.GetString("FieldMonsterSpawnsUpdatePlugInBase_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string for FieldMonsterSpawnsUpdatePlugInBase_Description.
+        /// </summary>
+        public static string FieldMonsterSpawnsUpdatePlugInBase_Description {
+            get {
+                return ResourceManager.GetString("FieldMonsterSpawnsUpdatePlugInBase_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string for FieldMonsterSpawnsUpdatePlugInSeason6_Name.
+        /// </summary>
+        public static string FieldMonsterSpawnsUpdatePlugInSeason6_Name {
+            get {
+                return ResourceManager.GetString("FieldMonsterSpawnsUpdatePlugInSeason6_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string for FieldMonsterSpawnsUpdatePlugInSeason6_Description.
+        /// </summary>
+        public static string FieldMonsterSpawnsUpdatePlugInSeason6_Description {
+            get {
+                return ResourceManager.GetString("FieldMonsterSpawnsUpdatePlugInSeason6_Description", resourceCulture);
             }
         }
         
