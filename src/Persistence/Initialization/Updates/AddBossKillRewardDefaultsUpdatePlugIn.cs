@@ -5,9 +5,11 @@
 namespace MUnique.OpenMU.Persistence.Initialization.Updates;
 
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.GameLogic.PlugIns.BossKillRewards;
 using MUnique.OpenMU.Persistence.Initialization.Properties;
+using MUnique.OpenMU.Persistence.Json;
 using MUnique.OpenMU.PlugIns;
 
 /// <summary>
@@ -47,7 +49,19 @@ public sealed class AddBossKillRewardDefaultsUpdatePlugIn : UpdatePlugInBase
             return ValueTask.CompletedTask;
         }
 
-        var configuration = plugInConfiguration.GetConfiguration<BossKillRewardConfiguration>(null);
+        // Plugin configurations are stored with preserved references ("$id", "$values"),
+        // so they are read and written with the same reference handler as the server does.
+        BossKillRewardConfiguration? configuration;
+        try
+        {
+            configuration = plugInConfiguration.GetConfiguration<BossKillRewardConfiguration>(new IdReferenceHandler());
+        }
+        catch (JsonException)
+        {
+            // A configuration which can't be read has no rewards to keep.
+            configuration = null;
+        }
+
         if (configuration is { Rewards.Count: > 0 })
         {
             return ValueTask.CompletedTask;
@@ -55,7 +69,7 @@ public sealed class AddBossKillRewardDefaultsUpdatePlugIn : UpdatePlugInBase
 
         var defaults = new BossKillRewardConfiguration();
         defaults.AnnounceKills = configuration?.AnnounceKills ?? defaults.AnnounceKills;
-        plugInConfiguration.SetConfiguration(defaults, null);
+        plugInConfiguration.SetConfiguration(defaults, new IdReferenceHandler());
         return ValueTask.CompletedTask;
     }
 }
