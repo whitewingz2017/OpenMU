@@ -16,6 +16,11 @@ using MUnique.OpenMU.GameLogic.Views.Duel;
 public class DuelActions
 {
     /// <summary>
+    /// The time after which an unanswered duel request ends, like a refused one.
+    /// </summary>
+    private static readonly TimeSpan UnansweredRequestTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>
     /// Handles a duel request.
     /// </summary>
     /// <param name="player">The player which sends the request.</param>
@@ -53,6 +58,21 @@ public class DuelActions
         target.DuelRoom = duelRoom;
 
         await target.InvokeViewPlugInAsync<IShowDuelRequestPlugIn>(p => p.ShowDuelRequestAsync(player)).ConfigureAwait(false);
+        _ = ExpireUnansweredRequestAsync(duelRoom);
+    }
+
+    /// <summary>
+    /// Cancels the duel request which the player got, because the player's answer couldn't be handled,
+    /// so that neither player stays bound to a duel which never starts.
+    /// </summary>
+    /// <param name="player">The player who answered the request.</param>
+    /// <returns>A <see cref="ValueTask"/>.</returns>
+    public async ValueTask CancelUnhandledResponseAsync(Player player)
+    {
+        if (player.DuelRoom is { State: DuelState.DuelRequested } duelRoom && duelRoom.Opponent == player)
+        {
+            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
+        }
     }
 
     /// <summary>
@@ -231,6 +251,26 @@ public class DuelActions
 
         await player.RemoveInvisibleEffectAsync().ConfigureAwait(false);
         await duelRoom.RemoveSpectatorAsync(player).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Ends a duel request which is still unanswered after <see cref="UnansweredRequestTimeout"/>, e.g. because
+    /// the other player's client never showed it. Both players would otherwise stay "already in a duel".
+    /// </summary>
+    private static async Task ExpireUnansweredRequestAsync(DuelRoom duelRoom)
+    {
+        try
+        {
+            await Task.Delay(UnansweredRequestTimeout).ConfigureAwait(false);
+            if (duelRoom.State == DuelState.DuelRequested && duelRoom.Requester.DuelRoom == duelRoom)
+            {
+                await duelRoom.ResetAndDisposeAsync(DuelStartResult.Refused).ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            duelRoom.Requester.Logger.LogError(ex, "Expiring the unanswered duel request of {player} failed.", duelRoom.Requester.Name);
+        }
     }
 
     private static async ValueTask<bool> CheckIfDuelCanBeStartedAsync(Player player, Player target)

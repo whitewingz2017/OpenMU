@@ -35,6 +35,8 @@ internal class DuelStartResponseHandlerPlugIn : ISubPacketHandlerPlugIn
     {
         if (packet.Length < DuelStartResponse.Length)
         {
+            player.Logger.LogWarning("Player {player} sent a duel response of {length} bytes, but it needs {expected}.", player.Name, packet.Length, DuelStartResponse.Length);
+            await this._action.CancelUnhandledResponseAsync(player).ConfigureAwait(false);
             return;
         }
 
@@ -48,12 +50,14 @@ internal class DuelStartResponseHandlerPlugIn : ISubPacketHandlerPlugIn
         if (target is null)
         {
             player.Logger.LogWarning($"Player {player.Name} sent response for duel player with id {targetId}, but the player was not found.");
+            await this._action.CancelUnhandledResponseAsync(player).ConfigureAwait(false);
             return;
         }
 
         if (target.Name != targetName)
         {
             player.Logger.LogWarning($"Player {player.Name} sent duel response for player {target.Name} with id {targetId}, but the names didn't match.");
+            await this._action.CancelUnhandledResponseAsync(player).ConfigureAwait(false);
             return;
         }
 

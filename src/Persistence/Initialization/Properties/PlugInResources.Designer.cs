@@ -2023,6 +2023,24 @@ namespace MUnique.OpenMU.Persistence.Initialization.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fills the default bosses into the boss kill rewards when its list is empty.
+        /// </summary>
+        public static string AddBossKillRewardDefaultsUpdatePlugIn_Description {
+            get {
+                return ResourceManager.GetString("AddBossKillRewardDefaultsUpdatePlugIn_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add the default bosses of the boss kill rewards.
+        /// </summary>
+        public static string AddBossKillRewardDefaultsUpdatePlugIn_Name {
+            get {
+                return ResourceManager.GetString("AddBossKillRewardDefaultsUpdatePlugIn_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restore default monster quantities of the field maps.
         /// </summary>
         public static string RestoreFieldSpawnQuantitiesUpdatePlugIn_Name {
