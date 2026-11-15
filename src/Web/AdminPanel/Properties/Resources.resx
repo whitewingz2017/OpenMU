@@ -2143,6 +2143,9 @@
   <data name="DiscordCategory_CastleSiege" xml:space="preserve">
     <value>The castle siege</value>
   </data>
+  <data name="DiscordCategory_JewelDrops" xml:space="preserve">
+    <value>Who picked up a jewel or Resonance Core which a monster dropped, with the monster, coordinates and time</value>
+  </data>
   <data name="DiscordCategory_WorldNews" xml:space="preserve">
     <value>Boss kills, rare drops and level milestones</value>
   </data>
@@ -2387,6 +2390,7 @@
   <data name="DiscordCategoryName_WorldNews" xml:space="preserve"><value>World news</value></data>
   <data name="DiscordCategoryName_Notices" xml:space="preserve"><value>GM announcements</value></data>
   <data name="DiscordCategoryName_StaffAlerts" xml:space="preserve"><value>Staff audit log</value></data>
+  <data name="DiscordCategoryName_JewelDrops" xml:space="preserve"><value>Jewel drops</value></data>
   <data name="DiscordDeliveryOnly" xml:space="preserve"><value>This posts a message to Discord and checks delivery only. It does not prove that game event publishing is enabled.</value></data>
   <data name="DiscordLastChecked" xml:space="preserve"><value>Last checked: {0} (UTC)</value></data>
   <data name="DiscordEventFilters" xml:space="preserve"><value>Boss and level milestone filters</value></data>

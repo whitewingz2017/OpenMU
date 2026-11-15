@@ -76,7 +76,7 @@ public sealed class ResonanceCoreDropPlugIn : IAttackableGotKilledPlugIn, ISuppo
 
         var item = new TemporaryItem { Definition = definition, Durability = 1 };
         var owners = player.Party?.PartyList.AsEnumerable() ?? player.GetAsEnumerable();
-        await map.AddAsync(new DroppedItem(item, monster.Position, map, null, owners)).ConfigureAwait(false);
+        await map.AddAsync(new DroppedItem(item, monster.Position, map, null, owners) { DroppedBy = monster.Definition }).ConfigureAwait(false);
     }
 
     /// <summary>

@@ -48,6 +48,17 @@ public sealed class StartingItemsPlugIn : ICharacterCreatedPlugIn, ISupportCusto
             character.Inventory.Items.Add(persisted);
         }
 
+        var now = DateTime.UtcNow;
+        var buffs = profile.Buffs ?? [];
+        var effects = StartingBuffs.ResolveEffects(buffs, config.Items);
+        foreach (var (buff, effect) in buffs.Zip(effects))
+        {
+            var entry = context.CreateNew<CharacterMagicEffect>();
+            entry.Definition = effect;
+            entry.ExpiresAtUtc = now.Add(buff.Duration.ToTimeSpan());
+            character.PurchasedEffects.Add(entry);
+        }
+
         if (profile.StartingZen > 0)
         {
             var maximum = config.MaximumInventoryMoney > 0 ? config.MaximumInventoryMoney : int.MaxValue;

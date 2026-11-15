@@ -1762,6 +1762,24 @@ namespace MUnique.OpenMU.GameLogic.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish pickups of monster drops.
+        /// </summary>
+        public static string GameEventPublisherConfiguration_PublishMonsterDropPickups_Name {
+            get {
+                return ResourceManager.GetString("GameEventPublisherConfiguration_PublishMonsterDropPickups_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Announced pickup items (group * 512 + number).
+        /// </summary>
+        public static string GameEventPublisherConfiguration_AnnouncedPickupItemCodes_Name {
+            get {
+                return ResourceManager.GetString("GameEventPublisherConfiguration_AnnouncedPickupItemCodes_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish boss kills.
         /// </summary>
         public static string GameEventPublisherConfiguration_PublishBossKills_Name {

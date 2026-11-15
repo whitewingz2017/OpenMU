@@ -522,7 +522,7 @@ public abstract class AttackableNpcBase : NonPlayerCharacter, IAttackable
             }
 
             var owners = killer.Party?.PartyList.AsEnumerable() ?? killer.GetAsEnumerable();
-            var droppedItem = new DroppedItem(item, dropCoordinates, this.CurrentMap, null, owners);
+            var droppedItem = new DroppedItem(item, dropCoordinates, this.CurrentMap, null, owners) { DroppedBy = this.Definition };
             await this.CurrentMap.AddAsync(droppedItem).ConfigureAwait(false);
             await killer.GameContext.PlugInManager.NotifyPlugInsAsync<IMonsterItemDroppedPlugIn>(
                 p => p.MonsterItemDroppedAsync(this, killer, droppedItem),

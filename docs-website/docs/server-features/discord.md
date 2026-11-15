@@ -100,6 +100,7 @@ Discord displays the announced timestamps in each reader's local time zone.
 | `CastleSiege` | Guild registration, the start and the end of the battle, and the new owner of the castle |
 | `WorldNews` | Boss kills, excellent and ancient items which monsters dropped, characters which reach a level milestone |
 | `Notices` | Global notices which game masters send with the `!` chat prefix |
+| `JewelDrops` | Who picked up a jewel or Resonance Core which a monster dropped, with the monster, the coordinates and the time. It has no default channel: choose one, e.g. a private channel for the staff |
 | `StaffAlerts` | The commands which game masters used in Discord, see [Commands for game masters](#commands-for-game-masters) |
 
 Each category is posted into its own channel. The bot posts into the channel of

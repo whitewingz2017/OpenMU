@@ -74,6 +74,11 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
     /// </summary>
     public Item Item { get; }
 
+    /// <summary>
+    /// Gets the monster which dropped the item, or <c>null</c> if it wasn't dropped by a monster, e.g. by a player.
+    /// </summary>
+    public MonsterDefinition? DroppedBy { get; init; }
+
     /// <inheritdoc />
     public Point Position { get; set; }
 

@@ -33,4 +33,12 @@ public enum DiscordChannelCategory
     /// Alerts for the staff, e.g. the commands which game masters used in Discord.
     /// </summary>
     StaffAlerts,
+
+    /// <summary>
+    /// Pickups of jewels and other configured items which monsters dropped, with who obtained them.
+    /// </summary>
+    /// <remarks>
+    /// The category is stored by name in the settings, so new members are only appended.
+    /// </remarks>
+    JewelDrops,
 }

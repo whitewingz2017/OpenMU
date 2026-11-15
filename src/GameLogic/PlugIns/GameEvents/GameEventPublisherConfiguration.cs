@@ -46,6 +46,22 @@ public class GameEventPublisherConfiguration
     public bool PublishAncientItemDrops { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether it's published who picked up one of the <see cref="AnnouncedPickupItemCodes"/>
+    /// which a monster dropped.
+    /// </summary>
+    [Display(ResourceType = typeof(PlugInResources), Name = nameof(PlugInResources.GameEventPublisherConfiguration_PublishMonsterDropPickups_Name))]
+    public bool PublishMonsterDropPickups { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the items whose pickup is published, as group times 512 plus number.
+    /// </summary>
+    /// <remarks>
+    /// By default the jewels of Bless, Soul, Chaos, Life, Creation, Guardian and Harmony, and the Resonance Core.
+    /// </remarks>
+    [Display(ResourceType = typeof(PlugInResources), Name = nameof(PlugInResources.GameEventPublisherConfiguration_AnnouncedPickupItemCodes_Name))]
+    public IList<int> AnnouncedPickupItemCodes { get; set; } = new List<int> { 7181, 7182, 6159, 7184, 7190, 7199, 7210, 7420 };
+
+    /// <summary>
     /// Gets or sets a value indicating whether the kills of boss monsters are published.
     /// </summary>
     [Display(ResourceType = typeof(PlugInResources), Name = nameof(PlugInResources.GameEventPublisherConfiguration_PublishBossKills_Name))]

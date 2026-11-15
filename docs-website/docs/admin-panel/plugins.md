@@ -103,6 +103,8 @@ It publishes:
 * the start and end of invasions, with the invaded maps,
 * the state changes of the castle siege, with the owner of the castle,
 * excellent and ancient items which are dropped by monsters,
+* who picked up a jewel or a Resonance Core which a monster dropped, with the
+  monster, the coordinates where it lay and the time,
 * the kills of boss monsters,
 * characters which reach a level or master level milestone,
 * global notices which game masters send with the `!` chat prefix.
@@ -111,6 +113,11 @@ Each kind of event can be switched off in the plugin configuration. There you
 also define which monsters are bosses, by their monster numbers (e.g. 275 for
 Kundun), and which levels and master levels are milestones (by default, level
 400).
+**Announced pickup items** lists the items whose pickup is published, each as
+group × 512 + number (e.g. 7181 for the Jewel of Bless, 14 × 512 + 13). By
+default these are the jewels of Bless, Soul, Chaos, Life, Creation, Guardian and
+Harmony, and the Resonance Core (7420). Only items which a monster dropped are
+announced, not items which players dropped.
 
 ## Discord integration of the client
 
@@ -140,6 +147,13 @@ Add your sword and **Small Wings of Satan** as separate rows. Small wings have
 no Luck or excellent options in the default item definitions. Bag placement
 and durability are automatic; these controls do not appear in the starter editor.
 Ancient, Harmony, and socket options are not part of the starter policy.
+
+Under **Buffs**, click **Add** to give the class a buff which is active from the
+creation of the character, like a **Seal of Wealth** or a **Scroll of
+Protection**. Select the buff and its **Duration**: 1 hour, 3 hours, 5 hours,
+1 day, 3 days or 7 days. The duration counts from the creation of the character,
+also while it is offline, like the same buff bought in the cash shop. Buffs which
+would replace each other, like two seals, prevent saving.
 
 **Replace legacy items** replaces that class's previous starter-item grants;
 turn it off to add items alongside them. Disabled profiles preserve the old grants.

@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.PlayerActions.Items;
 
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Configuration.Quests;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.Interfaces;
@@ -167,6 +168,9 @@ public class PickupItemAction
         if (result.Success)
         {
             await player.OnPickedUpItemAsync(droppedItem).ConfigureAwait(false);
+            await player.GameContext.PlugInManager.NotifyPlugInsAsync<IItemPickedUpPlugIn>(
+                p => p.ItemPickedUpAsync(player, droppedItem),
+                player.Logger).ConfigureAwait(false);
         }
 
         return result;

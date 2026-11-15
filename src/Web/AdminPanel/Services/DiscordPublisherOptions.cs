@@ -41,6 +41,7 @@ internal static class DiscordPublisherOptions
             nameof(GameEventPublisherConfiguration.PublishBossKills),
             nameof(GameEventPublisherConfiguration.PublishLevelMilestones),
         ],
+        DiscordChannelCategory.JewelDrops => [nameof(GameEventPublisherConfiguration.PublishMonsterDropPickups)],
         _ => [],
     };
 

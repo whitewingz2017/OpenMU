@@ -14,6 +14,11 @@ public sealed class StartingClassItems
     [MemberOfAggregate]
     [ScaffoldColumn(true)]
     public ICollection<StartingItemReward> Items { get; set; } = [];
+
+    /// <summary>Gets or sets the buffs which are active from the creation of the character.</summary>
+    [MemberOfAggregate]
+    [ScaffoldColumn(true)]
+    public ICollection<StartingBuffReward> Buffs { get; set; } = [];
     /// <inheritdoc />
     public override string ToString() => this.Class.ToString();
 }

@@ -1638,6 +1638,12 @@
   <data name="ResetEnergyFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Energy points up to the configured fruit capacity.</value></data>
   <data name="ResetLeadershipFruitConsumeHandlerPlugIn_Name" xml:space="preserve"><value>Reset Leadership fruit</value></data>
   <data name="ResetLeadershipFruitConsumeHandlerPlugIn_Description" xml:space="preserve"><value>Refunds invested Leadership points up to the configured fruit capacity.</value></data>
+  <data name="GameEventPublisherConfiguration_PublishMonsterDropPickups_Name" xml:space="preserve">
+    <value>Publish pickups of monster drops</value>
+  </data>
+  <data name="GameEventPublisherConfiguration_AnnouncedPickupItemCodes_Name" xml:space="preserve">
+    <value>Announced pickup items (group * 512 + number)</value>
+  </data>
   <data name="GameEventPublisherConfiguration_PublishBossKills_Name" xml:space="preserve">
     <value>Publish boss kills</value>
   </data>
@@ -1718,12 +1724,22 @@
   <data name="Admin_StartingClass" xml:space="preserve"><value>Class</value></data>
   <data name="Admin_StartingEnabled" xml:space="preserve"><value>Enabled</value></data>
   <data name="Admin_StartingReplaceLegacy" xml:space="preserve"><value>Replace legacy items</value></data>
-  <data name="Admin_StartingInvalidItems" xml:space="preserve"><value>Check the selected items, supported options, levels, quantities and Zen. Each class must be unique and have at most 64 items.</value></data>
+  <data name="Admin_StartingInvalidItems" xml:space="preserve"><value>Check the selected items, supported options, levels, quantities, buffs and Zen. Each class must be unique and have at most 64 items, and its buffs must not overlap, e.g. two seals.</value></data>
   <data name="Admin_StartingZen" xml:space="preserve"><value>Starting Zen</value></data>
   <data name="Admin_StartingZenDescription" xml:space="preserve"><value>Zen added to the new character's inventory, capped at the maximum inventory money.</value></data>
   <data name="Admin_StartingItemsList" xml:space="preserve"><value>Items</value></data>
   <data name="Admin_StartingPlugInInactive" xml:space="preserve"><value>The plugin is inactive, so these settings are not applied to new characters.</value></data>
   <data name="Admin_StartingSaved" xml:space="preserve"><value>Starting items saved. Restart game servers to apply them.</value></data>
+  <data name="Admin_StartingBuffsList" xml:space="preserve"><value>Buffs</value></data>
+  <data name="Admin_StartingBuffItem" xml:space="preserve"><value>Buff</value></data>
+  <data name="Admin_StartingBuffNone" xml:space="preserve"><value>Select a buff...</value></data>
+  <data name="Admin_StartingBuffDuration" xml:space="preserve"><value>Duration</value></data>
+  <data name="Admin_StartingBuffDuration_OneHour" xml:space="preserve"><value>1 hour</value></data>
+  <data name="Admin_StartingBuffDuration_ThreeHours" xml:space="preserve"><value>3 hours</value></data>
+  <data name="Admin_StartingBuffDuration_FiveHours" xml:space="preserve"><value>5 hours</value></data>
+  <data name="Admin_StartingBuffDuration_OneDay" xml:space="preserve"><value>1 day</value></data>
+  <data name="Admin_StartingBuffDuration_ThreeDays" xml:space="preserve"><value>3 days</value></data>
+  <data name="Admin_StartingBuffDuration_SevenDays" xml:space="preserve"><value>7 days</value></data>
   <data name="ResonanceCoreDrop_Name" xml:space="preserve"><value>Resonance Core drops</value></data>
   <data name="ResonanceCoreDrop_Description" xml:space="preserve"><value>Drops the Resonance Core: rarely from any monster, and from each configured boss at most once per day, on a random kill of that day.</value></data>
   <data name="ResonanceCoreDrop_MonsterDropChance" xml:space="preserve"><value>Drop chance of other monsters (%)</value></data>

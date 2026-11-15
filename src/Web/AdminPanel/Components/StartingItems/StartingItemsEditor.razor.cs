@@ -25,6 +25,8 @@ public partial class StartingItemsEditor
     [EditorRequired]
     public IEnumerable<ItemDefinition> Definitions { get; set; } = [];
 
+    private IEnumerable<ItemDefinition> BuffDefinitions => this.Definitions.Where(StartingBuffs.IsBuffItem).OrderBy(d => d.Group).ThenBy(d => d.Number);
+
     /// <summary>
     /// Ensures that every class has exactly one profile and that collections loaded from old JSON aren't null.
     /// </summary>
@@ -40,6 +42,7 @@ public partial class StartingItemsEditor
         foreach (var profile in configuration.Classes)
         {
             profile.Items ??= [];
+            profile.Buffs ??= [];
             foreach (var reward in profile.Items)
             {
                 reward.ExcellentOptions ??= [];
@@ -84,9 +87,42 @@ public partial class StartingItemsEditor
                     return false;
                 }
             }
+
+            try
+            {
+                StartingBuffs.ResolveEffects(profile.Buffs, definitions);
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    private static string ItemCode(byte group, short number) => $"{group}:{number}";
+
+    private static string BuffCode(StartingBuffReward buff) => buff.Number < 0 ? string.Empty : ItemCode(buff.Group, buff.Number);
+
+    private static void SetBuffCode(StartingBuffReward buff, object? value)
+    {
+        var parts = (value as string)?.Split(':');
+        if (parts is [var group, var number] && byte.TryParse(group, out var groupValue) && short.TryParse(number, out var numberValue))
+        {
+            buff.Group = groupValue;
+            buff.Number = numberValue;
+        }
+        else
+        {
+            buff.Group = 0;
+            buff.Number = -1;
+        }
+    }
+
+    private static void AddBuff(StartingClassItems profile)
+    {
+        profile.Buffs.Add(new StartingBuffReward { Number = -1 });
     }
 
     private static string ClassCaption(StartingCharacterClass characterClass)

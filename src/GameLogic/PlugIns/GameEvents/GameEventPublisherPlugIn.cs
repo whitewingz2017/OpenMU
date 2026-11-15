@@ -32,6 +32,7 @@ public class GameEventPublisherPlugIn
     IInvasionEndedPlugIn,
     ICastleSiegeStateChangedPlugIn,
     IMonsterItemDroppedPlugIn,
+    IItemPickedUpPlugIn,
     IChatMessageSentPlugIn,
     IAttackableGotKilledPlugIn,
     ICharacterLevelUpPlugIn,
@@ -181,6 +182,31 @@ public class GameEventPublisherPlugIn
             item.Level,
             isExcellent,
             isAncient));
+    }
+
+    /// <inheritdoc />
+    public ValueTask ItemPickedUpAsync(Player player, DroppedItem droppedItem)
+    {
+        // This is called for every picked up item, so the cheap checks come first.
+        if (this.Configuration is not { PublishMonsterDropPickups: true } configuration
+            || droppedItem.DroppedBy is not { } monster
+            || droppedItem.Item.Definition is not { } definition
+            || !configuration.AnnouncedPickupItemCodes.Contains((definition.Group * 512) + definition.Number)
+            || player.GameContext is not IGameServerContext context)
+        {
+            return ValueTask.CompletedTask;
+        }
+
+        return context.EventPublisher.GameEventAsync(new MonsterDropPickedUpEvent(
+            context.Id,
+            DateTime.UtcNow,
+            player.Name,
+            monster.Designation,
+            droppedItem.CurrentMap.Definition.Name,
+            droppedItem.Position.X,
+            droppedItem.Position.Y,
+            definition.Name,
+            droppedItem.Item.Level));
     }
 
     /// <inheritdoc />

@@ -925,6 +925,24 @@ namespace MUnique.OpenMU.Discord.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rare item obtained.
+        /// </summary>
+        public static string MonsterDropPickedUp_Title {
+            get {
+                return ResourceManager.GetString("MonsterDropPickedUp_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to **{0}** dropped from **{1}** ({2}, {3}) in {4} and was obtained by **{5}** - {6}.
+        /// </summary>
+        public static string MonsterDropPickedUp_Description {
+            get {
+                return ResourceManager.GetString("MonsterDropPickedUp_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rare drop.
         /// </summary>
         public static string ItemDropped_Title {

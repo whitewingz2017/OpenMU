@@ -69,4 +69,21 @@ public static class AdministrationResources
     /// <summary>Gets the StartingInvalidItems caption.</summary>
     public static string StartingInvalidItems => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingInvalidItems", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingInvalidItems";
 
+    /// <summary>Gets the StartingBuffsList caption.</summary>
+    public static string StartingBuffsList => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingBuffsList", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingBuffsList";
+
+    /// <summary>Gets the StartingBuffItem caption.</summary>
+    public static string StartingBuffItem => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingBuffItem", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingBuffItem";
+
+    /// <summary>Gets the StartingBuffNone caption.</summary>
+    public static string StartingBuffNone => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingBuffNone", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingBuffNone";
+
+    /// <summary>Gets the StartingBuffDuration caption.</summary>
+    public static string StartingBuffDuration => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingBuffDuration", System.Globalization.CultureInfo.CurrentUICulture) ?? "Admin_StartingBuffDuration";
+
+    /// <summary>Gets the caption of a starting buff duration.</summary>
+    /// <param name="durationName">The name of the duration, e.g. "OneDay".</param>
+    /// <returns>The caption.</returns>
+    public static string StartingBuffDurationName(string durationName) => Properties.PlugInResources.ResourceManager.GetString("Admin_StartingBuffDuration_" + durationName, System.Globalization.CultureInfo.CurrentUICulture) ?? durationName;
+
 }

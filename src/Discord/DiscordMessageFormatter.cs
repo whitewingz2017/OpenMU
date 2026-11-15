@@ -100,6 +100,19 @@ public sealed class DiscordMessageFormatter
                 this.Format(nameof(Resources.ItemDropped_Title)),
                 this.Format(nameof(Resources.ItemDropped_Description), Escape(e.KillerName), this.GetItemName(e), this.Translate(e.MonsterName), this.Translate(e.MapName)),
                 ItemDropColor)),
+            MonsterDropPickedUpEvent e => (DiscordChannelCategory.JewelDrops, this.CreateEmbed(
+                e,
+                this.Format(nameof(Resources.MonsterDropPickedUp_Title)),
+                this.Format(
+                    nameof(Resources.MonsterDropPickedUp_Description),
+                    e.ItemLevel > 0 ? $"{this.Translate(e.ItemName)} +{e.ItemLevel}" : this.Translate(e.ItemName),
+                    this.Translate(e.MonsterName),
+                    e.X,
+                    e.Y,
+                    this.Translate(e.MapName),
+                    Escape(e.CharacterName),
+                    DateAndTime(e.TimestampUtc)),
+                ItemDropColor)),
             BossKilledEvent e => (DiscordChannelCategory.WorldNews, this.CreateEmbed(
                 e,
                 this.Format(nameof(Resources.BossKilled_Title)),
