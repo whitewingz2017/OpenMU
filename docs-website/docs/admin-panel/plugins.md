@@ -184,10 +184,12 @@ directly to the database must initialize the balances themselves.
 
 ## Boss kill rewards
 
-Open **Game configuration → Boss kill rewards** and activate the plugin. Under
-**Rewards per boss**, click **Create** for each boss, enter its monster number
-(e.g. 275 for Kundun) and the **WCoinC**, **WCoinP** and **Goblin Points** which
-the player who kills it gets. Only the killer gets the points, not the party;
+Open **Game configuration → Boss kill rewards**; if the plugin is inactive,
+click **Activate** there. Each row is one boss: choose it from the monster list
+(e.g. *Kundun (275)*), enter the **WCoinC**, **WCoinP** and **Goblin Points**
+which the player who kills it gets, and untick **Enabled** to pause a boss
+without removing it. **Add boss** adds a row; **Save changes** stores the list,
+which requires a boss in every row and each boss only once. Only the killer gets the points, not the party;
 the player sees a message with the received points. With **Announce who killed
 the boss**, all players see a golden message like *Player has defeated Kundun!*
 A boss which isn't listed gives no points and isn't announced.

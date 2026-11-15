@@ -41,7 +41,7 @@ public sealed class BossKillRewardPlugIn : IAttackableGotKilledPlugIn, ISupportC
             || killed.IsSummonedMonster
             || this.Configuration is not { } configuration
             || (killer as Player ?? (killer as IPlayerSurrogate)?.Owner) is not { } player
-            || configuration.Rewards.FirstOrDefault(r => r.MonsterNumber == monster.Definition.Number) is not { } reward)
+            || configuration.Rewards.FirstOrDefault(r => r.Enabled && r.MonsterNumber == monster.Definition.Number) is not { } reward)
         {
             return;
         }

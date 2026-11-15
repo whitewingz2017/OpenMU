@@ -21,6 +21,9 @@ public static class BossKillRewardResources
     /// <summary>Gets the caption of <see cref="BossKillRewardConfiguration.Rewards"/>.</summary>
     public static string Rewards => Get("BossKillReward_Rewards");
 
+    /// <summary>Gets the caption of <see cref="BossKillReward.Enabled"/>.</summary>
+    public static string Enabled => Get("BossKillReward_Enabled");
+
     /// <summary>Gets the caption of <see cref="BossKillReward.MonsterNumber"/>.</summary>
     public static string MonsterNumber => Get("BossKillReward_MonsterNumber");
 

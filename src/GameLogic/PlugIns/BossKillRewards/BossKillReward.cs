@@ -9,6 +9,10 @@ namespace MUnique.OpenMU.GameLogic.PlugIns.BossKillRewards;
 /// </summary>
 public sealed class BossKillReward
 {
+    /// <summary>Gets or sets a value indicating whether the killer of the boss gets the reward. A disabled boss isn't announced either.</summary>
+    [Display(Name = nameof(BossKillRewardResources.Enabled), ResourceType = typeof(BossKillRewardResources))]
+    public bool Enabled { get; set; } = true;
+
     /// <summary>Gets or sets the number of the boss monster, e.g. 275 for Kundun.</summary>
     [Range(0, short.MaxValue)]
     [Display(Name = nameof(BossKillRewardResources.MonsterNumber), ResourceType = typeof(BossKillRewardResources))]

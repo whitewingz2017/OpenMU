@@ -1744,6 +1744,7 @@
   <data name="BossKillReward_Description" xml:space="preserve"><value>Gives the player who kills a configured boss WCoinC, WCoinP and Goblin Points, and announces the kill to all players.</value></data>
   <data name="BossKillReward_AnnounceKills" xml:space="preserve"><value>Announce who killed the boss</value></data>
   <data name="BossKillReward_Rewards" xml:space="preserve"><value>Rewards per boss</value></data>
+  <data name="BossKillReward_Enabled" xml:space="preserve"><value>Enabled</value></data>
   <data name="BossKillReward_MonsterNumber" xml:space="preserve"><value>Boss monster number (e.g. 275 for Kundun)</value></data>
   <data name="BossKillReward_WCoinC" xml:space="preserve"><value>WCoinC</value></data>
   <data name="BossKillReward_WCoinP" xml:space="preserve"><value>WCoinP</value></data>

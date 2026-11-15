@@ -1,0 +1,93 @@
+@page "/boss-kill-rewards"
+@attribute [Authorize(Policy = AdminPolicies.Administrator)]
+
+@using MUnique.OpenMU.GameLogic.PlugIns.BossKillRewards
+@using MUnique.OpenMU.Web.AdminPanel.Properties
+
+<PageTitle>OpenMU: @BossKillRewardResources.Name</PageTitle>
+<Breadcrumb IsFirstFromRoot="true" Caption="@BossKillRewardResources.Name" />
+
+<h1>@BossKillRewardResources.Name</h1>
+<p>@BossKillRewardResources.Description</p>
+
+@if (!string.IsNullOrEmpty(this._status))
+{
+    <div class="alert @(this._statusIsError ? "alert-danger" : "alert-success")" role="status">@this._status</div>
+}
+
+@if (this._configuration is null || this._plugIn is null)
+{
+    return;
+}
+
+@if (!this._plugIn.Configuration.IsActive)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-3">
+        <span class="me-auto">@Text("BossKillRewards_Inactive")</span>
+        <button type="button" class="btn btn-success" disabled="@this._saving" @onclick="this.ActivateAsync">@Text("BossKillRewards_Activate")</button>
+    </div>
+}
+
+<EditForm Model="this._configuration" OnSubmit="this.SaveAsync">
+    <fieldset disabled="@this._saving">
+        <div class="form-check mb-3">
+            <InputCheckbox id="boss-announce" class="form-check-input" @bind-Value="this._configuration.AnnounceKills" />
+            <label class="form-check-label" for="boss-announce">@BossKillRewardResources.AnnounceKills</label>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 1%;">@BossKillRewardResources.Enabled</th>
+                        <th>@Text("BossKillRewards_Boss")</th>
+                        <th style="width: 10rem;">@BossKillRewardResources.WCoinC</th>
+                        <th style="width: 10rem;">@BossKillRewardResources.WCoinP</th>
+                        <th style="width: 10rem;">@BossKillRewardResources.GoblinPoints</th>
+                        <th style="width: 1%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reward in this._configuration.Rewards)
+                    {
+                        <tr @key="reward">
+                            <td class="text-center">
+                                <InputCheckbox class="form-check-input" @bind-Value="reward.Enabled" aria-label="@BossKillRewardResources.Enabled" />
+                            </td>
+                            <td>
+                                <select class="form-select" aria-label="@Text("BossKillRewards_Boss")"
+                                        value="@reward.MonsterNumber" @onchange="e => SetMonster(reward, e.Value)">
+                                    @if (this.FindMonster(reward.MonsterNumber) is null)
+                                    {
+                                        <option value="@reward.MonsterNumber">@(reward.MonsterNumber < 0 ? Text("BossKillRewards_SelectBoss") : $"#{reward.MonsterNumber} ({Text("BossKillRewards_UnknownMonster")})")</option>
+                                    }
+
+                                    @foreach (var monster in this._monsters)
+                                    {
+                                        <option value="@monster.Number">@MonsterCaption(monster)</option>
+                                    }
+                                </select>
+                            </td>
+                            <td><InputNumber class="form-control" @bind-Value="reward.WCoinC" min="0" aria-label="@BossKillRewardResources.WCoinC" /></td>
+                            <td><InputNumber class="form-control" @bind-Value="reward.WCoinP" min="0" aria-label="@BossKillRewardResources.WCoinP" /></td>
+                            <td><InputNumber class="form-control" @bind-Value="reward.GoblinPoints" min="0" aria-label="@BossKillRewardResources.GoblinPoints" /></td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-danger" @onclick="() => this._configuration.Rewards.Remove(reward)"><span class="oi oi-trash" aria-hidden="true"></span> @Resources.Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="border-bottom-0">
+                            <button type="button" class="btn btn-primary" @onclick="this.AddReward">@Text("BossKillRewards_AddBoss")</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <button type="submit" class="btn btn-primary me-1">@Resources.SaveChanges</button>
+        <button type="button" class="btn btn-secondary" @onclick="this.DiscardAsync">@Resources.DiscardChanges</button>
+    </fieldset>
+</EditForm>
