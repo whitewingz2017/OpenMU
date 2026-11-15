@@ -1127,4 +1127,6 @@ Price: {3}</value></data>
   <data name="DailyReward_Invalid" xml:space="preserve"><value>The daily reward can't be claimed right now.</value></data>
   <data name="DailyReward_Retry" xml:space="preserve"><value>Request already processed. Reopen the daily rewards.</value></data>
   <data name="DailyReward_Disabled" xml:space="preserve"><value>Daily login rewards are disabled on this server.</value></data>
+  <data name="BossKillReward_Announcement" xml:space="preserve"><value>{0} has defeated {1}!</value></data>
+  <data name="BossKillReward_Received" xml:space="preserve"><value>You received {0} WCoinC, {1} WCoinP and {2} Goblin Points for defeating {3}.</value></data>
 </root>

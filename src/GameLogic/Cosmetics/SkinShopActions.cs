@@ -8,18 +8,24 @@ using System.Runtime.CompilerServices;
 using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
-/// <summary>Purchases one permanent skin and its chosen bonus atomically with WCoinC.</summary>
+/// <summary>Purchases one permanent skin and its chosen bonus atomically with WCoinC or Goblin Points.</summary>
 public sealed class SkinShopActions
 {
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
 
-    /// <summary>Handles catalog (0) and purchase (1) requests under the player's persistence lock.</summary>
+    /// <summary>The operation which buys a skin with WCoinC.</summary>
+    public const byte PurchaseWithWCoinCOperation = 1;
+
+    /// <summary>The operation which buys a skin with Goblin Points.</summary>
+    public const byte PurchaseWithGoblinPointsOperation = 2;
+
+    /// <summary>Handles catalog (0) and purchase requests (1 with WCoinC, 2 with Goblin Points) under the player's persistence lock.</summary>
     /// <param name="player">The purchasing player.</param>
     /// <param name="requestId">The monotonically increasing session request.</param>
-    /// <param name="operation">Zero for catalog or one for purchase.</param>
+    /// <param name="operation">Zero for catalog, one for a purchase with WCoinC or two for a purchase with Goblin Points.</param>
     /// <param name="itemType">The item group times 512 plus its number.</param>
     /// <param name="bonus">The configured option number, or zero for pets.</param>
-    /// <param name="quotedPrice">The WCoinC price displayed by the client.</param>
+    /// <param name="quotedPrice">The price in the chosen currency which the client displayed.</param>
     /// <param name="level">The level selected in the purchase popup (0 to 15).</param>
     public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, int itemType, byte bonus, int quotedPrice, byte level = 0)
     {
@@ -45,16 +51,20 @@ public sealed class SkinShopActions
             }
 
             await player.ApplyPendingCashShopCoinGrantsAsync().ConfigureAwait(false);
-            return operation == 0 ? "Ready" : operation == 1
-                ? await PurchaseAsync(player, settings, itemType, bonus, quotedPrice, level).ConfigureAwait(false)
-                : "Unknown skin shop operation.";
+            return operation switch
+            {
+                0 => "Ready",
+                PurchaseWithWCoinCOperation => await PurchaseAsync(player, settings, CashShopCoinType.WCoinC, itemType, bonus, quotedPrice, level).ConfigureAwait(false),
+                PurchaseWithGoblinPointsOperation => await PurchaseAsync(player, settings, CashShopCoinType.GoblinPoints, itemType, bonus, quotedPrice, level).ConfigureAwait(false),
+                _ => "Unknown skin shop operation.",
+            };
         }).ConfigureAwait(false);
 
         await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(view => view.UpdateInventoryListAsync()).ConfigureAwait(false);
         await player.InvokeViewPlugInAsync<ISkinShopView>(view => view.ShowAsync(requestId, status, operation == 0)).ConfigureAwait(false);
     }
 
-    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, int itemType, byte bonus, int quotedPrice, byte level)
+    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, CashShopCoinType currency, int itemType, byte bonus, int quotedPrice, byte level)
     {
         const byte MaximumLevel = 15;
         if (level > MaximumLevel)
@@ -75,17 +85,18 @@ public sealed class SkinShopActions
             return "Choose one of this skin's available bonuses.";
         }
 
-        var price = settings.Price(definition);
+        var currencyName = currency == CashShopCoinType.GoblinPoints ? "Goblin Points" : "WCoinC";
+        var price = currency == CashShopCoinType.GoblinPoints ? settings.GoblinPrice(definition) : settings.Price(definition);
         if (price <= 0 || quotedPrice != price)
         {
-            return "This category is not for sale, or its price changed. Refresh the shop.";
+            return $"This skin is not for sale with {currencyName}, or its price changed. Refresh the shop.";
         }
 
         var account = player.Account!;
-        var balance = account.WCoinC;
+        var balance = account.GetCashShopCoins(currency);
         if (balance < price)
         {
-            return "Not enough WCoinC.";
+            return $"Not enough {currencyName}.";
         }
 
         var item = player.PersistenceContext.CreateNew<Item>();
@@ -110,10 +121,10 @@ public sealed class SkinShopActions
                 return "Make room in your inventory first.";
             }
 
-            account.WCoinC = balance - price;
+            account.SetCashShopCoins(currency, balance - price);
             if (!await player.SaveProgressAsync().ConfigureAwait(false))
             {
-                return "Saving failed. No WCoinC was spent.";
+                return $"Saving failed. No {currencyName} was spent.";
             }
 
             committed = true;
@@ -122,13 +133,13 @@ public sealed class SkinShopActions
         catch (Exception exception)
         {
             player.Logger.LogError(exception, "Skin purchase failed for {Player}.", player);
-            return "Saving failed. No WCoinC was spent.";
+            return $"Saving failed. No {currencyName} was spent.";
         }
         finally
         {
             if (!committed)
             {
-                account.WCoinC = balance;
+                account.SetCashShopCoins(currency, balance);
                 if (player.Inventory!.Items.Contains(item))
                 {
                     await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);

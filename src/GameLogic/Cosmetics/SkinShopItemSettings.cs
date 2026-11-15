@@ -13,4 +13,8 @@ public sealed class SkinShopItemSettings
     /// <summary>Gets or sets the WCoinC price. Zero makes the skin preview only.</summary>
     [Range(0, int.MaxValue)]
     public int Price { get; set; } = 100;
+
+    /// <summary>Gets or sets the Goblin Points price. Zero means the skin can only be bought with WCoinC.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinPrice { get; set; }
 }

@@ -201,6 +201,18 @@
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="BuffDurations_Title" xml:space="preserve"><value>Skill buff durations</value></data>
+  <data name="BuffDurations_Description" xml:space="preserve"><value>The durations of timed effects, e.g. of the buff skills Infinite Arrow, Greater Damage and Greater Defense, of potions and of scrolls. The seconds are the base duration; some effects get longer with a stat of the caster, which is shown on the right. Restart the game servers after saving.</value></data>
+  <data name="BuffDurations_Filter" xml:space="preserve"><value>Filter by name or number</value></data>
+  <data name="BuffDurations_Effect" xml:space="preserve"><value>Effect</value></data>
+  <data name="BuffDurations_Seconds" xml:space="preserve"><value>Duration (seconds)</value></data>
+  <data name="BuffDurations_PvpSeconds" xml:space="preserve"><value>PvP duration (seconds)</value></data>
+  <data name="BuffDurations_SameAsNormal" xml:space="preserve"><value>Same as the duration</value></data>
+  <data name="BuffDurations_Scaling" xml:space="preserve"><value>Also depends on</value></data>
+  <data name="BuffDurations_TargetLevel" xml:space="preserve"><value>the level of the target</value></data>
+  <data name="BuffDurations_Maximum" xml:space="preserve"><value>at most {0} seconds</value></data>
+  <data name="SkinShopGoblinPrice" xml:space="preserve"><value>Goblin Points price (0 = WCoinC only)</value></data>
+  <data name="SkinShopGoblinDefaults" xml:space="preserve"><value>Goblin Points defaults for new skins (0 = WCoinC only)</value></data>
   <data name="SavedChanges" xml:space="preserve">
     <value>The changes have been saved.</value>
   </data>

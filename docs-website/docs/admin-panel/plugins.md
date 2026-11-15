@@ -182,6 +182,33 @@ accounts are unchanged. Creating or deleting characters grants no WCoins.
 This requires the updated AdminPanel; external registration tools which write
 directly to the database must initialize the balances themselves.
 
+## Boss kill rewards
+
+Open **Game configuration → Boss kill rewards** and activate the plugin. Under
+**Rewards per boss**, click **Create** for each boss, enter its monster number
+(e.g. 275 for Kundun) and the **WCoinC**, **WCoinP** and **Goblin Points** which
+the player who kills it gets. Only the killer gets the points, not the party;
+the player sees a message with the received points. With **Announce who killed
+the boss**, all players see a golden message like *Player has defeated Kundun!*
+A boss which isn't listed gives no points and isn't announced.
+
+## Skill buff durations
+
+Open **Game configuration → Skill buff durations** to change how long timed
+effects last, e.g. the buff skills Infinite Arrow, Greater Damage and Greater
+Defense, or potions and scrolls. **Duration (seconds)** is the base duration.
+Some effects also get longer with a stat of the caster, e.g. energy, which the
+**Also depends on** column shows; effects with a separate PvP duration show
+it in its own column. Save and restart the game servers to apply the changes.
+
+## Skin shop prices in Goblin Points
+
+On **Game configuration → Skin Shop**, each skin has a **Goblin Points price**
+next to its WCoinC price. With a Goblin Points price, players choose in the
+purchase window whether they pay with WCoinC or Goblin Points; zero sells the
+skin for WCoinC only. **Goblin Points defaults for new skins** are the prices
+of skins which aren't in the list yet.
+
 ## Party reconnect timeout
 
 The **Party Auto-Rejoin** plugin reserves a disconnected character's party slot for

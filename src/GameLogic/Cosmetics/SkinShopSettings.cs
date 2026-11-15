@@ -33,6 +33,30 @@ public sealed class SkinShopSettings
     [Range(0, int.MaxValue)]
     public int MountPrice { get; set; } = 100;
 
+    /// <summary>Gets or sets the Goblin Points price of a full armor set skin. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinArmorPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a weapon skin. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinWeaponPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a shield skin. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinShieldPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a wing or cape skin. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinWingPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a pet skin. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinPetPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a standalone Fenrir mount. Zero means WCoinC only.</summary>
+    [Range(0, int.MaxValue)]
+    public int GoblinMountPrice { get; set; }
+
     /// <summary>Gets or sets categories which are preview only.</summary>
     public HashSet<SkinShopCategory> DisabledCategories { get; set; } = [];
 
@@ -65,6 +89,39 @@ public sealed class SkinShopSettings
         SkinShopCategory.Weapons => this.WeaponPrice,
         _ => 0,
     };
+
+    /// <summary>Gets the configured default Goblin Points price for a category.</summary>
+    /// <param name="category">The skin category.</param>
+    /// <returns>The category price, or zero if it's sold for WCoinC only.</returns>
+    public int DefaultGoblinPrice(SkinShopCategory category) => category switch
+    {
+        SkinShopCategory.Sets => this.GoblinArmorPrice,
+        SkinShopCategory.Shields => this.GoblinShieldPrice,
+        SkinShopCategory.Wings => this.GoblinWingPrice,
+        SkinShopCategory.Pets => this.GoblinPetPrice,
+        SkinShopCategory.Mounts => this.GoblinMountPrice,
+        SkinShopCategory.Weapons => this.GoblinWeaponPrice,
+        _ => 0,
+    };
+
+    /// <summary>Gets the Goblin Points sale price; disabled skins and categories, and skins sold for WCoinC only, return zero.</summary>
+    /// <param name="definition">The skin definition.</param>
+    /// <returns>The authoritative Goblin Points price.</returns>
+    public int GoblinPrice(ItemDefinition definition)
+    {
+        var category = Category(definition);
+        if (this.DisabledCategories?.Contains(category) == true)
+        {
+            return 0;
+        }
+
+        if (this.Items?.TryGetValue((definition.Group * 512) + definition.Number, out var item) == true)
+        {
+            return item is { Enabled: true, GoblinPrice: > 0 } ? item.GoblinPrice : 0;
+        }
+
+        return Math.Max(0, this.DefaultGoblinPrice(category));
+    }
 
     /// <summary>Gets the sale price; disabled skins and categories return zero.</summary>
     /// <param name="definition">The skin definition.</param>

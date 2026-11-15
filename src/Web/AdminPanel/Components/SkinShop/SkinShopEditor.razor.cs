@@ -43,7 +43,12 @@ public partial class SkinShopEditor
             var type = (definition.Group * 512) + definition.Number;
             if (!settings.Items.ContainsKey(type))
             {
-                settings.Items.Add(type, new SkinShopItemSettings { Price = Math.Max(0, settings.DefaultPrice(SkinShopSettings.Category(definition))) });
+                var category = SkinShopSettings.Category(definition);
+                settings.Items.Add(type, new SkinShopItemSettings
+                {
+                    Price = Math.Max(0, settings.DefaultPrice(category)),
+                    GoblinPrice = Math.Max(0, settings.DefaultGoblinPrice(category)),
+                });
             }
         }
 

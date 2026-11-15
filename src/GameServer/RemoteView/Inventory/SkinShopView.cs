@@ -43,7 +43,8 @@ public sealed class SkinShopView : ISkinShopView
             RequestId = requestId,
             Status = status,
             Balance = this._player.Account?.WCoinC ?? 0,
-            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), Eligible = CosmeticArmorRules.CanEquip(this._player, d), Pool = Pool(d) }),
+            GoblinBalance = this._player.Account?.GoblinPoints ?? 0,
+            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), GoblinPrice = settings.GoblinPrice(d), Eligible = CosmeticArmorRules.CanEquip(this._player, d), Pool = Pool(d) }),
             Pools = items.GroupBy(Pool).Select(group => new { Pool = group.Key, Bonuses = SkinBonuses.Choices(group.First()).OrderBy(o => o.Number).Select(o => new { Number = o.Number, Label = BonusLabel(o) }) }),
         });
         await connection.SendAsync(() =>

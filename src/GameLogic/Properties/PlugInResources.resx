@@ -1740,6 +1740,14 @@
   <data name="Admin_StartingBuffDuration_OneDay" xml:space="preserve"><value>1 day</value></data>
   <data name="Admin_StartingBuffDuration_ThreeDays" xml:space="preserve"><value>3 days</value></data>
   <data name="Admin_StartingBuffDuration_SevenDays" xml:space="preserve"><value>7 days</value></data>
+  <data name="BossKillReward_Name" xml:space="preserve"><value>Boss kill rewards</value></data>
+  <data name="BossKillReward_Description" xml:space="preserve"><value>Gives the player who kills a configured boss WCoinC, WCoinP and Goblin Points, and announces the kill to all players.</value></data>
+  <data name="BossKillReward_AnnounceKills" xml:space="preserve"><value>Announce who killed the boss</value></data>
+  <data name="BossKillReward_Rewards" xml:space="preserve"><value>Rewards per boss</value></data>
+  <data name="BossKillReward_MonsterNumber" xml:space="preserve"><value>Boss monster number (e.g. 275 for Kundun)</value></data>
+  <data name="BossKillReward_WCoinC" xml:space="preserve"><value>WCoinC</value></data>
+  <data name="BossKillReward_WCoinP" xml:space="preserve"><value>WCoinP</value></data>
+  <data name="BossKillReward_GoblinPoints" xml:space="preserve"><value>Goblin Points</value></data>
   <data name="ResonanceCoreDrop_Name" xml:space="preserve"><value>Resonance Core drops</value></data>
   <data name="ResonanceCoreDrop_Description" xml:space="preserve"><value>Drops the Resonance Core: rarely from any monster, and from each configured boss at most once per day, on a random kill of that day.</value></data>
   <data name="ResonanceCoreDrop_MonsterDropChance" xml:space="preserve"><value>Drop chance of other monsters (%)</value></data>

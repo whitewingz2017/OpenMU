@@ -11,6 +11,16 @@
     <NumberField Label="@Text("Mounts")" @bind-Value="this.Item.MountPrice" Min="0" />
 </details>
 
+<details class="mb-3">
+    <summary>@Text("GoblinDefaults")</summary>
+    <NumberField Label="@Text("Sets")" @bind-Value="this.Item.GoblinArmorPrice" Min="0" />
+    <NumberField Label="@Text("Wings")" @bind-Value="this.Item.GoblinWingPrice" Min="0" />
+    <NumberField Label="@Text("Weapons")" @bind-Value="this.Item.GoblinWeaponPrice" Min="0" />
+    <NumberField Label="@Text("Shields")" @bind-Value="this.Item.GoblinShieldPrice" Min="0" />
+    <NumberField Label="@Text("Pets")" @bind-Value="this.Item.GoblinPetPrice" Min="0" />
+    <NumberField Label="@Text("Mounts")" @bind-Value="this.Item.GoblinMountPrice" Min="0" />
+</details>
+
 @foreach (var category in Enum.GetValues<SkinShopCategory>())
 {
     <details class="card mb-3" @key="category" open="@(category == SkinShopCategory.Sets)">
@@ -23,7 +33,7 @@
             </label>
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("Price")</th></tr></thead>
+                    <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("Price")</th><th>@Text("GoblinPrice")</th></tr></thead>
                     <tbody>
                         @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderBy(d => d.Number))
                         {
@@ -35,6 +45,10 @@
                                 <td>
                                     <InputNumber id="@($"skin-price-{type}")" class="form-control" @bind-Value="sale.Price" min="0" max="@int.MaxValue" aria-label="@(Text("Price") + " " + definition.Name.ValueInNeutralLanguage)" />
                                     <ValidationMessage For="@(() => sale.Price)" />
+                                </td>
+                                <td>
+                                    <InputNumber id="@($"skin-goblin-price-{type}")" class="form-control" @bind-Value="sale.GoblinPrice" min="0" max="@int.MaxValue" aria-label="@(Text("GoblinPrice") + " " + definition.Name.ValueInNeutralLanguage)" />
+                                    <ValidationMessage For="@(() => sale.GoblinPrice)" />
                                 </td>
                             </tr>
                         }
