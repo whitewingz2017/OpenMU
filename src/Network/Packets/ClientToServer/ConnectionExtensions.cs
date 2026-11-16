@@ -5853,8 +5853,8 @@ public static class ConnectionExtensions
     /// <param name="quotedPrice">The quoted price.</param>
     /// <param name="requestId">The request id.</param>
     /// <remarks>
-    /// Is sent by the client when: The custom client requests the skin catalog (0) or buys one skin with a chosen bonus (1).
-    /// Causes reaction on server side: The server validates the configured WCoinC price, bonus, class, ownership storage and replay sequence, saves the purchase atomically and returns the catalog or result.
+    /// Is sent by the client when: The custom client requests the skin catalog (0) or buys one skin with a chosen bonus, paying with WCoinC (1) or Goblin Points (2).
+    /// Causes reaction on server side: The server validates the configured price of the chosen currency, bonus, class, ownership storage and replay sequence, saves the purchase atomically and returns the catalog or result.
     /// </remarks>
     public static async ValueTask SendSkinShopRequestExtendedAsync(this IConnection? connection, byte @operation, ushort @itemType, byte @bonus, uint @quotedPrice, uint @requestId)
     {
@@ -6064,6 +6064,38 @@ public static class ConnectionExtensions
             packet.Operation = @operation;
             packet.Day = @day;
             packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="GuideBookRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the published Guide Book (0) or, as a game master, loads the draft (1), saves the draft (2) or publishes the draft (3). A save carries the whole draft as UTF-8 JSON with Revision (the draft revision it starts from), Categories (Id, Name) and Pages (Id, CategoryId, Title, Body).
+    /// Causes reaction on server side: The server sends the requested guide with the matching RequestId. It refuses the draft operations to characters which aren't game masters, and a save when another game master saved since its revision. A publish copies the draft to the published guide, saves it and sends it to every player of the game server.
+    /// </remarks>
+    public static async ValueTask SendGuideBookRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = GuideBookRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new GuideBookRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
 
             return packet.Header.Length;
         }

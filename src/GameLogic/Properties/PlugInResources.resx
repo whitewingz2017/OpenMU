@@ -1786,4 +1786,17 @@
   <data name="DailyRewards_ItemLuck" xml:space="preserve"><value>Item luck</value></data>
   <data name="DailyRewards_ItemOption" xml:space="preserve"><value>Item option level (1 = +4)</value></data>
   <data name="DailyRewards_ItemExcellentOptions" xml:space="preserve"><value>Item excellent options (flags 1, 2, 4, 8, 16, 32)</value></data>
+  <data name="GuideBook_Name" xml:space="preserve"><value>Guide Book</value></data>
+  <data name="GuideBook_Description" xml:space="preserve"><value>The Guide Book of the custom client (F1): pages about the server which every player reads. Game master characters edit the draft in the game and publish it to every player.</value></data>
+  <data name="GuideBook_Published" xml:space="preserve"><value>Published guide</value></data>
+  <data name="GuideBook_Draft" xml:space="preserve"><value>Draft of the game masters</value></data>
+  <data name="GuideBook_Revision" xml:space="preserve"><value>Revision</value></data>
+  <data name="GuideBook_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="GuideBook_Pages" xml:space="preserve"><value>Pages</value></data>
+  <data name="GuideBook_Id" xml:space="preserve"><value>Id (letters, digits, - and _)</value></data>
+  <data name="GuideBook_CategoryName" xml:space="preserve"><value>Name</value></data>
+  <data name="GuideBook_CategoryId" xml:space="preserve"><value>Category id</value></data>
+  <data name="GuideBook_Title" xml:space="preserve"><value>Title</value></data>
+  <data name="GuideBook_Body" xml:space="preserve"><value>Text (Guide Book markup)</value></data>
+  <data name="GuideBook_InvalidContent" xml:space="preserve"><value>The client can't show this guide: every category and page needs a unique id of letters, digits, - and _, a name or title, every page an existing category id, and the guide has to stay within 32 categories, 256 pages, 8000 bytes of text per page and 52000 bytes in total.</value></data>
 </root>

@@ -344,5 +344,6 @@
   * [C2 FD 06 - MuunAppearanceExtended (by server)](C2-FD-06-MuunAppearanceExtended_by-server.md)
   * [C2 FD 07 - RankTitleAppearanceExtended (by server)](C2-FD-07-RankTitleAppearanceExtended_by-server.md)
   * [C2 FD 08 - RankTitleResponseExtended (by server)](C2-FD-08-RankTitleResponseExtended_by-server.md)
+  * [C2 FD 0A - GuideBookResponseExtended (by server)](C2-FD-0A-GuideBookResponseExtended_by-server.md)
   * [C1 FE 01 - StoreCombinedPriceResponse (by server)](C1-FE-01-StoreCombinedPriceResponse_by-server.md)
   * [C1 FE 02 - StoreMailAttachmentResponse (by server)](C1-FE-02-StoreMailAttachmentResponse_by-server.md)

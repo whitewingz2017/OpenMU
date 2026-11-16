@@ -4373,6 +4373,18 @@
         <Field><Index>6</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
       </Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0A</SubCode><Name>GuideBookRequestExtended</Name>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>The custom client loads the published Guide Book (0) or, as a game master, loads the draft (1), saves the draft (2) or publishes the draft (3). A save carries the whole draft as UTF-8 JSON with Revision (the draft revision it starts from), Categories (Id, Name) and Pages (Id, CategoryId, Title, Body).</SentWhen>
+      <CausedReaction>The server sends the requested guide with the matching RequestId. It refuses the draft operations to characters which aren't game masters, and a save when another game master saved since its revision. A publish copies the draft to the published guide, saves it and sends it to every player of the game server.</CausedReaction>
+      <Fields>
+        <Field><Index>5</Index><Type>Byte</Type><Name>Operation</Name></Field>
+        <Field><Index>6</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
+        <Field><Index>10</Index><Type>Binary</Type><Name>Data</Name></Field>
+      </Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

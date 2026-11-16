@@ -15269,6 +15269,14 @@
       <CausedReaction>The client displays UTF-8 JSON containing RequestId (zero when entering the world), Status, Enabled, Month (year times 100 plus month), Today, DaysInMonth, ClaimedMask (bit 0 is day 1) and Days (Day, Zen, WCoinC, WCoinP, GoblinPoints and an optional Item with ItemType, Name, Level, Durability, Luck, Skill, Option and Excellent). It opens the calendar by itself when today's reward can be claimed.</CausedReaction>
       <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0A</SubCode><Name>GuideBookResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A Guide Book request was processed, or a game master published the guide (RequestId zero).</SentWhen>
+      <CausedReaction>The client displays UTF-8 JSON with RequestId, Status, CanEdit, Draft and Unpublished. Unless the request was refused it also contains the guide (Revision, Categories with Id and Name, Pages with Id, CategoryId, Title and Body), the server's Values which pages quote as {key}, and BossRewards (Monster, Name, WCoinC, WCoinP, GoblinPoints, CoreChance, CoreCount).</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

@@ -18457,8 +18457,8 @@ public readonly struct CosmeticArmorRequestExtended
 
 
 /// <summary>
-/// Is sent by the client when: The custom client requests the skin catalog (0) or buys one skin with a chosen bonus (1).
-/// Causes reaction on server side: The server validates the configured WCoinC price, bonus, class, ownership storage and replay sequence, saves the purchase atomically and returns the catalog or result.
+/// Is sent by the client when: The custom client requests the skin catalog (0) or buys one skin with a chosen bonus, paying with WCoinC (1) or Goblin Points (2).
+/// Causes reaction on server side: The server validates the configured price of the chosen currency, bonus, class, ownership storage and replay sequence, saves the purchase atomically and returns the catalog or result.
 /// </summary>
 public readonly struct SkinShopRequestExtended
 {
@@ -19198,6 +19198,111 @@ public readonly struct DailyRewardRequestExtended
     /// <param name="packet">The packet as struct.</param>
     /// <returns>The packet as byte span.</returns>
     public static implicit operator Memory<byte>(DailyRewardRequestExtended packet) => packet._data; 
+}
+
+
+/// <summary>
+/// Is sent by the client when: The custom client loads the published Guide Book (0) or, as a game master, loads the draft (1), saves the draft (2) or publishes the draft (3). A save carries the whole draft as UTF-8 JSON with Revision (the draft revision it starts from), Categories (Id, Name) and Pages (Id, CategoryId, Title, Body).
+/// Causes reaction on server side: The server sends the requested guide with the matching RequestId. It refuses the draft operations to characters which aren't game masters, and a save when another game master saved since its revision. A publish copies the draft to the published guide, saves it and sends it to every player of the game server.
+/// </summary>
+public readonly struct GuideBookRequestExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GuideBookRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public GuideBookRequestExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GuideBookRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private GuideBookRequestExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x0A;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data.Span[5];
+        set => this._data.Span[5] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[6..]);
+        set => WriteUInt32LittleEndian(this._data.Span[6..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(10).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="GuideBookRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator GuideBookRequestExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="GuideBookRequestExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(GuideBookRequestExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
     /// <summary>
     /// The state of the trade button.

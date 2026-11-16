@@ -9336,4 +9336,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="GuideBookResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A Guide Book request was processed, or a game master published the guide (RequestId zero).
+    /// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Status, CanEdit, Draft and Unpublished. Unless the request was refused it also contains the guide (Revision, Categories with Id and Name, Pages with Id, CategoryId, Title and Body), the server's Values which pages quote as {key}, and BossRewards (Monster, Name, WCoinC, WCoinP, GoblinPoints, CoreChance, CoreCount).
+    /// </remarks>
+    public static async ValueTask SendGuideBookResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = GuideBookResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new GuideBookResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

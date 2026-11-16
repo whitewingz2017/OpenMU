@@ -207,6 +207,7 @@
   * [C1 FD 03 - ExcellentCombinationRequestExtended (by client)](C1-FD-03-ExcellentCombinationRequestExtended_by-client.md)
   * [C1 FD 05 - MuunRequestExtended (by client)](C1-FD-05-MuunRequestExtended_by-client.md)
   * [C1 FD 08 - RankTitleRequestExtended (by client)](C1-FD-08-RankTitleRequestExtended_by-client.md)
+  * [C2 FD 0A - GuideBookRequestExtended (by client)](C2-FD-0A-GuideBookRequestExtended_by-client.md)
   * [C1 FE 01 - StoreCombinedPriceRequest (by client)](C1-FE-01-StoreCombinedPriceRequest_by-client.md)
   * [C1 FE 02 - StoreMailClaimRequest (by client)](C1-FE-02-StoreMailClaimRequest_by-client.md)
   * [C1 FE 03 - StoreMailBuyRequest (by client)](C1-FE-03-StoreMailBuyRequest_by-client.md)

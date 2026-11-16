@@ -194,6 +194,32 @@ the player sees a message with the received points. With **Announce who killed
 the boss**, all players see a golden message like *Player has defeated Kundun!*
 A boss which isn't listed gives no points and isn't announced.
 
+## Guide Book
+
+The **Guide Book** plugin is the in-game guide of the custom client (F1 or the
+book beside the MU Helper's start button). It's active by default and starts
+with pages about the server's features. Two copies are stored in its
+configuration: the **Published guide**, which every player reads, and the
+**Draft of the game masters**.
+
+Game master characters edit the draft in the game: **Switch to GM/Admin
+Editor**, change pages and categories, **Save Changes** (stores the draft in the
+database) and **Publish** (copies the draft to the published guide and sends it
+to every player online on that game server; players of the other game servers
+get it when they open the book next). Other characters can't load, save or
+publish the draft. A save is refused when another game master saved the draft
+in the meantime; **Discard** loads the newer draft.
+
+The pages quote live settings, so they follow when you change them:
+`{exc.base}`, `{exc.bonus}`, `{exc.max}` and `{exc.zen}` of **Excellent
+Combination**, `{core.boss}` and `{core.monster}` of the **Resonance Core drop**,
+and `{{boss-rewards}}` shows the bosses of **Boss kill rewards** and the
+Resonance Core drop, as far as these plugins are active.
+
+You can also edit both copies on the plugin's **Configure** page. The client
+refuses a guide beyond 32 categories, 256 pages, 8000 bytes of text per page or
+52000 bytes in total, and every page needs a category.
+
 ## Skill buff durations
 
 Open **Game configuration → Skill buff durations** to change how long timed
