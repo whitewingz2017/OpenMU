@@ -248,6 +248,28 @@ disconnected member expires. Intentional logout removes the character immediatel
 Keep this plugin active and use **Reconnect timeout** to adjust the window.
 Offline leveling characters which remain active in the world are unaffected.
 
+## Party Search
+
+The **Party Search** plugin is the party list of the custom client (**Party
+Search** in the window menu). It's active by default. A party master, or a
+player without a party, lists the party with a minimum level, the wanted
+classes, **Guild only**, **One per class** and an optional password of up to 10
+letters and digits. Other players see the leader, the map and position, the
+level, the members and the classes the party still looks for, and join with
+**Join** without the leader having to accept. With **One per class**, the
+classes already in the party aren't wanted anymore.
+
+A party with a password asks for it on **Join**. The **Party Search: join by
+password** plugin also lets players join by sending the password to the
+leader: as a whisper, or as `/<leader> <password>` in the chat, e.g.
+`/ken 1122`. The leader doesn't get the password as a whisper. A wrong password
+makes the player wait three seconds before the next try.
+
+The listings are kept in memory per game server, at most 100 at once. A listing
+ends when its leader removes it, leaves the lead of the party or leaves the
+game; a full party stays listed but can't be joined. Events which don't allow
+parties, and other party plugins (e.g. the gens rules), still apply.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

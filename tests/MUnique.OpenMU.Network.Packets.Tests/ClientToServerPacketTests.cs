@@ -4327,4 +4327,20 @@ public class PacketStructureTests
         Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
             "GetRequiredSize calculation incorrect for binary field");
     }
+
+    /// <summary>
+    /// Tests the packet size calculation for PartySearchRequestExtended.
+    /// </summary>
+    [Test]
+    public void PartySearchRequestExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = PartySearchRequestExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 10;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
 }

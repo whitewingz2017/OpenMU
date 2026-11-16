@@ -1799,4 +1799,8 @@
   <data name="GuideBook_Title" xml:space="preserve"><value>Title</value></data>
   <data name="GuideBook_Body" xml:space="preserve"><value>Text (Guide Book markup)</value></data>
   <data name="GuideBook_InvalidContent" xml:space="preserve"><value>The client can't show this guide: every category and page needs a unique id of letters, digits, - and _, a name or title, every page an existing category id, and the guide has to stay within 32 categories, 256 pages, 8000 bytes of text per page and 52000 bytes in total.</value></data>
+  <data name="PartySearch_Name" xml:space="preserve"><value>Party Search</value></data>
+  <data name="PartySearch_Description" xml:space="preserve"><value>The Party Search of the custom client: leaders list their party with a minimum level, the wanted classes, guild only and an optional password, and other players join it from the list without asking. The listings are kept in memory per game server.</value></data>
+  <data name="PartySearchPassword_Name" xml:space="preserve"><value>Party Search: join by password</value></data>
+  <data name="PartySearchPassword_Description" xml:space="preserve"><value>A player who sends the password of a listed party to its leader joins the party: as a whisper, or as /&lt;leader&gt; &lt;password&gt; in the chat, e.g. /ken 1122. The leader does not get the password as a whisper.</value></data>
 </root>

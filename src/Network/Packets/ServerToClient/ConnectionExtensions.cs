@@ -9364,4 +9364,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="PartySearchResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A Party Search request was processed.
+    /// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Result, Settings (the player's own listing, or null) and Parties (Leader, Map, X, Y, Level, MinimumLevel, Members, MaxMembers, Classes, GuildOnly, SameGuild, Password, Joinable).
+    /// </remarks>
+    public static async ValueTask SendPartySearchResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = PartySearchResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new PartySearchResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

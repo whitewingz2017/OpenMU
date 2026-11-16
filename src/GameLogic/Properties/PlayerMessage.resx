@@ -1136,4 +1136,16 @@ Price: {3}</value></data>
   <data name="GuideBook_Saved" xml:space="preserve"><value>Draft saved. Publish it to show it to the players.</value></data>
   <data name="GuideBook_Published" xml:space="preserve"><value>Published. Every player now reads this guide.</value></data>
   <data name="GuideBook_SaveFailed" xml:space="preserve"><value>The server couldn't save the guide. Try again.</value></data>
+  <data name="PartySearch_Joined" xml:space="preserve"><value>You joined the party of {0}.</value></data>
+  <data name="PartySearch_MemberJoined" xml:space="preserve"><value>{0} joined your party through the Party Search.</value></data>
+  <data name="PartySearch_NotListed" xml:space="preserve"><value>{0} doesn't list a party anymore.</value></data>
+  <data name="PartySearch_WrongPassword" xml:space="preserve"><value>Wrong password for the party of {0}.</value></data>
+  <data name="PartySearch_AlreadyInParty" xml:space="preserve"><value>Leave your party first to join another one.</value></data>
+  <data name="PartySearch_LevelTooLow" xml:space="preserve"><value>Your level is too low for the party of {0}.</value></data>
+  <data name="PartySearch_ClassNotWanted" xml:space="preserve"><value>The party of {0} doesn't look for your class.</value></data>
+  <data name="PartySearch_GuildOnly" xml:space="preserve"><value>The party of {0} only takes members of its guild.</value></data>
+  <data name="PartySearch_PartyFull" xml:space="preserve"><value>The party of {0} is full.</value></data>
+  <data name="PartySearch_NotPossibleHere" xml:space="preserve"><value>You can't join a party here.</value></data>
+  <data name="PartySearch_Denied" xml:space="preserve"><value>You can't join the party of {0}.</value></data>
+  <data name="PartySearch_TryLater" xml:space="preserve"><value>Wait a moment before you try a password again.</value></data>
 </root>

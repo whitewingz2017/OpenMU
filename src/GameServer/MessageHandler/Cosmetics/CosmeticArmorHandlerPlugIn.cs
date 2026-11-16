@@ -23,18 +23,28 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.DailyRewards.DailyRewardActions _dailyRewards = new();
     private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     private readonly GameLogic.GuideBook.GuideBookActions _guideBook = new();
+    private readonly GameLogic.PartySearch.PartySearchActions _partySearch = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
-        // The only C2 request of this code: the Guide Book carries a whole draft.
+        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search its JSON.
         var guideBookHeaderSize = GuideBookRequestExtended.GetRequiredSize(0);
         if (packet.Length >= guideBookHeaderSize && packet.Span[0] == GuideBookRequestExtended.HeaderType
             && packet.Span[4] == GuideBookRequestExtended.SubCode)
         {
             GuideBookRequestExtended guideBookRequest = packet;
             await this._guideBook.ExecuteAsync(player, guideBookRequest.RequestId, guideBookRequest.Operation, packet[guideBookHeaderSize..]).ConfigureAwait(false);
+            return;
+        }
+
+        var partySearchHeaderSize = PartySearchRequestExtended.GetRequiredSize(0);
+        if (packet.Length >= partySearchHeaderSize && packet.Span[0] == PartySearchRequestExtended.HeaderType
+            && packet.Span[4] == PartySearchRequestExtended.SubCode)
+        {
+            PartySearchRequestExtended partySearchRequest = packet;
+            await this._partySearch.ExecuteAsync(player, partySearchRequest.RequestId, partySearchRequest.Operation, packet[partySearchHeaderSize..]).ConfigureAwait(false);
             return;
         }
 

@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Chat;
 
+using MUnique.OpenMU.GameLogic.PartySearch;
 using MUnique.OpenMU.GameLogic.PlugIns.ChatCommands;
 
 /// <summary>
@@ -18,6 +19,8 @@ public class ChatMessageCommandProcessor : IChatMessageProcessor
         var commandHandler = sender.GameContext.PlugInManager.GetStrategy<IChatCommandPlugIn>(commandKey);
         if (commandHandler is null)
         {
+            // "/ken 1122": no command has the name, so it may send the password of ken's listed party.
+            await PartySearchPasswordPlugIn.TryJoinByCommandAsync(sender, content.Message).ConfigureAwait(false);
             return;
         }
 

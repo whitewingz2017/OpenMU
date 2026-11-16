@@ -6101,4 +6101,36 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="PartySearchRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the Party Search (0), saves or removes the player's own listing (1) or joins a listed party (2). A save carries UTF-8 JSON with Active, MinimumLevel, GuildOnly, OnePerClass, Classes and Password; a join carries Leader and Password.
+    /// Causes reaction on server side: The server answers with the matching RequestId: the result, the player's own listing and the listed parties of the game server. A join adds the player to the leader's party when the listing allows it and the password matches.
+    /// </remarks>
+    public static async ValueTask SendPartySearchRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = PartySearchRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new PartySearchRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}
