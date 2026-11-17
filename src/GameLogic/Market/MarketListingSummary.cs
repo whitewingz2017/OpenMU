@@ -55,8 +55,9 @@ public sealed class MarketListingSummary
     /// <summary>Creates the summary of a stored listing.</summary>
     /// <param name="listing">The listing.</param>
     /// <param name="settings">The settings, for the category.</param>
+    /// <param name="muun">The Muun configuration, for the category; <c>null</c> without Muuns.</param>
     /// <returns>The summary.</returns>
-    public static MarketListingSummary From(MarketListing listing, MarketSettings settings) => new()
+    public static MarketListingSummary From(MarketListing listing, MarketSettings settings, Muun.MuunConfiguration? muun) => new()
     {
         Id = listing.Id,
         SellerAccountId = listing.SellerAccountId,
@@ -64,7 +65,7 @@ public sealed class MarketListingSummary
         Buyer = listing.BuyerName,
         Item = listing.ItemData,
         Name = listing.ItemName,
-        Category = MarketItems.CategoryOf(listing.Item, settings),
+        Category = MarketItems.CategoryOf(listing.Item, settings, muun),
         PriceType = listing.PriceType,
         Price = listing.Price,
         Proceeds = listing.Proceeds,

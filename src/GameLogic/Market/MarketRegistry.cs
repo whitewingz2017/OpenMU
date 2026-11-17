@@ -66,9 +66,10 @@ public sealed class MarketRegistry
         var historySince = DateTime.UtcNow.AddDays(-settings.HistoryDays);
         using var persistence = context.PersistenceContextProvider.CreateNewPlayerContext(context.Configuration);
         var listings = await persistence.GetAsync<MarketListing>().ConfigureAwait(false);
+        var muun = context.FeaturePlugIns.GetPlugIn<Muun.MuunFeaturePlugIn>()?.Configuration;
         return listings
             .Where(l => l.State == (int)MarketListingState.Active || l.ClosedAt >= historySince)
-            .Select(l => MarketListingSummary.From(l, settings))
+            .Select(l => MarketListingSummary.From(l, settings, muun))
             .ToList();
     }
 }

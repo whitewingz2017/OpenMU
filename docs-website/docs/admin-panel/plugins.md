@@ -276,7 +276,8 @@ The **Marketplace** plugin is the trading hall of the custom client
 (**Marketplace** in the window menu). It's active by default. A player lists an
 inventory item for a price in zen, WCoinC or a jewel; the item leaves the
 inventory and stays on the market until it's sold, cancelled or expired. Other
-players browse by category (weapons, armor, wings, jewels, materials), search
+players browse by category (weapons, armor, wings, jewels, materials, and
+other: pets, mounts, Muuns and skins), search
 by name, filter by currency, sort by price, and buy with **Purchase Item**.
 
 Everything goes by mail from the sender **Market**:

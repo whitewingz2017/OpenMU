@@ -24,4 +24,7 @@ public enum MarketCategory
 
     /// <summary>Every other item.</summary>
     Materials = 5,
+
+    /// <summary>Pets, mounts, Muuns and skins.</summary>
+    Other = 6,
 }
