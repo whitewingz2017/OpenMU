@@ -43365,6 +43365,92 @@ public readonly struct MarketResponseExtended
 }
 
 /// <summary>
+/// Is sent by the server when: An offline leveling request was processed, or the /offlevel command asks the client to open the window (RequestId zero, Open).
+/// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Result, Open, the allowed Currencies (Currency, PerHour, Balance, ProtectionCurrency, ProtectionPerHour, ProtectionBalance), AllowProtection, MaximumHours, LevelBasedZen, ZenStart and ZenByHours.
+/// </summary>
+public readonly struct OfflineLevelingResponseExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OfflineLevelingResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public OfflineLevelingResponseExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OfflineLevelingResponseExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private OfflineLevelingResponseExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x0D;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(5).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="OfflineLevelingResponseExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator OfflineLevelingResponseExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="OfflineLevelingResponseExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(OfflineLevelingResponseExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 5;
+}
+
+/// <summary>
 /// Is sent by the server when: A Party Search request was processed.
 /// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Result, Settings (the player's own listing, or null) and Parties (Leader, Map, X, Y, Level, MinimumLevel, Members, MaxMembers, Classes, GuildOnly, SameGuild, Password, Joinable).
 /// </summary>

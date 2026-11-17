@@ -27,8 +27,9 @@ public sealed class OfflinePlayerManager
     /// </summary>
     /// <param name="realPlayer">The real player who typed the command.</param>
     /// <param name="loginName">The pre-validated account login name.</param>
+    /// <param name="plan">The paid plan (<see cref="OfflineLevelingFeaturePlugIn"/>); <c>null</c> pays zen as the MU Helper does.</param>
     /// <returns><c>true</c> if the offline session was started successfully.</returns>
-    public async ValueTask<bool> StartAsync(Player realPlayer, string loginName)
+    public async ValueTask<bool> StartAsync(Player realPlayer, string loginName, OfflineLevelingPlan? plan = null)
     {
         var characterName = realPlayer.SelectedCharacter?.Name;
 
@@ -46,11 +47,16 @@ public sealed class OfflinePlayerManager
             return false;
         }
 
-        if (!this.TryChargeInitialZenCost(realPlayer))
+        // Checked before going offline, but charged only once the offline player runs: a start which fails
+        // after the real player left costs nothing.
+        var startCost = this.StartCost(realPlayer, plan);
+        if (!OfflineLevelingCosts.CanPay(realPlayer, startCost))
         {
             await this.RemoveAndDisposeAsync(loginName, sentinel).ConfigureAwait(false);
             return false;
         }
+
+        sentinel.Plan = plan;
 
         try
         {
@@ -62,6 +68,14 @@ public sealed class OfflinePlayerManager
                 return false;
             }
 
+            if (!OfflineLevelingCosts.TryPay(sentinel, startCost))
+            {
+                sentinel.Logger.LogWarning("The offline session of {CharacterName} couldn't pay its start: the saved balance was lower.", sentinel.Name);
+                await this.RemoveAndDisposeAsync(loginName, sentinel).ConfigureAwait(false);
+                return false;
+            }
+
+            sentinel.IsProtectedFromPlayers = plan?.Protection == true;
             return true;
         }
         catch
@@ -139,16 +153,20 @@ public sealed class OfflinePlayerManager
     }
 
     /// <summary>
-    /// Calculates and deducts the initial Zen cost for starting an offline player session.
-    /// The cost is based on the first MuHelper cost stage multiplied by the player's total level.
+    /// Gets what the session costs at its start: the paid plan's start, or the MU Helper's initial zen. It is paid
+    /// by the started offline player, which loaded the character as the real player saved it.
     /// </summary>
-    /// <param name="player">The player to charge.</param>
-    /// <returns><c>true</c> if the cost was successfully charged or no cost applies; otherwise <c>false</c>.</returns>
-    private bool TryChargeInitialZenCost(Player player)
+    /// <param name="player">The real player.</param>
+    /// <param name="plan">The paid plan, or <c>null</c>.</param>
+    /// <returns>The cost.</returns>
+    private IReadOnlyList<OfflineLevelingCostPart> StartCost(Player player, OfflineLevelingPlan? plan)
     {
-        var initialCost = this.CalculateInitialZenCost(player);
+        if (plan is not null && OfflineLevelingFeaturePlugIn.GetSettings(player.GameContext) is { } settings)
+        {
+            return OfflineLevelingCosts.StartCost(player, settings, plan);
+        }
 
-        return initialCost <= 0 || player.TryRemoveMoney(initialCost);
+        return [new(OfflineLevelingCurrency.Zen, this.CalculateInitialZenCost(player))];
     }
 
     /// <summary>

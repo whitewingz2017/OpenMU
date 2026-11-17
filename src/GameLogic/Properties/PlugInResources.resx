@@ -1807,4 +1807,10 @@
 <data name="Market_Description" xml:space="preserve"><value>Players list items for zen, WCoinC or jewels; buyers get the item by mail, sellers the price after the tax. Taxes, currencies, duration and limits are set here.</value></data>
 <data name="MarketView_Name" xml:space="preserve"><value>Marketplace view</value></data>
 <data name="MarketView_Description" xml:space="preserve"><value>Sends the Marketplace to the custom client.</value></data>
+<data name="OfflineLeveling_Name" xml:space="preserve"><value>Offline Leveling: payment</value></data>
+<data name="OfflineLeveling_Description" xml:space="preserve"><value>/offlevel opens a window: players pay offline leveling with zen, WCoinC or Goblin Points, every hour or for a number of hours in advance, and may add a protection from players. Prices and limits are set here.</value></data>
+<data name="OfflineProtection_Name" xml:space="preserve"><value>Offline Leveling: protection</value></data>
+<data name="OfflineProtection_Description" xml:space="preserve"><value>Players can't damage an offline character with a paid protection, nor it them; monsters still hit it.</value></data>
+<data name="OfflineLevelingView_Name" xml:space="preserve"><value>Offline Leveling view</value></data>
+<data name="OfflineLevelingView_Description" xml:space="preserve"><value>Sends the offline leveling window to the custom client.</value></data>
 </root>

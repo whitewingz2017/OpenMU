@@ -9395,6 +9395,34 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="OfflineLevelingResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: An offline leveling request was processed, or the /offlevel command asks the client to open the window (RequestId zero, Open).
+    /// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Result, Open, the allowed Currencies (Currency, PerHour, Balance, ProtectionCurrency, ProtectionPerHour, ProtectionBalance), AllowProtection, MaximumHours, LevelBasedZen, ZenStart and ZenByHours.
+    /// </remarks>
+    public static async ValueTask SendOfflineLevelingResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = OfflineLevelingResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new OfflineLevelingResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchResponseExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

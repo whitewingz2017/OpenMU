@@ -93,6 +93,18 @@ public class OfflinePlayer : Player
     public DateTime StartTimestamp { get; internal set; }
 
     /// <summary>
+    /// Gets the paid plan of the session (<see cref="OfflineLevelingFeaturePlugIn"/>); <c>null</c> pays zen as the
+    /// MU Helper does.
+    /// </summary>
+    public OfflineLevelingPlan? Plan { get; internal set; }
+
+    /// <summary>
+    /// Gets a value indicating whether players can't damage this character, nor it them
+    /// (<see cref="OfflineProtectionPlugIn"/>).
+    /// </summary>
+    public bool IsProtectedFromPlayers { get; internal set; }
+
+    /// <summary>
     /// Gets or sets the position the intelligence hunts around. For a plain offline player this is
     /// the spawn position and never changes. Bots update it to roam between hunting grounds.
     /// </summary>

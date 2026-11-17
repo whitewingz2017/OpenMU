@@ -6136,6 +6136,38 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="OfflineLevelingRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the offline leveling offer (0) or starts an offline leveling session (1). A start carries UTF-8 JSON: Currency (0 zen, 1 WCoinC, 2 Goblin Points), Hours (0 pays every hour) and Protection.
+    /// Causes reaction on server side: The server answers with the matching RequestId. A start which the player can pay disconnects the client and continues the character as an offline player.
+    /// </remarks>
+    public static async ValueTask SendOfflineLevelingRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = OfflineLevelingRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new OfflineLevelingRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchRequestExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

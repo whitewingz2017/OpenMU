@@ -4399,6 +4399,18 @@
     </Packet>
     <Packet>
       <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0D</SubCode><Name>OfflineLevelingRequestExtended</Name>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>The custom client loads the offline leveling offer (0) or starts an offline leveling session (1). A start carries UTF-8 JSON: Currency (0 zen, 1 WCoinC, 2 Goblin Points), Hours (0 pays every hour) and Protection.</SentWhen>
+      <CausedReaction>The server answers with the matching RequestId. A start which the player can pay disconnects the client and continues the character as an offline player.</CausedReaction>
+      <Fields>
+        <Field><Index>5</Index><Type>Byte</Type><Name>Operation</Name></Field>
+        <Field><Index>6</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
+        <Field><Index>10</Index><Type>Binary</Type><Name>Data</Name></Field>
+      </Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
       <Code>FD</Code><SubCode>0B</SubCode><Name>PartySearchRequestExtended</Name>
       <Direction>ClientToServer</Direction>
       <SentWhen>The custom client loads the Party Search (0), saves or removes the player's own listing (1) or joins a listed party (2). A save carries UTF-8 JSON with Active, MinimumLevel, GuildOnly, OnePerClass, Classes and Password; a join carries Leader and Password.</SentWhen>

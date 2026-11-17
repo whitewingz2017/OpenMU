@@ -29,6 +29,7 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
     private readonly MovementHandler _movementHandler;
     private readonly RepairHandler _repairHandler;
     private readonly ZenConsumptionHandler _zenHandler;
+    private readonly OfflineLevelingBilling? _billing;
     private readonly HealingHandler _healingHandler;
     private readonly PetHandler _petHandler;
     private readonly CancellationTokenSource _cts = new();
@@ -38,6 +39,8 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
     private Task? _loopTask;
 
     private bool _isDead;
+
+    private int _stopRequested;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OfflinePlayerMuHelper"/> class.
@@ -55,6 +58,9 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
         this._combatHandler = new CombatHandler(player, config, this._movementHandler);
         this._repairHandler = new RepairHandler(player, config);
         this._zenHandler = new ZenConsumptionHandler(player);
+        this._billing = player.Plan is { } plan && OfflineLevelingFeaturePlugIn.GetSettings(player.GameContext) is { } settings
+            ? new OfflineLevelingBilling(player, plan, settings)
+            : null;
         this._petHandler = new PetHandler(player, config);
 
         if (config is null)
@@ -163,6 +169,11 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
     {
         // Actions queued from outside the tick (e.g. skill learning on level-up) run here, serialized
         // with the combat handler - so nothing mutates the skill list while combat is enumerating it.
+        if (Volatile.Read(ref this._stopRequested) != 0)
+        {
+            return;
+        }
+
         await this._player.DrainPendingBotActionsAsync().ConfigureAwait(false);
 
         if (await this.HandleDeathAsync().ConfigureAwait(false))
@@ -180,11 +191,11 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
             return;
         }
 
-        if (!await this._zenHandler.DeductZenAsync().ConfigureAwait(false))
+        if (!await this.PayAsync().ConfigureAwait(false))
         {
             if (this._player.Account?.LoginName is { } loginName)
             {
-                await this._player.GameContext.OfflinePlayerManager.StopAsync(loginName).ConfigureAwait(false);
+                this.RequestStop(loginName);
             }
 
             return;
@@ -247,13 +258,68 @@ public sealed class OfflinePlayerMuHelper : AsyncDisposable
             if (this._player.Account?.LoginName is { } loginName)
             {
                 this._player.Logger.LogInformation("Offline player died and successfully respawned. Stopping session for {0}.", loginName);
-                await this._player.GameContext.OfflinePlayerManager.StopAsync(loginName).ConfigureAwait(false);
+                this.RequestStop(loginName);
             }
 
             return true;
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Pays what the session costs by now: a paid session's hours, and the MU Helper's zen where it applies.
+    /// </summary>
+    /// <returns><c>false</c> when the session can't go on.</returns>
+    private async ValueTask<bool> PayAsync()
+    {
+        if (this._billing is { } billing)
+        {
+            if (!billing.Tick())
+            {
+                return false;
+            }
+
+            if (!billing.PaysMuHelperZen)
+            {
+                return true;
+            }
+        }
+
+        return await this._zenHandler.DeductZenAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Ends the offline session from within a tick. Stopping disposes this helper, and the disposal waits for
+    /// the loop to end - so the stop runs outside the loop, and outside the persistence lock this tick holds
+    /// (the flow is not passed on, or the stop would believe it held the lock). Awaited inline, the tick and
+    /// the disposal would wait for each other forever, the pet AI would never be stopped, and the session's
+    /// player would never be disposed.
+    /// </summary>
+    /// <param name="loginName">The account login name of the session.</param>
+    private void RequestStop(string loginName)
+    {
+        if (Interlocked.Exchange(ref this._stopRequested, 1) != 0)
+        {
+            return;
+        }
+
+        var manager = this._player.GameContext.OfflinePlayerManager;
+        var logger = this._player.Logger;
+        using (ExecutionContext.SuppressFlow())
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await manager.StopAsync(loginName).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error stopping the offline session of {LoginName}.", loginName);
+                }
+            });
+        }
     }
 
     private bool IsOnSkillCooldown()

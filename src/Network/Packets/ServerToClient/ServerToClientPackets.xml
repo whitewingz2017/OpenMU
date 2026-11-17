@@ -15287,6 +15287,14 @@
     </Packet>
     <Packet>
       <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0D</SubCode><Name>OfflineLevelingResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>An offline leveling request was processed, or the /offlevel command asks the client to open the window (RequestId zero, Open).</SentWhen>
+      <CausedReaction>The client displays UTF-8 JSON with RequestId, Result, Open, the allowed Currencies (Currency, PerHour, Balance, ProtectionCurrency, ProtectionPerHour, ProtectionBalance), AllowProtection, MaximumHours, LevelBasedZen, ZenStart and ZenByHours.</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
       <Code>FD</Code><SubCode>0B</SubCode><Name>PartySearchResponseExtended</Name>
       <Direction>ServerToClient</Direction>
       <SentWhen>A Party Search request was processed.</SentWhen>

@@ -2116,7 +2116,7 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
     /// <returns><c>true</c>, if the attack is prevented; otherwise, <c>false</c>.</returns>
     private bool IsAttackPreventedByPlugIns(IAttacker attacker)
     {
-        if ((attacker as Player ?? (attacker as IPlayerSurrogate)?.Owner) is not { } attackerPlayer
+        if ((attacker as Player ?? (attacker as IPlayerSurrogate)?.Owner ?? (attacker as NPC.Monster)?.SummonedBy) is not { } attackerPlayer
             || attackerPlayer == this
             || this.GameContext.PlugInManager.GetPlugInPoint<IPlayerAttackRestrictionPlugIn>() is not { } plugInPoint)
         {

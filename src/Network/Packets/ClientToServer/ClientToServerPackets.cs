@@ -19410,6 +19410,110 @@ public readonly struct MarketRequestExtended
 }
 
 /// <summary>
+/// Is sent by the client when: The custom client loads the offline leveling offer (0) or starts an offline leveling session (1). A start carries UTF-8 JSON: Currency (0 zen, 1 WCoinC, 2 Goblin Points), Hours (0 pays every hour) and Protection.
+/// Causes reaction on server side: The server answers with the matching RequestId. A start which the player can pay disconnects the client and continues the character as an offline player.
+/// </summary>
+public readonly struct OfflineLevelingRequestExtended
+{
+    private readonly Memory<byte> _data;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OfflineLevelingRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    public OfflineLevelingRequestExtended(Memory<byte> data)
+        : this(data, true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OfflineLevelingRequestExtended"/> struct.
+    /// </summary>
+    /// <param name="data">The underlying data.</param>
+    /// <param name="initialize">If set to <c>true</c>, the header data is automatically initialized and written to the underlying span.</param>
+    private OfflineLevelingRequestExtended(Memory<byte> data, bool initialize)
+    {
+        this._data = data;
+        if (initialize)
+        {
+            var header = this.Header;
+            header.Type = HeaderType;
+            header.Code = Code;
+            header.Length = (ushort)data.Length;
+            header.SubCode = SubCode;
+        }
+    }
+
+    /// <summary>
+    /// Gets the header type of this data packet.
+    /// </summary>
+    public static byte HeaderType => 0xC2;
+
+    /// <summary>
+    /// Gets the operation code of this data packet.
+    /// </summary>
+    public static byte Code => 0xFD;
+
+    /// <summary>
+    /// Gets the operation sub-code of this data packet.
+    /// The <see cref="Code" /> is used as a grouping key.
+    /// </summary>
+    public static byte SubCode => 0x0D;
+
+    /// <summary>
+    /// Gets the header of this packet.
+    /// </summary>
+    public C2HeaderWithSubCode Header => new (this._data);
+
+    /// <summary>
+    /// Gets or sets the operation.
+    /// </summary>
+    public byte Operation
+    {
+        get => this._data.Span[5];
+        set => this._data.Span[5] = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the request id.
+    /// </summary>
+    public uint RequestId
+    {
+        get => ReadUInt32LittleEndian(this._data.Span[6..]);
+        set => WriteUInt32LittleEndian(this._data.Span[6..], value);
+    }
+
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
+    public Span<byte> Data
+    {
+        get => this._data.Slice(10).Span;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from a Memory of bytes to a <see cref="OfflineLevelingRequestExtended"/>.
+    /// </summary>
+    /// <param name="packet">The packet as span.</param>
+    /// <returns>The packet as struct.</returns>
+    public static implicit operator OfflineLevelingRequestExtended(Memory<byte> packet) => new (packet, false);
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="OfflineLevelingRequestExtended"/> to a Memory of bytes.
+    /// </summary>
+    /// <param name="packet">The packet as struct.</param>
+    /// <returns>The packet as byte span.</returns>
+    public static implicit operator Memory<byte>(OfflineLevelingRequestExtended packet) => packet._data; 
+
+    /// <summary>
+    /// Calculates the size of the packet for the specified length of <see cref="Data"/>.
+    /// </summary>
+    /// <param name="dataLength">The length in bytes of <see cref="Data"/> on which the required size depends.</param>
+        
+    public static int GetRequiredSize(int dataLength) => dataLength + 10;
+}
+
+/// <summary>
 /// Is sent by the client when: The custom client loads the Party Search (0), saves or removes the player's own listing (1) or joins a listed party (2). A save carries UTF-8 JSON with Active, MinimumLevel, GuildOnly, OnePerClass, Classes and Password; a join carries Leader and Password.
 /// Causes reaction on server side: The server answers with the matching RequestId: the result, the player's own listing and the listed parties of the game server. A join adds the player to the leader's party when the listing allows it and the password matches.
 /// </summary>

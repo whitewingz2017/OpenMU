@@ -311,6 +311,40 @@ Expired listings are returned about once a minute. Only items which may be
 sold in a personal store and traded can be listed; worn items, items with a
 time limit and items priced for the personal store can't.
 
+## Offline Leveling: payment and protection
+
+`/offlevel` continues a character as an offline player while the MU Helper is
+running. With the **Offline Leveling: payment** plugin active, the command
+opens a window in the custom client instead of starting at once. The player
+chooses:
+
+- the currency: zen, WCoinC or Goblin Points;
+- the duration: **until stopped**, paying the first hour at the start and then
+  every hour (the session ends when the next hour can't be paid), or a number
+  of hours paid in advance (the session ends when they are over);
+- the **protection**: players, their pets and summons can't damage the
+  character, and it doesn't damage players; monsters still hit it. It is paid
+  every hour in the same currency (a zen session pays it in WCoinC unless it
+  has a zen price). When the next hour of protection can't be paid, the
+  protection ends and the leveling goes on.
+
+Settings on **Configure**:
+
+| Setting | Default | |
+|---|---|---|
+| Allow Zen / Zen per hour | on / 0 | 0: the MU Helper's level-based cost (cost stages, pay interval) |
+| Allow WCoinC / WCoinC per hour | on / 30 | |
+| Allow Goblin Points / Goblin Points per hour | on / 50 | |
+| Allow protection | on | |
+| Protection: Zen per hour | 0 | 0: a zen session pays its protection in WCoinC |
+| Protection: WCoinC per hour | 30 | |
+| Protection: Goblin Points per hour | 50 | |
+| Maximum prepaid hours | 24 | |
+
+The **Offline Leveling: protection** plugin enforces the protection; keep it
+active. Without the payment plugin, `/offlevel` starts at once and pays zen as
+the MU Helper does. Logging in stops the offline session.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

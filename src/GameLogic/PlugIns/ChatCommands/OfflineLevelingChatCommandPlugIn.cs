@@ -5,8 +5,6 @@
 namespace MUnique.OpenMU.GameLogic.PlugIns.ChatCommands;
 
 using System.Runtime.InteropServices;
-using MUnique.OpenMU.GameLogic.Attributes;
-using MUnique.OpenMU.GameLogic.MuHelper;
 using MUnique.OpenMU.GameLogic.Offline;
 using MUnique.OpenMU.PlugIns;
 
@@ -16,6 +14,7 @@ using MUnique.OpenMU.PlugIns;
 ///   <item>Logs the login-server entry off so the real player can re-connect at any time.</item>
 ///   <item>Disconnects the real client connection.</item>
 ///   <item>Creates a silent ghost player on the current map using the character's MU Helper config.</item>
+///   <item>With the paid offline leveling (<see cref="OfflineLevelingFeaturePlugIn"/>), opens its window first.</item>
 ///   <item>On next login the ghost is automatically stopped before character selection.</item>
 /// </list>
 /// </summary>
@@ -39,56 +38,34 @@ public sealed class OfflineLevelingChatCommandPlugIn : IChatCommandPlugIn
     /// <inheritdoc />
     public async ValueTask HandleCommandAsync(Player player, string command)
     {
-        if (player.SelectedCharacter is null)
+        var result = OfflineLevelingRules.Check(player);
+        if (result != OfflineLevelingResult.None)
         {
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingNoCharacterSelected)).ConfigureAwait(false);
+            await player.ShowLocalizedBlueMessageAsync(MessageOf(result)).ConfigureAwait(false);
             return;
         }
 
-        if (!player.IsAlive)
+        // With the paid offline leveling, the window chooses the currency, the hours and the protection.
+        if (OfflineLevelingFeaturePlugIn.GetSettings(player.GameContext) is { } settings)
         {
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingMustBeAlive)).ConfigureAwait(false);
-            return;
-        }
-
-        if (player.CurrentMap is null)
-        {
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingNotOnMap)).ConfigureAwait(false);
-            return;
-        }
-
-        if (player.CurrentMiniGame is not null)
-        {
-            // Going offline disconnects the player, which would let the offline player rejoin the event.
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingInMiniGame)).ConfigureAwait(false);
-            return;
-        }
-
-        if (player.Attributes?[Stats.IsMuHelperActive] <= 0)
-        {
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingMuHelperNotRunning)).ConfigureAwait(false);
-            return;
-        }
-
-        var loginName = player.Account?.LoginName;
-        if (loginName is null)
-        {
-            return;
-        }
-
-        var manager = player.GameContext.OfflinePlayerManager;
-
-        if (manager.IsActive(loginName))
-        {
-            await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingAlreadyActive)).ConfigureAwait(false);
+            await OfflineLevelingActions.ShowOfferAsync(player, settings).ConfigureAwait(false);
             return;
         }
 
         await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingStarted)).ConfigureAwait(false);
-
-        if (!await manager.StartAsync(player, loginName).ConfigureAwait(false))
+        if (!await player.GameContext.OfflinePlayerManager.StartAsync(player, player.Account!.LoginName).ConfigureAwait(false))
         {
             await player.ShowLocalizedBlueMessageAsync(nameof(PlayerMessage.OfflineLevelingFailed)).ConfigureAwait(false);
         }
     }
+
+    private static string MessageOf(OfflineLevelingResult result) => result switch
+    {
+        OfflineLevelingResult.Dead => nameof(PlayerMessage.OfflineLevelingMustBeAlive),
+        OfflineLevelingResult.NotOnMap => nameof(PlayerMessage.OfflineLevelingNotOnMap),
+        OfflineLevelingResult.InMiniGame => nameof(PlayerMessage.OfflineLevelingInMiniGame),
+        OfflineLevelingResult.MuHelperOff => nameof(PlayerMessage.OfflineLevelingMuHelperNotRunning),
+        OfflineLevelingResult.AlreadyActive => nameof(PlayerMessage.OfflineLevelingAlreadyActive),
+        _ => nameof(PlayerMessage.OfflineLevelingNoCharacterSelected),
+    };
 }

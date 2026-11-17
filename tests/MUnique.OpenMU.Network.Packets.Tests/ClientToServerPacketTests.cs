@@ -4345,6 +4345,22 @@ public class PacketStructureTests
     }
 
     /// <summary>
+    /// Tests the packet size calculation for OfflineLevelingRequestExtended.
+    /// </summary>
+    [Test]
+    public void OfflineLevelingRequestExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = OfflineLevelingRequestExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 10;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
+
+    /// <summary>
     /// Tests the packet size calculation for PartySearchRequestExtended.
     /// </summary>
     [Test]

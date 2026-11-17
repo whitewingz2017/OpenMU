@@ -25,12 +25,13 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.GuideBook.GuideBookActions _guideBook = new();
     private readonly GameLogic.PartySearch.PartySearchActions _partySearch = new();
     private readonly GameLogic.Market.MarketActions _market = new();
+    private readonly GameLogic.Offline.OfflineLevelingActions _offlineLeveling = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
-        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search and the Marketplace their JSON.
+        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search, the Marketplace and the offline leveling their JSON.
         var guideBookHeaderSize = GuideBookRequestExtended.GetRequiredSize(0);
         if (packet.Length >= guideBookHeaderSize && packet.Span[0] == GuideBookRequestExtended.HeaderType
             && packet.Span[4] == GuideBookRequestExtended.SubCode)
@@ -51,6 +52,15 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
                 marketRequest.Operation,
                 packet[marketHeaderSize..],
                 item => RemoteView.MarketView.SerializeItem(remotePlayer, item)).ConfigureAwait(false);
+            return;
+        }
+
+        var offlineLevelingHeaderSize = OfflineLevelingRequestExtended.GetRequiredSize(0);
+        if (packet.Length >= offlineLevelingHeaderSize && packet.Span[0] == OfflineLevelingRequestExtended.HeaderType
+            && packet.Span[4] == OfflineLevelingRequestExtended.SubCode)
+        {
+            OfflineLevelingRequestExtended offlineLevelingRequest = packet;
+            await this._offlineLeveling.ExecuteAsync(player, offlineLevelingRequest.RequestId, offlineLevelingRequest.Operation, packet[offlineLevelingHeaderSize..]).ConfigureAwait(false);
             return;
         }
 
