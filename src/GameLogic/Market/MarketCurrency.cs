@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic.Market;
 
 using System.Globalization;
+using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.PlayerActions.PlayerStore;
 
 /// <summary>

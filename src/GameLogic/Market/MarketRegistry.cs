@@ -4,6 +4,8 @@
 
 namespace MUnique.OpenMU.GameLogic.Market;
 
+using System.Threading;
+
 /// <summary>
 /// The listings of the Marketplace, cached for a few seconds: the active ones and the recent history.
 /// Writes of this process drop the cache; the stored <see cref="MarketListing.Revision"/> guards every
