@@ -15279,6 +15279,14 @@
     </Packet>
     <Packet>
       <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0C</SubCode><Name>MarketResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A Marketplace request was processed.</SentWhen>
+      <CausedReaction>The client displays UTF-8 JSON with RequestId, Result, the settings (currencies with their tax, listing limits), the requested page of listings, the player's own listings and history, each with the item data in the inventory format.</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
       <Code>FD</Code><SubCode>0B</SubCode><Name>PartySearchResponseExtended</Name>
       <Direction>ServerToClient</Direction>
       <SentWhen>A Party Search request was processed.</SentWhen>

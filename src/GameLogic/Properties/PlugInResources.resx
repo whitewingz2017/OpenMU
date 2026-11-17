@@ -1803,4 +1803,8 @@
   <data name="PartySearch_Description" xml:space="preserve"><value>The Party Search of the custom client: leaders list their party with a minimum level, the wanted classes, guild only and an optional password, and other players join it from the list without asking. The listings are kept in memory per game server.</value></data>
   <data name="PartySearchPassword_Name" xml:space="preserve"><value>Party Search: join by password</value></data>
   <data name="PartySearchPassword_Description" xml:space="preserve"><value>A player who sends the password of a listed party to its leader joins the party: as a whisper, or as /&lt;leader&gt; &lt;password&gt; in the chat, e.g. /ken 1122. The leader does not get the password as a whisper.</value></data>
+<data name="Market_Name" xml:space="preserve"><value>Marketplace</value></data>
+<data name="Market_Description" xml:space="preserve"><value>Players list items for zen, WCoinC or jewels; buyers get the item by mail, sellers the price after the tax. Taxes, currencies, duration and limits are set here.</value></data>
+<data name="MarketView_Name" xml:space="preserve"><value>Marketplace view</value></data>
+<data name="MarketView_Description" xml:space="preserve"><value>Sends the Marketplace to the custom client.</value></data>
 </root>

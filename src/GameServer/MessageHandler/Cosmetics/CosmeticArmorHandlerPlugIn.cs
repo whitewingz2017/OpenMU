@@ -24,18 +24,33 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.PlayerActions.Items.ExcellentCombinationActions _combination = new();
     private readonly GameLogic.GuideBook.GuideBookActions _guideBook = new();
     private readonly GameLogic.PartySearch.PartySearchActions _partySearch = new();
+    private readonly GameLogic.Market.MarketActions _market = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
-        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search its JSON.
+        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search and the Marketplace their JSON.
         var guideBookHeaderSize = GuideBookRequestExtended.GetRequiredSize(0);
         if (packet.Length >= guideBookHeaderSize && packet.Span[0] == GuideBookRequestExtended.HeaderType
             && packet.Span[4] == GuideBookRequestExtended.SubCode)
         {
             GuideBookRequestExtended guideBookRequest = packet;
             await this._guideBook.ExecuteAsync(player, guideBookRequest.RequestId, guideBookRequest.Operation, packet[guideBookHeaderSize..]).ConfigureAwait(false);
+            return;
+        }
+
+        var marketHeaderSize = MarketRequestExtended.GetRequiredSize(0);
+        if (packet.Length >= marketHeaderSize && packet.Span[0] == MarketRequestExtended.HeaderType
+            && packet.Span[4] == MarketRequestExtended.SubCode && player is RemoteView.RemotePlayer remotePlayer)
+        {
+            MarketRequestExtended marketRequest = packet;
+            await this._market.ExecuteAsync(
+                player,
+                marketRequest.RequestId,
+                marketRequest.Operation,
+                packet[marketHeaderSize..],
+                item => RemoteView.MarketView.SerializeItem(remotePlayer, item)).ConfigureAwait(false);
             return;
         }
 

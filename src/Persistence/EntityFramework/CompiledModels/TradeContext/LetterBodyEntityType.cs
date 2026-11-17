@@ -22,7 +22,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.LetterBody),
                 baseEntityType,
-                propertyCount: 8,
+                propertyCount: 10,
                 navigationCount: 3,
                 foreignKeyCount: 3,
                 unnamedIndexCount: 3,
@@ -46,6 +46,22 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForTradeCont
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetField("<Animation>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 sentinel: (byte)0);
             animation.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var attachedPriceAmount = runtimeEntityType.AddProperty(
+                "AttachedPriceAmount",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetProperty("AttachedPriceAmount", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetField("<AttachedPriceAmount>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            attachedPriceAmount.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var attachedPriceType = runtimeEntityType.AddProperty(
+                "AttachedPriceType",
+                typeof(int),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetProperty("AttachedPriceType", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Entities.LetterBody).GetField("<AttachedPriceType>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                sentinel: 0);
+            attachedPriceType.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var attachmentId = runtimeEntityType.AddProperty(
                 "AttachmentId",

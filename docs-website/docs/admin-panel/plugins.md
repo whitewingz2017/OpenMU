@@ -270,6 +270,46 @@ ends when its leader removes it, leaves the lead of the party or leaves the
 game; a full party stays listed but can't be joined. Events which don't allow
 parties, and other party plugins (e.g. the gens rules), still apply.
 
+## Marketplace
+
+The **Marketplace** plugin is the trading hall of the custom client
+(**Marketplace** in the window menu). It's active by default. A player lists an
+inventory item for a price in zen, WCoinC or a jewel; the item leaves the
+inventory and stays on the market until it's sold, cancelled or expired. Other
+players browse by category (weapons, armor, wings, jewels, materials), search
+by name, filter by currency, sort by price, and buy with **Purchase Item**.
+
+Everything goes by mail from the sender **Market**:
+
+- the buyer gets the item, to claim from the letter;
+- the seller gets the price after the tax, to claim from the letter: zen up to
+  the inventory limit, WCoinC, or the jewels as single jewels up to the free
+  inventory space. What doesn't fit stays in the letter until there's room;
+- a cancelled or expired listing returns the item to the seller.
+
+A letter can't be deleted before its item or currency is claimed. Buyers pay
+jewel prices with plain single jewels of their inventory (level 0, no options,
+not bundled), at most 250.
+
+Settings on **Configure**:
+
+| Setting | Default | |
+|---|---|---|
+| Allow Zen prices / Zen tax (%) | on / 10 | |
+| Allow WCoinC prices / WCoinC tax (%) | on / 10 | |
+| Jewel currencies | Bless, Soul, Chaos, Life, Creation | item numbers as group * 512 + number |
+| Jewel tax (%) | 10 | taken in jewels: 10% of 10 Jewels of Bless is 1 |
+| Tax rounding | Nearest | for a tax which isn't whole: 10% of 5 jewels is 0.5, Nearest and Up take 1, Down 0 |
+| Listing duration (hours) | 48 | |
+| Listings per character | 10 | |
+| Minimum character level | 1 | to sell and to buy |
+| History (days) | 14 | ended listings stay in the history, then they're deleted |
+
+The listings are stored in the database and shared by the game servers.
+Expired listings are returned about once a minute. Only items which may be
+sold in a personal store and traded can be listed; worn items, items with a
+time limit and items priced for the personal store can't.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

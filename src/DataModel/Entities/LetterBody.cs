@@ -37,6 +37,12 @@ public class LetterBody
     [MemberOfAggregate]
     public virtual Item? Attachment { get; set; }
 
+    /// <summary>Gets or sets the currency of attached proceeds: zero for zen, a cash shop coin code, or an item type (group &lt;&lt; 12 | number).</summary>
+    public int AttachedPriceType { get; set; }
+
+    /// <summary>Gets or sets the amount of attached proceeds awaiting collection; zero when there are none.</summary>
+    public int AttachedPriceAmount { get; set; }
+
     /// <summary>Gets or sets the optimistic token preventing duplicate attachment claims.</summary>
     [ConcurrencyCheck]
     public Guid ClaimRevision { get; set; }

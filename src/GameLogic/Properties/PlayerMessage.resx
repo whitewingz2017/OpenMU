@@ -1148,4 +1148,20 @@ Price: {3}</value></data>
   <data name="PartySearch_NotPossibleHere" xml:space="preserve"><value>You can't join a party here.</value></data>
   <data name="PartySearch_Denied" xml:space="preserve"><value>You can't join the party of {0}.</value></data>
   <data name="PartySearch_TryLater" xml:space="preserve"><value>Wait a moment before you try a password again.</value></data>
+<data name="Market_BoughtSubject" xml:space="preserve"><value>Marketplace purchase</value></data>
+<data name="Market_BoughtBody" xml:space="preserve"><value>You bought {0} from {1} for {2:N0} {3}.
+Claim the item from this letter.</value></data>
+<data name="Market_SoldSubject" xml:space="preserve"><value>Marketplace sale</value></data>
+<data name="Market_SoldBody" xml:space="preserve"><value>{0} bought your {1} for {2:N0} {3}.
+Tax ({4}%): {5:N0} {3}
+You receive: {6:N0} {3}
+Claim it from this letter.</value></data>
+<data name="Market_ReturnedSubject" xml:space="preserve"><value>Marketplace return</value></data>
+<data name="Market_CancelledBody" xml:space="preserve"><value>You cancelled the listing of {0}.
+Claim the item from this letter.</value></data>
+<data name="Market_ExpiredBody" xml:space="preserve"><value>Your listing of {0} expired unsold.
+Claim the item from this letter.</value></data>
+<data name="Market_Claimed" xml:space="preserve"><value>Claimed {0:N0} {1}.</value></data>
+<data name="Market_ClaimPartial" xml:space="preserve"><value>Claimed {0:N0} {1}; {2:N0} stay in the letter until you have room.</value></data>
+<data name="Market_ClaimNoRoom" xml:space="preserve"><value>Make room first: you can't hold any more of it.</value></data>
 </root>

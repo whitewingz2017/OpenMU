@@ -30,6 +30,12 @@ public sealed class ClaimStoreMailAction
         var body = await context.GetLetterBodyByHeaderIdAsync(header.Id).ConfigureAwait(false);
         if (body?.Attachment is not { } item)
         {
+            if (body is { AttachedPriceAmount: > 0 })
+            {
+                await Market.MarketProceedsClaim.ClaimAsync(player, body, index).ConfigureAwait(false);
+                return;
+            }
+
             await player.ShowLocalizedBlueMessageAsync("StoreClaimUnavailable").ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IStoreMailAttachmentPlugIn>(v => v.ShowAttachmentAsync(index, false)).ConfigureAwait(false);
             return;

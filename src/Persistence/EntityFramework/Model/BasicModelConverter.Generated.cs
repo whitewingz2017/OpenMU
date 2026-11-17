@@ -120,6 +120,7 @@ internal sealed class BasicModelConverter
             JewelMix value => this.Convert(value),
             LetterBody value => this.Convert(value),
             LetterHeader value => this.Convert(value),
+            MarketListing value => this.Convert(value),
             LevelBonus value => this.Convert(value),
             LevelDependentDamage value => this.Convert(value),
             MagicEffectDefinition value => this.Convert(value),
@@ -2292,9 +2293,38 @@ internal sealed class BasicModelConverter
         target.Message = source.Message;
         target.Rotation = source.Rotation;
         target.Attachment = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.Attachment)!;
+        target.AttachedPriceType = source.AttachedPriceType;
+        target.AttachedPriceAmount = source.AttachedPriceAmount;
         target.ClaimRevision = source.ClaimRevision;
         target.Animation = source.Animation;
         target.SenderAppearance = (MUnique.OpenMU.DataModel.Entities.AppearanceData)this.ConvertObject(source.SenderAppearance)!;
+        return target;
+    }
+
+    private BasicModel.MarketListing Convert(MarketListing source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.MarketListing)converted;
+        }
+
+        var target = new BasicModel.MarketListing();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.SellerAccountId = source.SellerAccountId;
+        target.SellerName = source.SellerName;
+        target.Item = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.Item)!;
+        target.ItemData = source.ItemData;
+        target.ItemName = source.ItemName;
+        target.PriceType = source.PriceType;
+        target.Price = source.Price;
+        target.ListedAt = source.ListedAt;
+        target.ExpiresAt = source.ExpiresAt;
+        target.State = source.State;
+        target.BuyerName = source.BuyerName;
+        target.ClosedAt = source.ClosedAt;
+        target.Proceeds = source.Proceeds;
+        target.Revision = source.Revision;
         return target;
     }
 

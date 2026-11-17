@@ -6104,6 +6104,38 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="MarketRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the Marketplace (0), lists an inventory item for sale (1), buys a listing (2) or cancels its own listing (3). The request carries UTF-8 JSON: Category, Search, Currency, Sort and Page for a load; Slot, PriceType and Price for a listing; Listing (the listing id) for a buy or cancel.
+    /// Causes reaction on server side: The server answers with the matching RequestId. A listing moves the item out of the inventory into the market; a buy takes the payment, mails the item to the buyer and the proceeds after tax to the seller; a cancel mails the item back to the seller.
+    /// </remarks>
+    public static async ValueTask SendMarketRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = MarketRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new MarketRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchRequestExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

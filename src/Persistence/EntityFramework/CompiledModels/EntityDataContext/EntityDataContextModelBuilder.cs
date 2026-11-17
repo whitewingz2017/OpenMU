@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("4aabab6c-a394-47cc-8f80-4bf036280a43"), entityTypeCount: 127)
+            : base(skipDetectChanges: false, modelId: new Guid("4aabab6c-a394-47cc-8f80-4bf036280a43"), entityTypeCount: 128)
         {
         }
 
@@ -109,6 +109,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var jewelMix = JewelMixEntityType.Create(this);
             var letterBody = LetterBodyEntityType.Create(this);
             var letterHeader = LetterHeaderEntityType.Create(this);
+            var marketListing = MarketListingEntityType.Create(this);
             var levelBonus = LevelBonusEntityType.Create(this);
             var magicEffectDefinition = MagicEffectDefinitionEntityType.Create(this);
             var masterSkillDefinition = MasterSkillDefinitionEntityType.Create(this);
@@ -318,6 +319,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             LetterBodyEntityType.CreateForeignKey2(letterBody, letterHeader);
             LetterBodyEntityType.CreateForeignKey3(letterBody, appearanceData);
             LetterHeaderEntityType.CreateForeignKey1(letterHeader, character);
+            MarketListingEntityType.CreateForeignKey1(marketListing, item);
             LevelBonusEntityType.CreateForeignKey1(levelBonus, itemLevelBonusTable);
             MagicEffectDefinitionEntityType.CreateForeignKey1(magicEffectDefinition, powerUpDefinitionValue);
             MagicEffectDefinitionEntityType.CreateForeignKey2(magicEffectDefinition, powerUpDefinitionValue);
@@ -483,6 +485,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             JewelMixEntityType.CreateAnnotations(jewelMix);
             LetterBodyEntityType.CreateAnnotations(letterBody);
             LetterHeaderEntityType.CreateAnnotations(letterHeader);
+            MarketListingEntityType.CreateAnnotations(marketListing);
             LevelBonusEntityType.CreateAnnotations(levelBonus);
             MagicEffectDefinitionEntityType.CreateAnnotations(magicEffectDefinition);
             MasterSkillDefinitionEntityType.CreateAnnotations(masterSkillDefinition);

@@ -31,7 +31,7 @@ public class LetterReadRequestAction
             var letterBody = await player.PersistenceContext.GetLetterBodyByHeaderIdAsync(letter.Id).ConfigureAwait(false);
             if (letterBody is not null)
             {
-                await player.InvokeViewPlugInAsync<IStoreMailAttachmentPlugIn>(v => v.ShowAttachmentAsync(letterIndex, letterBody.Attachment is not null)).ConfigureAwait(false);
+                await player.InvokeViewPlugInAsync<IStoreMailAttachmentPlugIn>(v => v.ShowAttachmentAsync(letterIndex, letterBody.Attachment is not null || letterBody.AttachedPriceAmount > 0)).ConfigureAwait(false);
                 letter.ReadFlag = true;
                 await player.InvokeViewPlugInAsync<IShowLetterPlugIn>(p => p.ShowLetterAsync(letterBody)).ConfigureAwait(false);
             }
