@@ -116,7 +116,7 @@ public static class MarketCurrency
     /// <param name="type">The price type.</param>
     /// <returns>The definition, or <c>null</c>.</returns>
     public static ItemDefinition? JewelDefinition(GameConfiguration configuration, int type)
-        => IsJewel(type) ? configuration.Items.FirstOrDefault(d => ((d.Group << GroupShift) | d.Number) == type) : null;
+        => IsJewel(type) ? configuration.Items.FirstOrDefault(d => ((d.Group << GroupShift) | (ushort)d.Number) == type) : null;
 
     /// <summary>Gets the display name of a currency.</summary>
     /// <param name="configuration">The game configuration.</param>

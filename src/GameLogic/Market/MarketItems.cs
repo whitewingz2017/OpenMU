@@ -60,9 +60,9 @@ public static class MarketItems
             return MarketCategory.Armor;
         }
 
-        var type = (definition.Group << 12) | definition.Number;
+        var type = (definition.Group << 12) | (ushort)definition.Number;
         return MarketCurrency.Allowed(settings).Contains(type)
-               || definition.Name.ToString().Contains(JewelWord, StringComparison.OrdinalIgnoreCase)
+               || definition.Name.ToString()?.Contains(JewelWord, StringComparison.OrdinalIgnoreCase) == true
             ? MarketCategory.Jewels
             : MarketCategory.Materials;
     }

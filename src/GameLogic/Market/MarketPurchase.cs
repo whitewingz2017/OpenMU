@@ -36,7 +36,7 @@ internal static class MarketPurchase
             return MarketResult.NotEnoughCurrency;
         }
 
-        transaction.Attach(buyer.Account);
+        transaction.Attach(buyer.Account!);
         transaction.Attach(buyer.SelectedCharacter!);
         var letters = await SaveAsync(transaction, buyer, settings, listing, item, payment).ConfigureAwait(false);
         if (letters is not { } saved)
