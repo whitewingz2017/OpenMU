@@ -15,6 +15,12 @@ public static class ItemBonusResources
     /// <summary>Gets the feature description.</summary>
     public static string Description => Get("ItemBonuses_Description");
 
+    /// <summary>Gets the name of the live update plugin.</summary>
+    public static string RefreshName => Get("ItemAttributeRefresh_Name");
+
+    /// <summary>Gets the description of the live update plugin.</summary>
+    public static string RefreshDescription => Get("ItemAttributeRefresh_Description");
+
     /// <summary>Gets the name of the view.</summary>
     public static string ViewName => Get("ItemBonusesView_Name");
 

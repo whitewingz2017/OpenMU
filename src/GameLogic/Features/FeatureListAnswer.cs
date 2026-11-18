@@ -12,4 +12,10 @@ public sealed class FeatureListAnswer
 
     /// <summary>Gets or sets the features: <c>true</c> for an active one, by name.</summary>
     public IReadOnlyDictionary<string, bool> Features { get; set; } = new Dictionary<string, bool>();
+
+    /// <summary>
+    /// Gets or sets the revision of the items' attribute lines (<see cref="ItemBonuses.ItemBonusActions.Revision"/>):
+    /// when it changes, the client asks for the lines again.
+    /// </summary>
+    public int ItemAttributesRevision { get; set; }
 }

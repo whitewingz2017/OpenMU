@@ -33,6 +33,25 @@ public sealed class ItemBonusActions
             .Take(MaximumLines)
             .ToList();
 
+    /// <summary>
+    /// Gets a revision of the lines the items show: it changes when an administrator changes the attributes of a shown
+    /// item, or which items show, so the client asks for the lines again.
+    /// </summary>
+    /// <param name="context">The game context.</param>
+    /// <returns>The revision.</returns>
+    public static int Revision(IGameContext context)
+    {
+        var hash = default(HashCode);
+        foreach (var definition in ItemBonusFeaturePlugIn.GetItems(context))
+        {
+            hash.Add(definition.Group);
+            hash.Add(definition.Number);
+            hash.Add(ItemAttributeRefreshPlugIn.Signature(definition));
+        }
+
+        return hash.ToHashCode();
+    }
+
     /// <summary>Sends the picked items' lines; none when the plugin is inactive.</summary>
     /// <param name="player">The player.</param>
     /// <param name="requestId">The request identifier which the answer carries.</param>

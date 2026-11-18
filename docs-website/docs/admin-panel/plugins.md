@@ -372,6 +372,12 @@ its stats).
 Classic items keep their tooltip from the client's item data, without
 duplicate lines.
 
+Changes apply while the server runs: when you add, change or remove a base
+power-up attribute of an item and save it, the **Item Attributes: live update**
+plugin gives it to the worn items within about 3 seconds (stats and Combat
+statistics), and the custom client asks for the new tooltip lines within about
+30 seconds. A newly added item also needs its entry in the client's item data.
+
 The Guide Book adds its newer pages to an existing guide once (a game master
 may delete them afterwards): **Offline Leveling**, **Custom Item Attributes** and
 **Personal Store** under Game Systems; **Golden Invasion**, **Red Dragon

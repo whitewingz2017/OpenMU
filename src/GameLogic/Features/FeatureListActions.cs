@@ -15,7 +15,12 @@ public sealed class FeatureListActions
     /// <returns>The completion.</returns>
     public ValueTask ExecuteAsync(Player player, uint requestId)
     {
-        var answer = new FeatureListAnswer { RequestId = requestId, Features = FeatureList.Create(player.GameContext) };
+        var answer = new FeatureListAnswer
+        {
+            RequestId = requestId,
+            Features = FeatureList.Create(player.GameContext),
+            ItemAttributesRevision = ItemBonuses.ItemBonusActions.Revision(player.GameContext),
+        };
         return player.InvokeViewPlugInAsync<IFeatureListView>(view => view.ShowAsync(answer));
     }
 }
