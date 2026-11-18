@@ -17,16 +17,41 @@ using MUnique.OpenMU.PlugIns;
 [Guid("1fd43854-1d71-4fa5-9e47-55fc5e038dc2")]
 public sealed class GuideBookFeaturePlugIn : IFeaturePlugIn, ISupportCustomConfiguration<GuideBookSettings>, ISupportDefaultCustomConfiguration
 {
+    private GuideBookSettings? _configuration;
+
+    // The later default pages were added to the configuration (GuideBookDefaults.AddLaterPages).
+    private bool _laterPagesAdded;
+
     /// <inheritdoc />
-    public GuideBookSettings? Configuration { get; set; }
+    public GuideBookSettings? Configuration
+    {
+        get => this._configuration;
+        set
+        {
+            this._configuration = value;
+            this._laterPagesAdded = false;
+        }
+    }
 
     /// <summary>Gets the settings, if the feature is active.</summary>
     /// <param name="context">The game context.</param>
     /// <returns>The settings, or <c>null</c> if the Guide Book is disabled.</returns>
     public static GuideBookSettings? Settings(IGameContext context)
-        => context.FeaturePlugIns.GetPlugIn<GuideBookFeaturePlugIn>() is { } feature
-            ? feature.Configuration ??= new GuideBookSettings()
-            : null;
+    {
+        if (context.FeaturePlugIns.GetPlugIn<GuideBookFeaturePlugIn>() is not { } feature)
+        {
+            return null;
+        }
+
+        var settings = feature.Configuration ??= new GuideBookSettings();
+        if (!feature._laterPagesAdded)
+        {
+            GuideBookDefaults.AddLaterPages(settings);
+            feature._laterPagesAdded = true;
+        }
+
+        return settings;
+    }
 
     /// <inheritdoc />
     public object CreateDefaultConfig() => new GuideBookSettings();

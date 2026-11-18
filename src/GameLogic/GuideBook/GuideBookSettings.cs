@@ -22,6 +22,13 @@ public sealed class GuideBookSettings
     [MemberOfAggregate]
     public GuideBookContent Draft { get; set; } = GuideBookDefaults.Create();
 
+    /// <summary>
+    /// Gets or sets the pages of later versions of the default guide which were added to this guide
+    /// (<see cref="GuideBookDefaults.AddLaterPages"/>), so a deleted one isn't added again.
+    /// </summary>
+    [ScaffoldColumn(false)]
+    public ICollection<string> AddedDefaultPages { get; set; } = new List<string>();
+
     /// <summary>Determines whether the draft holds saves which aren't published yet.</summary>
     /// <returns><c>true</c>, if the draft differs from the published guide.</returns>
     public bool HasUnpublishedChanges() => this.Draft.Revision != this.Published.Revision;

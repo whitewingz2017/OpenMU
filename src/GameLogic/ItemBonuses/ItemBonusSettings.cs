@@ -6,10 +6,18 @@ namespace MUnique.OpenMU.GameLogic.ItemBonuses;
 
 using MUnique.OpenMU.DataModel.Configuration.Items;
 
-/// <summary>The items whose attributes the custom client shows in purple, edited on the plugin's Configure page.</summary>
+/// <summary>Which items show their attributes in purple in the custom client, edited on the plugin's Configure page.</summary>
 public class ItemBonusSettings
 {
-    /// <summary>Gets or sets the items whose base power-up attributes show in their tooltip and in Combat statistics.</summary>
-    [Display(Name = "Items", Description = "Their base power-up attributes show in purple in the item tooltip and, while worn, in Combat statistics. Classic items show their stats from the client's item data; add only items whose attributes the tooltip doesn't show.")]
+    /// <summary>Gets or sets a value indicating whether every custom item with attributes shows them.</summary>
+    [Display(Name = "Include custom items", Description = "Every custom item shows its attributes: the items added in the admin panel, the custom Fenrir mounts (e.g. Mount Bear) and the skins. Classic items show their stats from the client's item data.")]
+    public bool IncludeCustomItems { get; set; } = true;
+
+    /// <summary>Gets or sets more items whose attributes show, e.g. a classic item whose attributes were changed.</summary>
+    [Display(Name = "Also show", Description = "Items which show their attributes too, though they aren't custom items.")]
     public ICollection<ItemDefinition> Items { get; set; } = new List<ItemDefinition>();
+
+    /// <summary>Gets or sets the items whose attributes never show.</summary>
+    [Display(Name = "Never show", Description = "Items which never show their attributes, e.g. a custom item whose tooltip already shows them.")]
+    public ICollection<ItemDefinition> HiddenItems { get; set; } = new List<ItemDefinition>();
 }

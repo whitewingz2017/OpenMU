@@ -49,6 +49,13 @@ public static class ItemBonusText
         };
     }
 
+    /// <summary>Writes the amount an attribute adds to a statistic, beside its value without it.</summary>
+    /// <param name="aggregate">How the value is applied.</param>
+    /// <param name="amount">The amount, in the statistic's units; for <see cref="AggregateType.Multiplicate"/> the factor.</param>
+    /// <returns>The text, e.g. "+250" or "+10%".</returns>
+    public static string WriteAmount(AggregateType aggregate, float amount)
+        => aggregate == AggregateType.Multiplicate ? Signed((amount - 1) * 100) + "%" : Signed(amount);
+
     private static string Signed(float value) => (value < 0 ? string.Empty : "+") + Number(value);
 
     private static string Number(float value) => value.ToString("0.##", CultureInfo.InvariantCulture);

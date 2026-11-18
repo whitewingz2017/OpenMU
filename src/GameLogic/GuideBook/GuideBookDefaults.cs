@@ -14,6 +14,8 @@ namespace MUnique.OpenMU.GameLogic.GuideBook;
 /// </remarks>
 internal static class GuideBookDefaults
 {
+    private const string SystemsCategory = "cat-systems";
+
     /// <summary>Creates the default guide.</summary>
     /// <returns>The default guide.</returns>
     public static GuideBookContent Create() => new()
@@ -137,6 +139,8 @@ internal static class GuideBookDefaults
                     + "- Skills you have not learned or that are cooling down are skipped.\n"
                     + "- A healing potion is drunk first whenever your HP is below the threshold.",
             },
+            OfflineLevelingPage(),
+            ItemAttributesPage(),
             new()
             {
                 Id = "page-bosses",
@@ -221,5 +225,98 @@ internal static class GuideBookDefaults
                     + "- Check **Menu > Event Timers** for when Chaos Castle opens.",
             },
         },
+    };
+
+    /// <summary>
+    /// Adds the pages which came after the first default guide to a guide made before them, once: a page which a
+    /// game master deletes afterwards stays deleted. The change is saved with the guide's next save.
+    /// </summary>
+    /// <param name="settings">The settings.</param>
+    public static void AddLaterPages(GuideBookSettings settings)
+    {
+        lock (settings)
+        {
+            var added = false;
+            foreach (var page in new[] { OfflineLevelingPage(), ItemAttributesPage() })
+            {
+                if (settings.AddedDefaultPages.Contains(page.Id))
+                {
+                    continue;
+                }
+
+                settings.AddedDefaultPages.Add(page.Id);
+                added |= Add(settings.Published, page) | Add(settings.Draft, page);
+            }
+
+            if (added)
+            {
+                // A new revision, so clients show the pages; the draft stays published if it was.
+                var unpublished = settings.HasUnpublishedChanges();
+                settings.Published.Revision++;
+                settings.Draft.Revision = unpublished ? settings.Draft.Revision + 1 : settings.Published.Revision;
+            }
+        }
+    }
+
+    private static bool Add(GuideBookContent content, GuideBookPage page)
+    {
+        if (content.Pages.Any(existing => existing.Id == page.Id) || content.Pages.Count >= GuideBookContent.MaximumPages)
+        {
+            return false;
+        }
+
+        if (content.Categories.All(category => category.Id != page.CategoryId))
+        {
+            if (content.Categories.Count >= GuideBookContent.MaximumCategories)
+            {
+                return false;
+            }
+
+            content.Categories.Add(new GuideBookCategory { Id = SystemsCategory, Name = "Game Systems" });
+        }
+
+        content.Pages.Add(new GuideBookPage { Id = page.Id, CategoryId = page.CategoryId, Title = page.Title, Body = page.Body });
+        return true;
+    }
+
+    // The prices, the durations and the protection are the live settings: GuideBookLivePages.Expand writes them in.
+    private static GuideBookPage OfflineLevelingPage() => new()
+    {
+        Id = "page-offline",
+        CategoryId = SystemsCategory,
+        Title = "Offline Leveling",
+        Body = "Keep leveling while you are offline: your character stays in the world and the **MU Helper** keeps hunting.\n"
+            + "\n"
+            + "## How to start\n"
+            + "1. Stand where you want to hunt and start the [[page-helper|MU Helper]].\n"
+            + "2. Type **/offlevel** in the chat.\n"
+            + "3. In the **Offline Leveling** window choose how to pay, how long and the protection, then press **Start**.\n"
+            + "4. The game closes and your character keeps hunting. Log in again to stop it.\n"
+            + "\n"
+            + "## Prices\n"
+            + "{offline.prices}\n"
+            + "\n"
+            + "## Duration\n"
+            + "{offline.duration}\n"
+            + "\n"
+            + "## Protection\n"
+            + "{offline.protection}\n"
+            + "\n"
+            + "> You must be alive, on a map, not in an event, and the MU Helper must be running.",
+    };
+
+    // The items and their attributes are the live settings: GuideBookLivePages.Expand writes them in.
+    private static GuideBookPage ItemAttributesPage() => new()
+    {
+        Id = "page-item-attributes",
+        CategoryId = SystemsCategory,
+        Title = "Custom Item Attributes",
+        Body = "Some of this server's custom items, like the custom mounts, carry extra attributes. Their tooltip shows them in **purple**.\n"
+            + "\n"
+            + "{items.attributes}\n"
+            + "\n"
+            + "## In Combat statistics\n"
+            + "While you wear such an item, **Combat statistics** (Character window, **Statistics**) shows a statistic without it and, in purple, what the item adds: e.g. **Defense (PvM): 1676.57 (+250)**.\n"
+            + "- Attributes which no statistic shows, like the movement speed, get a purple line of their own.",
     };
 }

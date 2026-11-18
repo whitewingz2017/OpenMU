@@ -29,12 +29,15 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
             return;
         }
 
+        // The worn items' attributes stay out of the statistics' values and show beside them.
+        var statistics = CharacterCombatStatistics.Create(this._player);
+        var bonuses = GameLogic.ItemBonuses.ItemBonusStatistics.Apply(this._player, statistics);
         var data = JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
             Status = status,
-            Statistics = CharacterCombatStatistics.Create(this._player),
-            Bonuses = GameLogic.ItemBonuses.ItemBonusStatistics.Create(this._player),
+            Statistics = statistics,
+            Bonuses = bonuses,
             StoredSkins = this._player.SelectedCharacter?.SkinInventory?.Items.OrderBy(i => i.ItemSlot)
                 .Select(i => new { Slot = i.ItemSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number,
                     Level = i.Level, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),

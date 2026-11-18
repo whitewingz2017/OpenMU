@@ -34,7 +34,7 @@ public static class CharacterCombatStatistics
     /// <summary>Creates a display snapshot. Chance and multiplier values are expressed as percentages.</summary>
     /// <param name="player">The player.</param>
     /// <returns>The values by label.</returns>
-    public static IReadOnlyDictionary<string, float> Create(Player player)
+    public static Dictionary<string, float> Create(Player player)
     {
         if (player.Attributes is not { } attributes)
         {

@@ -347,17 +347,35 @@ the MU Helper does. Logging in stops the offline session.
 
 ## Item Attributes in tooltips
 
-The custom client shows the base power-up attributes of the items listed on
-this plugin's **Configure** page (**Items**) in purple:
+The custom client shows the base power-up attributes of every custom item in
+purple, as soon as the item has one:
 
-- in the item's tooltip, e.g. `+250 Final Defense`, `Movement Speed 19`,
-  `Can enter Icarus`; a level bonus shows the value at the item's level;
-- while the item is worn, in **Combat statistics**: beside each statistic it
-  adds to as it is (Final Defense beside both Defense lines), e.g.
-  `Defense (PvM): 935.60 (+250 Final Defense)`, otherwise on its own line.
+- the items added in the admin panel (the initial data gives every classic item
+  the identifier of its group and number; an added item has another one);
+- the custom Fenrir mounts (e.g. Mount Bear) and the skins.
 
-Classic items show their stats from the client's item data, so list only the
-items whose attributes the tooltip doesn't show, such as custom mounts.
+On this plugin's **Configure** page, **Include custom items** turns this off,
+**Also show** adds items (e.g. a classic item whose attributes you changed) and
+**Never show** hides items (e.g. a custom item whose client data already shows
+its stats).
+
+- The item's tooltip gets a purple line per attribute, e.g.
+  `+250 Final Defense`, `Movement Speed 19`, `Can enter Icarus`; a level bonus
+  shows the value at the item's level.
+- While the item is worn, **Combat statistics** shows a statistic which takes
+  the attribute as it is without it, and the amount in purple beside it:
+  `Defense (PvM): 1676.57 (+250)` where the total is 1926.57. An attribute which
+  no statistic takes, like the movement speed, gets a purple line of its own.
+- The Guide Book's **Custom Item Attributes** page lists these items and their
+  attributes.
+
+Classic items keep their tooltip from the client's item data, without
+duplicate lines.
+
+The Guide Book adds its **Offline Leveling** and **Custom Item Attributes**
+pages to an existing guide once (a game master may delete them afterwards). Their
+prices, durations, protection and items are the live settings; the draft shows
+their placeholders, e.g. `{offline.prices}`.
 
 ## Writing your own plugin
 

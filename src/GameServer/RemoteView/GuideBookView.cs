@@ -77,7 +77,8 @@ public sealed class GuideBookView : IGuideBookView
             Unpublished = canEdit && settings?.HasUnpublishedChanges() == true,
             Revision = content?.Revision,
             Categories = content?.Categories,
-            Pages = content?.Pages,
+            // The published pages get the live settings which take whole lines; a game master edits the draft's placeholders.
+            Pages = content is null ? null : shown == GuideBookShown.Published ? GuideBookLivePages.Expand(context, content.Pages) : (IEnumerable<GuideBookPage>)content.Pages,
             Values = content is null ? null : GuideBookValues.Collect(context),
             BossRewards = content is null ? null : GuideBookValues.BossRewards(context),
         };
