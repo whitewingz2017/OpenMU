@@ -4,10 +4,36 @@
 
 namespace MUnique.OpenMU.GameLogic.Attributes;
 
+using MUnique.OpenMU.AttributeSystem;
+
 /// <summary>Reads the live combat totals used by the server, including equipment, skins and buffs.</summary>
 public static class CharacterCombatStatistics
 {
+    /// <summary>Gets the statistics in their order: the label, the attribute and the factor of its display.</summary>
+    /// <remarks>Chance and multiplier values are expressed as percentages.</remarks>
+    public static IReadOnlyList<(string Label, AttributeDefinition Attribute, float Factor)> Rows { get; } =
+    [
+        ("Physical damage minimum", Stats.MinimumPhysBaseDmg, 1),
+        ("Physical damage maximum", Stats.MaximumPhysBaseDmg, 1),
+        ("Wizardry damage minimum", Stats.MinimumWizBaseDmg, 1),
+        ("Wizardry damage maximum", Stats.MaximumWizBaseDmg, 1),
+        ("Attack speed", Stats.AttackSpeed, 1),
+        ("Magic speed", Stats.MagicSpeed, 1),
+        ("Excellent damage rate (%)", Stats.ExcellentDamageChance, 100),
+        ("Critical damage rate (%)", Stats.CriticalDamageChance, 100),
+        ("Double damage rate (%)", Stats.DoubleDamageChance, 100),
+        ("Ignore defense rate (%)", Stats.DefenseIgnoreChance, 100),
+        ("Damage reflection (%)", Stats.DamageReflection, 100),
+        ("Damage reduction (%)", Stats.ArmorDamageDecrease, 100),
+        ("Defense (PvM)", Stats.DefensePvm, 1),
+        ("Defense (PvP)", Stats.DefensePvp, 1),
+        ("Attack rate (PvM)", Stats.AttackRatePvm, 1),
+        ("Attack rate (PvP)", Stats.AttackRatePvp, 1),
+    ];
+
     /// <summary>Creates a display snapshot. Chance and multiplier values are expressed as percentages.</summary>
+    /// <param name="player">The player.</param>
+    /// <returns>The values by label.</returns>
     public static IReadOnlyDictionary<string, float> Create(Player player)
     {
         if (player.Attributes is not { } attributes)
@@ -15,24 +41,6 @@ public static class CharacterCombatStatistics
             return new Dictionary<string, float>();
         }
 
-        return new Dictionary<string, float>
-        {
-            ["Physical damage minimum"] = attributes[Stats.MinimumPhysBaseDmg],
-            ["Physical damage maximum"] = attributes[Stats.MaximumPhysBaseDmg],
-            ["Wizardry damage minimum"] = attributes[Stats.MinimumWizBaseDmg],
-            ["Wizardry damage maximum"] = attributes[Stats.MaximumWizBaseDmg],
-            ["Attack speed"] = attributes[Stats.AttackSpeed],
-            ["Magic speed"] = attributes[Stats.MagicSpeed],
-            ["Excellent damage rate (%)"] = attributes[Stats.ExcellentDamageChance] * 100,
-            ["Critical damage rate (%)"] = attributes[Stats.CriticalDamageChance] * 100,
-            ["Double damage rate (%)"] = attributes[Stats.DoubleDamageChance] * 100,
-            ["Ignore defense rate (%)"] = attributes[Stats.DefenseIgnoreChance] * 100,
-            ["Damage reflection (%)"] = attributes[Stats.DamageReflection] * 100,
-            ["Damage reduction (%)"] = attributes[Stats.ArmorDamageDecrease] * 100,
-            ["Defense (PvM)"] = attributes[Stats.DefensePvm],
-            ["Defense (PvP)"] = attributes[Stats.DefensePvp],
-            ["Attack rate (PvM)"] = attributes[Stats.AttackRatePvm],
-            ["Attack rate (PvP)"] = attributes[Stats.AttackRatePvp],
-        };
+        return Rows.ToDictionary(row => row.Label, row => attributes[row.Attribute] * row.Factor);
     }
 }

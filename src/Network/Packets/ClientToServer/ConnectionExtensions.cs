@@ -6168,6 +6168,38 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="ItemBonusesRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the attribute lines of the items picked in the Item Attributes plugin (0), once for each character.
+    /// Causes reaction on server side: The server answers with the matching RequestId.
+    /// </remarks>
+    public static async ValueTask SendItemBonusesRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ItemBonusesRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new ItemBonusesRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchRequestExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

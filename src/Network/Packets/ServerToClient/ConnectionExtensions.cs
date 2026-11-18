@@ -9423,6 +9423,34 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="ItemBonusesResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: An item attributes request was processed.
+    /// Causes reaction on client side: The client adds the lines in purple to the items' tooltips: UTF-8 JSON with RequestId and Items, each with its Type (group * 512 + number) and Lines (Text, and ByLevel with the text of item levels which have a level bonus).
+    /// </remarks>
+    public static async ValueTask SendItemBonusesResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = ItemBonusesResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new ItemBonusesResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchResponseExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

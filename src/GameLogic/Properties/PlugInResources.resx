@@ -1813,4 +1813,8 @@
 <data name="OfflineProtection_Description" xml:space="preserve"><value>Players can't damage an offline character with a paid protection, nor it them; monsters still hit it.</value></data>
 <data name="OfflineLevelingView_Name" xml:space="preserve"><value>Offline Leveling view</value></data>
 <data name="OfflineLevelingView_Description" xml:space="preserve"><value>Sends the offline leveling window to the custom client.</value></data>
+<data name="ItemBonuses_Name" xml:space="preserve"><value>Item Attributes in tooltips</value></data>
+<data name="ItemBonuses_Description" xml:space="preserve"><value>The custom client shows the base power-up attributes of the picked items in purple: in the item tooltip, and while worn beside the Combat statistics they add to, e.g. (+250 Final Defense).</value></data>
+<data name="ItemBonusesView_Name" xml:space="preserve"><value>Item Attributes view</value></data>
+<data name="ItemBonusesView_Description" xml:space="preserve"><value>Sends the picked items' attribute lines to the custom client.</value></data>
 </root>

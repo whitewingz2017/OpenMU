@@ -26,12 +26,13 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.PartySearch.PartySearchActions _partySearch = new();
     private readonly GameLogic.Market.MarketActions _market = new();
     private readonly GameLogic.Offline.OfflineLevelingActions _offlineLeveling = new();
+    private readonly GameLogic.ItemBonuses.ItemBonusActions _itemBonuses = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
-        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search, the Marketplace and the offline leveling their JSON.
+        // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search, the Marketplace, the offline leveling and the item attributes their JSON.
         var guideBookHeaderSize = GuideBookRequestExtended.GetRequiredSize(0);
         if (packet.Length >= guideBookHeaderSize && packet.Span[0] == GuideBookRequestExtended.HeaderType
             && packet.Span[4] == GuideBookRequestExtended.SubCode)
@@ -52,6 +53,15 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
                 marketRequest.Operation,
                 packet[marketHeaderSize..],
                 item => RemoteView.MarketView.SerializeItem(remotePlayer, item)).ConfigureAwait(false);
+            return;
+        }
+
+        var itemBonusesHeaderSize = ItemBonusesRequestExtended.GetRequiredSize(0);
+        if (packet.Length >= itemBonusesHeaderSize && packet.Span[0] == ItemBonusesRequestExtended.HeaderType
+            && packet.Span[4] == ItemBonusesRequestExtended.SubCode)
+        {
+            ItemBonusesRequestExtended itemBonusesRequest = packet;
+            await this._itemBonuses.ExecuteAsync(player, itemBonusesRequest.RequestId).ConfigureAwait(false);
             return;
         }
 

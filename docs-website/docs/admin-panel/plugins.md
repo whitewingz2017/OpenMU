@@ -345,6 +345,20 @@ The **Offline Leveling: protection** plugin enforces the protection; keep it
 active. Without the payment plugin, `/offlevel` starts at once and pays zen as
 the MU Helper does. Logging in stops the offline session.
 
+## Item Attributes in tooltips
+
+The custom client shows the base power-up attributes of the items listed on
+this plugin's **Configure** page (**Items**) in purple:
+
+- in the item's tooltip, e.g. `+250 Final Defense`, `Movement Speed 19`,
+  `Can enter Icarus`; a level bonus shows the value at the item's level;
+- while the item is worn, in **Combat statistics**: beside each statistic it
+  adds to as it is (Final Defense beside both Defense lines), e.g.
+  `Defense (PvM): 935.60 (+250 Final Defense)`, otherwise on its own line.
+
+Classic items show their stats from the client's item data, so list only the
+items whose attributes the tooltip doesn't show, such as custom mounts.
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

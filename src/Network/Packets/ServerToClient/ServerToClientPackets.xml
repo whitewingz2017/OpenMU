@@ -15295,6 +15295,14 @@
     </Packet>
     <Packet>
       <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0E</SubCode><Name>ItemBonusesResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>An item attributes request was processed.</SentWhen>
+      <CausedReaction>The client adds the lines in purple to the items' tooltips: UTF-8 JSON with RequestId and Items, each with its Type (group * 512 + number) and Lines (Text, and ByLevel with the text of item levels which have a level bonus).</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
       <Code>FD</Code><SubCode>0B</SubCode><Name>PartySearchResponseExtended</Name>
       <Direction>ServerToClient</Direction>
       <SentWhen>A Party Search request was processed.</SentWhen>
