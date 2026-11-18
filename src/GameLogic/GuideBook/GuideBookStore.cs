@@ -42,6 +42,10 @@ internal static class GuideBookStore
 
             var referenceHandler = context.PlugInManager.CustomConfigReferenceHandler;
             var settings = entity.GetConfiguration<GuideBookSettings>(referenceHandler) ?? new GuideBookSettings();
+
+            // The guide in memory has the later default pages (GuideBookFeaturePlugIn.Settings), so has the stored one,
+            // with the same revisions: a draft which a game master edited from it is saved, and the pages with it.
+            GuideBookDefaults.AddLaterPages(settings);
             if (change(settings) is { } refusal)
             {
                 return refusal;
