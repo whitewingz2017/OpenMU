@@ -372,10 +372,14 @@ its stats).
 Classic items keep their tooltip from the client's item data, without
 duplicate lines.
 
-The Guide Book adds its **Offline Leveling** and **Custom Item Attributes**
-pages to an existing guide once (a game master may delete them afterwards). Their
-prices, durations, protection and items are the live settings; the draft shows
-their placeholders, e.g. `{offline.prices}`.
+The Guide Book adds its newer pages to an existing guide once (a game master
+may delete them afterwards): **Offline Leveling**, **Custom Item Attributes** and
+**Personal Store** under Game Systems; **Golden Invasion**, **Red Dragon
+Invasion**, **White Wizard Invasion**, **Kanturu: Maya & Nightmare**, **Kalima &
+Kundun**, **Doppelganger** and **Imperial Guardian** under Events. Their prices,
+durations, protection, items and the invasions' monsters, maps and times are the
+live settings; the draft shows their placeholders, e.g. `{offline.prices}` or
+`{invasion.golden}`. A page which wouldn't fit the guide's limits isn't added.
 
 ## Writing your own plugin
 

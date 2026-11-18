@@ -94,14 +94,22 @@ public static class GuideBookValues
         => context.Configuration.Monsters.FirstOrDefault(monster => monster.Number == number)?.Designation.ValueInNeutralLanguage
            ?? number.ToString(CultureInfo.InvariantCulture);
 
-    private static bool IsActive(IGameContext context, Type plugInType)
+    /// <summary>Determines whether the plugin is active.</summary>
+    /// <param name="context">The game context.</param>
+    /// <param name="plugInType">The plugin's type.</param>
+    /// <returns><c>true</c> if it is active.</returns>
+    internal static bool IsActive(IGameContext context, Type plugInType)
         => context.Configuration.PlugInConfigurations.FirstOrDefault(c => c.TypeId == plugInType.GUID) is { IsActive: true };
 
     /// <summary>
     /// Reads the configuration of another plugin from its stored configuration, because that plugin isn't
     /// necessarily a feature plugin which could be asked directly.
     /// </summary>
-    private static T? ReadConfiguration<T>(IGameContext context, Type plugInType)
+    /// <typeparam name="T">The configuration's type.</typeparam>
+    /// <param name="context">The game context.</param>
+    /// <param name="plugInType">The plugin's type.</param>
+    /// <returns>The configuration, or <c>null</c> if there is none or it isn't readable.</returns>
+    internal static T? ReadConfiguration<T>(IGameContext context, Type plugInType)
         where T : class
     {
         var entity = context.Configuration.PlugInConfigurations.FirstOrDefault(c => c.TypeId == plugInType.GUID);

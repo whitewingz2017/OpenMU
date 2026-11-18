@@ -16,6 +16,8 @@ internal static class GuideBookDefaults
 {
     private const string SystemsCategory = "cat-systems";
 
+    private const string EventsCategory = "cat-events";
+
     /// <summary>Creates the default guide.</summary>
     /// <returns>The default guide.</returns>
     public static GuideBookContent Create() => new()
@@ -38,7 +40,7 @@ internal static class GuideBookDefaults
                     + "Welcome to the Guide Book. Here you find how this server's systems, rewards and events work.\n"
                     + "\n"
                     + "## Finding your way\n"
-                    + "- Open the book with **F1** or the book beside the MU Helper's start button.\n"
+                    + "- Open the book with **F1** or the glowing **Guide Book** left of the daily reward.\n"
                     + "- Pick a category on the left, then a page.\n"
                     + "- Type in **Search** to find every page that mentions a word.\n"
                     + "- Gold underlined words open another page, like [[page-excellent|Excellent Combination]].\n"
@@ -139,8 +141,6 @@ internal static class GuideBookDefaults
                     + "- Skills you have not learned or that are cooling down are skipped.\n"
                     + "- A healing potion is drunk first whenever your HP is below the threshold.",
             },
-            OfflineLevelingPage(),
-            ItemAttributesPage(),
             new()
             {
                 Id = "page-bosses",
@@ -224,7 +224,7 @@ internal static class GuideBookDefaults
                     + "- When the match begins every window closes and the chat stays closed until it ends.\n"
                     + "- Check **Menu > Event Timers** for when Chaos Castle opens.",
             },
-        },
+        }.Concat(LaterPages()).ToList(),
     };
 
     /// <summary>
@@ -237,7 +237,7 @@ internal static class GuideBookDefaults
         lock (settings)
         {
             var added = false;
-            foreach (var page in new[] { OfflineLevelingPage(), ItemAttributesPage() })
+            foreach (var page in LaterPages())
             {
                 if (settings.AddedDefaultPages.Contains(page.Id))
                 {
@@ -272,12 +272,139 @@ internal static class GuideBookDefaults
                 return false;
             }
 
-            content.Categories.Add(new GuideBookCategory { Id = SystemsCategory, Name = "Game Systems" });
+            content.Categories.Add(new GuideBookCategory { Id = page.CategoryId, Name = page.CategoryId == EventsCategory ? "Events" : "Game Systems" });
         }
 
-        content.Pages.Add(new GuideBookPage { Id = page.Id, CategoryId = page.CategoryId, Title = page.Title, Body = page.Body });
-        return true;
+        var added = new GuideBookPage { Id = page.Id, CategoryId = page.CategoryId, Title = page.Title, Body = page.Body };
+        content.Pages.Add(added);
+        if (content.IsValid())
+        {
+            return true;
+        }
+
+        // The guide is full: the client would refuse it with the page.
+        content.Pages.Remove(added);
+        return false;
     }
+
+    // The pages of later versions of the default guide, in their categories' order.
+    private static IEnumerable<GuideBookPage> LaterPages()
+    {
+        yield return OfflineLevelingPage();
+        yield return ItemAttributesPage();
+        yield return PersonalStorePage();
+        yield return InvasionPage("page-golden", "Golden Invasion", "{invasion.golden}", "Golden monsters invade the cities and fields. Golden monsters are stronger than their common kin; hunt them before the invasion ends.");
+        yield return InvasionPage("page-red-dragon", "Red Dragon Invasion", "{invasion.reddragon}", "Red Dragons attack one of the cities' fields.");
+        yield return InvasionPage("page-white-wizard", "White Wizard Invasion", "{invasion.whitewizard}", "The White Wizard leads his ogre corps into one map. The server announces where he falls.");
+        yield return KanturuPage();
+        yield return KalimaPage();
+        yield return DoppelgangerPage();
+        yield return ImperialGuardianPage();
+    }
+
+    private static GuideBookPage PersonalStorePage() => new()
+    {
+        Id = "page-personal-store",
+        CategoryId = SystemsCategory,
+        Title = "Personal Store",
+        Body = "Sell your items to other players from your own store, while you stand in the world.\n"
+            + "\n"
+            + "## Opening your store\n"
+            + "1. Open your inventory (**I** or **V**) and press the **Personal Store** button at its bottom.\n"
+            + "2. Drop an item into the store, or right-click one in it, and enter its price.\n"
+            + "3. Name your store and open it. Your store's name shows above your character.\n"
+            + "\n"
+            + "## Prices\n"
+            + "- Every item is sold for **Zen**, or, when the server allows it, for **WCoinC**, **WCoinP**, **Goblin Points** or **jewels** (Bless, Soul, Chaos, Creation, Life and more).\n"
+            + "- The price dialog's **Currency** button picks the currency; other items the server allows are behind **Other items**.\n"
+            + "\n"
+            + "## Buying\n"
+            + "- Click the store's name above a player to look inside.\n"
+            + "- The tooltip shows each price with its currency, e.g. **Selling Price: 12 Jewel of Bless**.\n"
+            + "- Jewel prices are paid with the jewels of your inventory; a jewel bundle counts as its number of jewels. There is no change, so carry jewels which match the price exactly.\n"
+            + "\n"
+            + "> See also the [[page-coins|WCoin & Goblin Points]] you can sell for.",
+    };
+
+    // The monsters, their maps and how often the invasion comes are the live settings: GuideBookLivePages.Expand writes them in.
+    private static GuideBookPage InvasionPage(string id, string title, string token, string introduction) => new()
+    {
+        Id = id,
+        CategoryId = EventsCategory,
+        Title = title,
+        Body = introduction + "\n"
+            + "\n"
+            + token + "\n"
+            + "\n"
+            + "> Check **Menu > Event Timers** for the next invasion. The bosses among them pay the rewards of [[page-bosses|Boss Bounties]].",
+    };
+
+    private static GuideBookPage KanturuPage() => new()
+    {
+        Id = "page-kanturu",
+        CategoryId = EventsCategory,
+        Title = "Kanturu: Maya & Nightmare",
+        Body = "Fight your way through the Refinery Tower of Kanturu to its master, the **Nightmare**.\n"
+            + "\n"
+            + "## How to enter\n"
+            + "1. Wear a **Moonstone Pendant**.\n"
+            + "2. Go to **Kanturu Relics** and talk to the **Gateway Machine** while the event is open.\n"
+            + "\n"
+            + "## The battle\n"
+            + "1. **Maya** rises: defeat her hands and her guards before the time runs out.\n"
+            + "2. The **Nightmare** appears: defeat him to break the barrier.\n"
+            + "3. The **Refinery Tower** opens for a while to everyone who wins.\n"
+            + "\n"
+            + "> Check **Menu > Event Timers** for when the gateway opens.",
+    };
+
+    private static GuideBookPage KalimaPage() => new()
+    {
+        Id = "page-kalima",
+        CategoryId = EventsCategory,
+        Title = "Kalima & Kundun",
+        Body = "Deep in **Kalima** waits **Kundun**, guarded by the Kalima monsters.\n"
+            + "\n"
+            + "## How to enter\n"
+            + "1. Collect **Symbols of Kundun** from monsters.\n"
+            + "2. Fill a stack of the same level: it becomes a **Lost Map**.\n"
+            + "3. Drop the Lost Map to open a gate to the Kalima of its level, for you and your party.\n"
+            + "\n"
+            + "- The higher the map's level, the stronger Kalima and its Kundun.\n"
+            + "- Kundun is one of the bosses of [[page-bosses|Boss Bounties]].",
+    };
+
+    private static GuideBookPage DoppelgangerPage() => new()
+    {
+        Id = "page-doppelganger",
+        CategoryId = EventsCategory,
+        Title = "Doppelganger",
+        Body = "Stop the monsters and your own doppelgangers before they reach the end of their path.\n"
+            + "\n"
+            + "## How to enter\n"
+            + "1. Collect **Signs of Dimensions** and fill a stack: it becomes a **Mirror of Dimensions**.\n"
+            + "2. Talk to **Lugard** in Elbeland with the mirror in your inventory, alone or with your party.\n"
+            + "\n"
+            + "## The battle\n"
+            + "- Monsters walk along the path; don't let them pass.\n"
+            + "- Defeat the bosses for their reward chests.",
+    };
+
+    private static GuideBookPage ImperialGuardianPage() => new()
+    {
+        Id = "page-imperial",
+        CategoryId = EventsCategory,
+        Title = "Imperial Guardian",
+        Body = "Fight through the fortress of the Imperial Guardian, gate by gate, to its commanders.\n"
+            + "\n"
+            + "## How to enter\n"
+            + "1. Collect **Suspicious Scraps of Paper** and fill a stack: it becomes **Gaion's Order**.\n"
+            + "2. Talk to **Jerint the Assistant** in Elbeland with the order in your inventory, alone or with your party.\n"
+            + "\n"
+            + "## The battle\n"
+            + "- Break each gate and defeat its guardians before the time runs out.\n"
+            + "- The fortress and its commander change with the day of the week.",
+    };
 
     // The prices, the durations and the protection are the live settings: GuideBookLivePages.Expand writes them in.
     private static GuideBookPage OfflineLevelingPage() => new()
