@@ -382,6 +382,14 @@ durations, protection, items and the invasions' monsters, maps and times are the
 live settings; the draft shows their placeholders, e.g. `{offline.prices}` or
 `{invasion.golden}`. A page which wouldn't fit the guide's limits isn't added.
 
+## Deactivated features in the custom client
+
+The custom client asks every 30 seconds which of its features are active and
+hides the menu entries and buttons of a deactivated one; they come back when
+you activate its plugin again: **Guide Book**, **Marketplace**, **Party
+Search**, **Daily Rewards**, **Excellent Combination**, **Muun** and **Rank
+Titles** (the Rank Shop).
+
 ## Writing your own plugin
 
 Implementing a plugin is documented next to the code, in the

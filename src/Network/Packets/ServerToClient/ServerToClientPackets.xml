@@ -15303,6 +15303,14 @@
     </Packet>
     <Packet>
       <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>0F</SubCode><Name>FeaturesResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A features request was processed.</SentWhen>
+      <CausedReaction>The client hides the menu entries and buttons of the inactive features: UTF-8 JSON with RequestId and Features, each feature's name with true when its plugin is active.</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
       <Code>FD</Code><SubCode>0B</SubCode><Name>PartySearchResponseExtended</Name>
       <Direction>ServerToClient</Direction>
       <SentWhen>A Party Search request was processed.</SentWhen>

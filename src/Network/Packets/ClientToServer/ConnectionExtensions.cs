@@ -6200,6 +6200,38 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="FeaturesRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client asks which of its features the server has active (0), when the character enters the game and from time to time.
+    /// Causes reaction on server side: The server answers with the matching RequestId.
+    /// </remarks>
+    public static async ValueTask SendFeaturesRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = FeaturesRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new FeaturesRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchRequestExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>

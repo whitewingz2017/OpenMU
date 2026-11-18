@@ -9029,6 +9029,22 @@ public class PacketStructureTests
     }
 
     /// <summary>
+    /// Tests the packet size calculation for FeaturesResponseExtended.
+    /// </summary>
+    [Test]
+    public void FeaturesResponseExtended_PacketSizeValidation()
+    {
+        // Variable-length packet validation
+        // Test GetRequiredSize method with sample data
+        const int testBinaryLength = 10;
+        var calculatedSize = FeaturesResponseExtendedRef.GetRequiredSize(testBinaryLength);
+        var expectedMinSize = testBinaryLength + 5;
+        
+        Assert.That(calculatedSize, Is.GreaterThanOrEqualTo(expectedMinSize), 
+            "GetRequiredSize calculation incorrect for binary field");
+    }
+
+    /// <summary>
     /// Tests the packet size calculation for PartySearchResponseExtended.
     /// </summary>
     [Test]

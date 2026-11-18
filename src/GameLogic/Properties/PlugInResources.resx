@@ -1817,4 +1817,6 @@
 <data name="ItemBonuses_Description" xml:space="preserve"><value>The custom client shows the base power-up attributes of the picked items in purple: in the item tooltip, and while worn beside the Combat statistics they add to, e.g. (+250 Final Defense).</value></data>
 <data name="ItemBonusesView_Name" xml:space="preserve"><value>Item Attributes view</value></data>
 <data name="ItemBonusesView_Description" xml:space="preserve"><value>Sends the picked items' attribute lines to the custom client.</value></data>
+<data name="FeatureListView_Name" xml:space="preserve"><value>Feature list view</value></data>
+<data name="FeatureListView_Description" xml:space="preserve"><value>Tells the custom client which of its features are active, so it hides the menu entries and buttons of the inactive ones.</value></data>
 </root>

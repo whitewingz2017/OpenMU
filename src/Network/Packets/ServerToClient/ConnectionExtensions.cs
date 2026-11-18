@@ -9451,6 +9451,34 @@ public static class ConnectionExtensions
     }
 
     /// <summary>
+    /// Sends a <see cref="FeaturesResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A features request was processed.
+    /// Causes reaction on client side: The client hides the menu entries and buttons of the inactive features: UTF-8 JSON with RequestId and Features, each feature's name with true when its plugin is active.
+    /// </remarks>
+    public static async ValueTask SendFeaturesResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = FeaturesResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new FeaturesResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Sends a <see cref="PartySearchResponseExtended" /> to this connection.
     /// </summary>
     /// <param name="connection">The connection.</param>
