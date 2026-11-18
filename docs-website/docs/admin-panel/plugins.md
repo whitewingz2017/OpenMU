@@ -376,7 +376,8 @@ The Guide Book adds its newer pages to an existing guide once (a game master
 may delete them afterwards): **Offline Leveling**, **Custom Item Attributes** and
 **Personal Store** under Game Systems; **Golden Invasion**, **Red Dragon
 Invasion**, **White Wizard Invasion**, **Kanturu: Maya & Nightmare**, **Kalima &
-Kundun**, **Doppelganger** and **Imperial Guardian** under Events. Their prices,
+Kundun**, **Doppelganger**, **Imperial Guardian**, **Castle Siege**, **Land of
+Trials** and **Crywolf Fortress** under Events. Their prices,
 durations, protection, items and the invasions' monsters, maps and times are the
 live settings; the draft shows their placeholders, e.g. `{offline.prices}` or
 `{invasion.golden}`. A page which wouldn't fit the guide's limits isn't added.

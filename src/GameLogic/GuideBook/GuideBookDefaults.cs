@@ -300,7 +300,65 @@ internal static class GuideBookDefaults
         yield return KalimaPage();
         yield return DoppelgangerPage();
         yield return ImperialGuardianPage();
+        yield return CastleSiegePage();
+        yield return LandOfTrialsPage();
+        yield return CrywolfPage();
     }
+
+    private static GuideBookPage CastleSiegePage() => new()
+    {
+        Id = "page-castle-siege",
+        CategoryId = EventsCategory,
+        Title = "Castle Siege",
+        Body = "Guilds fight for **Loren Castle** in the Valley of Loren. The guild which holds it rules the castle: it sets the castle's taxes and opens the [[page-land-of-trials|Land of Trials]].\n"
+            + "\n"
+            + "## Taking part\n"
+            + "1. During the registration, your guild master registers the guild with the **Guardsman** at the castle bridge in the Valley of Loren.\n"
+            + "2. Then the guild hands in **Signs of Lord** there. The guilds with the most signs are chosen to attack.\n"
+            + "3. On the day of the siege, fight your way into the castle.\n"
+            + "\n"
+            + "## Winning\n"
+            + "- Your guild master takes the **Crown** while your side holds both **Crown Switches**: the castle is yours.\n"
+            + "- If no attacker does before the siege ends, the defending guild keeps the castle.\n"
+            + "\n"
+            + "> The server announces each period: the registration, the handing in of the signs and the siege.",
+    };
+
+    private static GuideBookPage LandOfTrialsPage() => new()
+    {
+        Id = "page-land-of-trials",
+        CategoryId = EventsCategory,
+        Title = "Land of Trials",
+        Body = "A hunting ground behind Loren Castle, open while a guild holds the castle.\n"
+            + "\n"
+            + "## How to enter\n"
+            + "1. Go to the Valley of Loren and talk to the **guard at the Land of Trials entrance**.\n"
+            + "2. The castle guild's alliance enters free; other players pay the entry fee in Zen.\n"
+            + "\n"
+            + "- The castle's guild master sets the fee, and can close the Land of Trials.\n"
+            + "\n"
+            + "> While no guild holds the castle, the Land of Trials stays closed. See [[page-castle-siege|Castle Siege]].",
+    };
+
+    private static GuideBookPage CrywolfPage() => new()
+    {
+        Id = "page-crywolf",
+        CategoryId = EventsCategory,
+        Title = "Crywolf Fortress",
+        Body = "Defend **Crywolf Fortress** against the army of **Balgass**.\n"
+            + "\n"
+            + "## How it works\n"
+            + "- When the event starts, the army attacks the fortress.\n"
+            + "- **Elves** stand at one of the five **altars** and stay there to contract it. The contracts protect the **Statue of the Holy Wolf**. Moving, dying or leaving cancels a contract, and each altar takes only a few per event.\n"
+            + "- Everyone else fights the army and guards the elves at the altars. At the end, **Balgass** himself attacks.\n"
+            + "- The players with the highest scores become the heroes of the event.\n"
+            + "\n"
+            + "## The result, until the next event\n"
+            + "- **Defended**: monsters have less HP, and the chaos machine mixes of event tickets succeed more often.\n"
+            + "- **Occupied**: jewels drop less often, and monsters give less experience.\n"
+            + "\n"
+            + "> The server announces when Crywolf starts.",
+    };
 
     private static GuideBookPage PersonalStorePage() => new()
     {
