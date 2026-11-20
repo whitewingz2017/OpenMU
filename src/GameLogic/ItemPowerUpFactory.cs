@@ -243,23 +243,21 @@ public class ItemPowerUpFactory : IItemPowerUpFactory
     {
         attribute.ThrowNotInitializedProperty(attribute.TargetAttribute is null, nameof(attribute.TargetAttribute));
 
+        targetAttribute ??= attribute.TargetAttribute;
+        if (attributeHolder.GetComposableAttribute(targetAttribute) is null)
+        {
+            this._logger.LogWarning("Skipping base power-up for item {ItemDefinition}: target attribute {Attribute} is not composable.", item.Definition, targetAttribute);
+            yield break;
+        }
+
         var durabilityFactor = DurabilityAffectedItemAttributes.Contains(attribute.TargetAttribute) ? item.GetCurrentDurabilityFactor() : 1;
         var baseValueElmt = attribute.GetBaseValueElement(durabilityFactor);
 
         var levelBonusElmt = (attribute.BonusPerLevelTable?.BonusPerLevel ?? Enumerable.Empty<LevelBonus>())
             .FirstOrDefault(bonus => bonus.Level == item.Level)?
             .GetAdditionalValueElement(attribute.AggregateType, durabilityFactor);
-        if (levelBonusElmt is null)
-        {
-            yield return new PowerUpWrapper(baseValueElmt, targetAttribute ?? attribute.TargetAttribute, attributeHolder);
-        }
-        else
-        {
-            yield return new PowerUpWrapper(
-                new CombinedElement(baseValueElmt, levelBonusElmt),
-                targetAttribute ?? attribute.TargetAttribute,
-                attributeHolder);
-        }
+        IElement element = levelBonusElmt is null ? baseValueElmt : new CombinedElement(baseValueElmt, levelBonusElmt);
+        yield return new PowerUpWrapper(element, targetAttribute, attributeHolder);
     }
 
     private IEnumerable<PowerUpWrapper> GetPowerUpsOfItemOptions(Item item, AttributeSystem attributeHolder)

@@ -372,6 +372,11 @@ its stats).
 Classic items keep their tooltip from the client's item data, without
 duplicate lines.
 
+Use **Maximum Health** to raise a wearer's HP cap. **Current Health** tracks
+the HP the character has at that moment. The server skips base power-ups that
+target attributes which cannot accept equipment bonuses and logs the item and
+attribute for the administrator to correct.
+
 Changes apply while the server runs: when you add, change or remove a base
 power-up attribute of an item and save it, the **Item Attributes: live update**
 plugin gives it to the worn items within about 3 seconds (stats and Combat

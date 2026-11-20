@@ -87,6 +87,28 @@ public class PowerUpFactoryTest
     }
 
     /// <summary>
+    /// Tests that a bonus targeting current health does not block the item's other bonuses.
+    /// </summary>
+    [Test]
+    public async ValueTask ItemBasePowerUpSkipsCurrentHealthAsync()
+    {
+        var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
+        var attributes = player.Attributes!;
+        var currentHealth = attributes[Stats.CurrentHealth];
+        var item = this.GetItem();
+        var invalidBonus = this.GetBasePowerUpDefinition();
+        invalidBonus.TargetAttribute = Stats.CurrentHealth;
+        var bonuses = item.Definition!.BasePowerUpAttributes;
+        bonuses.Add(invalidBonus);
+        bonuses.Add(this.GetBasePowerUpDefinition());
+
+        var powerUps = this.GetPowerUpFactory().GetPowerUps(item, attributes).ToList();
+
+        Assert.That(powerUps.Select(powerUp => powerUp.Value), Is.EqualTo(new[] { PowerUpStrength }));
+        Assert.That(attributes[Stats.CurrentHealth], Is.EqualTo(currentHealth));
+    }
+
+    /// <summary>
     /// Tests if the power ups don't get created if the item has no more durability.
     /// </summary>
     [Test]
