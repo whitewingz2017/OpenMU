@@ -231,4 +231,15 @@
   <data name="FlameOfCondor" xml:space="preserve">
     <value>Flame of Condor</value>
   </data>
+  <data name="SeparateExcellentDropsName" xml:space="preserve">
+    <value>Separate Excellent accessory drops</value>
+  </data>
+  <data name="SeparateExcellentDropsDescription" xml:space="preserve">
+    <value>Create a separate Excellent ring and pendant drop group at the current equipment chance. Equipment and accessories can then be adjusted independently; item-box drops are unchanged.</value>
+  </data>
+  <data name="ExcellentAccessoriesDropGroup" xml:space="preserve">
+    <value>Excellent rings and pendants</value>
+  </data>
+  <data name="EventRewardBoxesName" xml:space="preserve"><value>Configurable event reward boxes</value></data>
+  <data name="EventRewardBoxesDescription" xml:space="preserve"><value>Gives the original fireworks-only Firecracker the editable item and zen rewards of Box of Luck +2. Keeps existing customized reward lists.</value></data>
 </root>

@@ -2597,4 +2597,13 @@
   <data name="DailyRewardsDeactivated" xml:space="preserve">
     <value>Daily login rewards are inactive.</value>
   </data>
+  <data name="EventBoxNames" xml:space="preserve"><value>Box of Luck;Star of the Sacred Birth;Firecracker;Heart of Love;Olive of Love;Silver Medal;Gold Medal;Box of Heaven;Box of Kundun +1;Box of Kundun +2;Box of Kundun +3;Box of Kundun +4;Box of Kundun +5;Heart of Dark Lord;Lucky Blue Pouch;Lucky Red Pouch</value></data>
+  <data name="BoxRewardLuck" xml:space="preserve"><value>Reward Luck</value></data>
+  <data name="BoxRewardSkill" xml:space="preserve"><value>Reward skill</value></data>
+  <data name="BoxRewardOptionLevel" xml:space="preserve"><value>Normal option level (0–7)</value></data>
+  <data name="BoxRewardExcellent" xml:space="preserve"><value>Excellent options</value></data>
+  <data name="BoxRewardRandom" xml:space="preserve"><value>Use item defaults</value></data>
+  <data name="BoxRewardFixed" xml:space="preserve"><value>Choose exact options</value></data>
+  <data name="BoxRewardOptionNumber" xml:space="preserve"><value>Option {0}</value></data>
+  <data name="BoxRewardOptionsHint" xml:space="preserve"><value>Applies to this reward group only. Unsupported options are skipped. Exact Excellent options use the item's usual flags (1, 2, 4, 8, 16, 32); select none for a normal reward.</value></data>
 </root>

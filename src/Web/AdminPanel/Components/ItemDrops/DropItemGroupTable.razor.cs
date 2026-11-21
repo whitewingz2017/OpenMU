@@ -86,6 +86,15 @@ public partial class DropItemGroupTable
         group.Description = group.Description.WithTranslation(NeutralCulture, text);
     }
 
+    private static bool? ParseOptionalBoolean(object? value)
+        => bool.TryParse(value?.ToString(), out var result) ? result : null;
+
+    private static void SetExcellentMode(ItemDropItemGroup group, string? mode)
+        => group.ExcellentOptions = mode == "fixed" ? group.ExcellentOptions ?? (byte)0 : null;
+
+    private static void SetExcellentFlag(ItemDropItemGroup group, int flag, bool enabled)
+        => group.ExcellentOptions = (byte)(enabled ? (group.ExcellentOptions ?? 0) | flag : (group.ExcellentOptions ?? 0) & ~flag);
+
     private static string GetItemsSummary(DropItemGroup group)
     {
         if (group.PossibleItems.Count == 0)
@@ -93,7 +102,7 @@ public partial class DropItemGroupTable
             return group.ItemType switch
             {
                 SpecialItemType.Money => Resources.Money,
-                SpecialItemType.RandomItem or SpecialItemType.Excellent or SpecialItemType.SocketItem => Resources.RandomItemsByMonsterLevel,
+                SpecialItemType.RandomItem or SpecialItemType.Excellent or SpecialItemType.ExcellentAccessories or SpecialItemType.ExcellentEquipment or SpecialItemType.SocketItem => Resources.RandomItemsByMonsterLevel,
                 SpecialItemType.Ancient => Resources.RandomAncientItems,
                 _ => Resources.NoItems,
             };

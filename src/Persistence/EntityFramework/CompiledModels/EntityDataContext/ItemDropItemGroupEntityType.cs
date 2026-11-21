@@ -25,7 +25,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 "MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDropItemGroup",
                 typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDropItemGroup),
                 baseEntityType,
-                propertyCount: 15,
+                propertyCount: 19,
                 navigationCount: 2,
                 foreignKeyCount: 2,
                 unnamedIndexCount: 2,
@@ -68,6 +68,30 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetField("<DropEffect>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
             dropEffect.SetSentinelFromProviderValue(0);
             dropEffect.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var excellentOptions = runtimeEntityType.AddProperty(
+                "ExcellentOptions",
+                typeof(byte?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetProperty("ExcellentOptions", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetField("<ExcellentOptions>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            excellentOptions.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var hasLuck = runtimeEntityType.AddProperty(
+                "HasLuck",
+                typeof(bool?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetProperty("HasLuck", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetField("<HasLuck>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            hasLuck.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var hasSkill = runtimeEntityType.AddProperty(
+                "HasSkill",
+                typeof(bool?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetProperty("HasSkill", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetField("<HasSkill>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            hasSkill.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var itemDefinitionId = runtimeEntityType.AddProperty(
                 "ItemDefinitionId",
@@ -138,6 +162,14 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
                 fieldInfo: typeof(MUnique.OpenMU.Persistence.EntityFramework.Model.ItemDropItemGroup).GetField("<MonsterId>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 nullable: true);
             monsterId.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+
+            var optionLevel = runtimeEntityType.AddProperty(
+                "OptionLevel",
+                typeof(byte?),
+                propertyInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetProperty("OptionLevel", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(MUnique.OpenMU.DataModel.Configuration.ItemDropItemGroup).GetField("<OptionLevel>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                nullable: true);
+            optionLevel.AddAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
             var requiredCharacterLevel = runtimeEntityType.AddProperty(
                 "RequiredCharacterLevel",

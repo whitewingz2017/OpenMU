@@ -46,6 +46,16 @@ public enum SpecialItemType
     /// The jewel special item type.
     /// </summary>
     Jewel,
+
+    /// <summary>
+    /// Excellent rings and pendants, with a separately configured drop chance.
+    /// </summary>
+    ExcellentAccessories,
+
+    /// <summary>
+    /// Excellent equipment excluding rings and pendants.
+    /// </summary>
+    ExcellentEquipment,
 }
 
 /// <summary>

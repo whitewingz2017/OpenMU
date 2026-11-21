@@ -167,12 +167,13 @@ public partial class EditItemDrops : ComponentBase, IAsyncDisposable
                         || this.Matches(m.Designation)
                         || m.DropItemGroups.Any(this.IsMatchingFilter));
 
-    private IEnumerable<ItemDefinition> FilteredBoxItems =>
+    private IEnumerable<(ItemDefinition Item, byte Level)> FilteredBoxes =>
         this._items
-            .Where(i => i.DropItems.Count > 0)
+            .SelectMany(item => item.DropItems.Select(group => group.SourceItemLevel).Distinct()
+                .Order().Select(level => (Item: item, Level: level)))
             .Where(i => !this.HasFilter
-                        || this.Matches(i.Name)
-                        || i.DropItems.Any(this.IsMatchingFilter));
+                        || this.Matches(ItemBoxResources.Name(i.Item, i.Level))
+                        || i.Item.DropItems.Where(group => group.SourceItemLevel == i.Level).Any(this.IsMatchingFilter));
 
     private IEnumerable<ItemDefinition> FilteredItems =>
         this._items
@@ -257,11 +258,11 @@ public partial class EditItemDrops : ComponentBase, IAsyncDisposable
             .ToList();
     }
 
-    private IReadOnlyList<DropItemGroup> GetBoxGroups(ItemDefinition item)
+    private IReadOnlyList<DropItemGroup> GetBoxGroups(ItemDefinition item, byte level)
     {
         return item.DropItems
-            .OrderBy(g => g.SourceItemLevel)
-            .ThenByDescending(g => g.Chance)
+            .Where(group => group.SourceItemLevel == level)
+            .OrderByDescending(g => g.Chance)
             .ToList<DropItemGroup>();
     }
 
@@ -402,10 +403,11 @@ public partial class EditItemDrops : ComponentBase, IAsyncDisposable
         }
     }
 
-    private void OnAddBoxGroup(ItemDefinition item)
+    private void OnAddBoxGroup(ItemDefinition item, byte level = 0)
     {
         var group = this._persistenceContext!.CreateNew<ItemDropItemGroup>();
-        group.Description = string.Format(Resources.NewDropItemGroupOf, item.Name);
+        group.Description = string.Format(Resources.NewDropItemGroupOf, ItemBoxResources.Name(item, level));
+        group.SourceItemLevel = level;
         group.Chance = 0.1;
         group.ItemType = SpecialItemType.None;
         item.DropItems.Add(group);

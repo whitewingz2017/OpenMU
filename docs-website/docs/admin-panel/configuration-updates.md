@@ -108,3 +108,16 @@ slot and reserves the large helper slot for mounts. Apply with players offline
 and install the matching client. If the small slot is occupied, the old pet
 returns to the bag; a full bag stops the migration without deleting items.
 Muun equipment remains unchanged.
+
+**Add Ashwing** adds a level 110 phoenix at Icarus (47, 189) to Season Six.
+It respawns after three minutes. Its Cinder Gale animation fans out embers and its attack damages its current target. Install the matching MuMain client and monster assets before enabling this optional update.
+
+**Separate Excellent accessory drops** splits unrestricted Season Six monster Excellent groups into equipment and ring/pendant groups. Both start at your current group chance and can be edited separately on Item Drops. Explicit item lists and item-box drops keep their rules. Restart the rebuilt server after applying.
+
+**Configurable event reward boxes** gives the original fireworks-only standalone
+Firecracker (14:63) the rewards of Box of Luck +2, including its zen fallback.
+It preserves existing customized Firecracker reward lists. After installing the
+rebuilt server and admin panel, apply the schema update in Setup first, then this
+optional configuration update and restart. Item Drops shows Firecracker, Heart
+of Love, Silver Medal, Gold Medal and Box of Heaven by name with per-group Luck,
+skill, normal option and Excellent option controls.

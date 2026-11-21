@@ -145,7 +145,49 @@ Drop groups which are used by quest item requirements or as mini game rewards.
 The *Used by* column shows where. They can be edited here, but not deleted, as
 long as they are used.
 
+### Separate Excellent accessory chances
+
+Season Six common monster drops use two independent types: **ExcellentEquipment** excludes rings and
+pendants, while **ExcellentAccessories** selects rings and pendants which support Excellent options.
+Their **Chance (%)** values start equal to the previous common Excellent chance (0.01% in fresh
+default data). Change the accessory row to lower or raise only the accessory chance. Both groups use
+the usual item and monster drop-level restrictions. A category with no eligible items does not fall
+back to the other category.
+
+On an existing server, apply **Separate Excellent accessory drops** under Configuration Updates,
+then restart the rebuilt server. This preserves your equipment chance and starts the accessory
+chance at the same value. The update preserves explicit item lists and item-box groups, and
+repeating it preserves later rate edits.
+
+The categories have separate intervals in the existing weighted drop selection. When all chance
+groups total less than 100%, the category chances add when both categories have eligible items:
+equal 0.01% category chances give a combined 0.02% Excellent chance before player drop-rate
+modifiers. Above 100%, the existing normalization applies. The original **Excellent** type remains
+available for unrestricted drops and existing item boxes.
+
 ### Item box drops
+
+Firecracker, Heart of Love, Silver Medal, Gold Medal and Box of Heaven appear
+under their own names. Season Six stores these as Box of Luck (item 14:11)
+at source levels +2, +3, +5, +6 and +7 respectively. These source levels select
+the box; the separate **Min./Max. item level** fields control the reward's +level.
+The standalone Firecracker (14:63, +0) also supports rewards and retains its fireworks.
+
+Expand a reward group's details to choose **Reward Luck**, **Reward skill**,
+**Normal option level** (0–7), and **Excellent options**. Item defaults preserve
+the existing random option rules. Choose Yes or No to force Luck or skill;
+choose exact Excellent options and select the desired flags, or select none
+to remove Excellent options. These settings affect only that reward group.
+Unsupported options are skipped and normal option levels are capped to the
+reward item's supported values. Fixed pet options are retained.
+For different settings per item, create separate groups with one possible item each.
+Use the group chances to mix normal and Excellent rewards.
+
+Existing servers need the schema update from Setup after installing the rebuilt
+server and admin panel. The optional **Configurable event reward boxes** update
+gives a fireworks-only standalone Firecracker the existing Box of Luck +2
+reward tables, including its zen fallback. Customized Firecracker rewards are
+preserved. Restart the server after applying and editing the reward tables.
 
 What drops when a player drops an item like a *Box of Luck* or a
 *Box of Kundun*. For each such item, one of its groups with the matching

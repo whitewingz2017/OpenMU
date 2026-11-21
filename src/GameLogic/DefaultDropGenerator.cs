@@ -184,8 +184,9 @@ public class DefaultDropGenerator : IDropGenerator
     /// </summary>
     /// <param name="monsterLevel">The monster level, if it's a monster drop.</param>
     /// <param name="possibleItems">The possible items, if the drop is from an item box (e.g. box of kundun).</param>
+    /// <param name="itemType">The excellent drop category.</param>
     /// <returns>A random excellent item.</returns>
-    protected Item? GenerateRandomExcellentItem(int monsterLevel = 0, ICollection<ItemDefinition>? possibleItems = null)
+    protected Item? GenerateRandomExcellentItem(int monsterLevel = 0, ICollection<ItemDefinition>? possibleItems = null, SpecialItemType itemType = SpecialItemType.Excellent)
     {
         if (monsterLevel < this._excellentItemDropLevelDelta && possibleItems is null)
         {
@@ -193,6 +194,13 @@ public class DefaultDropGenerator : IDropGenerator
         }
 
         var possible = possibleItems ?? this.GetPossibleList(monsterLevel - this._excellentItemDropLevelDelta);
+        if (possible is not null && itemType != SpecialItemType.Excellent)
+        {
+            possible = possible.Where(definition =>
+                IsExcellentAccessory(definition) == (itemType == SpecialItemType.ExcellentAccessories)
+                && definition.PossibleItemOptions.Any(options => options.PossibleOptions.Any(option => object.Equals(option.OptionType, ItemOptionTypes.Excellent)))).ToList();
+        }
+
         var item = this.GenerateRandomItem(possible);
         if (item is null)
         {
@@ -267,6 +275,9 @@ public class DefaultDropGenerator : IDropGenerator
 
     private static bool IsValidOptionLevelDrop(byte value)
         => value is >= MinItemOptionLevelDrop and <= MaxItemOptionLevelDrop;
+
+    private static bool IsExcellentAccessory(ItemDefinition definition)
+        => definition.ItemSlot?.ItemSlots.Any(slot => slot >= InventoryConstants.PendantSlot && slot <= InventoryConstants.Ring2Slot) == true;
 
     private static bool CanDropAtMonsterLevel(ItemDefinition itemDefinition, int monsterLevel)
     {
@@ -366,7 +377,8 @@ public class DefaultDropGenerator : IDropGenerator
         var item = selectedGroup.ItemType switch
         {
             SpecialItemType.Ancient => this.GenerateRandomAncient(),
-            SpecialItemType.Excellent => this.GenerateRandomExcellentItem(possibleItems: possibleItems),
+            SpecialItemType.Excellent or SpecialItemType.ExcellentAccessories or SpecialItemType.ExcellentEquipment
+                => this.GenerateRandomExcellentItem(possibleItems: possibleItems, itemType: selectedGroup.ItemType),
             _ => this.GenerateRandomItem(possibleItems),
         };
 
@@ -383,6 +395,7 @@ public class DefaultDropGenerator : IDropGenerator
         if (selectedGroup is ItemDropItemGroup itemDropItemGroup)
         {
             item.Level = (byte)this._randomizer.NextInt(itemDropItemGroup.MinimumLevel, itemDropItemGroup.MaximumLevel + 1);
+            ItemBoxRewardOptions.Apply(item, itemDropItemGroup);
         }
         else if (selectedGroup.ItemLevel is { } itemLevel)
         {
@@ -394,6 +407,11 @@ public class DefaultDropGenerator : IDropGenerator
         }
 
         item.Level = Math.Min(item.Level, item.Definition!.MaximumItemLevel);
+
+        if (selectedGroup is ItemDropItemGroup)
+        {
+            item.Durability = item.GetMaximumDurabilityOfOnePiece();
+        }
 
         return item;
     }
@@ -553,7 +571,8 @@ public class DefaultDropGenerator : IDropGenerator
         return selectedGroup.ItemType switch
         {
             SpecialItemType.Ancient => this.GenerateRandomAncient(),
-            SpecialItemType.Excellent => this.GenerateRandomExcellentItem(monsterLevel),
+            SpecialItemType.Excellent or SpecialItemType.ExcellentAccessories or SpecialItemType.ExcellentEquipment
+                => this.GenerateRandomExcellentItem(monsterLevel, itemType: selectedGroup.ItemType),
             SpecialItemType.RandomItem => this.GenerateRandomItem(monsterLevel, false),
             SpecialItemType.SocketItem => this.GenerateRandomItem(monsterLevel, true),
             _ => null,
@@ -568,6 +587,11 @@ public class DefaultDropGenerator : IDropGenerator
 
         foreach (var group in groups)
         {
+            if (group.Chance <= 0)
+            {
+                continue;
+            }
+
             if (remainingThreshold > group.Chance)
             {
                 remainingThreshold -= group.Chance;

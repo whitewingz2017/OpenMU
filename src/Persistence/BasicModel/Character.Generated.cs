@@ -203,6 +203,24 @@ public partial class Character : MUnique.OpenMU.DataModel.Entities.Character, II
     }
 
     /// <summary>
+    /// Gets the raw object of <see cref="MuunInventory" />.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonPropertyName("muunInventory")]
+    public ItemStorage RawMuunInventory
+    {
+        get => base.MuunInventory as ItemStorage;
+        set => base.MuunInventory = value;
+    }
+
+    /// <inheritdoc/>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override MUnique.OpenMU.DataModel.Entities.ItemStorage MuunInventory
+    {
+        get => base.MuunInventory;
+        set => base.MuunInventory = value;
+    }
+
+    /// <summary>
     /// Gets the raw object of <see cref="SkinInventory" />.
     /// </summary>
     [System.Text.Json.Serialization.JsonPropertyName("skinInventory")]

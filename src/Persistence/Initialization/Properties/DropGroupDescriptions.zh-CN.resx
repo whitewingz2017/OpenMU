@@ -231,4 +231,15 @@
   <data name="FlameOfCondor" xml:space="preserve">
     <value>神鹰火种</value>
   </data>
+  <data name="SeparateExcellentDropsName" xml:space="preserve">
+    <value>独立卓越首饰掉落率</value>
+  </data>
+  <data name="SeparateExcellentDropsDescription" xml:space="preserve">
+    <value>以当前装备概率创建独立的卓越戒指和项链掉落组。装备和首饰概率可以分别调整，宝箱掉落保持不变。</value>
+  </data>
+  <data name="ExcellentAccessoriesDropGroup" xml:space="preserve">
+    <value>卓越戒指和项链</value>
+  </data>
+  <data name="EventRewardBoxesName" xml:space="preserve"><value>可配置的活动奖励宝箱</value></data>
+  <data name="EventRewardBoxesDescription" xml:space="preserve"><value>为原本仅显示烟花的爆竹添加幸运宝箱 +2 的可编辑物品与金币奖励，保留已有的自定义奖励列表。</value></data>
 </root>

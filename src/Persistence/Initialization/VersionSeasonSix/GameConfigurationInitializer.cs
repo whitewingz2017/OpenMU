@@ -49,6 +49,11 @@ public class GameConfigurationInitializer : GameConfigurationInitializerBase
     {
         base.Initialize();
 
+        foreach (var accessories in ExcellentDropGroups.Ensure(this.Context, this.GameConfiguration))
+        {
+            BaseMapInitializer.RegisterDefaultDropItemGroup(accessories);
+        }
+
         this.GameConfiguration.ItemOptions.Add(this.CreateOptionDefinition(Stats.BaseDamageBonus, ItemOptionDefinitionNumbers.PhysicalAndWizardryAttack));
         this.GameConfiguration.ItemOptions.Add(this.CreateOptionDefinition(Stats.CurseBaseDmg, ItemOptionDefinitionNumbers.CurseAttack));
 

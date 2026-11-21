@@ -41,6 +41,7 @@ internal class BoxOfLuck : InitializerBase
         this.CreateFireCracker();
         this.CreateCherryBlossomBox();
         this.CreateGameMasterPresentBox();
+        EventRewardBoxes.Ensure(this.Context, this.GameConfiguration);
     }
 
     /// <summary>

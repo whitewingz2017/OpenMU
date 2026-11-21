@@ -73,4 +73,18 @@ public partial class ItemDropItemGroup : DropItemGroup
     /// Gets or sets the effect which should be shown in the game client when this drop group is applied.
     /// </summary>
     public ItemDropEffect DropEffect { get; set; }
+
+    /// <summary>Gets or sets whether the reward has luck. Null uses the item's random option settings.</summary>
+    public bool? HasLuck { get; set; }
+
+    /// <summary>Gets or sets whether the reward has its skill. Null uses the usual random skill roll.</summary>
+    public bool? HasSkill { get; set; }
+
+    /// <summary>Gets or sets the normal option level, from zero (none) to seven. Null keeps random options.</summary>
+    [Range(0, 7)]
+    public byte? OptionLevel { get; set; }
+
+    /// <summary>Gets or sets exact excellent option flags (1, 2, 4, 8, 16, 32). Zero removes them; null keeps random options.</summary>
+    [Range(0, 63)]
+    public byte? ExcellentOptions { get; set; }
 }

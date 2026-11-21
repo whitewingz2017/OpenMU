@@ -120,10 +120,10 @@ internal sealed class BasicModelConverter
             JewelMix value => this.Convert(value),
             LetterBody value => this.Convert(value),
             LetterHeader value => this.Convert(value),
-            MarketListing value => this.Convert(value),
             LevelBonus value => this.Convert(value),
             LevelDependentDamage value => this.Convert(value),
             MagicEffectDefinition value => this.Convert(value),
+            MarketListing value => this.Convert(value),
             MasterSkillDefinition value => this.Convert(value),
             MasterSkillRoot value => this.Convert(value),
             MiniGameChangeEvent value => this.Convert(value),
@@ -215,6 +215,7 @@ internal sealed class BasicModelConverter
             }
         }
 
+        target.VipExpiresAtUtc = source.VipExpiresAtUtc;
         return target;
     }
 
@@ -807,6 +808,14 @@ internal sealed class BasicModelConverter
         target.UsedFruitPoints = source.UsedFruitPoints;
         target.UsedNegFruitPoints = source.UsedNegFruitPoints;
         target.InventoryExtensions = source.InventoryExtensions;
+        target.OwnedRankTitlesJson = source.OwnedRankTitlesJson;
+        target.ActiveRankTitle = source.ActiveRankTitle;
+        target.HideRankTitle = source.HideRankTitle;
+        target.DuelWins = source.DuelWins;
+        target.LastDuelWinUtc = source.LastDuelWinUtc;
+        target.PlayerKillWeekStartUtc = source.PlayerKillWeekStartUtc;
+        target.WeeklyPlayerKills = source.WeeklyPlayerKills;
+        target.LastWeeklyPlayerKillUtc = source.LastWeeklyPlayerKillUtc;
         target.KeyConfiguration = source.KeyConfiguration;
         target.MuHelperConfiguration = source.MuHelperConfiguration;
         target.StoreName = source.StoreName;
@@ -1282,6 +1291,7 @@ internal sealed class BasicModelConverter
         target.ShouldDropMoney = source.ShouldDropMoney;
         target.ItemDropDuration = source.ItemDropDuration;
         target.MaximumItemOptionLevelDrop = source.MaximumItemOptionLevelDrop;
+        target.MaximumSocketCountDrop = source.MaximumSocketCountDrop;
         target.DamagePerOneItemDurability = source.DamagePerOneItemDurability;
         target.DamagePerOnePetDurability = source.DamagePerOnePetDurability;
         target.HitsPerOneItemDurability = source.HitsPerOneItemDurability;
@@ -2018,6 +2028,10 @@ internal sealed class BasicModelConverter
         target.MaximumLevel = source.MaximumLevel;
         target.RequiredCharacterLevel = source.RequiredCharacterLevel;
         target.DropEffect = source.DropEffect;
+        target.HasLuck = source.HasLuck;
+        target.HasSkill = source.HasSkill;
+        target.OptionLevel = source.OptionLevel;
+        target.ExcellentOptions = source.ExcellentOptions;
         target.Description = source.Description;
         target.Chance = source.Chance;
         target.MinimumMonsterLevel = source.MinimumMonsterLevel;
@@ -2301,33 +2315,6 @@ internal sealed class BasicModelConverter
         return target;
     }
 
-    private BasicModel.MarketListing Convert(MarketListing source)
-    {
-        if (this._converted.TryGetValue(source, out var converted))
-        {
-            return (BasicModel.MarketListing)converted;
-        }
-
-        var target = new BasicModel.MarketListing();
-        this._converted.Add(source, target);
-        target.Id = source.Id;
-        target.SellerAccountId = source.SellerAccountId;
-        target.SellerName = source.SellerName;
-        target.Item = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.Item)!;
-        target.ItemData = source.ItemData;
-        target.ItemName = source.ItemName;
-        target.PriceType = source.PriceType;
-        target.Price = source.Price;
-        target.ListedAt = source.ListedAt;
-        target.ExpiresAt = source.ExpiresAt;
-        target.State = source.State;
-        target.BuyerName = source.BuyerName;
-        target.ClosedAt = source.ClosedAt;
-        target.Proceeds = source.Proceeds;
-        target.Revision = source.Revision;
-        return target;
-    }
-
     private BasicModel.LetterHeader Convert(LetterHeader source)
     {
         if (this._converted.TryGetValue(source, out var converted))
@@ -2415,6 +2402,33 @@ internal sealed class BasicModelConverter
             }
         }
 
+        return target;
+    }
+
+    private BasicModel.MarketListing Convert(MarketListing source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.MarketListing)converted;
+        }
+
+        var target = new BasicModel.MarketListing();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.SellerAccountId = source.SellerAccountId;
+        target.SellerName = source.SellerName;
+        target.Item = (MUnique.OpenMU.DataModel.Entities.Item)this.ConvertObject(source.Item)!;
+        target.ItemData = source.ItemData;
+        target.ItemName = source.ItemName;
+        target.PriceType = source.PriceType;
+        target.Price = source.Price;
+        target.ListedAt = source.ListedAt;
+        target.ExpiresAt = source.ExpiresAt;
+        target.State = source.State;
+        target.BuyerName = source.BuyerName;
+        target.ClosedAt = source.ClosedAt;
+        target.Proceeds = source.Proceeds;
+        target.Revision = source.Revision;
         return target;
     }
 
@@ -2950,6 +2964,7 @@ internal sealed class BasicModelConverter
         target.WCoinC = source.WCoinC;
         target.WCoinP = source.WCoinP;
         target.GoblinPoints = source.GoblinPoints;
+        target.Zen = source.Zen;
         target.Revision = source.Revision;
         return target;
     }

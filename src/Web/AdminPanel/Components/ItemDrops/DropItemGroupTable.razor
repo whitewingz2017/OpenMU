@@ -111,6 +111,58 @@
                 <td colspan="@this.ColumnCount">
                     <CascadingValue Value="this.GetEditContext(group)" IsFixed="true">
                         <div class="row">
+                            @if (this.IsItemBoxDrop && boxGroup is not null)
+                            {
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="@($"box-luck-{group.GetId()}")">@ItemBoxResources.Text("BoxRewardLuck")</label>
+                                    <select id="@($"box-luck-{group.GetId()}")" class="form-select form-select-sm" data-box-option="luck"
+                                            value="@(boxGroup.HasLuck?.ToString().ToLowerInvariant() ?? string.Empty)" @onchange="args => boxGroup.HasLuck = ParseOptionalBoolean(args.Value)">
+                                        <option value="">@ItemBoxResources.Text("BoxRewardRandom")</option>
+                                        <option value="true">@Resources.Yes</option>
+                                        <option value="false">@Resources.No</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="@($"box-skill-{group.GetId()}")">@ItemBoxResources.Text("BoxRewardSkill")</label>
+                                    <select id="@($"box-skill-{group.GetId()}")" class="form-select form-select-sm" data-box-option="skill"
+                                            value="@(boxGroup.HasSkill?.ToString().ToLowerInvariant() ?? string.Empty)" @onchange="args => boxGroup.HasSkill = ParseOptionalBoolean(args.Value)">
+                                        <option value="">@ItemBoxResources.Text("BoxRewardRandom")</option>
+                                        <option value="true">@Resources.Yes</option>
+                                        <option value="false">@Resources.No</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="@($"box-option-{group.GetId()}")">@ItemBoxResources.Text("BoxRewardOptionLevel")</label>
+                                    <select id="@($"box-option-{group.GetId()}")" class="form-select form-select-sm" data-box-option="normal" @bind="boxGroup.OptionLevel">
+                                        <option value="">@ItemBoxResources.Text("BoxRewardRandom")</option>
+                                        @for (byte optionLevel = 0; optionLevel <= 7; optionLevel++)
+                                        {
+                                            <option value="@optionLevel">@optionLevel</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <label class="form-label" for="@($"box-excellent-{group.GetId()}")">@ItemBoxResources.Text("BoxRewardExcellent")</label>
+                                    <select id="@($"box-excellent-{group.GetId()}")" class="form-select form-select-sm" data-box-option="excellent"
+                                            value="@(boxGroup.ExcellentOptions is null ? "random" : "fixed")" @onchange="args => SetExcellentMode(boxGroup, args.Value?.ToString())">
+                                        <option value="random">@ItemBoxResources.Text("BoxRewardRandom")</option>
+                                        <option value="fixed">@ItemBoxResources.Text("BoxRewardFixed")</option>
+                                    </select>
+                                    @if (boxGroup.ExcellentOptions is { } flags)
+                                    {
+                                        @for (var number = 1; number <= 6; number++)
+                                        {
+                                            var flag = 1 << (number - 1);
+                                            <label class="form-check mt-1">
+                                                <input type="checkbox" class="form-check-input" data-excellent-flag="@flag" checked="@((flags & flag) != 0)"
+                                                       @onchange="args => SetExcellentFlag(boxGroup, flag, args.Value is true)" />
+                                                @string.Format(ItemBoxResources.Text("BoxRewardOptionNumber"), number)
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                                <p class="small text-muted">@ItemBoxResources.Text("BoxRewardOptionsHint")</p>
+                            }
                             <div class="col-lg-6">
                                 <label class="form-label fw-semibold">@Resources.PossibleItems</label>
                                 <MultiLookupField TObject="ItemDefinition"

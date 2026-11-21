@@ -1,4 +1,4 @@
-﻿// <copyright file="Icarus.cs" company="MUnique">
+// <copyright file="Icarus.cs" company="MUnique">
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 // </copyright>
 
@@ -20,6 +20,13 @@ internal class Icarus : Version095d.Maps.Icarus
     public Icarus(IContext context, GameConfiguration gameConfiguration)
         : base(context, gameConfiguration)
     {
+    }
+
+    /// <inheritdoc />
+    protected override void AdditionalInitialization(GameMapDefinition mapDefinition)
+    {
+        base.AdditionalInitialization(mapDefinition);
+        Ashwing.Ensure(this.Context, this.GameConfiguration, mapDefinition);
     }
 
     /// <inheritdoc />

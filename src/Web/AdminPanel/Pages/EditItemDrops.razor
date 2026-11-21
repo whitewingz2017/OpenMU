@@ -147,16 +147,16 @@
                         OnMapsChanged="@this.StateHasChanged" />
 </CollapsibleSection>
 
-<CollapsibleSection Title="@Resources.ItemBoxDrops" Description="@Resources.ItemBoxDropsDescription" Badge="@this.FilteredBoxItems.Count().ToString()">
-    @foreach (var boxItem in this.FilteredBoxItems)
+<CollapsibleSection Title="@Resources.ItemBoxDrops" Description="@Resources.ItemBoxDropsDescription" Badge="@this.FilteredBoxes.Count().ToString()">
+    @foreach (var box in this.FilteredBoxes)
     {
-        <div @key="boxItem" class="mb-4">
-            <h6>@boxItem.Name.ToString() <small class="text-muted">(@boxItem.Group, @boxItem.Number)</small></h6>
-            <DropItemGroupTable Groups="@this.GetBoxGroups(boxItem)"
+        <div @key="box" class="mb-4">
+            <h6>@ItemBoxResources.Name(box.Item, box.Level) <small class="text-muted">(@box.Item.Group, @box.Item.Number, +@box.Level)</small></h6>
+            <DropItemGroupTable Groups="@this.GetBoxGroups(box.Item, box.Level)"
                                 IsItemBoxDrop="true"
-                                OnRemove="@(group => this.OnRemoveBoxGroupAsync(boxItem, group))"
+                                OnRemove="@(group => this.OnRemoveBoxGroupAsync(box.Item, group))"
                                 RemoveTitle="@Resources.Delete" />
-            <button type="button" class="btn btn-sm btn-outline-primary" @onclick="() => this.OnAddBoxGroup(boxItem)">
+            <button type="button" class="btn btn-sm btn-outline-primary" @onclick="() => this.OnAddBoxGroup(box.Item, box.Level)">
                 <span class="oi oi-plus" aria-hidden="true"></span> @Resources.AddDropItemGroup
             </button>
         </div>

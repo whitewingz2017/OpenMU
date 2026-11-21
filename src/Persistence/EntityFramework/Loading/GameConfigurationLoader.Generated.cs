@@ -44,7 +44,7 @@ internal sealed partial class GameConfigurationLoader
         "select \"Id\", \"Description\", \"GameConfigurationId\", \"IsVisible\", \"Name\" from config.\"ItemOptionType\"",
         "select \"Id\", \"ConsumeEffectId\", \"DropLevel\", \"DropsFromMonsters\", \"Durability\", \"GameConfigurationId\", \"Group\", \"Height\", \"IsAmmunition\", \"IsBoundToCharacter\", \"IsDroppable\", \"IsPersonalStoreSellable\", \"IsQuestItem\", \"IsRepairable\", \"IsSellableToNpc\", \"IsStorable\", \"IsTradable\", \"ItemSlotId\", \"MaximumDropLevel\", \"MaximumItemLevel\", \"MaximumSockets\", \"Name\", \"Number\", \"PetExperienceFormula\", \"SkillId\", \"StorageLimitPerCharacter\", \"Value\", \"Width\" from config.\"ItemDefinition\"",
         "select \"Id\", \"AggregateType\", \"BaseValue\", \"BonusPerLevelTableId\", \"ItemDefinitionId\", \"TargetAttributeId\" from config.\"ItemBasePowerUpDefinition\"",
-        "select \"Id\", \"Chance\", \"Description\", \"DropEffect\", \"ItemDefinitionId\", \"ItemLevel\", \"ItemType\", \"MaximumLevel\", \"MaximumMonsterLevel\", \"MinimumLevel\", \"MinimumMonsterLevel\", \"MoneyAmount\", \"MonsterId\", \"RequiredCharacterLevel\", \"SourceItemLevel\" from config.\"ItemDropItemGroup\"",
+        "select \"Id\", \"Chance\", \"Description\", \"DropEffect\", \"ExcellentOptions\", \"HasLuck\", \"HasSkill\", \"ItemDefinitionId\", \"ItemLevel\", \"ItemType\", \"MaximumLevel\", \"MaximumMonsterLevel\", \"MinimumLevel\", \"MinimumMonsterLevel\", \"MoneyAmount\", \"MonsterId\", \"OptionLevel\", \"RequiredCharacterLevel\", \"SourceItemLevel\" from config.\"ItemDropItemGroup\"",
         "select \"Id\", \"AttributeId\", \"GameMapDefinitionId\", \"ItemDefinitionId\", \"MinimumValue\", \"SkillId\", \"SkillId1\" from config.\"AttributeRequirement\"",
         "select \"Id\", \"AlwaysApplies\", \"CountDistinct\", \"GameConfigurationId\", \"MinimumItemCount\", \"Name\", \"OptionsId\", \"SetLevel\" from config.\"ItemSetGroup\"",
         "select \"Id\", \"AncientSetDiscriminator\", \"BonusOptionId\", \"ItemDefinitionId\", \"ItemSetGroupId\" from config.\"ItemOfItemSet\"",
@@ -891,18 +891,22 @@ internal sealed partial class GameConfigurationLoader
             entity.Chance = reader.GetDouble(1);
             entity.Description = reader.IsDBNull(2) ? default : new global::MUnique.OpenMU.Interfaces.LocalizedString(reader.GetString(2));
             entity.DropEffect = (global::MUnique.OpenMU.DataModel.Configuration.ItemDropEffect)reader.GetInt32(3);
-            if (!reader.IsDBNull(5)) { entity.ItemLevel = (global::System.Byte)reader.GetInt16(5); }
-            entity.ItemType = (global::MUnique.OpenMU.DataModel.Configuration.SpecialItemType)reader.GetInt32(6);
-            entity.MaximumLevel = (global::System.Byte)reader.GetInt16(7);
-            if (!reader.IsDBNull(8)) { entity.MaximumMonsterLevel = (global::System.Byte)reader.GetInt16(8); }
-            entity.MinimumLevel = (global::System.Byte)reader.GetInt16(9);
-            if (!reader.IsDBNull(10)) { entity.MinimumMonsterLevel = (global::System.Byte)reader.GetInt16(10); }
-            entity.MoneyAmount = reader.GetInt32(11);
-            if (!reader.IsDBNull(12)) { entity.MonsterId = reader.GetGuid(12); }
-            entity.RequiredCharacterLevel = reader.GetInt16(13);
-            entity.SourceItemLevel = (global::System.Byte)reader.GetInt16(14);
+            if (!reader.IsDBNull(4)) { entity.ExcellentOptions = (global::System.Byte)reader.GetInt16(4); }
+            if (!reader.IsDBNull(5)) { entity.HasLuck = reader.GetBoolean(5); }
+            if (!reader.IsDBNull(6)) { entity.HasSkill = reader.GetBoolean(6); }
+            if (!reader.IsDBNull(8)) { entity.ItemLevel = (global::System.Byte)reader.GetInt16(8); }
+            entity.ItemType = (global::MUnique.OpenMU.DataModel.Configuration.SpecialItemType)reader.GetInt32(9);
+            entity.MaximumLevel = (global::System.Byte)reader.GetInt16(10);
+            if (!reader.IsDBNull(11)) { entity.MaximumMonsterLevel = (global::System.Byte)reader.GetInt16(11); }
+            entity.MinimumLevel = (global::System.Byte)reader.GetInt16(12);
+            if (!reader.IsDBNull(13)) { entity.MinimumMonsterLevel = (global::System.Byte)reader.GetInt16(13); }
+            entity.MoneyAmount = reader.GetInt32(14);
+            if (!reader.IsDBNull(15)) { entity.MonsterId = reader.GetGuid(15); }
+            if (!reader.IsDBNull(16)) { entity.OptionLevel = (global::System.Byte)reader.GetInt16(16); }
+            entity.RequiredCharacterLevel = reader.GetInt16(17);
+            entity.SourceItemLevel = (global::System.Byte)reader.GetInt16(18);
             this._ItemDropItemGroup[entity.Id] = entity;
-            this._ItemDropItemGroupRows.Add((entity, reader.IsDBNull(12) ? null : reader.GetGuid(12), reader.IsDBNull(4) ? null : reader.GetGuid(4)));
+            this._ItemDropItemGroupRows.Add((entity, reader.IsDBNull(15) ? null : reader.GetGuid(15), reader.IsDBNull(7) ? null : reader.GetGuid(7)));
         }
     }
 
