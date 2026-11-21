@@ -21,13 +21,13 @@ internal class Icarus : Version095d.Maps.Icarus
         : base(context, gameConfiguration)
     {
     }
-
+    
     /// <inheritdoc />
-    protected override void AdditionalInitialization(GameMapDefinition mapDefinition)
-    {
-        base.AdditionalInitialization(mapDefinition);
-        Ashwing.Ensure(this.Context, this.GameConfiguration, mapDefinition);
-    }
+    // protected override void AdditionalInitialization(GameMapDefinition mapDefinition)
+    // {
+    //     base.AdditionalInitialization(mapDefinition);
+    //     Ashwing.Ensure(this.Context, this.GameConfiguration, mapDefinition);
+    // }
 
     /// <inheritdoc />
     protected override void InitializeDropItemGroups()
