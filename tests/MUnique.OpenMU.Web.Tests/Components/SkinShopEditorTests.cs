@@ -41,8 +41,10 @@ public class SkinShopEditorTests
                 builder.CloseComponent();
             }));
         Assert.That(form.FindAll("tbody tr"), Has.Count.EqualTo(2));
+        Assert.That(form.FindAll("tbody tr input[type=checkbox]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4414", "skin-sale-4416" }));
         form.Find("#skin-price-4416").Change("250");
         form.Find("#skin-sale-4414").Change(false);
+        Assert.That(form.FindAll("tbody tr input[type=checkbox]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4416", "skin-sale-4414" }));
         Assert.That(settings.Items[4416].Price, Is.EqualTo(250));
         Assert.That(settings.Items[4414].Enabled, Is.False);
         Assert.That(settings.Items[4414].Price, Is.EqualTo(125));
@@ -52,6 +54,9 @@ public class SkinShopEditorTests
         form.Find("label.form-check input").Change(true);
         Assert.That(settings.Price(definitions[0]), Is.EqualTo(250));
         Assert.That(settings.Price(definitions[1]), Is.Zero);
+        form.Find("#skin-sale-4414").Change(true);
+        Assert.That(form.FindAll("tbody tr input[type=checkbox]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4414", "skin-sale-4416" }));
+        form.Find("#skin-sale-4414").Change(false);
         Assert.That(SkinShopEditor.IsValid(settings), Is.True);
         settings.Items[4416].Price = -1;
         Assert.That(SkinShopEditor.IsValid(settings), Is.False);

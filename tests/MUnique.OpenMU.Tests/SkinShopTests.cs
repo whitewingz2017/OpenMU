@@ -16,6 +16,21 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class SkinShopTests
 {
+    /// <summary>Duplicate wings stay equippable for owners but are absent from the sale catalog.</summary>
+    [TestCase(312, false)]
+    [TestCase(319, false)]
+    [TestCase(329, false)]
+    [TestCase(334, false)]
+    [TestCase(320, true)]
+    public void DuplicateWingsAreRetiredFromShop(short number, bool available)
+    {
+        var slot = new BasicModel.ItemSlotType();
+        slot.ItemSlots.Add(CosmeticArmorRules.FirstSlot + 7);
+        var wing = new BasicModel.ItemDefinition { Group = 12, Number = number, ItemSlot = slot };
+        Assert.That(FenrirMountRules.IsShopItem(wing), Is.EqualTo(available));
+        Assert.That(CosmeticArmorRules.GetSlot(wing), Is.EqualTo(CosmeticArmorRules.FirstSlot + 7));
+    }
+
     /// <summary>Only the authoritative item and category settings can enable a quoted purchase.</summary>
     [TestCase(true, false, 175, true)]
     [TestCase(false, false, 175, false)]

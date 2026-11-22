@@ -114,10 +114,13 @@ full bag, invalid bonus or insufficient balance cannot spend WCoinC.
 
 ## Standalone mounts and animation
 
-The Mounts category contains 13 imported Fenrir models. These are actual riding
+The Mounts category contains 15 imported mount models. These are actual riding
 items, equipped in the **Gear helper** slot, with the normal Fenrir level/class
 requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cells.
 They have no selectable skin bonus. An ordinary or cosmetic pet can remain in the small Gear pet slot while riding. Previewing a mount also previews the rider in the shop window.
+Phantom Horse and Malfurion use Dark Horse riding poses in the client. The server
+currently gives all imported mounts Fenrir's Plasma Storm skill, including these
+two horses; their riding appearance does not grant Dark Horse's Earthquake skill.
 
 Apply **Set 315 Cosmetic Armor version 8** while players are offline and restart.
 Existing floating Fenrir items keep their identities and become mounts; items in
@@ -279,6 +282,11 @@ Open **Game Configuration > Skin Shop** in the administration panel. Each catego
 has an enable-sales checkbox. Each skin has its own **Sell** checkbox and WCoinC
 price. To sell only Immortal WareWolf Armor, enable Sets, uncheck the other set
 rows, and set its price. Save changes and have players refresh their shop.
+Checked rows appear above unchecked rows in each category, updating immediately
+when Sell is toggled. Each group keeps item-number order.
+Wing53 Wing (12:312), Wings11-copy Wing (12:319), Custom Wing 9 (12:329), and
+Wings22 Wing (12:334) are duplicate models and no longer appear in the shop or
+admin sale list. Existing copies remain equippable and tradable.
 Unchecked items and disabled categories remain preview only; owned skins stay
 available for equipping, removal and trading. A category default price of zero
 also disables all sales in that category. Defaults fill unconfigured entries;

@@ -35,7 +35,7 @@
                 <table class="table table-striped">
                     <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("Price")</th><th>@Text("GoblinPrice")</th></tr></thead>
                     <tbody>
-                        @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderBy(d => d.Number))
+                        @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderByDescending(d => this.Item.Items[(d.Group * 512) + d.Number].Enabled).ThenBy(d => d.Number))
                         {
                             var type = (definition.Group * 512) + definition.Number;
                             var sale = this.Item.Items[type];
