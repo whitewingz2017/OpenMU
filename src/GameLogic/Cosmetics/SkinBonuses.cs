@@ -50,7 +50,7 @@ public static class SkinBonuses
         }
 
         var choices = Choices(definition).ToArray();
-        return choices.Length == 0 ? item.ItemOptions.Count == 0
-            : item.ItemOptions.Count == 1 && item.ItemOptions.All(link => link.Level is 0 or 1 && choices.Contains(link.ItemOption));
+        return item.ItemOptions.Count == 0
+            || item.ItemOptions.Count == 1 && item.ItemOptions.All(link => link.Level is 0 or 1 && choices.Contains(link.ItemOption));
     }
 }

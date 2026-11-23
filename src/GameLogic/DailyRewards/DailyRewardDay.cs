@@ -18,6 +18,9 @@ public sealed class DailyRewardDay
     /// <summary>The flags of all six excellent options.</summary>
     internal const byte AllExcellentOptions = 0b11_1111;
 
+    /// <summary>The period-item protocol represents expiration as signed Unix seconds.</summary>
+    internal const int MaximumItemDurationHours = int.MaxValue / 3600;
+
     /// <summary>Gets or sets the day of the month, from 1 to 31.</summary>
     [Display(Name = nameof(DailyRewardResources.Day), ResourceType = typeof(DailyRewardResources))]
     [Range(1, DailyRewardCalendar.MaximumDays)]
@@ -57,6 +60,11 @@ public sealed class DailyRewardDay
     [Range(0, byte.MaxValue)]
     public byte ItemQuantity { get; set; }
 
+    /// <summary>Gets or sets the item's lifetime from claiming, in hours; zero means permanent.</summary>
+    [Display(Name = nameof(DailyRewardResources.ItemDurationHours), ResourceType = typeof(DailyRewardResources))]
+    [Range(0, MaximumItemDurationHours)]
+    public int ItemDurationHours { get; set; }
+
     /// <summary>Gets or sets a value indicating whether the item has its skill.</summary>
     [Display(Name = nameof(DailyRewardResources.ItemSkill), ResourceType = typeof(DailyRewardResources))]
     public bool ItemSkill { get; set; }
@@ -83,7 +91,8 @@ public sealed class DailyRewardDay
 
     /// <summary>Gets a value indicating whether the values are within their limits.</summary>
     internal bool IsValid => this is { Day: >= 1 and <= DailyRewardCalendar.MaximumDays, Zen: >= 0, WCoinC: >= 0, WCoinP: >= 0, GoblinPoints: >= 0 }
-        && this.ItemLevel <= MaximumItemLevel && this.ItemOption <= MaximumItemOption && this.ItemExcellentOptions <= AllExcellentOptions;
+        && this.ItemLevel <= MaximumItemLevel && this.ItemOption <= MaximumItemOption && this.ItemExcellentOptions <= AllExcellentOptions
+        && this.ItemDurationHours is >= 0 and <= MaximumItemDurationHours;
 
     /// <inheritdoc />
     public override string ToString() => FormattableString.Invariant($"{this.Day}: {this.Item?.Name.ValueInNeutralLanguage ?? string.Empty} {this.Zen}");

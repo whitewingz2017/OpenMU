@@ -61,6 +61,10 @@ public partial class DailyRewards
         if (day.Item is { } item)
         {
             yield return item.Name.ValueInNeutralLanguage + (day.ItemLevel > 0 ? FormattableString.Invariant($" +{day.ItemLevel}") : string.Empty);
+            if (day.ItemDurationHours > 0)
+            {
+                yield return string.Format(CultureInfo.CurrentCulture, Text("DurationSummary"), day.ItemDurationHours);
+            }
         }
 
         if (day.Zen > 0)
@@ -174,6 +178,7 @@ public partial class DailyRewards
         day.Item = this._gameConfiguration?.Items.FirstOrDefault(item => (item.Group * ItemsPerGroup) + item.Number == type);
         day.ItemLevel = 0;
         day.ItemQuantity = 0;
+        day.ItemDurationHours = 0;
         day.ItemOption = 0;
         day.ItemSkill = false;
         day.ItemLuck = false;
@@ -183,6 +188,7 @@ public partial class DailyRewards
     private void RemoveItem(DailyRewardDay day)
     {
         day.Item = null;
+        day.ItemDurationHours = 0;
         this._itemSearch = string.Empty;
     }
 

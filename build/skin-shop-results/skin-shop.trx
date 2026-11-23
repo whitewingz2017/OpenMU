@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="59bb6bdf-263f-4b5d-9266-ef465fae034e" name="kevin@KEVIN 2026-11-23 09:29:35" runUser="KEVIN\kevin" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-23T09:29:35.8348987+08:00" queuing="2026-11-23T09:29:35.8348990+08:00" start="2026-11-23T09:29:33.7212909+08:00" finish="2026-11-23T09:29:43.8815567+08:00" />
+  <TestSettings name="default" id="6c5bf2c0-1842-4507-9bbf-fac7cfa8e97a">
+    <Deployment runDeploymentRoot="kevin_KEVIN_2026-11-23_09_29_35" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="97f45ff0-f13c-4477-a059-391c4b3d9e04" testId="3a827f61-df52-cd11-9b7b-eb802aa540fe" testName="DuplicateWingsAreRetiredFromShop(319,False)" computerName="KEVIN" duration="00:00:00.0008150" startTime="2026-11-23T09:29:42.9807949+08:00" endTime="2026-11-23T09:29:42.9816084+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97f45ff0-f13c-4477-a059-391c4b3d9e04" />
+    <UnitTestResult executionId="4b083694-2ca7-4ec1-a126-00dc98146ffe" testId="f6d87501-b9a0-2dc6-98ea-3654c6072cd4" testName="WeaponPurchaseChecksClassBeforeSpendingAsync(False)" computerName="KEVIN" duration="00:00:00.0194949" startTime="2026-11-23T09:29:43.7574400+08:00" endTime="2026-11-23T09:29:43.7769328+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4b083694-2ca7-4ec1-a126-00dc98146ffe" />
+    <UnitTestResult executionId="5eeb0397-0390-46d1-bcae-d7a205f32cf3" testId="e4844f3f-f210-ca01-d710-3b18322308c1" testName="MountPurchaseUsesHelperSlotAsync(0,True)" computerName="KEVIN" duration="00:00:00.0170460" startTime="2026-11-23T09:29:43.5346422+08:00" endTime="2026-11-23T09:29:43.5516877+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5eeb0397-0390-46d1-bcae-d7a205f32cf3" />
+    <UnitTestResult executionId="79abee3b-cb94-43ca-9dd0-9b50727c2035" testId="df051f4b-38c0-e68c-d396-eaa5c7f452ab" testName="OtherBonusesAreNotOfferedAsync(4,False)" computerName="KEVIN" duration="00:00:00.0103250" startTime="2026-11-23T09:29:43.5653179+08:00" endTime="2026-11-23T09:29:43.5756411+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79abee3b-cb94-43ca-9dd0-9b50727c2035" />
+    <UnitTestResult executionId="a016d2ca-5c92-4d17-9734-c4d2eb8d6d9c" testId="27d97795-b17d-98ba-4f34-63bdf7a367c4" testName="PurchaseLevelIsValidatedAsync(16,False)" computerName="KEVIN" duration="00:00:00.0222870" startTime="2026-11-23T09:29:43.6373833+08:00" endTime="2026-11-23T09:29:43.6596688+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a016d2ca-5c92-4d17-9734-c4d2eb8d6d9c" />
+    <UnitTestResult executionId="aa3110b4-bc7b-4381-8395-0876d540cbd2" testId="c839f367-fc29-4223-92f1-66afd08fb345" testName="PurchaseLevelIsValidatedAsync(255,False)" computerName="KEVIN" duration="00:00:00.0140110" startTime="2026-11-23T09:29:43.6597246+08:00" endTime="2026-11-23T09:29:43.6737352+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa3110b4-bc7b-4381-8395-0876d540cbd2" />
+    <UnitTestResult executionId="c109f68c-9c71-4f43-9e4f-30cd16f8adfd" testId="b91b61be-1144-7831-2add-c20ec3c02e7e" testName="DuplicateWingsAreRetiredFromShop(312,False)" computerName="KEVIN" duration="00:00:00.0017950" startTime="2026-11-23T09:29:42.9789634+08:00" endTime="2026-11-23T09:29:42.9807579+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c109f68c-9c71-4f43-9e4f-30cd16f8adfd" />
+    <UnitTestResult executionId="d56c7ed3-1f04-4f44-8921-a4782e7c570c" testId="e4afbbfd-99cf-93d2-e415-2a4a7d211e6e" testName="LeftWeaponSkinAppliesConfiguredAttributesAsync" computerName="KEVIN" duration="00:00:00.0394790" startTime="2026-11-23T09:29:43.4950797+08:00" endTime="2026-11-23T09:29:43.5345576+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d56c7ed3-1f04-4f44-8921-a4782e7c570c" />
+    <UnitTestResult executionId="c2702100-3218-440b-8f35-1332bd759938" testId="46838502-0050-ff71-5ee3-be097e50f77e" testName="DuplicateWingsAreRetiredFromShop(329,False)" computerName="KEVIN" duration="00:00:00.0000670" startTime="2026-11-23T09:29:42.9816396+08:00" endTime="2026-11-23T09:29:42.9817065+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2702100-3218-440b-8f35-1332bd759938" />
+    <UnitTestResult executionId="6e12758c-2348-462d-b0ad-d6b8d7c8ea39" testId="ec2fe4b0-2ab8-4754-747d-214f27dd087f" testName="InvalidPurchaseDoesNotSpendAsync(7777,4,100)" computerName="KEVIN" duration="00:00:00.0094039" startTime="2026-11-23T09:29:43.4855996+08:00" endTime="2026-11-23T09:29:43.4950020+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e12758c-2348-462d-b0ad-d6b8d7c8ea39" />
+    <UnitTestResult executionId="24798464-2f78-402a-b10c-f31855dfaee7" testId="1f2ad2c3-8270-2bb4-56df-972d1dcc50c3" testName="IndividualPriceSupportsAllCosmeticCategories(13,Pets)" computerName="KEVIN" duration="00:00:00.0000180" startTime="2026-11-23T09:29:43.3763960+08:00" endTime="2026-11-23T09:29:43.3764140+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24798464-2f78-402a-b10c-f31855dfaee7" />
+    <UnitTestResult executionId="846522b2-87de-4916-8667-c95998ea2149" testId="f04cf1ae-604b-c4d9-623a-286f42689be6" testName="GmBonusSelectionUsesOneNormalFlagAsync(64,False)" computerName="KEVIN" duration="00:00:00.0122810" startTime="2026-11-23T09:29:43.3612779+08:00" endTime="2026-11-23T09:29:43.3735570+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="846522b2-87de-4916-8667-c95998ea2149" />
+    <UnitTestResult executionId="2db7f2a0-3faa-481e-a23b-fc9d776a441d" testId="3f0bd40c-b64e-7e12-4a96-72369a13e6e6" testName="InvalidPurchaseDoesNotSpendAsync(4196,6,100)" computerName="KEVIN" duration="00:00:00.0107220" startTime="2026-11-23T09:29:43.4607928+08:00" endTime="2026-11-23T09:29:43.4715137+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2db7f2a0-3faa-481e-a23b-fc9d776a441d" />
+    <UnitTestResult executionId="aefacb04-3e8c-410d-bebb-fe31c2b7e3ae" testId="7cbc8d2a-eca9-c1d4-1b16-93ae8db24075" testName="PurchaseAndReplayAreAtomicAsync" computerName="KEVIN" duration="00:00:00.0137350" startTime="2026-11-23T09:29:43.5884907+08:00" endTime="2026-11-23T09:29:43.6022247+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aefacb04-3e8c-410d-bebb-fe31c2b7e3ae" />
+    <UnitTestResult executionId="8b11f71d-7172-43c0-a166-2081cb3d2470" testId="d1bd93fd-918f-622e-702d-a0cf2f037c9d" testName="DuplicateWingsAreRetiredFromShop(334,False)" computerName="KEVIN" duration="00:00:00.0000349" startTime="2026-11-23T09:29:42.9817115+08:00" endTime="2026-11-23T09:29:42.9817467+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b11f71d-7172-43c0-a166-2081cb3d2470" />
+    <UnitTestResult executionId="d21ea68f-6b0c-44d2-ab9e-085c16898bc3" testId="645a6435-e38a-ed75-c66e-6f8be20fb89e" testName="IndividualSaleSettingsAreEnforcedAsync(True,False,100,False)" computerName="KEVIN" duration="00:00:00.0120950" startTime="2026-11-23T09:29:43.4174709+08:00" endTime="2026-11-23T09:29:43.4295645+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d21ea68f-6b0c-44d2-ab9e-085c16898bc3" />
+    <UnitTestResult executionId="de2e13c8-c58d-440d-97f1-cdb7c3e62f97" testId="dddac0f5-f38b-9aaf-e0f9-a17f4403b89b" testName="DuplicateWingsAreRetiredFromShop(320,True)" computerName="KEVIN" duration="00:00:00.0000210" startTime="2026-11-23T09:29:42.9817515+08:00" endTime="2026-11-23T09:29:42.9817723+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de2e13c8-c58d-440d-97f1-cdb7c3e62f97" />
+    <UnitTestResult executionId="05aeabda-5a01-4cc3-9c28-7267fed23c95" testId="95b0b75e-1422-e8f4-1024-8277a67f4a5c" testName="InvalidPurchaseDoesNotSpendAsync(4196,4,100)" computerName="KEVIN" duration="00:00:00.0139930" startTime="2026-11-23T09:29:43.4715589+08:00" endTime="2026-11-23T09:29:43.4855495+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05aeabda-5a01-4cc3-9c28-7267fed23c95" />
+    <UnitTestResult executionId="712dfbde-c1bb-4324-a6ef-7834876b0e5a" testId="faf82e8a-a934-3a19-0dcd-53e46179e61b" testName="OtherBonusesAreNotOfferedAsync(0,True)" computerName="KEVIN" duration="00:00:00.0127300" startTime="2026-11-23T09:29:43.5756931+08:00" endTime="2026-11-23T09:29:43.5884222+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="712dfbde-c1bb-4324-a6ef-7834876b0e5a" />
+    <UnitTestResult executionId="686fadcf-7ce2-4fa1-90ac-f7c164507563" testId="a0c5f119-82d9-7d29-c403-872e77fbd39c" testName="PurchaseLevelIsValidatedAsync(15,True)" computerName="KEVIN" duration="00:00:00.0101420" startTime="2026-11-23T09:29:43.6271983+08:00" endTime="2026-11-23T09:29:43.6373390+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="686fadcf-7ce2-4fa1-90ac-f7c164507563" />
+    <UnitTestResult executionId="171b48a9-e739-48db-87d5-116b4f451c33" testId="5e747357-5066-c420-fe2b-2138c943c395" testName="WeaponPurchaseChecksClassBeforeSpendingAsync(True)" computerName="KEVIN" duration="00:00:00.0266950" startTime="2026-11-23T09:29:43.7306710+08:00" endTime="2026-11-23T09:29:43.7573644+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="171b48a9-e739-48db-87d5-116b4f451c33" />
+    <UnitTestResult executionId="03458e40-b503-4a3a-8ee8-76fb3d37447d" testId="58cbee22-c15c-8cda-c713-d97b5e4438d8" testName="InvalidPurchaseDoesNotSpendAsync(4196,0,0)" computerName="KEVIN" duration="00:00:00.0097610" startTime="2026-11-23T09:29:43.4509918+08:00" endTime="2026-11-23T09:29:43.4607513+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03458e40-b503-4a3a-8ee8-76fb3d37447d" />
+    <UnitTestResult executionId="91d0487c-451a-4b2c-a3cd-5f64d69aed66" testId="61cdf3e5-af60-506b-6573-f051e6e46360" testName="DefaultCatalogFitsPacketAsync" computerName="KEVIN" duration="00:00:07.3755270" startTime="2026-11-23T09:29:35.6001899+08:00" endTime="2026-11-23T09:29:42.9757160+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91d0487c-451a-4b2c-a3cd-5f64d69aed66">
+      <Output>
+        <StdOut>Shop catalog including attributes: 56601 bytes.</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="53e17ad6-aef5-445c-ac28-dc3b00e83763" testId="d53ade29-5e20-17e1-b2f8-aa27e7a6e108" testName="GmBonusSelectionUsesOneNormalFlagAsync(8,True)" computerName="KEVIN" duration="00:00:00.0284390" startTime="2026-11-23T09:29:43.3234776+08:00" endTime="2026-11-23T09:29:43.3519157+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53e17ad6-aef5-445c-ac28-dc3b00e83763" />
+    <UnitTestResult executionId="75e6901d-dfd1-4925-9ce0-450f1cf401b7" testId="66414b6b-c8af-e314-fba7-d61702b9f8fc" testName="IndividualPriceSupportsAllCosmeticCategories(0,Weapons)" computerName="KEVIN" duration="00:00:00.0000349" startTime="2026-11-23T09:29:43.3763303+08:00" endTime="2026-11-23T09:29:43.3763652+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75e6901d-dfd1-4925-9ce0-450f1cf401b7" />
+    <UnitTestResult executionId="abb9010b-1f14-4afb-be92-b41e4488cded" testId="cf1982ee-42a9-1532-5c81-d439b735f586" testName="IndividualPriceSupportsAllCosmeticCategories(8,Sets)" computerName="KEVIN" duration="00:00:00.0022110" startTime="2026-11-23T09:29:43.3736586+08:00" endTime="2026-11-23T09:29:43.3758682+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abb9010b-1f14-4afb-be92-b41e4488cded" />
+    <UnitTestResult executionId="23ca057f-0e42-48aa-81cc-1e330f83813e" testId="3b324a8d-afa8-000c-b86f-9c84adcfb310" testName="IndividualPriceSupportsAllCosmeticCategories(6,Shields)" computerName="KEVIN" duration="00:00:00.0000200" startTime="2026-11-23T09:29:43.3763723+08:00" endTime="2026-11-23T09:29:43.3763922+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="23ca057f-0e42-48aa-81cc-1e330f83813e" />
+    <UnitTestResult executionId="5662b7bd-cf3e-4ec5-9416-53d380c83a3f" testId="84ff156b-e8dd-1f6d-25e7-efb7894b6e45" testName="CosmeticSnapshotCarriesEffectsWithoutShopOrOwnershipAsync" computerName="KEVIN" duration="00:00:00.0336030" startTime="2026-11-23T09:29:35.5665051+08:00" endTime="2026-11-23T09:29:35.6001078+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5662b7bd-cf3e-4ec5-9416-53d380c83a3f" />
+    <UnitTestResult executionId="24f55fad-dfee-4cde-945a-f14306c96128" testId="896f88e2-d293-93ca-bad5-3c411f3a2288" testName="IndividualSaleSettingsAreEnforcedAsync(True,True,175,False)" computerName="KEVIN" duration="00:00:00.0116240" startTime="2026-11-23T09:29:43.4058096+08:00" endTime="2026-11-23T09:29:43.4174332+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24f55fad-dfee-4cde-945a-f14306c96128" />
+    <UnitTestResult executionId="c304c823-bb72-4e69-9412-7680af1bfaac" testId="bbd5dc60-2bfe-5a12-611a-c464d8d2207d" testName="InvalidPurchaseDoesNotSpendAsync(4196,0,99)" computerName="KEVIN" duration="00:00:00.0122680" startTime="2026-11-23T09:29:43.4386725+08:00" endTime="2026-11-23T09:29:43.4509385+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c304c823-bb72-4e69-9412-7680af1bfaac" />
+    <UnitTestResult executionId="d184e3fd-6825-46fb-9411-9d4a295a4b79" testId="6247f95f-5aa3-d9d2-a647-e59eb9db1508" testName="IndividualSaleSettingsAreEnforcedAsync(True,False,0,False)" computerName="KEVIN" duration="00:00:00.0088700" startTime="2026-11-23T09:29:43.4296137+08:00" endTime="2026-11-23T09:29:43.4384820+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d184e3fd-6825-46fb-9411-9d4a295a4b79" />
+    <UnitTestResult executionId="3982fb8b-c462-4e77-bd1d-d6c31cf76722" testId="2a2b742a-c1a4-a69c-81cf-fbff515a566c" testName="UnavailablePurchaseDoesNotSpendAsync(False,500,0)" computerName="KEVIN" duration="00:00:00.0247350" startTime="2026-11-23T09:29:43.7058019+08:00" endTime="2026-11-23T09:29:43.7305351+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3982fb8b-c462-4e77-bd1d-d6c31cf76722" />
+    <UnitTestResult executionId="600945f5-46c9-436f-933d-a84b3281f5d2" testId="6b492c4d-1c0b-2f6d-8e39-f9aeda85767f" testName="IndividualSaleSettingsAreEnforcedAsync(True,False,175,True)" computerName="KEVIN" duration="00:00:00.0121400" startTime="2026-11-23T09:29:43.3764599+08:00" endTime="2026-11-23T09:29:43.3885994+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="600945f5-46c9-436f-933d-a84b3281f5d2" />
+    <UnitTestResult executionId="abc1c25e-3773-4394-b824-15928f63692e" testId="7fd37281-6597-a9e1-1caa-047783973de1" testName="PurchaseLevelIsValidatedAsync(0,True)" computerName="KEVIN" duration="00:00:00.0142750" startTime="2026-11-23T09:29:43.6023206+08:00" endTime="2026-11-23T09:29:43.6165942+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abc1c25e-3773-4394-b824-15928f63692e" />
+    <UnitTestResult executionId="f8dc39bd-abab-4e47-9736-43edb8db47d8" testId="e0e41393-0448-4bda-55e7-0bb40744db8b" testName="FailedSaveRollsBackAsync" computerName="KEVIN" duration="00:00:00.3227480" startTime="2026-11-23T09:29:42.9818696+08:00" endTime="2026-11-23T09:29:43.3046168+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8dc39bd-abab-4e47-9736-43edb8db47d8" />
+    <UnitTestResult executionId="ccd98649-07a2-4c2d-b970-709e371e1969" testId="764d322a-bc2b-14d2-0e44-41c0a08f90f3" testName="UnavailablePurchaseDoesNotSpendAsync(False,99,100)" computerName="KEVIN" duration="00:00:00.0110680" startTime="2026-11-23T09:29:43.6946915+08:00" endTime="2026-11-23T09:29:43.7057582+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccd98649-07a2-4c2d-b970-709e371e1969" />
+    <UnitTestResult executionId="3b969dcb-68cb-4e0f-b59b-2b2401e9852a" testId="60952718-1e72-4021-8cf0-439e369b6d79" testName="UnavailablePurchaseDoesNotSpendAsync(True,500,100)" computerName="KEVIN" duration="00:00:00.0207910" startTime="2026-11-23T09:29:43.6738483+08:00" endTime="2026-11-23T09:29:43.6946376+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b969dcb-68cb-4e0f-b59b-2b2401e9852a" />
+    <UnitTestResult executionId="a78c90da-4da7-4d9e-8c57-bd6824511dc5" testId="de0cf0b4-c694-8648-a1db-488e2f262be4" testName="IndividualSaleSettingsAreEnforcedAsync(False,False,175,False)" computerName="KEVIN" duration="00:00:00.0171330" startTime="2026-11-23T09:29:43.3886348+08:00" endTime="2026-11-23T09:29:43.4057657+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a78c90da-4da7-4d9e-8c57-bd6824511dc5" />
+    <UnitTestResult executionId="112a1bf8-a64d-4be3-9fb5-afda4640152c" testId="22e88513-4911-02e4-9478-814954b2869a" testName="GmBonusSelectionUsesOneNormalFlagAsync(9,False)" computerName="KEVIN" duration="00:00:00.0092720" startTime="2026-11-23T09:29:43.3519634+08:00" endTime="2026-11-23T09:29:43.3612347+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="112a1bf8-a64d-4be3-9fb5-afda4640152c" />
+    <UnitTestResult executionId="e9ff6b02-ccc9-46d2-aee6-179c993cf33d" testId="164386d0-407e-de4c-4261-f02677259525" testName="GmBonusSelectionUsesOneNormalFlagAsync(0,True)" computerName="KEVIN" duration="00:00:00.0187200" startTime="2026-11-23T09:29:43.3047020+08:00" endTime="2026-11-23T09:29:43.3234193+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9ff6b02-ccc9-46d2-aee6-179c993cf33d" />
+    <UnitTestResult executionId="4db77d2a-62c1-4d08-afc3-5b05e998cc71" testId="6a2944d3-62ac-1b60-ff81-442826907455" testName="PurchaseLevelIsValidatedAsync(1,True)" computerName="KEVIN" duration="00:00:00.0105000" startTime="2026-11-23T09:29:43.6166469+08:00" endTime="2026-11-23T09:29:43.6271450+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4db77d2a-62c1-4d08-afc3-5b05e998cc71" />
+    <UnitTestResult executionId="9900554c-934c-4383-a97c-da5459037ebf" testId="7e647b09-33b7-128d-4f6d-dd1c928dd901" testName="AttributesAreQuotedIndependentlyOfTooltips" computerName="KEVIN" duration="00:00:00.2534090" startTime="2026-11-23T09:29:35.3109715+08:00" endTime="2026-11-23T09:29:35.5642798+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9900554c-934c-4383-a97c-da5459037ebf" />
+    <UnitTestResult executionId="096c638a-8e74-429b-8e14-74ce981f7df8" testId="c50458a4-9a2c-c529-4dfd-28590c0af69d" testName="MountPurchaseUsesHelperSlotAsync(1,False)" computerName="KEVIN" duration="00:00:00.0134940" startTime="2026-11-23T09:29:43.5517350+08:00" endTime="2026-11-23T09:29:43.5652274+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="096c638a-8e74-429b-8e14-74ce981f7df8" />
+    <UnitTestResult executionId="09a908e0-9694-4a67-b3aa-5ea382b4ac7a" testId="6fd3c02e-440e-6865-005f-9d99a175f808" testName="IndividualPriceSupportsAllCosmeticCategories(12,Wings)" computerName="KEVIN" duration="00:00:00.0003980" startTime="2026-11-23T09:29:43.3759061+08:00" endTime="2026-11-23T09:29:43.3763035+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09a908e0-9694-4a67-b3aa-5ea382b4ac7a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="UnavailablePurchaseDoesNotSpendAsync(False,500,0)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="2a2b742a-c1a4-a69c-81cf-fbff515a566c">
+      <Execution id="3982fb8b-c462-4e77-bd1d-d6c31cf76722" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="UnavailablePurchaseDoesNotSpendAsync(False,500,0)" />
+    </UnitTest>
+    <UnitTest name="IndividualSaleSettingsAreEnforcedAsync(True,False,175,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="6b492c4d-1c0b-2f6d-8e39-f9aeda85767f">
+      <Execution id="600945f5-46c9-436f-933d-a84b3281f5d2" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualSaleSettingsAreEnforcedAsync(True,False,175,True)" />
+    </UnitTest>
+    <UnitTest name="IndividualSaleSettingsAreEnforcedAsync(True,True,175,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="896f88e2-d293-93ca-bad5-3c411f3a2288">
+      <Execution id="24f55fad-dfee-4cde-945a-f14306c96128" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualSaleSettingsAreEnforcedAsync(True,True,175,False)" />
+    </UnitTest>
+    <UnitTest name="CosmeticSnapshotCarriesEffectsWithoutShopOrOwnershipAsync" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="84ff156b-e8dd-1f6d-25e7-efb7894b6e45">
+      <Execution id="5662b7bd-cf3e-4ec5-9416-53d380c83a3f" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopAttributeCatalogTests" name="CosmeticSnapshotCarriesEffectsWithoutShopOrOwnershipAsync" />
+    </UnitTest>
+    <UnitTest name="IndividualPriceSupportsAllCosmeticCategories(12,Wings)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="6fd3c02e-440e-6865-005f-9d99a175f808">
+      <Execution id="09a908e0-9694-4a67-b3aa-5ea382b4ac7a" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualPriceSupportsAllCosmeticCategories(12,Wings)" />
+    </UnitTest>
+    <UnitTest name="IndividualPriceSupportsAllCosmeticCategories(8,Sets)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="cf1982ee-42a9-1532-5c81-d439b735f586">
+      <Execution id="abb9010b-1f14-4afb-be92-b41e4488cded" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualPriceSupportsAllCosmeticCategories(8,Sets)" />
+    </UnitTest>
+    <UnitTest name="MountPurchaseUsesHelperSlotAsync(0,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="e4844f3f-f210-ca01-d710-3b18322308c1">
+      <Execution id="5eeb0397-0390-46d1-bcae-d7a205f32cf3" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="MountPurchaseUsesHelperSlotAsync(0,True)" />
+    </UnitTest>
+    <UnitTest name="IndividualPriceSupportsAllCosmeticCategories(13,Pets)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="1f2ad2c3-8270-2bb4-56df-972d1dcc50c3">
+      <Execution id="24798464-2f78-402a-b10c-f31855dfaee7" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualPriceSupportsAllCosmeticCategories(13,Pets)" />
+    </UnitTest>
+    <UnitTest name="MountPurchaseUsesHelperSlotAsync(1,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="c50458a4-9a2c-c529-4dfd-28590c0af69d">
+      <Execution id="096c638a-8e74-429b-8e14-74ce981f7df8" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="MountPurchaseUsesHelperSlotAsync(1,False)" />
+    </UnitTest>
+    <UnitTest name="OtherBonusesAreNotOfferedAsync(0,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="faf82e8a-a934-3a19-0dcd-53e46179e61b">
+      <Execution id="712dfbde-c1bb-4324-a6ef-7834876b0e5a" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="OtherBonusesAreNotOfferedAsync(0,True)" />
+    </UnitTest>
+    <UnitTest name="PurchaseLevelIsValidatedAsync(16,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="27d97795-b17d-98ba-4f34-63bdf7a367c4">
+      <Execution id="a016d2ca-5c92-4d17-9734-c4d2eb8d6d9c" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseLevelIsValidatedAsync(16,False)" />
+    </UnitTest>
+    <UnitTest name="DuplicateWingsAreRetiredFromShop(334,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="d1bd93fd-918f-622e-702d-a0cf2f037c9d">
+      <Execution id="8b11f71d-7172-43c0-a166-2081cb3d2470" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="DuplicateWingsAreRetiredFromShop(334,False)" />
+    </UnitTest>
+    <UnitTest name="DefaultCatalogFitsPacketAsync" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="61cdf3e5-af60-506b-6573-f051e6e46360">
+      <Execution id="91d0487c-451a-4b2c-a3cd-5f64d69aed66" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopAttributeCatalogTests" name="DefaultCatalogFitsPacketAsync" />
+    </UnitTest>
+    <UnitTest name="InvalidPurchaseDoesNotSpendAsync(4196,0,0)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="58cbee22-c15c-8cda-c713-d97b5e4438d8">
+      <Execution id="03458e40-b503-4a3a-8ee8-76fb3d37447d" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="InvalidPurchaseDoesNotSpendAsync(4196,0,0)" />
+    </UnitTest>
+    <UnitTest name="WeaponPurchaseChecksClassBeforeSpendingAsync(False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="f6d87501-b9a0-2dc6-98ea-3654c6072cd4">
+      <Execution id="4b083694-2ca7-4ec1-a126-00dc98146ffe" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="WeaponPurchaseChecksClassBeforeSpendingAsync(False)" />
+    </UnitTest>
+    <UnitTest name="IndividualPriceSupportsAllCosmeticCategories(0,Weapons)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="66414b6b-c8af-e314-fba7-d61702b9f8fc">
+      <Execution id="75e6901d-dfd1-4925-9ce0-450f1cf401b7" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualPriceSupportsAllCosmeticCategories(0,Weapons)" />
+    </UnitTest>
+    <UnitTest name="IndividualSaleSettingsAreEnforcedAsync(False,False,175,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="de0cf0b4-c694-8648-a1db-488e2f262be4">
+      <Execution id="a78c90da-4da7-4d9e-8c57-bd6824511dc5" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualSaleSettingsAreEnforcedAsync(False,False,175,False)" />
+    </UnitTest>
+    <UnitTest name="DuplicateWingsAreRetiredFromShop(320,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="dddac0f5-f38b-9aaf-e0f9-a17f4403b89b">
+      <Execution id="de2e13c8-c58d-440d-97f1-cdb7c3e62f97" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="DuplicateWingsAreRetiredFromShop(320,True)" />
+    </UnitTest>
+    <UnitTest name="IndividualPriceSupportsAllCosmeticCategories(6,Shields)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="3b324a8d-afa8-000c-b86f-9c84adcfb310">
+      <Execution id="23ca057f-0e42-48aa-81cc-1e330f83813e" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualPriceSupportsAllCosmeticCategories(6,Shields)" />
+    </UnitTest>
+    <UnitTest name="GmBonusSelectionUsesOneNormalFlagAsync(64,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="f04cf1ae-604b-c4d9-623a-286f42689be6">
+      <Execution id="846522b2-87de-4916-8667-c95998ea2149" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="GmBonusSelectionUsesOneNormalFlagAsync(64,False)" />
+    </UnitTest>
+    <UnitTest name="LeftWeaponSkinAppliesConfiguredAttributesAsync" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="e4afbbfd-99cf-93d2-e415-2a4a7d211e6e">
+      <Execution id="d56c7ed3-1f04-4f44-8921-a4782e7c570c" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="LeftWeaponSkinAppliesConfiguredAttributesAsync" />
+    </UnitTest>
+    <UnitTest name="OtherBonusesAreNotOfferedAsync(4,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="df051f4b-38c0-e68c-d396-eaa5c7f452ab">
+      <Execution id="79abee3b-cb94-43ca-9dd0-9b50727c2035" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="OtherBonusesAreNotOfferedAsync(4,False)" />
+    </UnitTest>
+    <UnitTest name="PurchaseLevelIsValidatedAsync(15,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="a0c5f119-82d9-7d29-c403-872e77fbd39c">
+      <Execution id="686fadcf-7ce2-4fa1-90ac-f7c164507563" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseLevelIsValidatedAsync(15,True)" />
+    </UnitTest>
+    <UnitTest name="GmBonusSelectionUsesOneNormalFlagAsync(9,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="22e88513-4911-02e4-9478-814954b2869a">
+      <Execution id="112a1bf8-a64d-4be3-9fb5-afda4640152c" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="GmBonusSelectionUsesOneNormalFlagAsync(9,False)" />
+    </UnitTest>
+    <UnitTest name="IndividualSaleSettingsAreEnforcedAsync(True,False,0,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="6247f95f-5aa3-d9d2-a647-e59eb9db1508">
+      <Execution id="d184e3fd-6825-46fb-9411-9d4a295a4b79" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualSaleSettingsAreEnforcedAsync(True,False,0,False)" />
+    </UnitTest>
+    <UnitTest name="InvalidPurchaseDoesNotSpendAsync(4196,6,100)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="3f0bd40c-b64e-7e12-4a96-72369a13e6e6">
+      <Execution id="2db7f2a0-3faa-481e-a23b-fc9d776a441d" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="InvalidPurchaseDoesNotSpendAsync(4196,6,100)" />
+    </UnitTest>
+    <UnitTest name="InvalidPurchaseDoesNotSpendAsync(4196,0,99)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="bbd5dc60-2bfe-5a12-611a-c464d8d2207d">
+      <Execution id="c304c823-bb72-4e69-9412-7680af1bfaac" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="InvalidPurchaseDoesNotSpendAsync(4196,0,99)" />
+    </UnitTest>
+    <UnitTest name="DuplicateWingsAreRetiredFromShop(312,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="b91b61be-1144-7831-2add-c20ec3c02e7e">
+      <Execution id="c109f68c-9c71-4f43-9e4f-30cd16f8adfd" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="DuplicateWingsAreRetiredFromShop(312,False)" />
+    </UnitTest>
+    <UnitTest name="WeaponPurchaseChecksClassBeforeSpendingAsync(True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="5e747357-5066-c420-fe2b-2138c943c395">
+      <Execution id="171b48a9-e739-48db-87d5-116b4f451c33" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="WeaponPurchaseChecksClassBeforeSpendingAsync(True)" />
+    </UnitTest>
+    <UnitTest name="PurchaseLevelIsValidatedAsync(0,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="7fd37281-6597-a9e1-1caa-047783973de1">
+      <Execution id="abc1c25e-3773-4394-b824-15928f63692e" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseLevelIsValidatedAsync(0,True)" />
+    </UnitTest>
+    <UnitTest name="GmBonusSelectionUsesOneNormalFlagAsync(8,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="d53ade29-5e20-17e1-b2f8-aa27e7a6e108">
+      <Execution id="53e17ad6-aef5-445c-ac28-dc3b00e83763" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="GmBonusSelectionUsesOneNormalFlagAsync(8,True)" />
+    </UnitTest>
+    <UnitTest name="PurchaseLevelIsValidatedAsync(255,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="c839f367-fc29-4223-92f1-66afd08fb345">
+      <Execution id="aa3110b4-bc7b-4381-8395-0876d540cbd2" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseLevelIsValidatedAsync(255,False)" />
+    </UnitTest>
+    <UnitTest name="PurchaseAndReplayAreAtomicAsync" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="7cbc8d2a-eca9-c1d4-1b16-93ae8db24075">
+      <Execution id="aefacb04-3e8c-410d-bebb-fe31c2b7e3ae" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseAndReplayAreAtomicAsync" />
+    </UnitTest>
+    <UnitTest name="PurchaseLevelIsValidatedAsync(1,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="6a2944d3-62ac-1b60-ff81-442826907455">
+      <Execution id="4db77d2a-62c1-4d08-afc3-5b05e998cc71" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="PurchaseLevelIsValidatedAsync(1,True)" />
+    </UnitTest>
+    <UnitTest name="AttributesAreQuotedIndependentlyOfTooltips" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="7e647b09-33b7-128d-4f6d-dd1c928dd901">
+      <Execution id="9900554c-934c-4383-a97c-da5459037ebf" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopAttributeCatalogTests" name="AttributesAreQuotedIndependentlyOfTooltips" />
+    </UnitTest>
+    <UnitTest name="DuplicateWingsAreRetiredFromShop(329,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="46838502-0050-ff71-5ee3-be097e50f77e">
+      <Execution id="c2702100-3218-440b-8f35-1332bd759938" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="DuplicateWingsAreRetiredFromShop(329,False)" />
+    </UnitTest>
+    <UnitTest name="UnavailablePurchaseDoesNotSpendAsync(True,500,100)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="60952718-1e72-4021-8cf0-439e369b6d79">
+      <Execution id="3b969dcb-68cb-4e0f-b59b-2b2401e9852a" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="UnavailablePurchaseDoesNotSpendAsync(True,500,100)" />
+    </UnitTest>
+    <UnitTest name="DuplicateWingsAreRetiredFromShop(319,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="3a827f61-df52-cd11-9b7b-eb802aa540fe">
+      <Execution id="97f45ff0-f13c-4477-a059-391c4b3d9e04" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="DuplicateWingsAreRetiredFromShop(319,False)" />
+    </UnitTest>
+    <UnitTest name="InvalidPurchaseDoesNotSpendAsync(4196,4,100)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="95b0b75e-1422-e8f4-1024-8277a67f4a5c">
+      <Execution id="05aeabda-5a01-4cc3-9c28-7267fed23c95" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="InvalidPurchaseDoesNotSpendAsync(4196,4,100)" />
+    </UnitTest>
+    <UnitTest name="GmBonusSelectionUsesOneNormalFlagAsync(0,True)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="164386d0-407e-de4c-4261-f02677259525">
+      <Execution id="e9ff6b02-ccc9-46d2-aee6-179c993cf33d" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="GmBonusSelectionUsesOneNormalFlagAsync(0,True)" />
+    </UnitTest>
+    <UnitTest name="FailedSaveRollsBackAsync" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="e0e41393-0448-4bda-55e7-0bb40744db8b">
+      <Execution id="f8dc39bd-abab-4e47-9736-43edb8db47d8" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="FailedSaveRollsBackAsync" />
+    </UnitTest>
+    <UnitTest name="InvalidPurchaseDoesNotSpendAsync(7777,4,100)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="ec2fe4b0-2ab8-4754-747d-214f27dd087f">
+      <Execution id="6e12758c-2348-462d-b0ad-d6b8d7c8ea39" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="InvalidPurchaseDoesNotSpendAsync(7777,4,100)" />
+    </UnitTest>
+    <UnitTest name="UnavailablePurchaseDoesNotSpendAsync(False,99,100)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="764d322a-bc2b-14d2-0e44-41c0a08f90f3">
+      <Execution id="ccd98649-07a2-4c2d-b970-709e371e1969" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="UnavailablePurchaseDoesNotSpendAsync(False,99,100)" />
+    </UnitTest>
+    <UnitTest name="IndividualSaleSettingsAreEnforcedAsync(True,False,100,False)" storage="c:\openmu\openmu\tests\munique.openmu.tests\bin\debug\munique.openmu.tests.dll" id="645a6435-e38a-ed75-c66e-6f8be20fb89e">
+      <Execution id="d21ea68f-6b0c-44d2-ab9e-085c16898bc3" />
+      <TestMethod codeBase="C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll" adapterTypeName="executor://nunit3testexecutor/" className="MUnique.OpenMU.Tests.SkinShopTests" name="IndividualSaleSettingsAreEnforcedAsync(True,False,100,False)" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="3a827f61-df52-cd11-9b7b-eb802aa540fe" executionId="97f45ff0-f13c-4477-a059-391c4b3d9e04" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6d87501-b9a0-2dc6-98ea-3654c6072cd4" executionId="4b083694-2ca7-4ec1-a126-00dc98146ffe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4844f3f-f210-ca01-d710-3b18322308c1" executionId="5eeb0397-0390-46d1-bcae-d7a205f32cf3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df051f4b-38c0-e68c-d396-eaa5c7f452ab" executionId="79abee3b-cb94-43ca-9dd0-9b50727c2035" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="27d97795-b17d-98ba-4f34-63bdf7a367c4" executionId="a016d2ca-5c92-4d17-9734-c4d2eb8d6d9c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c839f367-fc29-4223-92f1-66afd08fb345" executionId="aa3110b4-bc7b-4381-8395-0876d540cbd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b91b61be-1144-7831-2add-c20ec3c02e7e" executionId="c109f68c-9c71-4f43-9e4f-30cd16f8adfd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4afbbfd-99cf-93d2-e415-2a4a7d211e6e" executionId="d56c7ed3-1f04-4f44-8921-a4782e7c570c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46838502-0050-ff71-5ee3-be097e50f77e" executionId="c2702100-3218-440b-8f35-1332bd759938" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec2fe4b0-2ab8-4754-747d-214f27dd087f" executionId="6e12758c-2348-462d-b0ad-d6b8d7c8ea39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f2ad2c3-8270-2bb4-56df-972d1dcc50c3" executionId="24798464-2f78-402a-b10c-f31855dfaee7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f04cf1ae-604b-c4d9-623a-286f42689be6" executionId="846522b2-87de-4916-8667-c95998ea2149" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f0bd40c-b64e-7e12-4a96-72369a13e6e6" executionId="2db7f2a0-3faa-481e-a23b-fc9d776a441d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7cbc8d2a-eca9-c1d4-1b16-93ae8db24075" executionId="aefacb04-3e8c-410d-bebb-fe31c2b7e3ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1bd93fd-918f-622e-702d-a0cf2f037c9d" executionId="8b11f71d-7172-43c0-a166-2081cb3d2470" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="645a6435-e38a-ed75-c66e-6f8be20fb89e" executionId="d21ea68f-6b0c-44d2-ab9e-085c16898bc3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dddac0f5-f38b-9aaf-e0f9-a17f4403b89b" executionId="de2e13c8-c58d-440d-97f1-cdb7c3e62f97" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95b0b75e-1422-e8f4-1024-8277a67f4a5c" executionId="05aeabda-5a01-4cc3-9c28-7267fed23c95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="faf82e8a-a934-3a19-0dcd-53e46179e61b" executionId="712dfbde-c1bb-4324-a6ef-7834876b0e5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a0c5f119-82d9-7d29-c403-872e77fbd39c" executionId="686fadcf-7ce2-4fa1-90ac-f7c164507563" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5e747357-5066-c420-fe2b-2138c943c395" executionId="171b48a9-e739-48db-87d5-116b4f451c33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="58cbee22-c15c-8cda-c713-d97b5e4438d8" executionId="03458e40-b503-4a3a-8ee8-76fb3d37447d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="61cdf3e5-af60-506b-6573-f051e6e46360" executionId="91d0487c-451a-4b2c-a3cd-5f64d69aed66" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d53ade29-5e20-17e1-b2f8-aa27e7a6e108" executionId="53e17ad6-aef5-445c-ac28-dc3b00e83763" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="66414b6b-c8af-e314-fba7-d61702b9f8fc" executionId="75e6901d-dfd1-4925-9ce0-450f1cf401b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf1982ee-42a9-1532-5c81-d439b735f586" executionId="abb9010b-1f14-4afb-be92-b41e4488cded" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b324a8d-afa8-000c-b86f-9c84adcfb310" executionId="23ca057f-0e42-48aa-81cc-1e330f83813e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="84ff156b-e8dd-1f6d-25e7-efb7894b6e45" executionId="5662b7bd-cf3e-4ec5-9416-53d380c83a3f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="896f88e2-d293-93ca-bad5-3c411f3a2288" executionId="24f55fad-dfee-4cde-945a-f14306c96128" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bbd5dc60-2bfe-5a12-611a-c464d8d2207d" executionId="c304c823-bb72-4e69-9412-7680af1bfaac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6247f95f-5aa3-d9d2-a647-e59eb9db1508" executionId="d184e3fd-6825-46fb-9411-9d4a295a4b79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a2b742a-c1a4-a69c-81cf-fbff515a566c" executionId="3982fb8b-c462-4e77-bd1d-d6c31cf76722" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b492c4d-1c0b-2f6d-8e39-f9aeda85767f" executionId="600945f5-46c9-436f-933d-a84b3281f5d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7fd37281-6597-a9e1-1caa-047783973de1" executionId="abc1c25e-3773-4394-b824-15928f63692e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0e41393-0448-4bda-55e7-0bb40744db8b" executionId="f8dc39bd-abab-4e47-9736-43edb8db47d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="764d322a-bc2b-14d2-0e44-41c0a08f90f3" executionId="ccd98649-07a2-4c2d-b970-709e371e1969" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60952718-1e72-4021-8cf0-439e369b6d79" executionId="3b969dcb-68cb-4e0f-b59b-2b2401e9852a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de0cf0b4-c694-8648-a1db-488e2f262be4" executionId="a78c90da-4da7-4d9e-8c57-bd6824511dc5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="22e88513-4911-02e4-9478-814954b2869a" executionId="112a1bf8-a64d-4be3-9fb5-afda4640152c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="164386d0-407e-de4c-4261-f02677259525" executionId="e9ff6b02-ccc9-46d2-aee6-179c993cf33d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6a2944d3-62ac-1b60-ff81-442826907455" executionId="4db77d2a-62c1-4d08-afc3-5b05e998cc71" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e647b09-33b7-128d-4f6d-dd1c928dd901" executionId="9900554c-934c-4383-a97c-da5459037ebf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c50458a4-9a2c-c529-4dfd-28590c0af69d" executionId="096c638a-8e74-429b-8e14-74ce981f7df8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6fd3c02e-440e-6865-005f-9d99a175f808" executionId="09a908e0-9694-4a67-b3aa-5ea382b4ac7a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="44" executed="44" passed="44" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>NUnit Adapter 4.6.0.0: Test execution started&#xD;
+Running selected tests in C:\OpenMU\OpenMU\tests\MUnique.OpenMU.Tests\bin\Debug\MUnique.OpenMU.Tests.dll&#xD;
+   NUnit3TestExecutor discovered 44 of 44 NUnit test cases using Current Discovery mode, Non-Explicit run&#xD;
+Shop catalog including attributes: 56601 bytes.&#xD;
+&#xD;
+NUnit Adapter 4.6.0.0: Test execution complete&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

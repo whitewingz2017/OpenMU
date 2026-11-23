@@ -112,7 +112,7 @@ Muun equipment remains unchanged.
 **Add Ashwing** adds a level 110 phoenix at Icarus (47, 189) to Season Six.
 It respawns after three minutes. Its Cinder Gale animation fans out embers and its attack damages its current target. Install the matching MuMain client and monster assets before enabling this optional update.
 
-**Separate Excellent accessory drops** splits unrestricted Season Six monster Excellent groups into equipment and ring/pendant groups. Both start at your current group chance and can be edited separately on Item Drops. Explicit item lists and item-box drops keep their rules. Restart the rebuilt server after applying.
+**Separate Excellent accessory drops** splits unrestricted Season Six monster Excellent groups into equipment and ring/pendant groups. Both start at your current group chance. The plugin's configuration button opens **Item drops**, filtered to **ExcellentAccessories**. Edit **Chance (%)** on each accessory group and save; 1 means 1%, and 0 disables that group's drops. Equipment chances stay separate. Explicit item lists and item-box drops keep their rules. After saving, reload configuration and restart the game servers.
 
 **Configurable event reward boxes** gives the original fireworks-only standalone
 Firecracker (14:63) the rewards of Box of Luck +2, including its zen fallback.

@@ -20,6 +20,28 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 [TestFixture]
 public class SkinShopAttributeCatalogTests
 {
+    /// <summary>Entering the world receives effects even before the shop is opened or any skins are owned.</summary>
+    [Test]
+    public async Task CosmeticSnapshotCarriesEffectsWithoutShopOrOwnershipAsync()
+    {
+        var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
+        using (output)
+        {
+            var configuration = new BasicModel.GameConfiguration();
+            Mock.Get((IGameServerContext)player.GameContext).Setup(context => context.Configuration).Returns(configuration);
+            var slot = new BasicModel.ItemSlotType();
+            slot.ItemSlots.Add(241);
+            configuration.Items.Add(new BasicModel.ItemDefinition { Group = 8, Number = 320, ItemSlot = slot });
+            var settings = new SkinShopSettings();
+            settings.Items[(8 * 512) + 320] = new SkinShopItemSettings { Enabled = false, ExcellentEffect = true };
+            player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);
+            await new CosmeticArmorView(player).ShowAsync(1, "Ready").ConfigureAwait(false);
+            using var json = JsonDocument.Parse(output.ToArray().AsMemory(5));
+            Assert.That(json.RootElement.GetProperty("ExcellentEffectItems").EnumerateArray().Select(item => item.GetInt32()), Is.EqualTo(new[] { (8 * 512) + 320 }));
+            Assert.That(json.RootElement.GetProperty("Skins").GetArrayLength(), Is.Zero);
+        }
+    }
+
     /// <summary>Identical lists are shared, level values are retained, and empty lists are explicit.</summary>
     [Test]
     public void AttributesAreQuotedIndependentlyOfTooltips()
@@ -29,7 +51,8 @@ public class SkinShopAttributeCatalogTests
         {
             var configuration = new BasicModel.GameConfiguration();
             Mock.Get((IGameServerContext)player.GameContext).Setup(context => context.Configuration).Returns(configuration);
-            player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn(), true);
+            var settings = new SkinShopSettings();
+            player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);
             for (short number = 320; number <= 322; number++)
             {
                 var slot = new BasicModel.ItemSlotType();
@@ -51,14 +74,23 @@ public class SkinShopAttributeCatalogTests
                 configuration.Items.Add(item);
             }
 
+            settings.Items[(8 * 512) + 321] = new SkinShopItemSettings { Enabled = false, ExcellentEffect = true };
+            var restored = JsonSerializer.Deserialize<SkinShopSettings>(JsonSerializer.Serialize(settings))!;
+            Assert.That(restored.ExcellentEffectItems(configuration.Items), Is.EqualTo(new[] { (8 * 512) + 321 }));
+            Assert.That(JsonSerializer.Deserialize<SkinShopItemSettings>("{}")!.ExcellentEffect, Is.False);
+
             using var json = JsonDocument.Parse(SkinShopView.Serialize(player, 1, "Ready", true));
             var items = json.RootElement.GetProperty("Items");
             var pools = json.RootElement.GetProperty("AttributePools");
+            Assert.That(json.RootElement.GetProperty("Pools").EnumerateArray().All(pool => pool.GetProperty("Bonuses").GetArrayLength() == 0), Is.True);
             Assert.That(items[0].GetProperty("AttributePool").GetInt32(), Is.EqualTo(items[1].GetProperty("AttributePool").GetInt32()));
             var line = pools[items[0].GetProperty("AttributePool").GetInt32()][0];
             Assert.That(line.GetProperty("Text").GetString(), Does.Contain("+5%"));
             Assert.That(line.GetProperty("ByLevel").GetProperty("7").GetString(), Does.Contain("+7%"));
             Assert.That(pools[items[2].GetProperty("AttributePool").GetInt32()].GetArrayLength(), Is.Zero);
+            Assert.That(json.RootElement.GetProperty("ExcellentEffectItems").EnumerateArray().Select(item => item.GetInt32()), Is.EqualTo(new[] { (8 * 512) + 321 }));
+            using var confirmation = JsonDocument.Parse(SkinShopView.Serialize(player, 2, "Ready", false));
+            Assert.That(confirmation.RootElement.GetProperty("ExcellentEffectItems").GetArrayLength(), Is.EqualTo(1));
         }
     }
 
@@ -75,7 +107,13 @@ public class SkinShopAttributeCatalogTests
         using (output)
         {
             Mock.Get((IGameServerContext)player.GameContext).Setup(game => game.Configuration).Returns(configuration);
-            player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn(), true);
+            var settings = new SkinShopSettings();
+            foreach (var definition in configuration.Items.Where(FenrirMountRules.IsShopItem))
+            {
+                settings.Items[(definition.Group * 512) + definition.Number] = new SkinShopItemSettings { ExcellentEffect = true };
+            }
+
+            player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);
             var payload = SkinShopView.Serialize(player, 1, "Ready", true);
             Assert.That(payload.Length + 5, Is.LessThanOrEqualTo(ushort.MaxValue));
             TestContext.Out.WriteLine($"Shop catalog including attributes: {payload.Length + 5} bytes.");

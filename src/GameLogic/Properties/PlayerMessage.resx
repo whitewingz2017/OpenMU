@@ -1164,4 +1164,6 @@ Claim the item from this letter.</value></data>
 <data name="Market_Claimed" xml:space="preserve"><value>Claimed {0:N0} {1}.</value></data>
 <data name="Market_ClaimPartial" xml:space="preserve"><value>Claimed {0:N0} {1}; {2:N0} stay in the letter until you have room.</value></data>
 <data name="Market_ClaimNoRoom" xml:space="preserve"><value>Make room first: you can't hold any more of it.</value></data>
+<data name="SkinShopFixedAttributesOnly" xml:space="preserve"><value>Skins use their configured item attributes. Refresh the shop.</value></data>
+  <data name="DailyReward_ExpirationDisabled" xml:space="preserve"><value>Timed daily rewards require the Item expiration plugin. Ask the administrator to enable it.</value></data>
 </root>

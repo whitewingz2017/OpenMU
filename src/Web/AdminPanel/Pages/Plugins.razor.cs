@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.Web.AdminPanel.Pages;
 
 using Microsoft.AspNetCore.Components;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
+using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Web.Shared.Models;
 using MUnique.OpenMU.Web.Shared.Services;
 
@@ -43,7 +44,7 @@ public partial class Plugins
                 this.PlugInController.TypeFilter = string.Empty;
                 this.PlugInController.PointFilter = Guid.Empty;
 
-                if (plugin.ConfigurationType is { })
+                if (HasConfiguration(plugin))
                 {
                     this._configurationToOpen = id;
                 }
@@ -69,8 +70,17 @@ public partial class Plugins
         }
     }
 
+    private static bool HasConfiguration(PlugInConfigurationViewItem plugin)
+        => plugin.ConfigurationType is not null || plugin.TypeId == typeof(SeparateExcellentDropsUpdatePlugIn).GUID;
+
     private Task ShowConfigurationAsync(PlugInConfigurationViewItem plugin)
     {
+        if (plugin.TypeId == typeof(SeparateExcellentDropsUpdatePlugIn).GUID)
+        {
+            this.NavigationManager.NavigateTo("edit-item-drops?filter=ExcellentAccessories");
+            return Task.CompletedTask;
+        }
+
         if (plugin.ConfigurationType == typeof(MUnique.OpenMU.GameLogic.Cosmetics.SkinShopSettings))
         {
             this.NavigationManager.NavigateTo("skin-shop");

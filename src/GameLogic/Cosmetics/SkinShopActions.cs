@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
-/// <summary>Purchases one permanent skin and its chosen bonus atomically with WCoinC or Goblin Points.</summary>
+/// <summary>Purchases one permanent skin with its configured attributes atomically with WCoinC or Goblin Points.</summary>
 public sealed class SkinShopActions
 {
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
@@ -24,7 +24,7 @@ public sealed class SkinShopActions
     /// <param name="requestId">The monotonically increasing session request.</param>
     /// <param name="operation">Zero for catalog, one for a purchase with WCoinC or two for a purchase with Goblin Points.</param>
     /// <param name="itemType">The item group times 512 plus its number.</param>
-    /// <param name="bonus">The configured option number, or zero for pets.</param>
+    /// <param name="bonus">Reserved for protocol compatibility; purchases use configured attributes and require zero.</param>
     /// <param name="quotedPrice">The price in the chosen currency which the client displayed.</param>
     /// <param name="level">The level selected in the purchase popup (0 to 15).</param>
     public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, int itemType, byte bonus, int quotedPrice, byte level = 0)
@@ -78,11 +78,9 @@ public sealed class SkinShopActions
             return "This skin is unavailable for your character class.";
         }
 
-        var choices = SkinBonuses.Choices(definition).ToArray();
-        var option = choices.SingleOrDefault(o => o.Number == bonus);
-        if (choices.Length == 0 ? bonus != 0 : option is null)
+        if (bonus != 0)
         {
-            return "Choose one of this skin's available bonuses.";
+            return player.GetLocalizedMessage("SkinShopFixedAttributesOnly");
         }
 
         var currencyName = currency == CashShopCoinType.GoblinPoints ? "Goblin Points" : "WCoinC";
@@ -104,18 +102,9 @@ public sealed class SkinShopActions
         item.Durability = definition.Durability;
         item.Level = level;
         item.HasSkill = FenrirMountRules.IsCustom(definition) && definition.Skill is not null;
-        ItemOptionLink? link = null;
         var committed = false;
         try
         {
-            if (option is not null)
-            {
-                link = player.PersistenceContext.CreateNew<ItemOptionLink>();
-                link.ItemOption = option;
-                link.Level = 1;
-                item.ItemOptions.Add(link);
-            }
-
             if (!await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
             {
                 return "Make room in your inventory first.";
@@ -143,12 +132,6 @@ public sealed class SkinShopActions
                 if (player.Inventory!.Items.Contains(item))
                 {
                     await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
-                }
-
-                if (link is not null)
-                {
-                    item.ItemOptions.Remove(link);
-                    await player.PersistenceContext.DeleteAsync(link).ConfigureAwait(false);
                 }
 
                 await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);

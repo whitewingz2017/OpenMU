@@ -48,6 +48,9 @@ public static class DailyRewardResources
     /// <summary>Gets the item quantity field caption.</summary>
     public static string ItemQuantity => Get("DailyRewards_ItemQuantity");
 
+    /// <summary>Gets the item duration caption.</summary>
+    public static string ItemDurationHours => Get("DailyRewards_ItemDurationHours");
+
     /// <summary>Gets the item skill field caption.</summary>
     public static string ItemSkill => Get("DailyRewards_ItemSkill");
 

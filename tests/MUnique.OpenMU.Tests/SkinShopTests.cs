@@ -47,7 +47,7 @@ public class SkinShopTests
             settings.DisabledCategories.Add(SkinShopCategory.Sets);
         }
 
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, quote, 15).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 0, quote, 15).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 325 : 500));
         Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
         if (accepted)
@@ -92,7 +92,7 @@ public class SkinShopTests
     public async Task PurchaseLevelIsValidatedAsync(byte level, bool accepted)
     {
         var player = await CreateAsync().ConfigureAwait(false);
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, 100, level).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 0, 100, level).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 400 : 500));
         Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
         if (accepted)
@@ -107,10 +107,10 @@ public class SkinShopTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var actions = new SkinShopActions();
-        await Task.WhenAll(actions.ExecuteAsync(player, 1, 1, 4196, 4, 100).AsTask(), actions.ExecuteAsync(player, 1, 1, 4196, 4, 100).AsTask()).ConfigureAwait(false);
+        await Task.WhenAll(actions.ExecuteAsync(player, 1, 1, 4196, 0, 100).AsTask(), actions.ExecuteAsync(player, 1, 1, 4196, 0, 100).AsTask()).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(400));
         var item = player.Inventory!.Items.Single();
-        Assert.That(item.ItemOptions.Single().ItemOption!.Number, Is.EqualTo(4));
+        Assert.That(item.ItemOptions, Is.Empty);
         Assert.That(SkinBonuses.IsValid(item), Is.True);
         await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
         Assert.That(player.Attributes![Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
@@ -118,14 +118,14 @@ public class SkinShopTests
         Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
         await new CosmeticArmorActions().ExecuteAsync(player, 1, 2, 0, 1).ConfigureAwait(false);
         Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.Zero);
-        Assert.That(item.ItemOptions.Single().ItemOption!.Number, Is.EqualTo(4));
+        Assert.That(item.ItemOptions, Is.Empty);
     }
 
     /// <summary>Untrusted price, bonus, class and item identifiers cannot purchase items.</summary>
-    [TestCase(4196, 4, 99)]
-    [TestCase(4196, 4, 0)]
+    [TestCase(4196, 0, 99)]
+    [TestCase(4196, 0, 0)]
     [TestCase(4196, 6, 100)]
-    [TestCase(4196, 0, 100)]
+    [TestCase(4196, 4, 100)]
     [TestCase(7777, 4, 100)]
     public async Task InvalidPurchaseDoesNotSpendAsync(int type, byte bonus, int price)
     {
@@ -141,7 +141,7 @@ public class SkinShopTests
     {
         var player = await CreateAsync().ConfigureAwait(false);
         CashShopActionsTest.SaveFailingContext.Install(player, () => true);
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, 100).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 0, 100).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(500));
         Assert.That(player.Inventory!.Items, Is.Empty);
         Assert.That(player.SelectedCharacter!.Inventory!.Items, Is.Empty);
@@ -166,7 +166,7 @@ public class SkinShopTests
         }
 
         var count = player.SelectedCharacter!.Inventory!.Items.Count;
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 4, price).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 4196, 0, price).ConfigureAwait(false);
         Assert.That(player.Account.WCoinC, Is.EqualTo(coins));
         Assert.That(player.SelectedCharacter.Inventory.Items.Count, Is.EqualTo(count));
     }
@@ -221,14 +221,14 @@ public class SkinShopTests
         weapon.ItemSlot = new BasicModel.ItemSlotType();
         weapon.ItemSlot.ItemSlots.Add(246);
         weapon.QualifiedCharacters.Add(allowed ? player.SelectedCharacter!.CharacterClass! : new BasicModel.CharacterClass { Id = Guid.NewGuid(), Number = 8 });
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, (4 * 512) + 100, 4, 100).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, (4 * 512) + 100, 0, 100).ConfigureAwait(false);
         Assert.That(player.Account!.WCoinC, Is.EqualTo(allowed ? 400 : 500));
         Assert.That(player.Inventory!.Items.Count, Is.EqualTo(allowed ? 1 : 0));
     }
 
-    /// <summary>A left-hand weapon skin retains its chosen option without supplying base weapon damage.</summary>
+    /// <summary>A left-hand weapon skin applies exactly its configured attributes and removes them on unequip.</summary>
     [Test]
-    public async Task LeftWeaponSkinAppliesOnlyItsChosenBonusAsync()
+    public async Task LeftWeaponSkinAppliesConfiguredAttributesAsync()
     {
         var player = await CreateAsync().ConfigureAwait(false);
         var definition = player.GameContext.Configuration.Items.Single();
@@ -240,20 +240,22 @@ public class SkinShopTests
             TargetAttribute = Stats.MinimumPhysBaseDmgByWeapon,
             BaseValue = 123,
         });
-        await new SkinShopActions().ExecuteAsync(player, 1, 1, 100, 4, 100).ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, 1, 100, 0, 100).ConfigureAwait(false);
         var item = player.Inventory!.Items.Single();
         var baseDamage = player.Attributes![Stats.MinimumPhysBaseDmgByWeapon];
         var actions = new CosmeticArmorActions();
         await actions.ExecuteAsync(player, 1, 1, item.ItemSlot, 6).ConfigureAwait(false);
         Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
-        Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage));
+        Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage + 123));
         _ = new InventoryStorage(player, player.GameContext);
         Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.EqualTo(0.04f).Within(0.0001));
+        Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage + 123));
         await actions.ExecuteAsync(player, 2, 2, 0, 6).ConfigureAwait(false);
         Assert.That(player.Attributes[Stats.HealthAfterMonsterKillMultiplier], Is.Zero);
+        Assert.That(player.Attributes[Stats.MinimumPhysBaseDmgByWeapon], Is.EqualTo(baseDamage));
     }
 
-    /// <summary>Only bonuses which increase HP, mana or zen are offered; a skin without one is sold without a bonus.</summary>
+    /// <summary>Purchases never add selectable excellent options, even when the definition still supports them.</summary>
     /// <param name="bonus">The requested bonus.</param>
     /// <param name="accepted">Whether the purchase is accepted.</param>
     [TestCase(4, false)]
@@ -290,6 +292,12 @@ public class SkinShopTests
                 TargetAttribute = Stats.HealthAfterMonsterKillMultiplier,
                 Boost = new BasicModel.PowerUpDefinitionValue { ConstantValue = { Value = 0.04f, AggregateType = AggregateType.AddRaw } },
             },
+        });
+        definition.BasePowerUpAttributes.Add(new BasicModel.ItemBasePowerUpDefinition
+        {
+            TargetAttribute = Stats.HealthAfterMonsterKillMultiplier,
+            AggregateType = AggregateType.AddRaw,
+            BaseValue = 0.04f,
         });
         definition.PossibleItemOptions.Add(options);
         player.GameContext.Configuration.Items.Add(definition);

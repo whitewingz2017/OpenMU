@@ -4,11 +4,14 @@
 
 namespace MUnique.OpenMU.GameLogic.Cosmetics;
 
-/// <summary>Sale availability and WCoinC price for one skin.</summary>
+/// <summary>Sale availability, prices and an optional visual effect for one skin.</summary>
 public sealed class SkinShopItemSettings
 {
     /// <summary>Gets or sets a value indicating whether the skin can be sold.</summary>
     public bool Enabled { get; set; } = true;
+
+    /// <summary>Gets or sets a value indicating whether every copy displays the excellent effect without changing its options.</summary>
+    public bool ExcellentEffect { get; set; }
 
     /// <summary>Gets or sets the WCoinC price. Zero makes the skin preview only.</summary>
     [Range(0, int.MaxValue)]

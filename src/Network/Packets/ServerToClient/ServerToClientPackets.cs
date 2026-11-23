@@ -43278,6 +43278,7 @@ public readonly struct GuideBookResponseExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
 
+
 /// <summary>
 /// Is sent by the server when: A Marketplace request was processed.
 /// Causes reaction on client side: The client displays UTF-8 JSON with RequestId, Result, the settings (currencies with their tax, listing limits), the requested page of listings, the player's own listings and history, each with the item data in the inventory format.
@@ -43363,6 +43364,7 @@ public readonly struct MarketResponseExtended
         
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
+
 
 /// <summary>
 /// Is sent by the server when: An offline leveling request was processed, or the /offlevel command asks the client to open the window (RequestId zero, Open).
@@ -43450,6 +43452,7 @@ public readonly struct OfflineLevelingResponseExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
 
+
 /// <summary>
 /// Is sent by the server when: An item attributes request was processed.
 /// Causes reaction on client side: The client adds the lines in purple to the items' tooltips: UTF-8 JSON with RequestId and Items, each with its Type (group * 512 + number) and Lines (Text, and ByLevel with the text of item levels which have a level bonus).
@@ -43536,6 +43539,7 @@ public readonly struct ItemBonusesResponseExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
 
+
 /// <summary>
 /// Is sent by the server when: A features request was processed.
 /// Causes reaction on client side: The client hides the menu entries and buttons of the inactive features: UTF-8 JSON with RequestId and Features, each feature's name with true when its plugin is active.
@@ -43621,6 +43625,7 @@ public readonly struct FeaturesResponseExtended
         
     public static int GetRequiredSize(int dataLength) => dataLength + 5;
 }
+
 
 /// <summary>
 /// Is sent by the server when: A Party Search request was processed.

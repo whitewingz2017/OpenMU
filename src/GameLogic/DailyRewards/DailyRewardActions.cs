@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.CashShop;
 using MUnique.OpenMU.GameLogic.Cosmetics;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.Persistence;
 
@@ -67,17 +68,37 @@ public sealed class DailyRewardActions
             return ("DailyReward_ZenLimit", false);
         }
 
-        return await GrantAsync(player, reward, month, claimedDays | DailyRewardCalendar.DayBit(today)).ConfigureAwait(false);
+        if (ValidateExpiration(player, reward, utcNow) is { } expirationError)
+        {
+            return (expirationError, false);
+        }
+
+        return await GrantAsync(player, reward, month, claimedDays | DailyRewardCalendar.DayBit(today), utcNow).ConfigureAwait(false);
     }
 
-    private static async ValueTask<(string Status, bool ItemAdded)> GrantAsync(Player player, DailyRewardDay reward, int month, int claimedDays)
+    private static string? ValidateExpiration(Player player, DailyRewardDay reward, DateTime utcNow)
+    {
+        if (reward.Item is null || reward.ItemDurationHours == 0)
+        {
+            return null;
+        }
+
+        if (TimeSpan.FromHours(reward.ItemDurationHours).TotalSeconds > int.MaxValue - new DateTimeOffset(utcNow).ToUnixTimeSeconds())
+        {
+            return "DailyReward_Invalid";
+        }
+
+        return player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn)) ? null : "DailyReward_ExpirationDisabled";
+    }
+
+    private static async ValueTask<(string Status, bool ItemAdded)> GrantAsync(Player player, DailyRewardDay reward, int month, int claimedDays, DateTime utcNow)
     {
         var account = player.Account!;
         var (oldMonth, oldClaimedDays) = (account.DailyRewardMonth, account.DailyRewardClaimedDays);
         var (oldWCoinC, oldWCoinP, oldGoblinPoints) = (account.WCoinC, account.WCoinP, account.GoblinPoints);
         var oldMoney = player.Money;
         var links = new List<ItemOptionLink>();
-        var item = reward.Item is { } definition ? CreateItem(player.PersistenceContext, definition, reward, links) : null;
+        var item = reward.Item is { } definition ? CreateItem(player.PersistenceContext, definition, reward, links, utcNow) : null;
         var committed = false;
         try
         {
@@ -132,13 +153,14 @@ public sealed class DailyRewardActions
 
     private static int Add(int balance, int amount) => (int)Math.Min((long)balance + amount, int.MaxValue);
 
-    private static Item CreateItem(IContext context, ItemDefinition definition, DailyRewardDay reward, List<ItemOptionLink> links)
+    private static Item CreateItem(IContext context, ItemDefinition definition, DailyRewardDay reward, List<ItemOptionLink> links, DateTime utcNow)
     {
         var item = context.CreateNew<Item>();
         item.Definition = definition;
         item.Level = Math.Min(reward.ItemLevel, definition.MaximumItemLevel);
         item.Durability = item.IsStackable() && reward.ItemQuantity > 0 ? Math.Min(reward.ItemQuantity, definition.Durability) : definition.Durability;
         item.HasSkill = definition.Skill is not null && (reward.ItemSkill || FenrirMountRules.IsCustom(definition));
+        item.ExpiresAtUtc = reward.ItemDurationHours > 0 ? utcNow.AddHours(reward.ItemDurationHours) : null;
 
         var possibleOptions = definition.PossibleItemOptions.SelectMany(group => group.PossibleOptions).ToList();
         if (CosmeticArmorRules.GetSlot(definition) is not null)

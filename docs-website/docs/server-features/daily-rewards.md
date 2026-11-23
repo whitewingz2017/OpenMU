@@ -43,6 +43,10 @@ The feature is disabled by default. In the admin panel, open
    0 gives a full stack), skill, luck, option level (1 is +4) and excellent
    options. A skin offers its allowed bonuses instead, and takes one of them.
    **Clear day** empties the slot.
+   **Item duration (hours)** works for every item, including custom bear mounts,
+   pets and skins: 24 gives one day, 0 gives a permanent item. The timer starts
+   when claimed and continues offline. Enable the **Item expiration** plugin
+   for timed rewards; otherwise the claim is refused and remains available.
 4. Click **Save changes**. **Discard changes** reloads the saved rewards.
 
 A red slot has no reward. Days 29 to 31 only appear in months which have

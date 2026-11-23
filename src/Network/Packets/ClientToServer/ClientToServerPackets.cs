@@ -19305,6 +19305,7 @@ public readonly struct GuideBookRequestExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
 
+
 /// <summary>
 /// Is sent by the client when: The custom client loads the Marketplace (0), lists an inventory item for sale (1), buys a listing (2) or cancels its own listing (3). The request carries UTF-8 JSON: Category, Search, Currency, Sort and Page for a load; Slot, PriceType and Price for a listing; Listing (the listing id) for a buy or cancel.
 /// Causes reaction on server side: The server answers with the matching RequestId. A listing moves the item out of the inventory into the market; a buy takes the payment, mails the item to the buyer and the proceeds after tax to the seller; a cancel mails the item back to the seller.
@@ -19408,6 +19409,7 @@ public readonly struct MarketRequestExtended
         
     public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
+
 
 /// <summary>
 /// Is sent by the client when: The custom client loads the offline leveling offer (0) or starts an offline leveling session (1). A start carries UTF-8 JSON: Currency (0 zen, 1 WCoinC, 2 Goblin Points), Hours (0 pays every hour) and Protection.
@@ -19513,6 +19515,7 @@ public readonly struct OfflineLevelingRequestExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
 
+
 /// <summary>
 /// Is sent by the client when: The custom client loads the attribute lines of the items picked in the Item Attributes plugin (0), once for each character.
 /// Causes reaction on server side: The server answers with the matching RequestId.
@@ -19617,6 +19620,7 @@ public readonly struct ItemBonusesRequestExtended
     public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
 
+
 /// <summary>
 /// Is sent by the client when: The custom client asks which of its features the server has active (0), when the character enters the game and from time to time.
 /// Causes reaction on server side: The server answers with the matching RequestId.
@@ -19720,6 +19724,7 @@ public readonly struct FeaturesRequestExtended
         
     public static int GetRequiredSize(int dataLength) => dataLength + 10;
 }
+
 
 /// <summary>
 /// Is sent by the client when: The custom client loads the Party Search (0), saves or removes the player's own listing (1) or joins a listed party (2). A save carries UTF-8 JSON with Active, MinimumLevel, GuildOnly, OnePerClass, Classes and Password; a join carries Leader and Password.

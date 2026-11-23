@@ -1821,4 +1821,5 @@
 <data name="FeatureListView_Description" xml:space="preserve"><value>Tells the custom client which of its features are active, so it hides the menu entries and buttons of the inactive ones.</value></data>
 <data name="ItemAttributeRefresh_Name" xml:space="preserve"><value>Item Attributes: live update</value></data>
 <data name="ItemAttributeRefresh_Description" xml:space="preserve"><value>Gives worn items the base power-up attributes an administrator changes in the admin panel within a few seconds, without a restart and without taking the items off.</value></data>
+  <data name="DailyRewards_ItemDurationHours" xml:space="preserve"><value>Item duration (hours, 0 = permanent)</value></data>
 </root>

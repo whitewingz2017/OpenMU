@@ -91,7 +91,7 @@ size are configured in the desktop and mobile `RankTitles.json` catalogs.
 
 On the Skin page, tap **Skin Shop**. The shop shows eight items in four columns,
 with your character preview on the right. Each item has its own Buy button below
-the preview and name. Buy opens a bonus selection popup; select a bonus and
+the preview and name. Buy opens a purchase popup; select the item level, review its fixed attributes and
 confirm the purchase there, or Cancel to leave without buying. Item cards and
 the large preview show weapons, wings, pets, and mounts with your character.
 Drag left or right to rotate the large preview; on mobile, swipe.
@@ -287,6 +287,14 @@ when Sell is toggled. Each group keeps item-number order.
 Wing53 Wing (12:312), Wings11-copy Wing (12:319), Custom Wing 9 (12:329), and
 Wings22 Wing (12:334) are duplicate models and no longer appear in the shop or
 admin sale list. Existing copies remain equippable and tradable.
+Use the **Excellent effect** checkbox to give every copy of a selected skin the
+pulsing excellent appearance, including +0, owned items, previews and other
+players' equipment. A set applies it to all available body pieces. The checkbox
+changes appearance only; it grants no excellent options or stats and works even
+when Sell is unchecked. Uncheck it to restore the ordinary model appearance.
+Install the matching client and server. After saving, players refresh Skin Shop
+or reconnect to receive the selection; the effects option still controls whether
+it is displayed. Restart game servers when live plugin reload is unavailable.
 Unchecked items and disabled categories remain preview only; owned skins stay
 available for equipping, removal and trading. A category default price of zero
 also disables all sales in that category. Defaults fill unconfigured entries;
@@ -302,3 +310,8 @@ Apply **Set 315 Cosmetic Armor version 20** with all players offline for female
 Armor 72 (8:397), Armor 74 (8:399) and Armor 77 (8:402), restricted to High Elf and
 Dimension Master. The update preserves existing shop settings and returns
 incompatible equipped skins to storage as in earlier versions.
+
+Skin Shop purchases no longer add a selected excellent option. Configure each skin's
+base attributes in its item definition; the shop quotes those attributes at the
+purchased level. Deploy the matching server and both clients. Existing owned skins
+retain their saved options and remain usable.

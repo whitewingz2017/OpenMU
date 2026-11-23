@@ -15,6 +15,7 @@ using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.RankTitles;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.Persistence.Initialization.PlugIns.CharacterCreated;
+using MUnique.OpenMU.Persistence.Initialization.Updates;
 using MUnique.OpenMU.Web.Shared.Components.Modal;
 using MUnique.OpenMU.Web.Shared.Models;
 using MUnique.OpenMU.Web.AdminPanel.Pages;
@@ -83,5 +84,33 @@ public class PlugInConfigurationLinkTests
                 type == typeof(ZenDropPlugIn) ? typeof(ZenDropConfiguration) :
                 type == typeof(RankTitleFeaturePlugIn) ? typeof(RankTitleSettings) : typeof(CashShopSettings));
         modal.Verify(m => m.Show(expectedEditor, It.IsAny<string>(), It.IsAny<ModalParameters>(), It.IsAny<ModalOptions>()), Times.Once);
+    }
+
+    /// <summary>The update plugin opens the real accessory chances without a custom configuration type.</summary>
+    /// <param name="deepLink">Whether to open by query or by clicking the configuration button.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ExcellentAccessoryConfigurationOpensDropEditor(bool deepLink)
+    {
+        using var context = new BunitContext();
+        var configuration = new Basic.GameConfiguration();
+        var type = typeof(SeparateExcellentDropsUpdatePlugIn);
+        configuration.PlugInConfigurations.Add(new Basic.PlugInConfiguration { Id = Guid.NewGuid(), TypeId = type.GUID });
+        var source = new Mock<IDataSource<GameConfiguration>>();
+        source.Setup(s => s.GetOwnerAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(configuration);
+        var controller = new PlugInController(source.Object, Mock.Of<IModalService>(), Mock.Of<IPersistenceContextProvider>());
+        context.Services.AddSingleton(controller);
+        context.Services.AddSingleton<IDataService<PlugInConfigurationViewItem>>(controller);
+        context.Services.AddSingleton<NavigationHistory>();
+        var navigation = context.Services.GetRequiredService<NavigationManager>();
+        navigation.NavigateTo(deepLink ? $"/plugins?id={type.GUID}" : "/plugins");
+        var page = context.Render<Plugins>();
+        if (!deepLink)
+        {
+            page.WaitForAssertion(() => Assert.That(page.FindAll("td.text-nowrap button.btn-secondary"), Has.Count.EqualTo(1)));
+            page.Find("td.text-nowrap button.btn-secondary").Click();
+        }
+
+        page.WaitForAssertion(() => Assert.That(navigation.Uri, Does.EndWith("edit-item-drops?filter=ExcellentAccessories")));
     }
 }

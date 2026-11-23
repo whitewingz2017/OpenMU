@@ -1885,4 +1885,8 @@
   <data name="BoxRewardFixed" xml:space="preserve"><value>选择指定属性</value></data>
   <data name="BoxRewardOptionNumber" xml:space="preserve"><value>属性 {0}</value></data>
   <data name="BoxRewardOptionsHint" xml:space="preserve"><value>仅应用于此奖励组，不支持的属性会跳过。指定卓越属性使用物品的常规标记（1、2、4、8、16、32），不选择任何属性则为普通奖励。</value></data>
+  <data name="SkinShopExcellentEffect" xml:space="preserve"><value>卓越特效</value></data>
+  <data name="SkinShopExcellentEffectHint" xml:space="preserve"><value>卓越特效仅改变该皮肤所有物品的外观，不增加卓越选项或属性。保存后请刷新皮肤商店或重新登录以查看更改。</value></data>
+  <data name="DailyRewardsDurationHint" xml:space="preserve"><value>0 = 永久；24 = 1天。从领取时开始计时，离线期间仍计时。限时奖励需要启用物品过期插件。</value></data>
+  <data name="DailyRewardsDurationSummary" xml:space="preserve"><value>{0}小时</value></data>
 </root>

@@ -2606,4 +2606,8 @@
   <data name="BoxRewardFixed" xml:space="preserve"><value>Choose exact options</value></data>
   <data name="BoxRewardOptionNumber" xml:space="preserve"><value>Option {0}</value></data>
   <data name="BoxRewardOptionsHint" xml:space="preserve"><value>Applies to this reward group only. Unsupported options are skipped. Exact Excellent options use the item's usual flags (1, 2, 4, 8, 16, 32); select none for a normal reward.</value></data>
+  <data name="SkinShopExcellentEffect" xml:space="preserve"><value>Excellent effect</value></data>
+  <data name="SkinShopExcellentEffectHint" xml:space="preserve"><value>Excellent effect changes the appearance of every copy without adding excellent options or stats. After saving, refresh Skin Shop or reconnect to see the change.</value></data>
+  <data name="DailyRewardsDurationHint" xml:space="preserve"><value>0 = permanent; 24 = 1 day. Starts when claimed and continues offline. Enable the Item expiration plugin for timed rewards.</value></data>
+  <data name="DailyRewardsDurationSummary" xml:space="preserve"><value>{0} hours</value></data>
 </root>

@@ -1670,4 +1670,5 @@
   <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Description" xml:space="preserve">
     <value>玩家在攻城战地图上与守卫对话时，打开显示攻城战状态的攻城战报名窗口。</value>
   </data>
+  <data name="DailyRewards_ItemDurationHours" xml:space="preserve"><value>物品有效期（小时，0为永久）</value></data>
 </root>

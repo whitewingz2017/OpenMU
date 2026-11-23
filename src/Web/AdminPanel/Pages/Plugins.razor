@@ -46,7 +46,7 @@
                     <button class="btn btn-success me-1" @onclick="async () => await this.PlugInController.ActivateAsync(item)">@Resources.Activate</button>
                 }
 
-                @if (item.ConfigurationType is { })
+                @if (HasConfiguration(item))
                 {
                     <button class="btn btn-secondary" @onclick="() => this.ShowConfigurationAsync(item)"><span class="oi oi-cog" aria-hidden="true"></span></button>
                 }

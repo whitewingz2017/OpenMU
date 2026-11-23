@@ -4,9 +4,11 @@
 
 namespace MUnique.OpenMU.Tests;
 
+using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.DailyRewards;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
 /// <summary>Tests the calendar month daily login rewards.</summary>
@@ -28,6 +30,7 @@ public class DailyRewardTests
         Assert.That(player.Account.GoblinPoints, Is.EqualTo(30));
         var item = player.Inventory!.Items.Single();
         Assert.That(item.Level, Is.EqualTo(3));
+        Assert.That(item.ExpiresAtUtc, Is.Null);
         Assert.That(DailyRewardCalendar.IsClaimed(DailyRewardCalendar.ClaimedDays(player.Account, DailyRewardCalendar.Today(Now).Month), today), Is.True);
 
         await actions.ExecuteAsync(player, 2, 1, today, Now).ConfigureAwait(false);
@@ -73,6 +76,8 @@ public class DailyRewardTests
         var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
         var settings = DailyRewardFeaturePlugIn.Settings(player.GameContext)!;
         settings.GetDay(today)!.Item!.Width = 9;
+        settings.GetDay(today)!.ItemDurationHours = 24;
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
         await actions.ExecuteAsync(player, 1, 1, today, Now).ConfigureAwait(false);
         Assert.That(player.Money, Is.Zero);
         Assert.That(player.Account!.WCoinC, Is.Zero);
@@ -107,6 +112,77 @@ public class DailyRewardTests
         Assert.That(month, Is.EqualTo(202602));
         Assert.That(day, Is.EqualTo(10));
         Assert.That(daysInMonth, Is.EqualTo(28));
+    }
+
+    /// <summary>Every item category receives the same deadline and is removed only when it expires.</summary>
+    /// <param name="group">The reward item's group.</param>
+    /// <param name="number">The reward item's number.</param>
+    [TestCase(14, 13)]
+    [TestCase(0, 0)]
+    [TestCase(12, 320)]
+    [TestCase(13, 300)]
+    public async Task TimedRewardExpiresAfterOneDayAsync(byte group, short number)
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var reward = DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!;
+        reward.Item!.Group = group;
+        reward.Item.Number = number;
+        if (group == 12)
+        {
+            reward.Item.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 247 } };
+        }
+        else if (group == 13)
+        {
+            reward.Item.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 8 } };
+            reward.Item.Skill = new BasicModel.Skill { DamageType = DamageType.Fenrir };
+        }
+
+        reward.ItemDurationHours = 24;
+        await actions.ExecuteAsync(player, 1, 1, today, Now).ConfigureAwait(false);
+        var item = player.Inventory!.Items.Single();
+        Assert.That(item.ExpiresAtUtc, Is.EqualTo(Now.AddDays(1)));
+        if (group == 13)
+        {
+            Assert.That(item.HasSkill, Is.True);
+        }
+
+        await ItemExpiration.RemoveExpiredAsync(player, Now.AddDays(1).AddSeconds(-1)).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items.Count(), Is.EqualTo(1));
+        await ItemExpiration.RemoveExpiredAsync(player, Now.AddDays(1)).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items, Is.Empty);
+    }
+
+    /// <summary>Disabled enforcement or an unrepresentable expiration refuses the entire reward.</summary>
+    /// <param name="enforcement">Whether the expiration plugin is active.</param>
+    /// <param name="hours">The configured duration.</param>
+    [TestCase(false, 24)]
+    [TestCase(true, 596523)]
+    public async Task UnsupportedExpirationClaimsNothingAsync(bool enforcement, int hours)
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        if (enforcement)
+        {
+            player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        }
+
+        DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!.ItemDurationHours = hours;
+        await actions.ExecuteAsync(player, 1, 1, today, Now).ConfigureAwait(false);
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(player.Account!.DailyRewardClaimedDays, Is.Zero);
+        Assert.That(player.Account.WCoinC, Is.Zero);
+        Assert.That(player.Money, Is.Zero);
+    }
+
+    /// <summary>Invalid durations are rejected by configuration validation.</summary>
+    /// <param name="hours">The invalid duration.</param>
+    [TestCase(-1)]
+    [TestCase(int.MaxValue)]
+    public void InvalidDurationDisablesCalendar(int hours)
+    {
+        var settings = new DailyRewardSettings();
+        settings.Days.First().ItemDurationHours = hours;
+        Assert.That(settings.IsValid(), Is.False);
     }
 
     private static async Task<(Player Player, DailyRewardActions Actions, byte Today)> CreateAsync()

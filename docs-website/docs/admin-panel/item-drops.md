@@ -20,6 +20,12 @@ monster, item or drop group. **Save changes** and **Discard changes** are at the
 top and at the bottom of the page; if you try to leave the page with unsaved
 changes, you are asked to confirm.
 
+The **Separate Excellent accessory drops** plugin's configuration button opens
+this page filtered to `ExcellentAccessories`. Set each ring/pendant group's
+**Chance (%)** here; 1 means 1%, and 0 disables its drops. The equipment groups
+have independent chances. These chances participate in the normal drop roll
+described below, including proportional scaling when their total exceeds 100%.
+
 :::warning[Changes need a reload]
 Like all configuration data, the drops are loaded when a game server starts.
 After saving, use **Reload configuration and restart all game servers** on the

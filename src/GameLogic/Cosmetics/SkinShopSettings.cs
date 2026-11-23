@@ -76,6 +76,14 @@ public sealed class SkinShopSettings
             _ => SkinShopCategory.Weapons,
         };
 
+    /// <summary>Gets selected visual effects independently of sale availability or ownership.</summary>
+    /// <param name="definitions">The configured item definitions.</param>
+    /// <returns>The item types which display the excellent effect.</returns>
+    public IEnumerable<int> ExcellentEffectItems(IEnumerable<ItemDefinition> definitions)
+        => definitions.Where(FenrirMountRules.IsShopItem)
+            .Select(definition => (definition.Group * 512) + definition.Number)
+            .Where(type => this.Items?.TryGetValue(type, out var item) == true && item is { ExcellentEffect: true });
+
     /// <summary>Gets the configured default price for a category.</summary>
     /// <param name="category">The skin category.</param>
     /// <returns>The category price, or zero if unknown.</returns>

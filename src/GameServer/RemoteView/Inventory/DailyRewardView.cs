@@ -63,6 +63,7 @@ public sealed class DailyRewardView : IDailyRewardView
                     Skill = day.ItemSkill,
                     Option = day.ItemOption,
                     Excellent = day.ItemExcellentOptions,
+                    DurationHours = day.ItemDurationHours,
                 } : null,
             }),
         });

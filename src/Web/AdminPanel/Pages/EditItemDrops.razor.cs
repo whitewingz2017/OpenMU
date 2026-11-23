@@ -93,6 +93,10 @@ public partial class EditItemDrops : ComponentBase, IAsyncDisposable
     [Inject]
     public LoadingOverlayService LoadingService { get; set; } = null!;
 
+    /// <summary>Gets or sets the initial search filter when opening the editor from a plugin.</summary>
+    [SupplyParameterFromQuery(Name = "filter")]
+    public string? Filter { get; set; }
+
     private bool HasFilter => !string.IsNullOrWhiteSpace(this._filter);
 
     /// <summary>
@@ -217,6 +221,7 @@ public partial class EditItemDrops : ComponentBase, IAsyncDisposable
     /// <inheritdoc />
     protected override async Task OnParametersSetAsync()
     {
+        this._filter = this.Filter ?? string.Empty;
         var cts = new CancellationTokenSource();
         this._disposeCts = cts;
         this._loadTask = Task.Run(() => this.LoadDataAsync(cts.Token));

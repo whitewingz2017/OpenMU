@@ -96,6 +96,7 @@
                         <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => this.RemoveItem(editing)">@Text("RemoveItem")</button>
                     </div>
                     <div class="row g-2">
+                        <div class="col-sm-4"><label class="form-label" for="daily-duration">@DailyRewardResources.ItemDurationHours</label><input id="daily-duration" type="number" class="form-control" min="0" @bind="editing.ItemDurationHours" /><small class="text-muted">@Text("DurationHint")</small></div>
                         <div class="col-sm-4"><label class="form-label" for="daily-level">@DailyRewardResources.ItemLevel</label><input id="daily-level" type="number" class="form-control" min="0" max="@Math.Min((int)definition.MaximumItemLevel, 15)" @bind="editing.ItemLevel" /></div>
                         @if (IsStackable(definition))
                         {
