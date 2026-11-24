@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Persistence.Initialization.VersionSeasonSix.Items;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic;
+using MUnique.OpenMU.GameLogic.Attributes;
 
 /// <summary>Gives the imported Fenrir models the normal configured Fenrir riding behavior.</summary>
 internal static class FenrirMountItems
@@ -16,13 +17,15 @@ internal static class FenrirMountItems
     /// <param name="configuration">The target configuration.</param>
     /// <param name="group">The imported item group.</param>
     /// <param name="number">The imported item number.</param>
-    public static void Ensure(IContext context, GameConfiguration configuration, byte group, short number)
+    /// <param name="horse">Whether the catalog assigns Dark Horse behavior to this mount.</param>
+    public static void Ensure(IContext context, GameConfiguration configuration, byte group, short number, bool horse = false)
     {
         var original = configuration.Items.SingleOrDefault(d => d.Group == ItemConstants.Fenrir.Group && d.Number == ItemConstants.Fenrir.Number)
             ?? throw new InvalidOperationException("The normal Fenrir definition is required before installing custom Fenrir mounts.");
         var mount = configuration.Items.Single(d => d.Group == group && d.Number == number);
+        var darkHorse = horse ? configuration.Items.Single(d => d.Group == ItemConstants.DarkHorse.Group && d.Number == ItemConstants.DarkHorse.Number) : null;
         mount.ItemSlot = original.ItemSlot;
-        mount.Skill = original.Skill;
+        mount.Skill = horse ? darkHorse?.Skill : original.Skill;
         mount.Durability = original.Durability;
         mount.Width = original.Width;
         mount.Height = original.Height;
@@ -35,7 +38,13 @@ internal static class FenrirMountItems
             mount.QualifiedCharacters.Add(characterClass);
         }
 
-        foreach (var source in original.BasePowerUpAttributes)
+        var powerUps = original.BasePowerUpAttributes.AsEnumerable();
+        if (darkHorse is not null)
+        {
+            powerUps = powerUps.Concat(darkHorse.BasePowerUpAttributes.Where(power => power.TargetAttribute?.Id == Stats.IsHorseEquipped.Id));
+        }
+
+        foreach (var source in powerUps)
         {
             var powerUp = mount.BasePowerUpAttributes.SingleOrDefault(p => p.TargetAttribute == source.TargetAttribute);
             if (powerUp is null)

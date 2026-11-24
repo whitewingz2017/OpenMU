@@ -22,7 +22,7 @@ public static class MuunRules
     /// <summary>Mounts use normal pet equipment, not Main/Sub Muun equipment.</summary>
     /// <param name="definition">The configured item definition.</param>
     public static bool IsMount(ItemDefinition? definition)
-        => Cosmetics.FenrirMountRules.IsFenrir(definition)
+        => Cosmetics.FenrirMountRules.IsMount(definition)
             || (definition?.Group == ItemConstants.DarkHorse.Group && definition.Number == ItemConstants.DarkHorse.Number);
 
     /// <summary>Determines whether a stored pet can currently grant its configured bonus.</summary>

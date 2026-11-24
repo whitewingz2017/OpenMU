@@ -176,6 +176,7 @@ internal class Jewelery : Version095d.Items.Jewelery
     {
         var ring = this.CreateJewelery(20, 10, false, LocalizedString.FromResource(() => ItemNames.WizardSRing), 0, 250, null, null, null);
         ring.MaximumItemLevel = 2;
+        ring.IsDroppable = true;
         ring.IsBoundToCharacter = true;
         ring.StorageLimitPerCharacter = 1;
         ring.Durability = 30;

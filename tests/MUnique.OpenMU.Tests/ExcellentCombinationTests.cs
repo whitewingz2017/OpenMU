@@ -150,6 +150,9 @@ internal class ExcellentCombinationTests
             var view = Mock.Get(p.ViewPlugIns.GetPlugIn<IExcellentCombinationView>()!);
             view.Verify(v => v.ShowAsync(2, It.IsAny<string>(), false, rate == 100, true,
                 It.Is<ExcellentCombinationConfiguration>(c => c.BaseRate == 35), 1, 2, a), Times.Once);
+            var messages = Mock.Get(p.ViewPlugIns.GetPlugIn<GameLogic.Views.IShowMessagePlugIn>()!);
+            var notification = p.GetLocalizedMessage(rate == 100 ? "ExcellentCombination_Success" : "ExcellentCombination_Failure");
+            messages.Verify(v => v.ShowMessageAsync(notification, MUnique.OpenMU.Interfaces.MessageType.BlueNormal), Times.Once);
         }
     }
 

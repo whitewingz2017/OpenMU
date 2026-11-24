@@ -118,11 +118,12 @@ The Mounts category contains 15 imported mount models. These are actual riding
 items, equipped in the **Gear helper** slot, with the normal Fenrir level/class
 requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cells.
 They have no selectable skin bonus. An ordinary or cosmetic pet can remain in the small Gear pet slot while riding. Previewing a mount also previews the rider in the shop window.
-Phantom Horse and Malfurion use Dark Horse riding poses in the client. The server
-currently gives all imported mounts Fenrir's Plasma Storm skill, including these
-two horses; their riding appearance does not grant Dark Horse's Earthquake skill.
+Phantom Horse and Malfurion use Dark Horse riding poses and its Earthquake skill.
+The other imported mounts use Fenrir's Plasma Storm. Casting either mount skill
+keeps the character riding, including after a normal attack. Normal mana, range
+and equipment requirements still apply.
 
-Apply **Set 315 Cosmetic Armor version 8** while players are offline and restart.
+Apply **Set 315 Cosmetic Armor version 22** while players are offline and restart.
 Existing floating Fenrir items keep their identities and become mounts; items in
 the Skin pet slot return to the bag. Free bag space if the update reports it cannot
 fit. Existing real helper equipment is not replaced.
@@ -134,6 +135,10 @@ Mount actions follow the normal Fenrir riding actions; models missing a skill or
 damage action use their attack or standing pose. Imported light and mesh-glow
 settings remain active. Wing204 and older wing180 and wing213 have single-key BMDs and stay static; it needs
 a replacement animated model to flap. DLL-only source effects are unavailable.
+
+In Muun Inventory, hover a stored pet or either equipped Muun slot to see its item
+tooltip. Timed pets also show their expiration. Drag the title bar to move the
+window; item slots continue to drag pets between slots and the bag.
 
 Walking pets follow beside the character at ground height rather than orbiting
 in the air. Flying/magical followers retain their configured hover animation.
@@ -156,7 +161,7 @@ These are the server's existing item options and normal values; no custom
 percentage bonuses are invented. Administrators can edit those option
 definitions in the normal game configuration.
 
-Apply version 21 of the **Set 315 Cosmetic Armor** configuration update with
+Apply version 22 of the **Set 315 Cosmetic Armor** configuration update with
 all players offline when upgrading an existing server. Owned skins whose bonus
 is no longer offered get the skin's first allowed bonus instead (zen +40% for
 armor and shields, mana after a kill for weapons, full HP recovery for wings),
@@ -173,7 +178,7 @@ Normal jewels and gear upgrades are not a skin-bonus reroll system.
 ## Existing items and server deployment
 
 Deploy the matching OpenMU source, take all players offline, apply **Set 315
-Cosmetic Armor version 8** in the admin panel, and restart. Use the matching
+Cosmetic Armor version 22** in the admin panel, and restart. Use the matching
 client data and rebuild your client. No APK is built by this change.
 
 Every old Set 100/315 helmet, pants, gloves or boots skin becomes a separate

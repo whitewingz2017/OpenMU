@@ -511,12 +511,15 @@ internal class CosmeticArmorInitializationTests
         foreach (var mount in mounts)
         {
             Assert.That(mount.ItemSlot, Is.SameAs(original.ItemSlot));
-            Assert.That(mount.Skill, Is.SameAs(original.Skill));
+            var horse = GameLogic.Cosmetics.FenrirMountRules.IsDarkHorse(mount);
+            var reference = horse ? configuration.Items.Single(d => d.Group == 13 && d.Number == 4) : original;
+            Assert.That(mount.Skill, Is.SameAs(reference.Skill));
             Assert.That(mount.Width, Is.EqualTo(2));
             Assert.That(mount.Height, Is.EqualTo(2));
             Assert.That(mount.Durability, Is.EqualTo(255));
             Assert.That(mount.Requirements.Select(q => (q.Attribute, q.MinimumValue)), Is.EquivalentTo(original.Requirements.Select(q => (q.Attribute, q.MinimumValue))));
-            Assert.That(mount.BasePowerUpAttributes.Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType)), Is.EquivalentTo(original.BasePowerUpAttributes.Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType))));
+            Assert.That(mount.BasePowerUpAttributes.Where(q => !horse || q.TargetAttribute?.Id != GameLogic.Attributes.Stats.IsHorseEquipped.Id)
+                .Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType)), Is.EquivalentTo(original.BasePowerUpAttributes.Select(q => (q.TargetAttribute, q.BaseValue, q.AggregateType))));
             Assert.That(mount.BasePowerUpAttributes.Intersect(original.BasePowerUpAttributes), Is.Empty);
             Assert.That(mount.Requirements.Intersect(original.Requirements), Is.Empty);
         }

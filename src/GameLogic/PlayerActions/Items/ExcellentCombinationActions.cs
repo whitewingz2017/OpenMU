@@ -335,6 +335,7 @@ public sealed class ExcellentCombinationActions
         }
 
         await ReplyAsync(player, request, ExcellentCombinationResources.Message(success ? "Success" : "Failure"), settings, coreCount, success: success, completed: true, result: primary).ConfigureAwait(false);
+        await player.ShowLocalizedBlueMessageAsync(success ? "ExcellentCombination_Success" : "ExcellentCombination_Failure").ConfigureAwait(false);
     }
 
     private sealed record CoreMaterial(Item Item, byte Slot, double Durability, int Take);

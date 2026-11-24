@@ -70,6 +70,8 @@ internal class CosmeticSetConversionTests
         var option = context.CreateNew<IncreasableItemOption>();
         option.OptionType = ItemOptionTypes.Excellent;
         option.Number = 1;
+        option.PowerUpDefinition = context.CreateNew<DataModel.Attributes.PowerUpDefinition>();
+        option.PowerUpDefinition.TargetAttribute = GameLogic.Attributes.Stats.ManaAfterMonsterKillMultiplier;
         options.PossibleOptions.Add(option);
         definition.PossibleItemOptions.Add(options);
         var previousDefinition = new BasicModel.ItemDefinition

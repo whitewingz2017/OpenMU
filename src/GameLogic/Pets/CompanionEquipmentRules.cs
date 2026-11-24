@@ -22,7 +22,7 @@ public static class CompanionEquipmentRules
     /// <param name="definition">The configured item.</param>
     public static bool IsOrdinaryPet(ItemDefinition? definition)
         => definition?.ItemSlot?.ItemSlots.Contains(InventoryConstants.PetSlot) == true
-            && !FenrirMountRules.IsFenrir(definition)
+            && !FenrirMountRules.IsMount(definition)
             && !(definition.Group == ItemConstants.DarkHorse.Group && definition.Number == ItemConstants.DarkHorse.Number)
             && !(definition.Group == ItemConstants.Uniria.Group && definition.Number == ItemConstants.Uniria.Number)
             && !(definition.Group == ItemConstants.Dinorant.Group && definition.Number == ItemConstants.Dinorant.Number);

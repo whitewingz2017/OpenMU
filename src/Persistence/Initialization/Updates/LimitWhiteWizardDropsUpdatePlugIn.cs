@@ -44,6 +44,12 @@ public class LimitWhiteWizardDropsUpdatePlugIn : UpdatePlugInBase
     public override DateTime CreatedAt => new(2026, 07, 05, 2, 20, 0, DateTimeKind.Utc);
 
     /// <inheritdoc />
+    public override int Version => 2;
+
+    /// <inheritdoc />
+    public override DateTime UpdatedAt => new(2026, 11, 24, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <inheritdoc />
     protected override async ValueTask ApplyAsync(IContext context, GameConfiguration gameConfiguration)
     {
         var wizardsRing = gameConfiguration.Items.FirstOrDefault(item =>
@@ -52,6 +58,7 @@ public class LimitWhiteWizardDropsUpdatePlugIn : UpdatePlugInBase
         if (wizardsRing is not null)
         {
             wizardsRing.StorageLimitPerCharacter = 1;
+            wizardsRing.IsDroppable = true;
         }
     }
 }

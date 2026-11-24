@@ -102,7 +102,7 @@ public sealed class ChaosCastleContext : MiniGameContext
         var identifier = new ItemIdentifier(definition.Number, definition.Group);
         if (identifier == ItemConstants.Uniria
             || identifier == ItemConstants.Dinorant
-            || Cosmetics.FenrirMountRules.IsFenrir(item.Definition)
+            || Cosmetics.FenrirMountRules.IsMount(item.Definition)
             || item.IsTransformationRing())
         {
             return false;

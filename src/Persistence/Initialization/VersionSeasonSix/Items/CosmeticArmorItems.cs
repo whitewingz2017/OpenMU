@@ -20,6 +20,9 @@ public static class CosmeticArmorItems
     private const int WingPart = 7;
     private const int PetPart = 8;
 
+    /// <summary>The imported catalog behavior value for mounts which ride and attack as a Dark Horse.</summary>
+    private const int HorseBehavior = 6;
+
     /// <summary>The first cosmetic item slot; a skin of part N is worn in this slot plus N.</summary>
     private const int FirstCosmeticSlot = 240;
 
@@ -69,7 +72,7 @@ public static class CosmeticArmorItems
             EnsureItem(context, configuration, skin.Group, skin.Number, skin.Name, skin.Part);
             if (skin.Mount)
             {
-                FenrirMountItems.Ensure(context, configuration, skin.Group, skin.Number);
+                FenrirMountItems.Ensure(context, configuration, skin.Group, skin.Number, skin.Behavior == HorseBehavior);
             }
         }
 
@@ -293,5 +296,5 @@ public static class CosmeticArmorItems
         }
     }
 
-    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false, Dictionary<string, int>? Classes = null, int ArmorMask = 0);
+    private sealed record FinalMuSkin(byte Group, short Number, string Name, int Part, bool Mount = false, Dictionary<string, int>? Classes = null, int ArmorMask = 0, int Behavior = 0);
 }

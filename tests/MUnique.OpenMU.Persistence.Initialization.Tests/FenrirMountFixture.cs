@@ -45,5 +45,20 @@ internal static class FenrirMountFixture
         mount.Height = 2;
         mount.Durability = 255;
         configuration.Items.Add(mount);
+
+        var earthquake = context.CreateNew<Skill>();
+        earthquake.Number = (short)Skills.SkillNumber.Earthshake;
+        earthquake.DamageType = DamageType.Physical;
+        var horse = context.CreateNew<ItemDefinition>();
+        horse.SetGuid(13, 4);
+        horse.Group = 13;
+        horse.Number = 4;
+        horse.ItemSlot = slot;
+        horse.Skill = earthquake;
+        var horsePower = context.CreateNew<ItemBasePowerUpDefinition>();
+        horsePower.TargetAttribute = Stats.IsHorseEquipped;
+        horsePower.BaseValue = 1;
+        horse.BasePowerUpAttributes.Add(horsePower);
+        configuration.Items.Add(horse);
     }
 }
