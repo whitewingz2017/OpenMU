@@ -109,7 +109,12 @@ public sealed class RedeemCodeActions
             }
             if (claim != null) player.PersistenceContext.Detach(claim);
         }
-        foreach (var item in added) await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(v => v.ItemAppearAsync(item)).ConfigureAwait(false);
+        foreach (var item in added)
+        {
+            ItemEventRecorder.Record(player, item, "GRANT", "Redeem reward");
+            await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(v => v.ItemAppearAsync(item)).ConfigureAwait(false);
+        }
+
         if (code.Zen > 0) await player.InvokeViewPlugInAsync<IUpdateMoneyPlugIn>(v => v.UpdateMoneyAsync()).ConfigureAwait(false);
         return "Redeem code claimed successfully. Item, Zen and coin/point rewards have been credited.";
     }

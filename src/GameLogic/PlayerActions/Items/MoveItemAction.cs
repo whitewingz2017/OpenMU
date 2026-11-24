@@ -191,6 +191,11 @@ public class MoveItemAction
         }
 
         await player.InvokeViewPlugInAsync<Views.Inventory.IItemMovedPlugIn>(p => p.ItemMovedAsync(item, toSlot, toStorage)).ConfigureAwait(false);
+        if (fromStorage != toStorage && (fromStorage == Storages.Vault || toStorage == Storages.Vault))
+        {
+            ItemEventRecorder.Record(player, item, toStorage == Storages.Vault ? "STORE" : "TAKE", "Warehouse", $"{fromStorage} slot {fromSlot} to {toStorage} slot {toSlot}");
+        }
+
         var isTradeOngoing = player.PlayerState.CurrentState == PlayerState.TradeOpened
                              || player.PlayerState.CurrentState == PlayerState.TradeButtonPressed;
         var isItemMovedToOrFromTrade = toItemStorage == player.TemporaryStorage || fromItemStorage == player.TemporaryStorage;

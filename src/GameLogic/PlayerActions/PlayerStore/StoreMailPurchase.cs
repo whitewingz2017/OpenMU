@@ -189,6 +189,7 @@ internal sealed class StoreMailPurchase
             }
 
             seller.PersistenceContext.Detach(item);
+            ItemEventRecorder.Record(seller, item, "PSHOP", $"Buyer:{buyer.SelectedCharacter?.Name}", "Delivered to store mail");
             foreach (var jewel in jewels)
             {
                 buyer.PersistenceContext.Detach(jewel);

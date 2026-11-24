@@ -64,6 +64,7 @@ internal sealed class InventoryProductDelivery : ICashShopProductDeliveryPlugIn
     {
         foreach (var item in this._addedItems)
         {
+            ItemEventRecorder.Record(player, item, "CSHOP", "Cash shop");
             await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(item)).ConfigureAwait(false);
         }
     }

@@ -121,11 +121,12 @@ public class QuestCompletionAction
                 item.AssignValues(reward.ItemReward ?? throw new InvalidOperationException($"Reward {reward.GetId()} is defined as item reward, but has no item assigned"));
                 if (await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
                 {
+                    ItemEventRecorder.Record(player, item, "GRANT", "Quest reward");
                     await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(item)).ConfigureAwait(false);
                 }
                 else if (player.CurrentMap is { } currentMap)
                 {
-                    await currentMap.AddAsync(new DroppedItem(item, player.Position, currentMap, player, player.GetAsEnumerable())).ConfigureAwait(false);
+                    await currentMap.AddAsync(new DroppedItem(item, player.Position, currentMap, player, player.GetAsEnumerable()) { ItemEventSource = "Grant:Quest reward" }).ConfigureAwait(false);
                 }
                 else
                 {

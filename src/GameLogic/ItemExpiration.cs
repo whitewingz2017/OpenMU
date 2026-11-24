@@ -31,6 +31,7 @@ public static class ItemExpiration
                     await inventory.RemoveItemAsync(item).ConfigureAwait(false);
                     player.BackupInventory?.Items.Remove(item);
                     await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                    ItemEventRecorder.Record(player, item, "DESTROY", "Expiry", "Item lifetime elapsed");
                     await player.InvokeViewPlugInAsync<IItemRemovedPlugIn>(p => p.RemoveItemAsync(slot)).ConfigureAwait(false);
                     changed = true;
                 }
@@ -43,6 +44,7 @@ public static class ItemExpiration
                 {
                     await vault.RemoveItemAsync(item).ConfigureAwait(false);
                     await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                    ItemEventRecorder.Record(player, item, "DESTROY", "Warehouse expiry", "Item lifetime elapsed");
                     changed = true;
                 }
 

@@ -316,6 +316,12 @@ public sealed class ExcellentCombinationActions
             }
 
             committed = true;
+            ItemEventRecorder.Record(player, primary, "UPGRADE", "Excellent combination", success ? "Succeeded" : "Failed");
+            ItemEventRecorder.Record(player, secondary, "CONSUME", "Excellent combination", "Donor");
+            foreach (var material in materials)
+            {
+                ItemEventRecorder.Record(player, material.Item, "CONSUME", "Excellent combination", $"cores {material.Take}");
+            }
         }
         finally
         {

@@ -90,6 +90,7 @@ public sealed class ClaimStoreMailAction
 
 
         await player.InvokeViewPlugInAsync<IStoreMailAttachmentPlugIn>(v => v.ShowAttachmentAsync(index, false)).ConfigureAwait(false);
+        ItemEventRecorder.Record(player, item, "TAKE", "Store mail", "Attachment claimed");
         await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(v => v.UpdateInventoryListAsync()).ConfigureAwait(false);
         await player.ShowLocalizedBlueMessageAsync("StoreClaimSuccess").ConfigureAwait(false);
     }

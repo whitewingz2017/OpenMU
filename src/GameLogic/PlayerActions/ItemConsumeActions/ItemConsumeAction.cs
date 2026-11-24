@@ -79,5 +79,11 @@ public class ItemConsumeAction
         }
 
         player.GameContext.PlugInManager.GetPlugInPoint<IItemConsumedPlugIn>()?.ItemConsumed(player, item, targetItem);
+        ItemEventRecorder.Record(player, item, "CONSUME", "Use item");
+        var sourceName = item.Definition?.Name.ToString() ?? string.Empty;
+        if (targetItem is not null && targetItem != item && sourceName.StartsWith("Jewel of ", StringComparison.OrdinalIgnoreCase))
+        {
+            ItemEventRecorder.Record(player, targetItem, "UPGRADE", sourceName, "Jewel applied; includes failed or downgraded results");
+        }
     }
 }

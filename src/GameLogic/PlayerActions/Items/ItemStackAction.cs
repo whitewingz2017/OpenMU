@@ -53,6 +53,7 @@ public class ItemStackAction
             {
                 await player.Inventory.RemoveItemAsync(jewel).ConfigureAwait(false);
                 await player.PersistenceContext.DeleteAsync(jewel).ConfigureAwait(false);
+                ItemEventRecorder.Record(player, jewel, "CONSUME", "Lahap", "Jewel bundle ingredient");
                 await player.InvokeViewPlugInAsync<IItemRemovedPlugIn>(p => p.RemoveItemAsync(jewel.ItemSlot)).ConfigureAwait(false);
             }
 
@@ -61,6 +62,7 @@ public class ItemStackAction
             stacked.Level = (byte)((stackSize / 10) - 1);
             stacked.Durability = 1;
             await player.Inventory.AddItemAsync(stacked).ConfigureAwait(false);
+            ItemEventRecorder.Record(player, stacked, "CRAFT", "Lahap", $"Bundle of {stackSize} jewels");
             await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(stacked)).ConfigureAwait(false);
             await player.InvokeViewPlugInAsync<IUpdateMoneyPlugIn>(p => p.UpdateMoneyAsync()).ConfigureAwait(false);
         }
@@ -120,6 +122,7 @@ public class ItemStackAction
 
         await player.Inventory.RemoveItemAsync(stacked).ConfigureAwait(false);
         await player.PersistenceContext.DeleteAsync(stacked).ConfigureAwait(false);
+        ItemEventRecorder.Record(player, stacked, "CONSUME", "Lahap", "Jewel bundle dismantled");
         await player.InvokeViewPlugInAsync<IItemRemovedPlugIn>(p => p.RemoveItemAsync(slot)).ConfigureAwait(false);
         foreach (var freeSlot in freeSlots)
         {
@@ -128,6 +131,7 @@ public class ItemStackAction
             jewel.Durability = 1;
             jewel.ItemSlot = freeSlot;
             await player.Inventory.AddItemAsync(freeSlot, jewel).ConfigureAwait(false);
+            ItemEventRecorder.Record(player, jewel, "CRAFT", "Lahap", "Jewel bundle dismantled");
             await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(jewel)).ConfigureAwait(false);
         }
 

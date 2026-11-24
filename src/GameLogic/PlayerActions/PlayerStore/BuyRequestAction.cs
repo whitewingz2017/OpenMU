@@ -163,6 +163,7 @@ public class BuyRequestAction
                     itemSold = true;
 
                     player.GameContext.PlugInManager.GetPlugInPoint<IItemSoldToOtherPlayerPlugIn>()?.ItemSold(requestedPlayer, item, player);
+                    ItemEventRecorder.Record(requestedPlayer, item, "PSHOP", $"Buyer:{player.SelectedCharacter?.Name}", $"zen {itemPrice}");
                 }
                 else
                 {

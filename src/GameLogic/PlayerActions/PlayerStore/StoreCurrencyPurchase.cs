@@ -117,6 +117,7 @@ internal sealed class StoreCurrencyPurchase
                 await seller.InvokeViewPlugInAsync<IItemSoldByPlayerShopPlugIn>(p => p.ItemSoldByPlayerShopAsync(slot, buyer)).ConfigureAwait(false);
                 await buyer.InvokeViewPlugInAsync<IPlayerShopBuyRequestResultPlugIn>(p => p.ShowResultAsync(seller, ItemBuyResult.Success, item)).ConfigureAwait(false);
                 buyer.GameContext.PlugInManager.GetPlugInPoint<IItemSoldToOtherPlayerPlugIn>()?.ItemSold(seller, item, buyer);
+                ItemEventRecorder.Record(seller, item, "PSHOP", $"Buyer:{buyer.SelectedCharacter?.Name}", "Combined store currencies");
             }
             finally
             {

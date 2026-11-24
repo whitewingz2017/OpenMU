@@ -45,10 +45,11 @@ public sealed class ItemBoxDroppedPlugIn : IItemDropPlugIn
 
         if (item is not null)
         {
-            var droppedItem = new DroppedItem(item, player.Position, player.CurrentMap!, player);
+            var droppedItem = new DroppedItem(item, player.Position, player.CurrentMap!, player) { ItemEventSource = $"Bag:{sourceItem.Definition.GetNameForLevel(sourceItem.Level)}" };
             await player.CurrentMap!.AddAsync(droppedItem).ConfigureAwait(false);
         }
 
+        ItemEventRecorder.Record(player, sourceItem, "CONSUME", "Item box", "Opened");
         if (dropEffect is not ItemDropEffect.Undefined)
         {
             await this.ShowDropEffectAsync(player, dropEffect).ConfigureAwait(false);

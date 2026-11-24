@@ -63,6 +63,7 @@ public class BuyNpcItemAction
             }
 
             targetItem.Durability += storeItem.Durability;
+            ItemEventRecorder.Record(player, targetItem, "GRANT", $"NpcShop:{npcDefinition.Designation}", "Stacked purchase");
 
             // A stacked purchase is still a successful purchase: report it with ItemBought (C1 32),
             // which releases the client from its waiting state. NpcItemBuyFailed (C1 32 FF) must only
@@ -92,6 +93,7 @@ public class BuyNpcItemAction
             newItem.ItemSlot = (byte)toSlot;
             await player.InvokeViewPlugInAsync<INpcItemBoughtPlugIn>(p => p.NpcItemBoughtAsync(newItem)).ConfigureAwait(false);
             await player.Inventory.AddItemAsync(newItem).ConfigureAwait(false);
+            ItemEventRecorder.Record(player, newItem, "GRANT", $"NpcShop:{npcDefinition.Designation}");
             player.GameContext.PlugInManager.GetPlugInPoint<IItemBoughtFromMerchantPlugIn>()?.ItemBought(player, newItem, storeItem, player.OpenedNpc);
         }
 

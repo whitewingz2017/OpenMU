@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.GameLogic;
 using System.Threading;
 using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.Pathfinding;
+using MUnique.OpenMU.Persistence;
 using Nito.AsyncEx;
 
 /// <summary>
@@ -36,6 +37,8 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
     private Timer? _removeTimer;
 
     private bool _availableToPick = true;
+
+    private Guid? _mergedIntoItemId;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DroppedItem" /> class.
@@ -78,6 +81,9 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
     /// Gets the monster which dropped the item, or <c>null</c> if it wasn't dropped by a monster, e.g. by a player.
     /// </summary>
     public MonsterDefinition? DroppedBy { get; init; }
+
+    /// <summary>Gets the box or reward source to retain through pickup.</summary>
+    public string? ItemEventSource { get; init; }
 
     /// <inheritdoc />
     public Point Position { get; set; }
@@ -244,6 +250,11 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
 
         player.Logger.LogDebug("Item '{0}' was picked up by player '{1}' and added to his inventory.", this, player);
         var dropper = this._dropper;
+        if (player.Inventory?.GetItem((byte)slot) is { } acquiredItem)
+        {
+            ItemEventRecorder.Record(player, acquiredItem, this.ItemEventSource?.StartsWith("Grant:", StringComparison.Ordinal) == true ? "GRANT" : "LOOT", this.ItemEventSource ?? (this.DroppedBy is { } monster ? $"Monster:{monster.Designation}" : dropper is { } ? $"Drop:{dropper.SelectedCharacter?.Name}" : "Ground"), $"map {this.CurrentMap.Definition.Number} ({this.Position.X},{this.Position.Y}) slot {slot}", monsterNumber: this.DroppedBy?.Number);
+        }
+
         await this.DisposeAsync().ConfigureAwait(false);
 
         if (!itemWasTemporary)
@@ -276,10 +287,12 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
             }
 
             stackTarget.Durability += this.Item.Durability;
+            this._mergedIntoItemId = stackTarget.GetId();
             this._availableToPick = false;
         }
 
         player.Logger.LogInformation("Item '{0}' got picked up by player '{1}'. Durability of available stack {2} increased to {3}", this, player, stackTarget, stackTarget.Durability);
+        ItemEventRecorder.Record(player, stackTarget, "LOOT", this.ItemEventSource ?? (this.DroppedBy is { } monster ? $"Monster:{monster.Designation}" : "Ground"), "Added to existing stack", monsterNumber: this.DroppedBy?.Number);
         this.DisposeAndDelete(null);
         if (player.GameContext.PlugInManager.GetPlugInPoint<PlugIns.IItemStackedPlugIn>() is { } itemStackedPlugIn)
         {
@@ -308,6 +321,7 @@ public sealed class DroppedItem : AsyncDisposable, ILocateable
             context.Attach(this.Item);
             await context.DeleteAsync(this.Item).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
+            ItemEventRecorder.Record(player, this.Item, this._mergedIntoItemId.HasValue ? "CONSUME" : "DESTROY", this._mergedIntoItemId.HasValue ? "Stack merge" : "Ground", this._mergedIntoItemId.HasValue ? "Merged into another stack" : "Drop expired without pickup", this._mergedIntoItemId);
             player.Logger.LogInformation("Item expired: '{DroppedItem}', dropped by {Player}, wasn't picked up and got deleted.", this, player);
         }
         catch (Exception e)

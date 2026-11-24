@@ -113,6 +113,12 @@ public abstract class BaseItemCraftingHandler : IItemCraftingHandler
         }
 
         var resultItems = await this.CreateOrModifyResultItemsAsync(requiredItems, player, socketSlot, successRate).ConfigureAwait(false);
+        foreach (var item in resultItems)
+        {
+            var modified = requiredItems.Any(link => link.Items.Contains(item));
+            ItemEventRecorder.Record(player, item, modified ? "UPGRADE" : "CRAFT", $"ChaosMix:{this.GetType().Name}", "Succeeded");
+        }
+
         return resultItems.LastOrDefault();
     }
 
@@ -135,6 +141,7 @@ public abstract class BaseItemCraftingHandler : IItemCraftingHandler
                     player.Logger.LogDebug("Item {0} is getting destroyed.", item);
                     await player.TemporaryStorage!.RemoveItemAsync(item).ConfigureAwait(false);
                     await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                    ItemEventRecorder.Record(player, item, "CONSUME", $"ChaosMix:{this.GetType().Name}", success ? "Successful mix ingredient" : "Failed mix ingredient");
                     point?.ItemDestroyed(item);
                 }
 
@@ -174,6 +181,7 @@ public abstract class BaseItemCraftingHandler : IItemCraftingHandler
                         item.Level,
                         hadSkill && !item.HasSkill,
                         optionLowered);
+                    ItemEventRecorder.Record(player, item, "UPGRADE", $"ChaosMix:{this.GetType().Name}", $"Failed: +{previousLevel} to +{item.Level}");
                 });
 
                 break;
@@ -189,6 +197,7 @@ public abstract class BaseItemCraftingHandler : IItemCraftingHandler
 
                     item.Durability = item.GetMaximumDurabilityOfOnePiece();
                     player.Logger.LogDebug("Item {0} was downgraded from level {1} to {2}. Item option was removed.", item, previousLevel, item.Level);
+                    ItemEventRecorder.Record(player, item, "UPGRADE", $"ChaosMix:{this.GetType().Name}", $"Failed: +{previousLevel} to +{item.Level}");
                 });
 
                 break;

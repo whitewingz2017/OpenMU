@@ -107,6 +107,22 @@ public class TradeButtonAction : BaseTradeAction
             this.DetachItemsFromPersistenceContext(traderItems, trader.PersistenceContext);
             this.DetachItemsFromPersistenceContext(tradePartnerItems, trader.TradingPartner!.PersistenceContext);
             await itemContext.SaveChangesAsync().ConfigureAwait(false);
+            if (trader is Player sourcePlayer)
+            {
+                foreach (var item in traderItems)
+                {
+                    ItemEventRecorder.Record(sourcePlayer, item, "TRADE", $"To:{tradingPartner.Name}");
+                }
+            }
+
+            if (tradingPartner is Player partnerPlayer)
+            {
+                foreach (var item in tradePartnerItems)
+                {
+                    ItemEventRecorder.Record(partnerPlayer, item, "TRADE", $"To:{trader.Name}");
+                }
+            }
+
             this.AttachItemsToPersistenceContext(traderItems, trader.TradingPartner.PersistenceContext);
             this.AttachItemsToPersistenceContext(tradePartnerItems, trader.PersistenceContext);
             trader.Money += trader.TradingPartner.TradingMoney;

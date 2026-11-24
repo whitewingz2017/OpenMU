@@ -109,6 +109,7 @@ public class DropItemAction
         var wasItemPersisted = player.PersistenceContext.Detach(item);
         var droppedItem = new DroppedItem(item, target, player.CurrentMap!, player, owners, wasItemPersisted);
         await player.CurrentMap!.AddAsync(droppedItem).ConfigureAwait(false);
+        ItemEventRecorder.Record(player, item, "DROP", "Player", $"map {player.CurrentMap.Definition.Number} ({target.X},{target.Y}) slot {originalSlot}");
         player.Logger.LogInformation("Item dropped: {Player} dropped '{DroppedItem}' from slot {Slot} (persisted: {Persisted}).", player, droppedItem, originalSlot, wasItemPersisted);
     }
 
