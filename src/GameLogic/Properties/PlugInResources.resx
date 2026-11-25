@@ -1822,4 +1822,6 @@
 <data name="ItemAttributeRefresh_Name" xml:space="preserve"><value>Item Attributes: live update</value></data>
 <data name="ItemAttributeRefresh_Description" xml:space="preserve"><value>Gives worn items the base power-up attributes an administrator changes in the admin panel within a few seconds, without a restart and without taking the items off.</value></data>
   <data name="DailyRewards_ItemDurationHours" xml:space="preserve"><value>Item duration (hours, 0 = permanent)</value></data>
+  <data name="DuelBetting_Name" xml:space="preserve"><value>Duel Betting (experimental)</value></data>
+  <data name="DuelBetting_Description" xml:space="preserve"><value>Configuration and settlement rules for Bless, Soul, Life and WCoinC. Wallet operations and live betting are not connected in this development slice.</value></data>
 </root>
