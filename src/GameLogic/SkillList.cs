@@ -7,7 +7,9 @@ namespace MUnique.OpenMU.GameLogic;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.AttributeSystem;
+using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.Views.Character;
 
 /// <summary>
@@ -47,10 +49,7 @@ public sealed class SkillList : ISkillList, IDisposable
 
         this._availableSkills = this.CreateAvailableSkills();
         this._itemSkills = new List<SkillEntry>();
-        this._player.Inventory.EquippedItems
-            .Where(item => item.HasSkill)
-            .Where(item => (item.Definition ?? throw Error.NotInitializedProperty(item, nameof(item.Definition))).Skill != null)
-            .ForEach(item => this.TryAddItemSkill(item.Definition!.Skill!));
+        this.AddEquippedItemSkills();
         this._player.Inventory.EquippedItemsChanged += this.Inventory_WearingItemsChangedAsync;
         foreach (var skill in this._learnedSkills)
         {
@@ -127,6 +126,14 @@ public sealed class SkillList : ISkillList, IDisposable
         return this._availableSkills.ContainsKey(skillId);
     }
 
+    private void AddEquippedItemSkills()
+    {
+        this._player.Inventory!.EquippedItems
+            .Where(item => item.HasSkill)
+            .Where(item => (item.Definition ?? throw Error.NotInitializedProperty(item, nameof(item.Definition))).Skill != null)
+            .ForEach(item => this.TryAddItemSkill(item.Definition!.Skill!, item.Definition));
+    }
+
     /// <summary>
     /// Creates the dictionary of the available skills from the learned skills of the character.
     /// A character may have the same skill in its stored skill list more than once - it's data which
@@ -162,9 +169,9 @@ public sealed class SkillList : ISkillList, IDisposable
         return availableSkills;
     }
 
-    private async ValueTask AddItemSkillAsync(Skill skill)
+    private async ValueTask AddItemSkillAsync(Skill skill, ItemDefinition definition)
     {
-        if (this.TryAddItemSkill(skill))
+        if (this.TryAddItemSkill(skill, definition))
         {
             await this._player.InvokeViewPlugInAsync<ISkillListViewPlugIn>(p => p.AddSkillAsync(skill)).ConfigureAwait(false);
         }
@@ -174,8 +181,9 @@ public sealed class SkillList : ISkillList, IDisposable
     /// Adds the skill of an equipped item, without updating the view.
     /// </summary>
     /// <param name="skill">The skill of the item.</param>
+    /// <param name="definition">The item granting the skill.</param>
     /// <returns><c>true</c>, if the skill became available by this call; otherwise, <c>false</c>.</returns>
-    private bool TryAddItemSkill(Skill skill)
+    private bool TryAddItemSkill(Skill skill, ItemDefinition definition)
     {
         // If character is not selected (e.g., during disconnect cleanup), skill list doesn't need to be updated
         if (this._player.SelectedCharacter is null)
@@ -183,7 +191,7 @@ public sealed class SkillList : ISkillList, IDisposable
             return false;
         }
 
-        if (!skill.QualifiedCharacters.Contains(this._player.SelectedCharacter.CharacterClass!))
+        if (!this.IsItemSkillQualified(skill, definition))
         {
             return false;
         }
@@ -203,6 +211,14 @@ public sealed class SkillList : ISkillList, IDisposable
 
         this._availableSkills.Add(skill.Number.ToUnsigned(), skillEntry);
         return true;
+    }
+
+    private bool IsItemSkillQualified(Skill skill, ItemDefinition definition)
+    {
+        var characterClass = this._player.SelectedCharacter?.CharacterClass;
+        return characterClass is not null && (skill.QualifiedCharacters.Contains(characterClass)
+            || (FenrirMountRules.IsCustom(definition) && FenrirMountRules.IsDarkHorse(definition)
+                && definition.QualifiedCharacters.Contains(characterClass)));
     }
 
     private async ValueTask AddLearnedSkillAsync(SkillEntry skill)
@@ -259,7 +275,7 @@ public sealed class SkillList : ISkillList, IDisposable
 
         if (!eventArgs.HasDurabilityFactorChanged)
         {
-            await this.AddItemSkillAsync(item.Definition.Skill).ConfigureAwait(false);
+            await this.AddItemSkillAsync(item.Definition.Skill, item.Definition).ConfigureAwait(false);
         }
     }
 

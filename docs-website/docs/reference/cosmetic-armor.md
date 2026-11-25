@@ -120,7 +120,9 @@ requirements, speed, Plasma Storm skill and durability. They occupy 2x2 bag cell
 They have no selectable skin bonus. An ordinary or cosmetic pet can remain in the small Gear pet slot while riding. Previewing a mount also previews the rider in the shop window.
 Phantom Horse and Malfurion use Dark Horse riding poses and its Earthquake skill.
 Earthquake is available to every class allowed to equip these imported horses;
-the original Dark Horse remains restricted to Dark Lords.
+the original Dark Horse remains restricted to Dark Lords. Equipping an imported
+horse adds Earthquake to skill selection, also after logging in with it equipped.
+Unequipping the horse removes its skill.
 The other imported mounts use Fenrir's Plasma Storm. Casting either mount skill
 keeps the character riding, including after a normal attack. Normal mana, range
 and equipment requirements still apply.
