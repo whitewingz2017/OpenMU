@@ -6,7 +6,9 @@ namespace MUnique.OpenMU.Persistence.Initialization.Tests;
 
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Attributes;
+using MUnique.OpenMU.Persistence.Initialization.CharacterClasses;
 
 /// <summary>Provides the ordinary Fenrir dependency to minimal configuration update fixtures.</summary>
 internal static class FenrirMountFixture
@@ -21,7 +23,7 @@ internal static class FenrirMountFixture
             configuration.Attributes.Add(attribute);
         }
 
-        foreach (var number in Enum.GetValues<CharacterClasses.CharacterClassNumber>())
+        foreach (var number in Enum.GetValues<CharacterClassNumber>())
         {
             var characterClass = context.CreateNew<CharacterClass>();
             characterClass.Number = (byte)number;
@@ -44,11 +46,16 @@ internal static class FenrirMountFixture
         mount.Width = 2;
         mount.Height = 2;
         mount.Durability = 255;
+        foreach (var characterClass in configuration.CharacterClasses)
+        {
+            mount.QualifiedCharacters.Add(characterClass);
+        }
         configuration.Items.Add(mount);
 
         var earthquake = context.CreateNew<Skill>();
         earthquake.Number = (short)Skills.SkillNumber.Earthshake;
         earthquake.DamageType = DamageType.Physical;
+        configuration.DetermineCharacterClasses(CharacterClasses.AllLords).ForEach(earthquake.QualifiedCharacters.Add);
         var horse = context.CreateNew<ItemDefinition>();
         horse.SetGuid(13, 4);
         horse.Group = 13;

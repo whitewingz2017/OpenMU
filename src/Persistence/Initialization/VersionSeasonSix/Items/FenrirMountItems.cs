@@ -32,11 +32,7 @@ internal static class FenrirMountItems
         mount.DropLevel = original.DropLevel;
         mount.MaximumItemLevel = original.MaximumItemLevel;
         mount.IsRepairable = original.IsRepairable;
-        mount.QualifiedCharacters.Clear();
-        foreach (var characterClass in original.QualifiedCharacters)
-        {
-            mount.QualifiedCharacters.Add(characterClass);
-        }
+        CopyQualifiedClasses(original, mount, horse);
 
         var powerUps = original.BasePowerUpAttributes.AsEnumerable();
         if (darkHorse is not null)
@@ -70,6 +66,23 @@ internal static class FenrirMountItems
 
             requirement.Attribute = source.Attribute;
             requirement.MinimumValue = source.MinimumValue;
+        }
+    }
+
+    /// <summary>Keeps an imported mount and its horse skill available to the same character classes.</summary>
+    /// <param name="original">The normal Fenrir definition.</param>
+    /// <param name="mount">The imported mount definition.</param>
+    /// <param name="horse">Whether this mount uses the horse skill.</param>
+    private static void CopyQualifiedClasses(ItemDefinition original, ItemDefinition mount, bool horse)
+    {
+        mount.QualifiedCharacters.Clear();
+        foreach (var characterClass in original.QualifiedCharacters)
+        {
+            mount.QualifiedCharacters.Add(characterClass);
+            if (horse && mount.Skill is { } skill && !skill.QualifiedCharacters.Contains(characterClass))
+            {
+                skill.QualifiedCharacters.Add(characterClass);
+            }
         }
     }
 }

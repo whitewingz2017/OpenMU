@@ -45,11 +45,13 @@ internal class HorseMountSkillsTests
         var horse = configuration.Items.Single(item => item.Group == 13 && item.Number == number);
         var reference = configuration.Items.Single(item => item.Group == 13 && item.Number == 4);
         Assert.That(horse.Skill, Is.SameAs(reference.Skill));
+        Assert.That(horse.Skill!.QualifiedCharacters, Is.SupersetOf(horse.QualifiedCharacters));
         Assert.That(FenrirMountRules.IsDarkHorse(horse), Is.True);
         Assert.That(FenrirMountRules.IsCustom(horse), Is.True);
         Assert.That(CompanionEquipmentRules.IsOrdinaryPet(horse), Is.False);
 
         horse.Skill = configuration.Items.Single(item => item.Group == 13 && item.Number == 37).Skill;
+        reference.Skill!.QualifiedCharacters.Clear();
         foreach (var power in horse.BasePowerUpAttributes.Where(power => power.TargetAttribute?.Id == Stats.IsHorseEquipped.Id).ToArray())
         {
             horse.BasePowerUpAttributes.Remove(power);
@@ -60,6 +62,8 @@ internal class HorseMountSkillsTests
         await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
         Assert.That(configuration.Items.Single(item => item.Group == 13 && item.Number == number), Is.SameAs(horse));
         Assert.That(horse.Skill, Is.SameAs(reference.Skill));
+        Assert.That(horse.Skill!.QualifiedCharacters, Is.SupersetOf(horse.QualifiedCharacters));
+        Assert.That(horse.Skill.QualifiedCharacters.Distinct().Count(), Is.EqualTo(horse.Skill.QualifiedCharacters.Count));
         Assert.That(horse.BasePowerUpAttributes.Count(power => power.TargetAttribute?.Id == Stats.IsHorseEquipped.Id), Is.EqualTo(1));
         Assert.That(horse.ItemSlot!.ItemSlots, Does.Contain(DataModel.InventoryConstants.PetSlot));
     }
