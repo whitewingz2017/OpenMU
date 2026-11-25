@@ -6,18 +6,28 @@ namespace MUnique.OpenMU.GameLogic.Cosmetics;
 
 using System.Runtime.CompilerServices;
 using MUnique.OpenMU.GameLogic.CashShop;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
-/// <summary>Purchases one permanent skin with its configured attributes atomically with WCoinC or Goblin Points.</summary>
+/// <summary>Purchases permanent skins or timed rentals atomically with their configured prices and attributes.</summary>
 public sealed class SkinShopActions
 {
-    private readonly ConditionalWeakTable<Player, Session> _sessions = new();
-
     /// <summary>The operation which buys a skin with WCoinC.</summary>
     public const byte PurchaseWithWCoinCOperation = 1;
 
     /// <summary>The operation which buys a skin with Goblin Points.</summary>
     public const byte PurchaseWithGoblinPointsOperation = 2;
+
+    /// <summary>The operation for a one-day Goblin Points rental.</summary>
+    public const byte RentOneDayOperation = 3;
+
+    /// <summary>The operation for a three-day Goblin Points rental.</summary>
+    public const byte RentThreeDaysOperation = 4;
+
+    /// <summary>The operation for a seven-day Goblin Points rental.</summary>
+    public const byte RentSevenDaysOperation = 5;
+
+    private readonly ConditionalWeakTable<Player, Session> _sessions = new();
 
     /// <summary>Handles catalog (0) and purchase requests (1 with WCoinC, 2 with Goblin Points) under the player's persistence lock.</summary>
     /// <param name="player">The purchasing player.</param>
@@ -56,6 +66,9 @@ public sealed class SkinShopActions
                 0 => "Ready",
                 PurchaseWithWCoinCOperation => await PurchaseAsync(player, settings, CashShopCoinType.WCoinC, itemType, bonus, quotedPrice, level).ConfigureAwait(false),
                 PurchaseWithGoblinPointsOperation => await PurchaseAsync(player, settings, CashShopCoinType.GoblinPoints, itemType, bonus, quotedPrice, level).ConfigureAwait(false),
+                RentOneDayOperation => await PurchaseAsync(player, settings, CashShopCoinType.GoblinPoints, itemType, bonus, quotedPrice, level, 1).ConfigureAwait(false),
+                RentThreeDaysOperation => await PurchaseAsync(player, settings, CashShopCoinType.GoblinPoints, itemType, bonus, quotedPrice, level, 3).ConfigureAwait(false),
+                RentSevenDaysOperation => await PurchaseAsync(player, settings, CashShopCoinType.GoblinPoints, itemType, bonus, quotedPrice, level, 7).ConfigureAwait(false),
                 _ => "Unknown skin shop operation.",
             };
         }).ConfigureAwait(false);
@@ -64,12 +77,17 @@ public sealed class SkinShopActions
         await player.InvokeViewPlugInAsync<ISkinShopView>(view => view.ShowAsync(requestId, status, operation == 0)).ConfigureAwait(false);
     }
 
-    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, CashShopCoinType currency, int itemType, byte bonus, int quotedPrice, byte level)
+    private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, CashShopCoinType currency, int itemType, byte bonus, int quotedPrice, byte level, int rentalDays = 0)
     {
         const byte MaximumLevel = 15;
         if (level > MaximumLevel)
         {
             return "Choose a level from +0 to +15.";
+        }
+
+        if (rentalDays > 0 && !player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn)))
+        {
+            return "Skin rentals require the Item expiration plugin.";
         }
 
         var definition = player.GameContext.Configuration.Items.SingleOrDefault(d => (d.Group * 512) + d.Number == itemType);
@@ -84,7 +102,8 @@ public sealed class SkinShopActions
         }
 
         var currencyName = currency == CashShopCoinType.GoblinPoints ? "Goblin Points" : "WCoinC";
-        var price = currency == CashShopCoinType.GoblinPoints ? settings.GoblinPrice(definition) : settings.Price(definition);
+        var price = rentalDays > 0 ? settings.RentalPrice(definition, rentalDays)
+            : currency == CashShopCoinType.GoblinPoints ? settings.GoblinPrice(definition) : settings.Price(definition);
         if (price <= 0 || quotedPrice != price)
         {
             return $"This skin is not for sale with {currencyName}, or its price changed. Refresh the shop.";
@@ -101,6 +120,7 @@ public sealed class SkinShopActions
         item.Definition = definition;
         item.Durability = definition.Durability;
         item.Level = level;
+        item.ExpiresAtUtc = rentalDays > 0 ? DateTime.UtcNow.AddDays(rentalDays) : null;
         item.HasSkill = FenrirMountRules.IsCustom(definition) && definition.Skill is not null;
         var committed = false;
         try
@@ -117,7 +137,7 @@ public sealed class SkinShopActions
             }
 
             committed = true;
-            return "Skin purchased. Equip it on the Skin page.";
+            return rentalDays > 0 ? $"Skin rented for {rentalDays} day(s). Its timer continues offline." : "Skin purchased. Equip it on the Skin page.";
         }
         catch (Exception exception)
         {
@@ -128,15 +148,20 @@ public sealed class SkinShopActions
         {
             if (!committed)
             {
-                account.SetCashShopCoins(currency, balance);
-                if (player.Inventory!.Items.Contains(item))
-                {
-                    await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
-                }
-
-                await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                await RollbackPurchaseAsync(player, item, currency, balance).ConfigureAwait(false);
             }
         }
+    }
+
+    private static async ValueTask RollbackPurchaseAsync(Player player, Item item, CashShopCoinType currency, int balance)
+    {
+        player.Account!.SetCashShopCoins(currency, balance);
+        if (player.Inventory!.Items.Contains(item))
+        {
+            await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
+        }
+
+        await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
     }
 
     private sealed class Session

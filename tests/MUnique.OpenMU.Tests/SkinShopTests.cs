@@ -10,6 +10,7 @@ using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Cosmetics;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
 /// <summary>Verifies skin purchases, saved bonuses and coin rollback.</summary>
@@ -270,6 +271,92 @@ public class SkinShopTests
         Assert.That(player.Account!.WCoinC, Is.EqualTo(accepted ? 400 : 500));
         Assert.That(player.Inventory!.Items.Count, Is.EqualTo(accepted ? 1 : 0));
         Assert.That(player.Inventory.Items.SelectMany(i => i.ItemOptions), Is.Empty);
+    }
+
+    /// <summary>Rentals charge only Goblin Points and persist the chosen UTC lifetime.</summary>
+    [TestCase(SkinShopActions.RentOneDayOperation, 1, 25)]
+    [TestCase(SkinShopActions.RentThreeDaysOperation, 3, 65)]
+    [TestCase(SkinShopActions.RentSevenDaysOperation, 7, 125)]
+    public async Task RentalUsesConfiguredPriceAndDeadlineAsync(byte operation, int days, int price)
+    {
+        var player = await CreateRentalPlayerAsync().ConfigureAwait(false);
+        var start = DateTime.UtcNow;
+        var actions = new SkinShopActions();
+        await actions.ExecuteAsync(player, 1, operation, 4196, 0, price, 15).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 1, operation, 4196, 0, price, 15).ConfigureAwait(false);
+        Assert.That(player.Account!.GoblinPoints, Is.EqualTo(500 - price));
+        Assert.That(player.Account.WCoinC, Is.EqualTo(500));
+        var item = player.Inventory!.Items.Single();
+        Assert.That(item.Level, Is.EqualTo(15));
+        Assert.That(item.ExpiresAtUtc, Is.InRange(start.AddDays(days), DateTime.UtcNow.AddDays(days)));
+    }
+
+    /// <summary>Changed prices, unavailable skins and failed saves cannot charge rental points.</summary>
+    [TestCase(true, false, 25)]
+    [TestCase(false, true, 25)]
+    [TestCase(false, false, 24)]
+    [TestCase(false, false, 0)]
+    public async Task RejectedRentalDoesNotSpendAsync(bool failSave, bool disabled, int quote)
+    {
+        var player = await CreateRentalPlayerAsync().ConfigureAwait(false);
+        if (failSave)
+        {
+            CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+        }
+
+        SkinShopFeaturePlugIn.GetSettings(player.GameContext)!.Items[4196] = new SkinShopItemSettings { Enabled = !disabled };
+        await new SkinShopActions().ExecuteAsync(player, 1, SkinShopActions.RentOneDayOperation, 4196, 0, quote).ConfigureAwait(false);
+        Assert.That(player.Account!.GoblinPoints, Is.EqualTo(500));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+    }
+
+    /// <summary>Rental availability requires the expiry plugin, even when the client submits a priced request.</summary>
+    [Test]
+    public async Task RentalRequiresExpirationPluginAsync()
+    {
+        var player = await CreateRentalPlayerAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.DeactivatePlugIn<ItemExpirationPlugIn>();
+        await new SkinShopActions().ExecuteAsync(player, 1, SkinShopActions.RentOneDayOperation, 4196, 0, 25).ConfigureAwait(false);
+        Assert.That(player.Account!.GoblinPoints, Is.EqualTo(500));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+    }
+
+    /// <summary>Offline elapsed time expires skins in the bag, cosmetic slots, and Skin Inventory.</summary>
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(2)]
+    public async Task RentalExpiresInEveryStorageAsync(int storage)
+    {
+        var player = await CreateRentalPlayerAsync().ConfigureAwait(false);
+        await new SkinShopActions().ExecuteAsync(player, 1, SkinShopActions.RentOneDayOperation, 4196, 0, 25).ConfigureAwait(false);
+        var item = player.Inventory!.Items.Single();
+        if (storage == 1)
+        {
+            await new CosmeticArmorActions().ExecuteAsync(player, 1, 1, item.ItemSlot, 1).ConfigureAwait(false);
+            Assert.That(player.Attributes![Stats.HealthAfterMonsterKillMultiplier], Is.GreaterThan(0));
+        }
+        else if (storage == 2)
+        {
+            await SkinInventoryTransfer.ExecuteAsync(player, item.ItemSlot, true).ConfigureAwait(false);
+        }
+
+        item.ExpiresAtUtc = DateTime.UtcNow.AddDays(-2);
+        await ItemExpiration.RemoveExpiredAsync(player, DateTime.UtcNow).ConfigureAwait(false);
+        Assert.That(player.SelectedCharacter!.Inventory!.Items, Does.Not.Contain(item));
+        Assert.That(player.SelectedCharacter.SkinInventory?.Items ?? [], Does.Not.Contain(item));
+        Assert.That(player.Attributes![Stats.HealthAfterMonsterKillMultiplier], Is.Zero);
+    }
+
+    private static async Task<Player> CreateRentalPlayerAsync()
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        player.Account!.GoblinPoints = 500;
+        var settings = SkinShopFeaturePlugIn.GetSettings(player.GameContext)!;
+        settings.RentalOneDayPrice = 25;
+        settings.RentalThreeDaysPrice = 65;
+        settings.RentalSevenDaysPrice = 125;
+        return player;
     }
 
     private static async Task<Player> CreateAsync(int price = 100)

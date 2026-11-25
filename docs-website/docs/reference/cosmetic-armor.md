@@ -325,3 +325,17 @@ Skin Shop purchases no longer add a selected excellent option. Configure each sk
 base attributes in its item definition; the shop quotes those attributes at the
 purchased level. Deploy the matching server and both clients. Existing owned skins
 retain their saved options and remain usable.
+
+## Skin rentals
+
+The Skin Shop purchase popup offers permanent ownership or a 1-, 3-, or 7-day
+rental for every enabled skin. In Admin Panel > Skin Shop, configure the three
+rental prices in Goblin Points; 0 disables a duration. Enable the Item expiration
+plugin before offering rentals. Existing configurations start with rental prices
+0, so the administrator chooses the costs before renting is enabled.
+
+The server charges the quoted configured price and saves the item and UTC
+deadline atomically. The timer continues offline. Expired rentals are removed
+from the bag, Skin Inventory, or cosmetic equipment, including their bonuses
+and appearance. Timed items cannot be traded. Deploy the updated server and
+Windows or mobile client together.

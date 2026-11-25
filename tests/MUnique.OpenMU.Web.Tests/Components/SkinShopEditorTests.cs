@@ -40,6 +40,18 @@ public class SkinShopEditorTests
                 builder.AddAttribute(2, nameof(SkinShopEditor.Definitions), definitions);
                 builder.CloseComponent();
             }));
+        var rentalInputs = form.FindAll("#skin-rental-prices input");
+        Assert.That(rentalInputs, Has.Count.EqualTo(3));
+        rentalInputs[0].Change("10");
+        form.FindAll("#skin-rental-prices input")[1].Change("25");
+        form.FindAll("#skin-rental-prices input")[2].Change("50");
+        Assert.That(settings.RentalOneDayPrice, Is.EqualTo(10));
+        Assert.That(settings.RentalThreeDaysPrice, Is.EqualTo(25));
+        Assert.That(settings.RentalSevenDaysPrice, Is.EqualTo(50));
+        Assert.That(SkinShopEditor.IsValid(settings), Is.True);
+        settings.RentalOneDayPrice = -1;
+        Assert.That(SkinShopEditor.IsValid(settings), Is.False);
+        settings.RentalOneDayPrice = 10;
         Assert.That(form.FindAll("tbody tr"), Has.Count.EqualTo(2));
         Assert.That(form.FindAll("tbody tr input[id^=skin-sale-]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4414", "skin-sale-4416" }));
         form.Find("#skin-excellent-effect-4414").Change(true);

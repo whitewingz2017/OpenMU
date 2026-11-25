@@ -37,6 +37,7 @@ public static class ItemExpiration
                 }
             }
 
+            changed |= await Cosmetics.SkinRentalExpiration.RemoveExpiredAsync(player, utcNow).ConfigureAwait(false);
             if (player.Vault is { } vault)
             {
                 var expired = vault.Items.Where(i => i.ExpiresAtUtc <= utcNow).ToList();

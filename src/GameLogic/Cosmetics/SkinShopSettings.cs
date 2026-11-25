@@ -57,6 +57,18 @@ public sealed class SkinShopSettings
     [Range(0, int.MaxValue)]
     public int GoblinMountPrice { get; set; }
 
+    /// <summary>Gets or sets the Goblin Points price of a one-day rental for every enabled skin. Zero disables this duration.</summary>
+    [Range(0, int.MaxValue)]
+    public int RentalOneDayPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a three-day rental for every enabled skin. Zero disables this duration.</summary>
+    [Range(0, int.MaxValue)]
+    public int RentalThreeDaysPrice { get; set; }
+
+    /// <summary>Gets or sets the Goblin Points price of a seven-day rental for every enabled skin. Zero disables this duration.</summary>
+    [Range(0, int.MaxValue)]
+    public int RentalSevenDaysPrice { get; set; }
+
     /// <summary>Gets or sets categories which are preview only.</summary>
     public HashSet<SkinShopCategory> DisabledCategories { get; set; } = [];
 
@@ -150,4 +162,20 @@ public sealed class SkinShopSettings
 
         return defaultPrice;
     }
+
+    /// <summary>Gets the configured rental price, respecting individual and category availability.</summary>
+    /// <param name="definition">The requested skin.</param>
+    /// <param name="days">One, three, or seven days.</param>
+    /// <returns>The Goblin Points price, or zero when unavailable.</returns>
+    public int RentalPrice(ItemDefinition definition, int days)
+    {
+        if (this.DisabledCategories?.Contains(Category(definition)) == true
+            || (this.Items?.TryGetValue((definition.Group * 512) + definition.Number, out var item) == true && item is not { Enabled: true }))
+        {
+            return 0;
+        }
+
+        return Math.Max(0, days switch { 1 => this.RentalOneDayPrice, 3 => this.RentalThreeDaysPrice, 7 => this.RentalSevenDaysPrice, _ => 0 });
+    }
+
 }

@@ -11,6 +11,7 @@ using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Cosmetics;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameServer;
 using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using MUnique.OpenMU.Persistence.InMemory;
@@ -114,8 +115,15 @@ public class SkinShopAttributeCatalogTests
             }
 
             player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);
+            player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, MUnique.OpenMU.GameLogic.PlugIns.ItemExpirationPlugIn>();
+            settings.RentalOneDayPrice = 25;
+            settings.RentalThreeDaysPrice = 65;
+            settings.RentalSevenDaysPrice = 125;
             var payload = SkinShopView.Serialize(player, 1, "Ready", true);
             Assert.That(payload.Length + 5, Is.LessThanOrEqualTo(ushort.MaxValue));
+            using var json = JsonDocument.Parse(payload);
+            Assert.That(json.RootElement.GetProperty("RentalOneDayPrice").GetInt32(), Is.EqualTo(25));
+            Assert.That(json.RootElement.GetProperty("RentableItems").GetArrayLength(), Is.GreaterThan(0));
             TestContext.Out.WriteLine($"Shop catalog including attributes: {payload.Length + 5} bytes.");
         }
     }

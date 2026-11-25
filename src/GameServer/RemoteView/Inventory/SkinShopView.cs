@@ -11,6 +11,7 @@ using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.ItemBonuses;
+using MUnique.OpenMU.GameLogic.PlugIns;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 using MUnique.OpenMU.Network;
 using MUnique.OpenMU.Network.Packets.ServerToClient;
@@ -64,12 +65,17 @@ public sealed class SkinShopView : ISkinShopView
             .GroupBy(item => JsonSerializer.Serialize(item.Lines)).ToArray();
         var attributeIndices = attributePools.SelectMany((pool, index) => pool.Select(item => (item.Definition, Index: index)))
             .ToDictionary(item => item.Definition, item => item.Index);
+        var rentalsEnabled = player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn));
         return JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
             Status = status,
             Balance = player.Account?.WCoinC ?? 0,
             GoblinBalance = player.Account?.GoblinPoints ?? 0,
+            RentalOneDayPrice = rentalsEnabled ? Math.Max(0, settings?.RentalOneDayPrice ?? 0) : 0,
+            RentalThreeDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalThreeDaysPrice ?? 0) : 0,
+            RentalSevenDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalSevenDaysPrice ?? 0) : 0,
+            RentableItems = items.Where(d => rentalsEnabled && settings is not null && (settings.RentalPrice(d, 1) > 0 || settings.RentalPrice(d, 3) > 0 || settings.RentalPrice(d, 7) > 0)).Select(d => (d.Group * 512) + d.Number),
             ExcellentEffectItems = settings?.ExcellentEffectItems(player.GameContext.Configuration.Items).ToArray() ?? [],
             Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), GoblinPrice = settings.GoblinPrice(d), Eligible = CosmeticArmorRules.CanEquip(player, d), Pool = Pool(d), AttributePool = attributeIndices[d] }),
             Pools = items.GroupBy(Pool).Select(group => new { Pool = group.Key, Bonuses = Array.Empty<object>() }),
