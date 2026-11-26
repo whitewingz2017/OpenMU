@@ -4313,6 +4313,36 @@ public class PacketStructureTests
     }
 
     /// <summary>
+    /// Tests the packet size calculation for DailyRewardOfferClaimExtended.
+    /// </summary>
+    [Test]
+    public void DailyRewardOfferClaimExtended_PacketSizeValidation()
+    {
+        // Fixed-length packet validation
+        const int expectedLength = 14;
+        var actualLength = DailyRewardOfferClaimExtendedRef.Length;
+        
+        Assert.That(actualLength, Is.EqualTo(expectedLength), 
+            "Packet length mismatch: declared length does not match calculated size");
+        
+        // Validate field 'Day' boundary
+        Assert.That(4 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Day' exceeds packet boundary");
+        
+        // Validate field 'Choice' boundary
+        Assert.That(5 + 1, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'Choice' exceeds packet boundary");
+        
+        // Validate field 'OfferKey' boundary
+        Assert.That(6 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'OfferKey' exceeds packet boundary");
+        
+        // Validate field 'RequestId' boundary
+        Assert.That(10 + 4, Is.LessThanOrEqualTo(expectedLength), 
+            "Field 'RequestId' exceeds packet boundary");
+    }
+
+    /// <summary>
     /// Tests the packet size calculation for GuideBookRequestExtended.
     /// </summary>
     [Test]

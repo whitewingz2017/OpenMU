@@ -215,6 +215,7 @@
   * [C2 FD 0E - ItemBonusesRequestExtended (by client)](C2-FD-0E-ItemBonusesRequestExtended_by-client.md)
   * [C2 FD 0F - FeaturesRequestExtended (by client)](C2-FD-0F-FeaturesRequestExtended_by-client.md)
   * [C2 FD 10 - DuelBettingRequestExtended (by client)](C2-FD-10-DuelBettingRequestExtended_by-client.md)
+  * [C1 FD 11 - DailyRewardOfferClaimExtended (by client)](C1-FD-11-DailyRewardOfferClaimExtended_by-client.md)
   * [C1 FE 01 - StoreCombinedPriceRequest (by client)](C1-FE-01-StoreCombinedPriceRequest_by-client.md)
   * [C1 FE 02 - StoreMailClaimRequest (by client)](C1-FE-02-StoreMailClaimRequest_by-client.md)
   * [C1 FE 03 - StoreMailBuyRequest (by client)](C1-FE-03-StoreMailBuyRequest_by-client.md)

@@ -4,22 +4,16 @@
 
 namespace MUnique.OpenMU.GameLogic.DailyRewards;
 
-using MUnique.OpenMU.DataModel.Configuration.Items;
+using System.Buffers.Binary;
+using System.Security.Cryptography;
+using System.Text.Json;
+using MUnique.OpenMU.DataModel.Composition;
 
 /// <summary>The daily login reward of one day of the month.</summary>
-public sealed class DailyRewardDay
+public sealed class DailyRewardDay : DailyRewardItem
 {
-    /// <summary>The maximum item level of a reward item.</summary>
-    internal const byte MaximumItemLevel = 15;
-
-    /// <summary>The maximum option level of a reward item.</summary>
-    internal const byte MaximumItemOption = 7;
-
-    /// <summary>The flags of all six excellent options.</summary>
-    internal const byte AllExcellentOptions = 0b11_1111;
-
-    /// <summary>The period-item protocol represents expiration as signed Unix seconds.</summary>
-    internal const int MaximumItemDurationHours = int.MaxValue / 3600;
+    /// <summary>The largest number of items that can be offered on a single day.</summary>
+    public const int MaximumItems = 8;
 
     /// <summary>Gets or sets the day of the month, from 1 to 31.</summary>
     [Display(Name = nameof(DailyRewardResources.Day), ResourceType = typeof(DailyRewardResources))]
@@ -46,53 +40,61 @@ public sealed class DailyRewardDay
     [Range(0, int.MaxValue)]
     public int GoblinPoints { get; set; }
 
-    /// <summary>Gets or sets the item which is added to the character's inventory, if any.</summary>
-    [Display(Name = nameof(DailyRewardResources.Item), ResourceType = typeof(DailyRewardResources))]
-    public ItemDefinition? Item { get; set; }
+    /// <summary>Gets or sets the additional items offered by this day.</summary>
+    [MemberOfAggregate]
+    public List<DailyRewardItem> Items { get; set; } = [];
 
-    /// <summary>Gets or sets the level of the item, limited by its maximum level.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemLevel), ResourceType = typeof(DailyRewardResources))]
-    [Range(0, MaximumItemLevel)]
-    public byte ItemLevel { get; set; }
-
-    /// <summary>Gets or sets the quantity of a stackable item, e.g. potions; zero for its full stack.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemQuantity), ResourceType = typeof(DailyRewardResources))]
-    [Range(0, byte.MaxValue)]
-    public byte ItemQuantity { get; set; }
-
-    /// <summary>Gets or sets the item's lifetime from claiming, in hours; zero means permanent.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemDurationHours), ResourceType = typeof(DailyRewardResources))]
-    [Range(0, MaximumItemDurationHours)]
-    public int ItemDurationHours { get; set; }
-
-    /// <summary>Gets or sets a value indicating whether the item has its skill.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemSkill), ResourceType = typeof(DailyRewardResources))]
-    public bool ItemSkill { get; set; }
-
-    /// <summary>Gets or sets a value indicating whether the item has luck.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemLuck), ResourceType = typeof(DailyRewardResources))]
-    public bool ItemLuck { get; set; }
-
-    /// <summary>Gets or sets the level of the item's normal option, e.g. 1 for +4; zero for none.</summary>
-    [Display(Name = nameof(DailyRewardResources.ItemOption), ResourceType = typeof(DailyRewardResources))]
-    [Range(0, MaximumItemOption)]
-    public byte ItemOption { get; set; }
-
-    /// <summary>
-    /// Gets or sets the excellent options of the item as flags, like the GM item command: 1, 2, 4, 8, 16 and 32 for the
-    /// first to sixth option. A skin receives the one allowed bonus of its flag instead.
-    /// </summary>
-    [Display(Name = nameof(DailyRewardResources.ItemExcellentOptions), ResourceType = typeof(DailyRewardResources))]
-    [Range(0, AllExcellentOptions)]
-    public byte ItemExcellentOptions { get; set; }
+    /// <summary>Gets or sets a value indicating whether the player selects exactly one item.</summary>
+    public bool ChooseOneItem { get; set; }
 
     /// <summary>Gets a value indicating whether anything is granted on this day.</summary>
-    public bool HasReward => this.Zen > 0 || this.WCoinC > 0 || this.WCoinP > 0 || this.GoblinPoints > 0 || this.Item is not null;
+    public bool HasReward => this.Zen > 0 || this.WCoinC > 0 || this.WCoinP > 0 || this.GoblinPoints > 0 || this.ItemCount > 0;
+
+    /// <summary>Gets the number of items, including the item from an older calendar configuration.</summary>
+    public int ItemCount => (this.Item is null ? 0 : 1) + this.Items.Count;
+
+    /// <summary>Gets a value indicating whether a claim must identify the displayed item list.</summary>
+    public bool RequiresOffer => this.ChooseOneItem || this.ItemCount > 1;
 
     /// <summary>Gets a value indicating whether the values are within their limits.</summary>
-    internal bool IsValid => this is { Day: >= 1 and <= DailyRewardCalendar.MaximumDays, Zen: >= 0, WCoinC: >= 0, WCoinP: >= 0, GoblinPoints: >= 0 }
-        && this.ItemLevel <= MaximumItemLevel && this.ItemOption <= MaximumItemOption && this.ItemExcellentOptions <= AllExcellentOptions
-        && this.ItemDurationHours is >= 0 and <= MaximumItemDurationHours;
+    internal bool IsValid => this is { Day: >= 1 and <= DailyRewardCalendar.MaximumDays, Zen: >= 0, WCoinC: >= 0, WCoinP: >= 0, GoblinPoints: >= 0, Items: not null }
+        && this.ItemCount <= MaximumItems && (!this.ChooseOneItem || this.ItemCount > 1)
+        && this.HasValidOptions && this.Items.All(item => item is { Item: not null, HasValidOptions: true });
+
+    /// <summary>Gets all offered items in the order displayed by the client.</summary>
+    /// <returns>The configured items.</returns>
+    public IEnumerable<DailyRewardItem> GetItems() => this.Item is null ? this.Items : this.Items.Prepend(this);
+
+    /// <summary>Identifies the terms displayed for this day, so an admin edit cannot change a pending choice.</summary>
+    /// <param name="month">The calendar month, including the year.</param>
+    /// <returns>The offer identifier.</returns>
+    public uint GetOfferKey(int month)
+    {
+        var data = JsonSerializer.SerializeToUtf8Bytes(new
+        {
+            month,
+            this.Day,
+            this.Zen,
+            this.WCoinC,
+            this.WCoinP,
+            this.GoblinPoints,
+            this.ChooseOneItem,
+            Items = this.GetItems().Select(entry => new
+            {
+                entry.Item!.Group,
+                entry.Item!.Number,
+                entry.ItemLevel,
+                entry.ItemQuantity,
+                entry.ItemDurationHours,
+                entry.ItemSkill,
+                entry.ItemLuck,
+                entry.ItemOption,
+                entry.ItemExcellentOptions,
+            }),
+        });
+        var key = BinaryPrimitives.ReadUInt32LittleEndian(SHA256.HashData(data));
+        return key == 0 ? 1 : key;
+    }
 
     /// <inheritdoc />
     public override string ToString() => FormattableString.Invariant($"{this.Day}: {this.Item?.Name.ValueInNeutralLanguage ?? string.Empty} {this.Zen}");

@@ -4,11 +4,14 @@
 
 namespace MUnique.OpenMU.Tests;
 
+using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.DailyRewards;
 using MUnique.OpenMU.GameLogic.PlugIns;
+using MUnique.OpenMU.Persistence;
+using MUnique.OpenMU.PlugIns;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
 /// <summary>Tests the calendar month daily login rewards.</summary>
@@ -183,6 +186,111 @@ public class DailyRewardTests
         var settings = new DailyRewardSettings();
         settings.Days.First().ItemDurationHours = hours;
         Assert.That(settings.IsValid(), Is.False);
+    }
+
+    /// <summary>All items in a bundle are granted with their own lifetime.</summary>
+    [Test]
+    public async Task BundleGrantsPermanentAndTimedItemsAsync()
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        var reward = DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!;
+        var timed = AddSkin(reward, 24);
+        await actions.ExecuteAsync(player, 1, DailyRewardActions.ClaimOperation, today, Now, OfferKey(reward)).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(2));
+        Assert.That(player.Inventory.Items.Single(item => item.Definition == reward.Item).ExpiresAtUtc, Is.Null);
+        Assert.That(player.Inventory.Items.Single(item => item.Definition == timed.Item).ExpiresAtUtc, Is.EqualTo(Now.AddHours(24)));
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(10));
+    }
+
+    /// <summary>Invalid or stale selections leave the day available, then the selected item and currency are granted once.</summary>
+    /// <param name="selection">The one-based index the player selects.</param>
+    [TestCase((byte)1)]
+    [TestCase((byte)2)]
+    public async Task ChoiceGrantsOnlyTheSelectedItemAsync(byte selection)
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        var reward = DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!;
+        var choice = AddSkin(reward, 48);
+        reward.ChooseOneItem = true;
+        var stale = OfferKey(reward);
+        choice.ItemDurationHours = 72;
+        var current = OfferKey(reward);
+        await actions.ExecuteAsync(player, 1, DailyRewardActions.ClaimOperation, today, Now).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, DailyRewardActions.ClaimOperation, today, Now, stale, selection).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 3, DailyRewardActions.ClaimOperation, today, Now, current, 3).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(player.Account!.DailyRewardClaimedDays, Is.Zero);
+        Assert.That(player.Account.WCoinC, Is.Zero);
+
+        if (selection == 2)
+        {
+            player.GameContext.PlugInManager.RegisterPlugIn<IPeriodicTaskPlugIn, ItemExpirationPlugIn>();
+        }
+
+        await actions.ExecuteAsync(player, 4, DailyRewardActions.ClaimOperation, today, Now, current, selection).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 5, DailyRewardActions.ClaimOperation, today, Now, current, 1).ConfigureAwait(false);
+        var item = player.Inventory.Items.Single();
+        Assert.That(item.Definition, Is.SameAs(selection == 1 ? reward.Item : choice.Item));
+        Assert.That(item.ExpiresAtUtc, Is.EqualTo(selection == 1 ? (DateTime?)null : Now.AddHours(72)));
+        Assert.That(player.Account.WCoinC, Is.EqualTo(10));
+    }
+
+    /// <summary>Items already added during the attempt are removed if a later item cannot fit.</summary>
+    [Test]
+    public async Task PartialBundleDoesNotGrantAnythingAsync()
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        var reward = DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!;
+        var second = AddSkin(reward, 0);
+        second.Item!.Width = 9;
+        await actions.ExecuteAsync(player, 1, DailyRewardActions.ClaimOperation, today, Now, OfferKey(reward)).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        Assert.That(player.Account!.DailyRewardClaimedDays, Is.Zero);
+        Assert.That(player.Account.WCoinC, Is.Zero);
+        Assert.That(player.Money, Is.Zero);
+
+        second.Item.Width = 1;
+        await actions.ExecuteAsync(player, 2, DailyRewardActions.ClaimOperation, today, Now, OfferKey(reward)).ConfigureAwait(false);
+        Assert.That(player.Inventory.Items.Count, Is.EqualTo(2));
+    }
+
+    /// <summary>Saved offers preserve item references, order, durations and the choice setting.</summary>
+    [Test]
+    public void ConfiguredChoicesRoundTrip()
+    {
+        var primary = new BasicModel.ItemDefinition { Id = Guid.NewGuid(), Group = 12, Number = 319, Name = "Permanent skin" };
+        var day = new DailyRewardDay { Day = 1, Item = primary, ChooseOneItem = true };
+        var timed = AddSkin(day, 24);
+        var skin = (BasicModel.ItemDefinition)timed.Item!;
+        skin.Id = Guid.NewGuid();
+        var source = new Mock<IDataSource<GameConfiguration>>();
+        source.Setup(data => data.Get(primary.Id)).Returns(primary);
+        source.Setup(data => data.Get(skin.Id)).Returns(skin);
+        var references = new ByDataSourceReferenceHandler(source.Object);
+        var plugIn = new BasicModel.PlugInConfiguration();
+        plugIn.SetConfiguration(new DailyRewardSettings { Days = [day] }, references);
+
+        var reloaded = plugIn.GetConfiguration<DailyRewardSettings>(references);
+        Assert.That(reloaded!.IsValid(), Is.True);
+        var saved = reloaded.GetDay(1)!;
+        Assert.That(saved.ChooseOneItem, Is.True);
+        Assert.That(saved.GetItems().Select(item => item.Item), Is.EqualTo(new[] { primary, skin }));
+        Assert.That(saved.GetItems().Select(item => item.ItemDurationHours), Is.EqualTo(new[] { 0, 24 }));
+    }
+
+    private static uint OfferKey(DailyRewardDay reward) => reward.GetOfferKey(DailyRewardCalendar.Today(Now).Month);
+
+    private static DailyRewardItem AddSkin(DailyRewardDay reward, int hours)
+    {
+        var definition = new BasicModel.ItemDefinition { Group = 12, Number = 320, Width = 1, Height = 1, Durability = 1, Name = "Skin" };
+        definition.ItemSlot = new BasicModel.ItemSlotType { ItemSlots = { 247 } };
+        var entry = new DailyRewardItem { Item = definition, ItemDurationHours = hours };
+        reward.Items.Add(entry);
+        return entry;
     }
 
     private static async Task<(Player Player, DailyRewardActions Actions, byte Today)> CreateAsync()

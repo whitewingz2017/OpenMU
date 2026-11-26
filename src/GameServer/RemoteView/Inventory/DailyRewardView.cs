@@ -53,18 +53,11 @@ public sealed class DailyRewardView : IDailyRewardView
                 day.WCoinC,
                 day.WCoinP,
                 day.GoblinPoints,
-                Item = day.Item is { } item ? new
-                {
-                    ItemType = (item.Group * 512) + item.Number,
-                    Name = item.Name.ValueInNeutralLanguage,
-                    Level = Math.Min(day.ItemLevel, item.MaximumItemLevel),
-                    Durability = item.Durability > 1 && item.ItemSlot is null && day.ItemQuantity > 0 ? Math.Min(day.ItemQuantity, item.Durability) : item.Durability,
-                    Luck = day.ItemLuck,
-                    Skill = day.ItemSkill,
-                    Option = day.ItemOption,
-                    Excellent = day.ItemExcellentOptions,
-                    DurationHours = day.ItemDurationHours,
-                } : null,
+                day.ItemCount,
+                day.ChooseOneItem,
+                Item = day.GetItems().Select(ProjectItem).FirstOrDefault(),
+                Items = day.Day == today && day.RequiresOffer ? day.GetItems().Select(ProjectItem).ToArray() : null,
+                OfferKey = day.Day == today && day.RequiresOffer ? day.GetOfferKey(month) : 0,
             }),
         });
         await connection.SendAsync(() =>
@@ -74,5 +67,25 @@ public sealed class DailyRewardView : IDailyRewardView
             data.CopyTo(packet.Data);
             return size;
         }).ConfigureAwait(false);
+    }
+
+    private static object ProjectItem(DailyRewardItem entry)
+    {
+        var item = entry.Item!;
+        var isStackable = item.Durability > 1 && item.ItemSlot is null;
+        var durability = isStackable && entry.ItemQuantity > 0 ? Math.Min(entry.ItemQuantity, item.Durability) : item.Durability;
+        return new
+        {
+            ItemType = (item.Group * 512) + item.Number,
+            Name = item.Name.ValueInNeutralLanguage,
+            Level = Math.Min(entry.ItemLevel, item.MaximumItemLevel),
+            Durability = durability,
+            Quantity = isStackable ? durability : 1,
+            Luck = entry.ItemLuck,
+            Skill = entry.ItemSkill,
+            Option = entry.ItemOption,
+            Excellent = entry.ItemExcellentOptions,
+            DurationHours = entry.ItemDurationHours,
+        };
     }
 }

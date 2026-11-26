@@ -32,6 +32,8 @@ public partial class DailyRewards
     private GameConfiguration? _gameConfiguration;
     private PlugInConfigurationViewItem? _plugIn;
     private DailyRewardDay? _editing;
+    private DailyRewardItem? _editingItem;
+    private bool _addingItem;
     private string _itemSearch = string.Empty;
     private string _status = string.Empty;
     private bool _statusIsError;
@@ -58,13 +60,14 @@ public partial class DailyRewards
 
     private static IEnumerable<string> Summary(DailyRewardDay day)
     {
-        if (day.Item is { } item)
+        if (day.ChooseOneItem)
         {
-            yield return item.Name.ValueInNeutralLanguage + (day.ItemLevel > 0 ? FormattableString.Invariant($" +{day.ItemLevel}") : string.Empty);
-            if (day.ItemDurationHours > 0)
-            {
-                yield return string.Format(CultureInfo.CurrentCulture, Text("DurationSummary"), day.ItemDurationHours);
-            }
+            yield return Text("ChooseOne");
+        }
+
+        foreach (var entry in day.GetItems())
+        {
+            yield return ItemSummary(entry);
         }
 
         if (day.Zen > 0)
@@ -86,6 +89,20 @@ public partial class DailyRewards
         {
             yield return string.Format(CultureInfo.CurrentCulture, "{0:N0} {1}", day.GoblinPoints, DailyRewardResources.GoblinPoints);
         }
+    }
+
+    private static string ItemSummary(DailyRewardItem entry)
+    {
+        var name = entry.Item!.Name.ValueInNeutralLanguage ?? string.Empty;
+        if (entry.ItemLevel > 0)
+        {
+            name += FormattableString.Invariant($" +{entry.ItemLevel}");
+        }
+
+        var duration = entry.ItemDurationHours > 0
+            ? string.Format(CultureInfo.CurrentCulture, Text("DurationSummary"), entry.ItemDurationHours)
+            : Text("Permanent");
+        return $"{name} · {duration}";
     }
 
     private static bool IsSkin(ItemDefinition definition) => CosmeticArmorRules.GetSlot(definition) is not null;
@@ -163,36 +180,60 @@ public partial class DailyRewards
     private void Edit(DailyRewardDay day)
     {
         this._editing = day;
+        this._editingItem = day.GetItems().FirstOrDefault();
+        this._addingItem = this._editingItem is null;
         this._itemSearch = string.Empty;
     }
 
     private void CloseEditor() => this._editing = null;
 
+    private void AddItem()
+    {
+        this._addingItem = true;
+        this._editingItem = null;
+        this._itemSearch = string.Empty;
+    }
+
+    private void EditItem(DailyRewardItem item)
+    {
+        this._addingItem = false;
+        this._editingItem = item;
+    }
+
     private void SelectItem(DailyRewardDay day, string? value)
     {
-        if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var type))
+        if (day.ItemCount >= DailyRewardDay.MaximumItems
+            || !int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var type)
+            || this._gameConfiguration?.Items.FirstOrDefault(item => (item.Group * ItemsPerGroup) + item.Number == type) is not { } definition)
         {
             return;
         }
 
-        day.Item = this._gameConfiguration?.Items.FirstOrDefault(item => (item.Group * ItemsPerGroup) + item.Number == type);
-        day.ItemLevel = 0;
-        day.ItemQuantity = 0;
-        day.ItemDurationHours = 0;
-        day.ItemOption = 0;
-        day.ItemSkill = false;
-        day.ItemLuck = false;
-        day.ItemExcellentOptions = 0;
+        var entry = new DailyRewardItem { Item = definition };
+        day.Items.Add(entry);
+        this.EditItem(entry);
     }
 
-    private void RemoveItem(DailyRewardDay day)
+    private void RemoveItem(DailyRewardDay day, DailyRewardItem item)
     {
-        day.Item = null;
-        day.ItemDurationHours = 0;
-        this._itemSearch = string.Empty;
+        if (ReferenceEquals(day, item))
+        {
+            day.Item = null;
+        }
+        else
+        {
+            day.Items.Remove(item);
+        }
+
+        if (day.ItemCount < 2)
+        {
+            day.ChooseOneItem = false;
+        }
+
+        this.Edit(day);
     }
 
-    private void SetBonus(DailyRewardDay day, ItemDefinition definition, byte flag, bool selected)
+    private void SetBonus(DailyRewardItem day, ItemDefinition definition, byte flag, bool selected)
     {
         if (!selected)
         {
@@ -206,12 +247,14 @@ public partial class DailyRewards
 
     private void Clear(DailyRewardDay day)
     {
-        var number = day.Day;
-        this.RemoveItem(day);
+        day.Item = null;
+        day.Items.Clear();
+        day.ChooseOneItem = false;
+        day.ItemDurationHours = 0;
         (day.Zen, day.WCoinC, day.WCoinP, day.GoblinPoints) = (0, 0, 0, 0);
         (day.ItemLevel, day.ItemQuantity, day.ItemOption, day.ItemExcellentOptions) = (0, 0, 0, 0);
         (day.ItemSkill, day.ItemLuck) = (false, false);
-        day.Day = number;
+        this.Edit(day);
     }
 
     private async Task SaveAsync()

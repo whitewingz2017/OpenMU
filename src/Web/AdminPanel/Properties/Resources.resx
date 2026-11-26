@@ -2582,6 +2582,9 @@
   <data name="DailyRewardsLoadFailed" xml:space="preserve">
     <value>The daily reward configuration could not be loaded.</value>
   </data>
+  <data name="DailyRewardsChooseOne" xml:space="preserve"><value>Let the player choose one item</value></data>
+  <data name="DailyRewardsAddItem" xml:space="preserve"><value>Add item</value></data>
+  <data name="DailyRewardsPermanent" xml:space="preserve"><value>Permanent</value></data>
   <data name="DailyRewardsInvalid" xml:space="preserve">
     <value>The rewards are invalid. Check the amounts and the item values.</value>
   </data>

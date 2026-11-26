@@ -115,6 +115,15 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
             return;
         }
 
+        if (packet.Length == DailyRewardOfferClaimExtended.Length && packet.Span[0] == DailyRewardOfferClaimExtended.HeaderType
+            && packet.Span[1] == packet.Length && packet.Span[3] == DailyRewardOfferClaimExtended.SubCode)
+        {
+            DailyRewardOfferClaimExtended claim = packet;
+            await this._dailyRewards.ExecuteAsync(player, claim.RequestId, GameLogic.DailyRewards.DailyRewardActions.ClaimOperation,
+                claim.Day, offerKey: claim.OfferKey, choice: claim.Choice).ConfigureAwait(false);
+            return;
+        }
+
         if (packet.Length == DailyRewardRequestExtended.Length && packet.Span[0] == DailyRewardRequestExtended.HeaderType
             && packet.Span[1] == packet.Length && packet.Span[3] == DailyRewardRequestExtended.SubCode)
         {

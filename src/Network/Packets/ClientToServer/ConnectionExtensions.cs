@@ -6047,7 +6047,7 @@ public static class ConnectionExtensions
     /// <param name="day">The day.</param>
     /// <param name="requestId">The request id.</param>
     /// <remarks>
-    /// Is sent by the client when: The custom client loads the daily login reward calendar (0) or claims the reward of the given day of the current month (1).
+    /// Is sent by the client when: The custom client loads the daily login reward calendar (0) or claims a single-item or currency-only reward of the given day of the current month (1).
     /// Causes reaction on server side: The server checks the server's current day, the account's claimed days, inventory room and the replay sequence. It grants the configured zen, cash shop coins and item atomically and sends the calendar with the matching RequestId.
     /// </remarks>
     public static async ValueTask SendDailyRewardRequestExtendedAsync(this IConnection? connection, byte @operation, byte @day, uint @requestId)
@@ -6063,6 +6063,40 @@ public static class ConnectionExtensions
             var packet = new DailyRewardRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
             packet.Operation = @operation;
             packet.Day = @day;
+            packet.RequestId = @requestId;
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="DailyRewardOfferClaimExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="day">The day.</param>
+    /// <param name="choice">The choice.</param>
+    /// <param name="offerKey">The offer key.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client claims a daily reward bundle (Choice 0) or selects one of the displayed items (one-based Choice).
+    /// Causes reaction on server side: The server matches OfferKey against the current reward, validates the choice and saves the reward atomically. It returns the calendar with the matching RequestId.
+    /// </remarks>
+    public static async ValueTask SendDailyRewardOfferClaimExtendedAsync(this IConnection? connection, byte @day, byte @choice, uint @offerKey, uint @requestId)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = DailyRewardOfferClaimExtendedRef.Length;
+            var packet = new DailyRewardOfferClaimExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Day = @day;
+            packet.Choice = @choice;
+            packet.OfferKey = @offerKey;
             packet.RequestId = @requestId;
 
             return packet.Header.Length;

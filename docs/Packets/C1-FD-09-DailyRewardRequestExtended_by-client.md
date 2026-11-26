@@ -2,7 +2,7 @@
 
 ## Is sent when
 
-The custom client loads the daily login reward calendar (0) or claims the reward of the given day of the current month (1).
+The custom client loads the daily login reward calendar (0) or claims a single-item or currency-only reward of the given day of the current month (1).
 
 ## Causes the following actions on the server side
 

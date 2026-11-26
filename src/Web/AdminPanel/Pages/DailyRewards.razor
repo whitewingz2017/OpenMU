@@ -61,7 +61,8 @@
 
 @if (this._editing is { } editing)
 {
-    var definition = editing.Item;
+    var entry = this._editingItem;
+    var definition = entry?.Item;
     <div class="daily-backdrop" @onclick="this.CloseEditor"></div>
     <div class="daily-editor card" role="dialog" aria-modal="true" aria-labelledby="daily-editor-title">
         <div class="card-header d-flex align-items-center">
@@ -78,7 +79,20 @@
 
             <fieldset class="daily-item-box">
                 <legend class="form-label">@DailyRewardResources.Item</legend>
-                @if (definition is null)
+                <label class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" disabled="@(editing.ItemCount < 2)" @bind="editing.ChooseOneItem" />
+                    @Text("ChooseOne")
+                </label>
+                @foreach (var offered in editing.GetItems())
+                {
+                    <button type="button" @key="offered" class="btn btn-sm btn-outline-secondary me-1 mb-1"
+                            aria-pressed="@(offered == entry)" @onclick="() => this.EditItem(offered)">
+                        @ItemSummary(offered)
+                    </button>
+                }
+                <button type="button" class="btn btn-sm btn-outline-primary mb-1" disabled="@(editing.ItemCount >= DailyRewardDay.MaximumItems)"
+                        @onclick="this.AddItem">@Text("AddItem")</button>
+                @if (this._addingItem)
                 {
                     <input type="search" class="form-control mb-2" placeholder="@Text("SearchItem")" aria-label="@Text("SearchItem")"
                            @bind="this._itemSearch" @bind:event="oninput" />
@@ -89,32 +103,32 @@
                         }
                     </select>
                 }
-                else
+                else if (entry is not null && definition is not null)
                 {
                     <div class="d-flex align-items-center mb-2">
                         <strong class="flex-grow-1">@definition.Name.ValueInNeutralLanguage <small class="text-muted">(@definition.Group:@definition.Number)</small></strong>
-                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => this.RemoveItem(editing)">@Text("RemoveItem")</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => this.RemoveItem(editing, entry)">@Text("RemoveItem")</button>
                     </div>
                     <div class="row g-2">
-                        <div class="col-sm-4"><label class="form-label" for="daily-duration">@DailyRewardResources.ItemDurationHours</label><input id="daily-duration" type="number" class="form-control" min="0" @bind="editing.ItemDurationHours" /><small class="text-muted">@Text("DurationHint")</small></div>
-                        <div class="col-sm-4"><label class="form-label" for="daily-level">@DailyRewardResources.ItemLevel</label><input id="daily-level" type="number" class="form-control" min="0" max="@Math.Min((int)definition.MaximumItemLevel, 15)" @bind="editing.ItemLevel" /></div>
+                        <div class="col-sm-4"><label class="form-label" for="daily-duration">@DailyRewardResources.ItemDurationHours</label><input id="daily-duration" type="number" class="form-control" min="0" @bind="entry.ItemDurationHours" /><small class="text-muted">@Text("DurationHint")</small></div>
+                        <div class="col-sm-4"><label class="form-label" for="daily-level">@DailyRewardResources.ItemLevel</label><input id="daily-level" type="number" class="form-control" min="0" max="@Math.Min((int)definition.MaximumItemLevel, 15)" @bind="entry.ItemLevel" /></div>
                         @if (IsStackable(definition))
                         {
-                            <div class="col-sm-4"><label class="form-label" for="daily-quantity">@DailyRewardResources.ItemQuantity</label><input id="daily-quantity" type="number" class="form-control" min="0" max="@definition.Durability" @bind="editing.ItemQuantity" /></div>
+                            <div class="col-sm-4"><label class="form-label" for="daily-quantity">@DailyRewardResources.ItemQuantity</label><input id="daily-quantity" type="number" class="form-control" min="0" max="@definition.Durability" @bind="entry.ItemQuantity" /></div>
                         }
                         @if (HasNormalOption(definition))
                         {
-                            <div class="col-sm-4"><label class="form-label" for="daily-option">@DailyRewardResources.ItemOption</label><input id="daily-option" type="number" class="form-control" min="0" max="7" @bind="editing.ItemOption" /></div>
+                            <div class="col-sm-4"><label class="form-label" for="daily-option">@DailyRewardResources.ItemOption</label><input id="daily-option" type="number" class="form-control" min="0" max="7" @bind="entry.ItemOption" /></div>
                         }
                     </div>
                     <div class="mt-2">
                         @if (definition.Skill is not null)
                         {
-                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="editing.ItemSkill" />@DailyRewardResources.ItemSkill</label>
+                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="entry.ItemSkill" />@DailyRewardResources.ItemSkill</label>
                         }
                         @if (HasLuck(definition))
                         {
-                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="editing.ItemLuck" />@DailyRewardResources.ItemLuck</label>
+                            <label class="form-check form-check-inline"><input type="checkbox" class="form-check-input" @bind="entry.ItemLuck" />@DailyRewardResources.ItemLuck</label>
                         }
                     </div>
                     @if (Bonuses(definition) is { Count: > 0 } bonuses)
@@ -125,8 +139,8 @@
                             {
                                 var flag = (byte)(1 << (bonus.Number - 1));
                                 <label class="form-check" @key="bonus.Number">
-                                    <input type="checkbox" class="form-check-input" checked="@((editing.ItemExcellentOptions & flag) != 0)"
-                                           @onchange="args => this.SetBonus(editing, definition, flag, args.Value is true)" />
+                                    <input type="checkbox" class="form-check-input" checked="@((entry.ItemExcellentOptions & flag) != 0)"
+                                           @onchange="args => this.SetBonus(entry, definition, flag, args.Value is true)" />
                                     @Label(bonus)
                                 </label>
                             }

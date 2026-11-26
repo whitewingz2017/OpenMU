@@ -82,6 +82,7 @@ complexity and effort). Complexity 0 means we wont implement it.
 | RequestPetItemInfo          | 0xA9              | 100%     | 3          |                                               |
 | RequestDuelStart            | 0xAA              | 0%       | 4          |                                               |
 | DuelBettingRequestExtended | 0xFD / 0x10       | 100%     | Custom     | Public duel challenges, board, bets and payouts |
+| DailyRewardOfferClaimExtended | 0xFD / 0x11       | 100%     | Custom     | Daily reward bundles and single-item choices |
 | RequestDuelEnd              | 0xAB              | 0%       | 2          |                                               |
 | RequestDuelOK               | 0xAC              | 0%       | 2          |                                               |
 | RequestEnterChaosCastle     | 0xAF              | 100%     | 4          |                                               |

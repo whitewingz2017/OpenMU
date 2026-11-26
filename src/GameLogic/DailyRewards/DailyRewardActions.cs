@@ -15,6 +15,9 @@ using MUnique.OpenMU.Persistence;
 /// <summary>Loads the daily login reward calendar and claims the reward of the current day.</summary>
 public sealed class DailyRewardActions
 {
+    /// <summary>The operation number for claiming today's rewards.</summary>
+    public const byte ClaimOperation = 1;
+
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
 
     /// <summary>Processes a calendar request or a claim.</summary>
@@ -23,11 +26,13 @@ public sealed class DailyRewardActions
     /// <param name="operation">Zero loads the calendar, one claims the reward of <paramref name="day"/>.</param>
     /// <param name="day">The day of the month the client claims; it has to be the server's current day.</param>
     /// <param name="utcNow">The current time; <c>null</c> for <see cref="DateTime.UtcNow"/>.</param>
+    /// <param name="offerKey">The displayed offer identifier for a multi-item day.</param>
+    /// <param name="choice">The one-based choice index, or zero for a bundle.</param>
     /// <returns>The completion of the request and its response.</returns>
-    public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, byte day, DateTime? utcNow = null)
+    public async ValueTask ExecuteAsync(Player player, uint requestId, byte operation, byte day, DateTime? utcNow = null, uint offerKey = 0, byte choice = 0)
     {
         var (status, itemAdded) = await player.RunPersistenceExclusiveAsync(
-            () => this.ProcessAsync(player, requestId, operation, day, utcNow ?? DateTime.UtcNow)).ConfigureAwait(false);
+            () => this.ProcessAsync(player, requestId, operation, day, utcNow ?? DateTime.UtcNow, offerKey, choice)).ConfigureAwait(false);
         if (itemAdded)
         {
             await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(view => view.UpdateInventoryListAsync()).ConfigureAwait(false);
@@ -36,7 +41,7 @@ public sealed class DailyRewardActions
         await player.InvokeViewPlugInAsync<IDailyRewardView>(view => view.ShowAsync(requestId, status)).ConfigureAwait(false);
     }
 
-    private static async ValueTask<(string Status, bool ItemAdded)> ClaimAsync(Player player, DailyRewardSettings settings, byte day, DateTime utcNow)
+    private static async ValueTask<(string Status, bool ItemAdded)> ClaimAsync(Player player, DailyRewardSettings settings, byte day, DateTime utcNow, uint offerKey, byte choice)
     {
         if (player.OpenedNpc is not null || player.TemporaryStorage?.Items.Any() == true
             || player.ShopStorage?.StoreOpen == true || player.IsCashShopOpen)
@@ -68,22 +73,34 @@ public sealed class DailyRewardActions
             return ("DailyReward_ZenLimit", false);
         }
 
-        if (ValidateExpiration(player, reward, utcNow) is { } expirationError)
+        if ((reward.RequiresOffer || offerKey != 0) && offerKey != reward.GetOfferKey(month))
+        {
+            return ("DailyReward_OfferChanged", false);
+        }
+
+        if (reward.ChooseOneItem ? choice < 1 || choice > reward.ItemCount : choice != 0)
+        {
+            return ("DailyReward_SelectItem", false);
+        }
+
+        var items = reward.ChooseOneItem ? [reward.GetItems().ElementAt(choice - 1)] : reward.GetItems().ToArray();
+        if (ValidateExpiration(player, items, utcNow) is { } expirationError)
         {
             return (expirationError, false);
         }
 
-        return await GrantAsync(player, reward, month, claimedDays | DailyRewardCalendar.DayBit(today), utcNow).ConfigureAwait(false);
+        return await GrantAsync(player, reward, items, month, claimedDays | DailyRewardCalendar.DayBit(today), utcNow).ConfigureAwait(false);
     }
 
-    private static string? ValidateExpiration(Player player, DailyRewardDay reward, DateTime utcNow)
+    private static string? ValidateExpiration(Player player, IReadOnlyList<DailyRewardItem> items, DateTime utcNow)
     {
-        if (reward.Item is null || reward.ItemDurationHours == 0)
+        var longestDuration = items.Select(item => item.ItemDurationHours).DefaultIfEmpty().Max();
+        if (longestDuration == 0)
         {
             return null;
         }
 
-        if (TimeSpan.FromHours(reward.ItemDurationHours).TotalSeconds > int.MaxValue - new DateTimeOffset(utcNow).ToUnixTimeSeconds())
+        if (TimeSpan.FromHours(longestDuration).TotalSeconds > int.MaxValue - new DateTimeOffset(utcNow).ToUnixTimeSeconds())
         {
             return "DailyReward_Invalid";
         }
@@ -91,20 +108,25 @@ public sealed class DailyRewardActions
         return player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn)) ? null : "DailyReward_ExpirationDisabled";
     }
 
-    private static async ValueTask<(string Status, bool ItemAdded)> GrantAsync(Player player, DailyRewardDay reward, int month, int claimedDays, DateTime utcNow)
+    private static async ValueTask<(string Status, bool ItemAdded)> GrantAsync(Player player, DailyRewardDay reward, IReadOnlyList<DailyRewardItem> rewards, int month, int claimedDays, DateTime utcNow)
     {
         var account = player.Account!;
         var (oldMonth, oldClaimedDays) = (account.DailyRewardMonth, account.DailyRewardClaimedDays);
         var (oldWCoinC, oldWCoinP, oldGoblinPoints) = (account.WCoinC, account.WCoinP, account.GoblinPoints);
         var oldMoney = player.Money;
-        var links = new List<ItemOptionLink>();
-        var item = reward.Item is { } definition ? CreateItem(player.PersistenceContext, definition, reward, links, utcNow) : null;
+        var items = new List<Item>(rewards.Count);
         var committed = false;
         try
         {
-            if (item is not null && !await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
+            foreach (var entry in rewards)
             {
-                return ("DailyReward_InventoryFull", false);
+                var item = player.PersistenceContext.CreateNew<Item>();
+                items.Add(item);
+                PopulateItem(player.PersistenceContext, item, entry.Item!, entry, utcNow);
+                if (!await player.Inventory!.AddItemAsync(item).ConfigureAwait(false))
+                {
+                    return ("DailyReward_InventoryFull", false);
+                }
             }
 
             if (reward.Zen > 0)
@@ -118,7 +140,7 @@ public sealed class DailyRewardActions
             account.DailyRewardMonth = month;
             account.DailyRewardClaimedDays = claimedDays;
             committed = await player.SaveProgressAsync().ConfigureAwait(false);
-            return committed ? ("DailyReward_Claimed", item is not null) : ("DailyReward_SaveFailed", false);
+            return committed ? ("DailyReward_Claimed", items.Count > 0) : ("DailyReward_SaveFailed", false);
         }
         catch (Exception exception)
         {
@@ -132,30 +154,34 @@ public sealed class DailyRewardActions
                 (account.DailyRewardMonth, account.DailyRewardClaimedDays) = (oldMonth, oldClaimedDays);
                 (account.WCoinC, account.WCoinP, account.GoblinPoints) = (oldWCoinC, oldWCoinP, oldGoblinPoints);
                 player.Money = oldMoney;
-                if (item is not null)
+                foreach (var item in items)
                 {
-                    if (player.Inventory!.Items.Contains(item))
-                    {
-                        await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
-                    }
-
-                    foreach (var link in links)
-                    {
-                        item.ItemOptions.Remove(link);
-                        await player.PersistenceContext.DeleteAsync(link).ConfigureAwait(false);
-                    }
-
-                    await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                    await RollbackItemAsync(player, item).ConfigureAwait(false);
                 }
             }
         }
     }
 
+    private static async ValueTask RollbackItemAsync(Player player, Item item)
+    {
+        if (player.Inventory!.Items.Contains(item))
+        {
+            await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
+        }
+
+        foreach (var link in item.ItemOptions.ToArray())
+        {
+            item.ItemOptions.Remove(link);
+            await player.PersistenceContext.DeleteAsync(link).ConfigureAwait(false);
+        }
+
+        await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+    }
+
     private static int Add(int balance, int amount) => (int)Math.Min((long)balance + amount, int.MaxValue);
 
-    private static Item CreateItem(IContext context, ItemDefinition definition, DailyRewardDay reward, List<ItemOptionLink> links, DateTime utcNow)
+    private static void PopulateItem(IContext context, Item item, ItemDefinition definition, DailyRewardItem reward, DateTime utcNow)
     {
-        var item = context.CreateNew<Item>();
         item.Definition = definition;
         item.Level = Math.Min(reward.ItemLevel, definition.MaximumItemLevel);
         item.Durability = item.IsStackable() && reward.ItemQuantity > 0 ? Math.Min(reward.ItemQuantity, definition.Durability) : definition.Durability;
@@ -168,44 +194,41 @@ public sealed class DailyRewardActions
             // A skin has the one allowed bonus of its flag, and no other option.
             if (SkinBonuses.FromFlags(definition, reward.ItemExcellentOptions) is { } bonus)
             {
-                AddOption(context, item, links, bonus, 1);
+                AddOption(context, item, bonus, 1);
             }
 
-            return item;
+            return;
         }
 
         if (reward.ItemOption > 0 && possibleOptions.FirstOrDefault(option => option.OptionType == ItemOptionTypes.Option && !option.IsFixedOption()) is { } normalOption)
         {
-            AddOption(context, item, links, normalOption, reward.ItemOption);
+            AddOption(context, item, normalOption, reward.ItemOption);
         }
 
         if (reward.ItemLuck && possibleOptions.FirstOrDefault(option => option.OptionType == ItemOptionTypes.Luck) is { } luck)
         {
-            AddOption(context, item, links, luck, 0);
+            AddOption(context, item, luck, 0);
         }
 
         foreach (var excellent in possibleOptions.Where(option => option.OptionType == ItemOptionTypes.Excellent
                      && option.Number is >= 1 and <= 6 && (reward.ItemExcellentOptions & (1 << (option.Number - 1))) != 0))
         {
-            AddOption(context, item, links, excellent, 0);
+            AddOption(context, item, excellent, 0);
 
             // Like the GM item command, every excellent item has its skill.
             item.HasSkill |= definition.Skill is not null;
         }
-
-        return item;
     }
 
-    private static void AddOption(IContext context, Item item, List<ItemOptionLink> links, IncreasableItemOption option, int level)
+    private static void AddOption(IContext context, Item item, IncreasableItemOption option, int level)
     {
         var link = context.CreateNew<ItemOptionLink>();
         link.ItemOption = option;
         link.Level = level;
         item.ItemOptions.Add(link);
-        links.Add(link);
     }
 
-    private async ValueTask<(string? Status, bool ItemAdded)> ProcessAsync(Player player, uint requestId, byte operation, byte day, DateTime utcNow)
+    private async ValueTask<(string? Status, bool ItemAdded)> ProcessAsync(Player player, uint requestId, byte operation, byte day, DateTime utcNow, uint offerKey, byte choice)
     {
         if (player.SelectedCharacter is not { } character || player.Account is null || player.Inventory is null
             || player.IsTemplatePlayer || player.PlayerState.CurrentState != PlayerState.EnteredWorld)
@@ -235,7 +258,7 @@ public sealed class DailyRewardActions
         return operation switch
         {
             0 => (null, false),
-            1 => await ClaimAsync(player, settings, day, utcNow).ConfigureAwait(false),
+            ClaimOperation => await ClaimAsync(player, settings, day, utcNow, offerKey, choice).ConfigureAwait(false),
             _ => ("DailyReward_Invalid", false),
         };
     }
