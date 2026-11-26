@@ -9504,4 +9504,32 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="DuelBettingResponseExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the server when: A Duel Arena request was processed, or immediately before the standard duel invitation packet for a custom client.
+    /// Causes reaction on client side: The client reads UTF-8 JSON with RequestId, Enabled, localized Status, the countdown and winning-score settings, and Duels with fighters, classes, scores, time, status, eligibility and per-currency pools. An Invitation object instead supplies the challenger, their class, public betting choice, seconds and winning score for the standard invitation.
+    /// </remarks>
+    public static async ValueTask SendDuelBettingResponseExtendedAsync(this IConnection? connection, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = DuelBettingResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new DuelBettingResponseExtendedRef(connection.Output.GetSpan(length)[..length]);
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

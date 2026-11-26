@@ -1655,6 +1655,31 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.Migrations
                     b.ToTable("DuelArea", "config");
                 });
 
+            modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.DuelBetEscrow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Entries")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LeaseUntil")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Settled")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DuelBetEscrow", "data");
+                });
+
             modelBuilder.Entity("MUnique.OpenMU.Persistence.EntityFramework.Model.DuelConfiguration", b =>
                 {
                     b.Property<Guid>("Id")

@@ -6261,4 +6261,36 @@ public static class ConnectionExtensions
         }
 
         await connection.SendAsync(WritePacket).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Sends a <see cref="DuelBettingRequestExtended" /> to this connection.
+    /// </summary>
+    /// <param name="connection">The connection.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="requestId">The request id.</param>
+    /// <param name="data">The data.</param>
+    /// <remarks>
+    /// Is sent by the client when: The custom client loads the Duel Arena (0), places a bet (1), issues a public duel challenge (2), claims payouts (3) or spectates a match (4). A bet carries UTF-8 JSON with Duel and Ticket (GUIDs), Side (0 requester, 1 opponent), Currency (0 Bless, 1 Soul, 2 Life) and Amount. A challenge carries TargetId and TargetName. Spectate carries Duel (GUID).
+    /// Causes reaction on server side: The server answers with the matching RequestId and this channel's public duels. A confirmed bet escrows jewels from the bettor's Jewel Bank. Claims return resolved payouts and refunds to the bank. Spectate joins an available spectator slot.
+    /// </remarks>
+    public static async ValueTask SendDuelBettingRequestExtendedAsync(this IConnection? connection, byte @operation, uint @requestId, Memory<byte> @data)
+    {
+        if (connection is null)
+        {
+            return;
+        }
+
+        int WritePacket()
+        {
+            var length = DuelBettingRequestExtendedRef.GetRequiredSize(data.Length);
+            var packet = new DuelBettingRequestExtendedRef(connection.Output.GetSpan(length)[..length]);
+            packet.Operation = @operation;
+            packet.RequestId = @requestId;
+            @data.Span.CopyTo(packet.Data);
+
+            return packet.Header.Length;
+        }
+
+        await connection.SendAsync(WritePacket).ConfigureAwait(false);
     }}

@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.PlayerActions.Duel;
 
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Entities;
+using MUnique.OpenMU.GameLogic.DuelBetting;
 using MUnique.OpenMU.GameLogic.GuildWar;
 using MUnique.OpenMU.GameLogic.PlugIns.ChatCommands;
 using MUnique.OpenMU.GameLogic.Views.Duel;
@@ -25,7 +26,8 @@ public class DuelActions
     /// </summary>
     /// <param name="player">The player which sends the request.</param>
     /// <param name="target">The target player which receives the request.</param>
-    public async ValueTask HandleDuelRequestAsync(Player player, Player target)
+    /// <param name="allowBetting">Whether the challenger opted into public betting.</param>
+    public async ValueTask HandleDuelRequestAsync(Player player, Player target, bool allowBetting = false)
     {
         ArgumentNullException.ThrowIfNull(player);
         ArgumentNullException.ThrowIfNull(target);
@@ -47,18 +49,19 @@ public class DuelActions
             return;
         }
 
-        if (await player.GameContext.DuelRoomManager.GetFreeDuelRoomAsync(player, target).ConfigureAwait(false) is not { } duelRoom)
+        if (await player.GameContext.DuelRoomManager.GetFreeDuelRoomAsync(player, target, allowBetting: allowBetting).ConfigureAwait(false) is not { } duelRoom)
         {
             await player.InvokeViewPlugInAsync<IShowDuelRequestResultPlugIn>(p => p.ShowDuelRequestResultAsync(DuelStartResult.FailedByNoFreeRoom, target)).ConfigureAwait(false);
             return;
         }
 
-        duelRoom.State = DuelState.DuelRequested;
-        player.DuelRoom = duelRoom;
-        target.DuelRoom = duelRoom;
-
-        await target.InvokeViewPlugInAsync<IShowDuelRequestPlugIn>(p => p.ShowDuelRequestAsync(player)).ConfigureAwait(false);
         _ = ExpireUnansweredRequestAsync(duelRoom);
+        var publicDuel = duelRoom.PublicCountdownSeconds > 0;
+        var settings = new DuelBetInvitation(
+            player.Name, player.SelectedCharacter?.CharacterClass?.Number, publicDuel,
+            publicDuel ? duelRoom.PublicCountdownSeconds : DuelRoom.CombatCountdownSeconds, duelRoom.WinningScore);
+        await target.InvokeViewPlugInAsync<IDuelBettingView>(view => view.ShowInvitationAsync(settings)).ConfigureAwait(false);
+        await target.InvokeViewPlugInAsync<IShowDuelRequestPlugIn>(p => p.ShowDuelRequestAsync(player)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -69,7 +72,13 @@ public class DuelActions
     /// <returns>A <see cref="ValueTask"/>.</returns>
     public async ValueTask CancelUnhandledResponseAsync(Player player)
     {
-        if (player.DuelRoom is { State: DuelState.DuelRequested } duelRoom && duelRoom.Opponent == player)
+        if (player.DuelRoom is not { } duelRoom || duelRoom.Opponent != player)
+        {
+            return;
+        }
+
+        using var l = await duelRoom.Lock.LockAsync().ConfigureAwait(false);
+        if (player.DuelRoom == duelRoom && duelRoom.State == DuelState.DuelRequested)
         {
             await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
         }
@@ -89,7 +98,9 @@ public class DuelActions
             return;
         }
 
-        if (duelRoom != target.DuelRoom || duelRoom.Requester != target)
+        using var l = await duelRoom.Lock.LockAsync().ConfigureAwait(false);
+        if (duelRoom != player.DuelRoom || duelRoom != target.DuelRoom || duelRoom.Requester != target
+            || duelRoom.Opponent != player || duelRoom.State != DuelState.DuelRequested)
         {
             player.Logger.LogWarning($"Player {player.Name} sent duel response, but the duel contexts didn't match.");
             return;
@@ -148,7 +159,7 @@ public class DuelActions
     public async ValueTask HandleStopDuelRequestAsync(Player player)
     {
         var duelRoom = player.DuelRoom;
-        if (duelRoom is null)
+        if (duelRoom is null || !duelRoom.IsDuelist(player))
         {
             player.Logger.LogWarning($"Player {player.Name} sent request to stop the duel, but it has no duel active.");
             return;
@@ -262,6 +273,7 @@ public class DuelActions
         try
         {
             await Task.Delay(UnansweredRequestTimeout).ConfigureAwait(false);
+            using var l = await duelRoom.Lock.LockAsync().ConfigureAwait(false);
             if (duelRoom.State == DuelState.DuelRequested && duelRoom.Requester.DuelRoom == duelRoom)
             {
                 await duelRoom.ResetAndDisposeAsync(DuelStartResult.Refused).ConfigureAwait(false);

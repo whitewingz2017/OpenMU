@@ -152,6 +152,7 @@ public class EntityDataContext : ExtendedTypeContext
         modelBuilder.Entity<RedeemCode>();
         modelBuilder.Entity<RedeemCodeClaim>();
         modelBuilder.Entity<MarketListing>();
+        modelBuilder.Entity<DuelBetEscrow>();
         modelBuilder.Entity<AccountExternalLink>().Apply();
         modelBuilder.Entity<GuildChatBinding>().Apply();
         modelBuilder.Entity<DropItemGroup>().Apply();

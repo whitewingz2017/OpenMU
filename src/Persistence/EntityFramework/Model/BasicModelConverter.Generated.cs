@@ -86,6 +86,7 @@ internal sealed class BasicModelConverter
             CrywolfData value => this.Convert(value),
             DropItemGroup value => this.Convert(value),
             DuelArea value => this.Convert(value),
+            DuelBetEscrow value => this.Convert(value),
             DuelConfiguration value => this.Convert(value),
             Friend value => this.Convert(value),
             GameClientDefinition value => this.Convert(value),
@@ -1152,6 +1153,23 @@ internal sealed class BasicModelConverter
         target.FirstPlayerGate = (MUnique.OpenMU.DataModel.Configuration.ExitGate)this.ConvertObject(source.FirstPlayerGate)!;
         target.SecondPlayerGate = (MUnique.OpenMU.DataModel.Configuration.ExitGate)this.ConvertObject(source.SecondPlayerGate)!;
         target.SpectatorsGate = (MUnique.OpenMU.DataModel.Configuration.ExitGate)this.ConvertObject(source.SpectatorsGate)!;
+        return target;
+    }
+
+    private BasicModel.DuelBetEscrow Convert(DuelBetEscrow source)
+    {
+        if (this._converted.TryGetValue(source, out var converted))
+        {
+            return (BasicModel.DuelBetEscrow)converted;
+        }
+
+        var target = new BasicModel.DuelBetEscrow();
+        this._converted.Add(source, target);
+        target.Id = source.Id;
+        target.Entries = source.Entries;
+        target.LeaseUntil = source.LeaseUntil;
+        target.Settled = source.Settled;
+        target.Revision = source.Revision;
         return target;
     }
 

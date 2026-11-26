@@ -4445,6 +4445,18 @@
         <Field><Index>10</Index><Type>Binary</Type><Name>Data</Name></Field>
       </Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>10</SubCode><Name>DuelBettingRequestExtended</Name>
+      <Direction>ClientToServer</Direction>
+      <SentWhen>The custom client loads the Duel Arena (0), places a bet (1), issues a public duel challenge (2), claims payouts (3) or spectates a match (4). A bet carries UTF-8 JSON with Duel and Ticket (GUIDs), Side (0 requester, 1 opponent), Currency (0 Bless, 1 Soul, 2 Life) and Amount. A challenge carries TargetId and TargetName. Spectate carries Duel (GUID).</SentWhen>
+      <CausedReaction>The server answers with the matching RequestId and this channel's public duels. A confirmed bet escrows jewels from the bettor's Jewel Bank. Claims return resolved payouts and refunds to the bank. Spectate joins an available spectator slot.</CausedReaction>
+      <Fields>
+        <Field><Index>5</Index><Type>Byte</Type><Name>Operation</Name></Field>
+        <Field><Index>6</Index><Type>IntegerLittleEndian</Type><Name>RequestId</Name></Field>
+        <Field><Index>10</Index><Type>Binary</Type><Name>Data</Name></Field>
+      </Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

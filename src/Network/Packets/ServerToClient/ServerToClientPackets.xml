@@ -15317,6 +15317,14 @@
       <CausedReaction>The client displays UTF-8 JSON with RequestId, Result, Settings (the player's own listing, or null) and Parties (Leader, Map, X, Y, Level, MinimumLevel, Members, MaxMembers, Classes, GuildOnly, SameGuild, Password, Joinable).</CausedReaction>
       <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
     </Packet>
+    <Packet>
+      <HeaderType>C2HeaderWithSubCode</HeaderType>
+      <Code>FD</Code><SubCode>10</SubCode><Name>DuelBettingResponseExtended</Name>
+      <Direction>ServerToClient</Direction>
+      <SentWhen>A Duel Arena request was processed, or immediately before the standard duel invitation packet for a custom client.</SentWhen>
+      <CausedReaction>The client reads UTF-8 JSON with RequestId, Enabled, localized Status, the countdown and winning-score settings, and Duels with fighters, classes, scores, time, status, eligibility and per-currency pools. An Invitation object instead supplies the challenger, their class, public betting choice, seconds and winning score for the standard invitation.</CausedReaction>
+      <Fields><Field><Index>5</Index><Type>Binary</Type><Name>Data</Name></Field></Fields>
+    </Packet>
 </Packets>
   <Enums>
     <Enum>

@@ -28,11 +28,21 @@ internal sealed class CosmeticArmorHandlerPlugIn : IPacketHandlerPlugIn
     private readonly GameLogic.Offline.OfflineLevelingActions _offlineLeveling = new();
     private readonly GameLogic.ItemBonuses.ItemBonusActions _itemBonuses = new();
     private readonly GameLogic.Features.FeatureListActions _features = new();
+    private readonly GameLogic.DuelBetting.DuelBettingActions _duelBetting = new();
     public byte Key => CosmeticArmorRequestExtended.Code;
     public bool IsEncryptionExpected => false;
 
     public async ValueTask HandlePacketAsync(Player player, Memory<byte> packet)
     {
+        var duelBettingHeaderSize = DuelBettingRequestExtended.GetRequiredSize(0);
+        if (packet.Length >= duelBettingHeaderSize && packet.Span[0] == DuelBettingRequestExtended.HeaderType
+            && packet.Span[4] == DuelBettingRequestExtended.SubCode)
+        {
+            DuelBettingRequestExtended duelBettingRequest = packet;
+            await this._duelBetting.ExecuteAsync(player, duelBettingRequest.RequestId, duelBettingRequest.Operation, packet[duelBettingHeaderSize..]).ConfigureAwait(false);
+            return;
+        }
+
         // The C2 requests of this code: the Guide Book carries a whole draft, the Party Search, the Marketplace, the offline leveling, the item attributes and the feature list their JSON.
         var guideBookHeaderSize = GuideBookRequestExtended.GetRequiredSize(0);
         if (packet.Length >= guideBookHeaderSize && packet.Span[0] == GuideBookRequestExtended.HeaderType

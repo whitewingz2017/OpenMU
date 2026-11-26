@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic.DuelBetting;
 
 /// <summary>The currency identifiers of duel betting; never exchange currencies between pools.</summary>
+/// <remarks>Identifier 3 is retired and must not be reused.</remarks>
 public enum DuelBetCurrency
 {
     /// <summary>Jewels of Bless.</summary>
@@ -15,7 +16,4 @@ public enum DuelBetCurrency
 
     /// <summary>Jewels of Life.</summary>
     Life = 2,
-
-    /// <summary>Account WCoinC.</summary>
-    WCoinC = 3,
 }

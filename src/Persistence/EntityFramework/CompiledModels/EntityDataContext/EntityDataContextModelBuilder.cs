@@ -12,7 +12,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
     public partial class EntityDataContextModel
     {
         private EntityDataContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("3c03a3a0-afbb-4373-8bf0-90a4c52ab828"), entityTypeCount: 128)
+            : base(skipDetectChanges: false, modelId: new Guid("722e9d2d-316f-44c6-b748-5c38216b065a"), entityTypeCount: 129)
         {
         }
 
@@ -60,6 +60,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             var dropItemGroup = DropItemGroupEntityType.Create(this);
             var dropItemGroupItemDefinition = DropItemGroupItemDefinitionEntityType.Create(this);
             var duelArea = DuelAreaEntityType.Create(this);
+            var duelBetEscrow = DuelBetEscrowEntityType.Create(this);
             var duelConfiguration = DuelConfigurationEntityType.Create(this);
             var enterGate = EnterGateEntityType.Create(this);
             var exitGate = ExitGateEntityType.Create(this);
@@ -436,6 +437,7 @@ namespace MUnique.OpenMU.Persistence.EntityFramework.CompiledModels.ForEntityDat
             DropItemGroupEntityType.CreateAnnotations(dropItemGroup);
             DropItemGroupItemDefinitionEntityType.CreateAnnotations(dropItemGroupItemDefinition);
             DuelAreaEntityType.CreateAnnotations(duelArea);
+            DuelBetEscrowEntityType.CreateAnnotations(duelBetEscrow);
             DuelConfigurationEntityType.CreateAnnotations(duelConfiguration);
             EnterGateEntityType.CreateAnnotations(enterGate);
             ExitGateEntityType.CreateAnnotations(exitGate);

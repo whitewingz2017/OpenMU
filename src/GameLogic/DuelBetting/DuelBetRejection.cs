@@ -33,4 +33,10 @@ public enum DuelBetRejection
 
     /// <summary>The account already chose the other fighter.</summary>
     OppositeSide,
+
+    /// <summary>The Jewel Bank has insufficient funds.</summary>
+    NotEnoughJewels,
+
+    /// <summary>The transaction could not be completed.</summary>
+    TryAgain,
 }

@@ -55,26 +55,13 @@ public sealed class DuelBetBook
     /// <returns>The acceptance or rejection reason.</returns>
     public DuelBetRejection Add(DuelBetTicket ticket, DateTime utcNow)
     {
-        ArgumentNullException.ThrowIfNull(ticket);
-        if (utcNow.Kind != DateTimeKind.Utc || ticket.Id == Guid.Empty || ticket.AccountId == Guid.Empty || !Enum.IsDefined(ticket.Side))
+        var result = this.Validate(ticket, utcNow);
+        if (result == DuelBetRejection.None)
         {
-            return DuelBetRejection.InvalidIdentity;
+            this._tickets.Add(ticket);
         }
 
-        var admission = this.CheckAdmission(ticket, utcNow);
-        if (admission != DuelBetRejection.None)
-        {
-            return admission;
-        }
-
-        var limits = this.CheckAccountAndPool(ticket);
-        if (limits != DuelBetRejection.None)
-        {
-            return limits;
-        }
-
-        this._tickets.Add(ticket);
-        return DuelBetRejection.None;
+        return result;
     }
 
     /// <summary>Locks betting at combat start, even when the countdown has not elapsed.</summary>
@@ -95,14 +82,40 @@ public sealed class DuelBetBook
         return this._settlement ??= DuelBetSettlement.Calculate(this._tickets, winner, this._feePercent);
     }
 
+    /// <summary>Checks whether stakes may still enter this pool.</summary>
+    /// <param name="utcNow">The current UTC time.</param>
+    /// <returns>Whether the betting window is open.</returns>
+    internal bool IsOpen(DateTime utcNow) => !this._locked && utcNow < this.ClosesAtUtc;
+
+    /// <summary>Checks whether the account belongs to either fighter.</summary>
+    /// <param name="accountId">The account to check.</param>
+    /// <returns>Whether the account belongs to a fighter.</returns>
+    internal bool IsDuelist(Guid accountId) => accountId == this._requester || accountId == this._opponent;
+
+    /// <summary>Checks admission before the caller debits the wallet.</summary>
+    /// <param name="ticket">The proposed stake.</param>
+    /// <param name="utcNow">The current UTC time.</param>
+    /// <returns>The admission result.</returns>
+    internal DuelBetRejection Validate(DuelBetTicket ticket, DateTime utcNow)
+    {
+        ArgumentNullException.ThrowIfNull(ticket);
+        if (utcNow.Kind != DateTimeKind.Utc || ticket.Id == Guid.Empty || ticket.AccountId == Guid.Empty || !Enum.IsDefined(ticket.Side))
+        {
+            return DuelBetRejection.InvalidIdentity;
+        }
+
+        var admission = this.CheckAdmission(ticket, utcNow);
+        return admission != DuelBetRejection.None ? admission : this.CheckAccountAndPool(ticket);
+    }
+
     private DuelBetRejection CheckAdmission(DuelBetTicket ticket, DateTime utcNow)
     {
-        if (this._locked || utcNow >= this.ClosesAtUtc)
+        if (!this.IsOpen(utcNow))
         {
             return DuelBetRejection.Closed;
         }
 
-        if (ticket.AccountId == this._requester || ticket.AccountId == this._opponent)
+        if (this.IsDuelist(ticket.AccountId))
         {
             return DuelBetRejection.OwnMatch;
         }

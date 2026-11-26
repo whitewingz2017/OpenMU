@@ -726,13 +726,17 @@ public class Player : AsyncDisposable, IBucketMapObserver, IAttackable, IAttacke
             (this.SkillList as IDisposable)?.Dispose();
             this.SkillList = null;
 
-            if (this.DuelRoom is { State: DuelState.DuelStarted } duelRoom)
+            if (this.DuelRoom is { State: DuelState.DuelStarted or DuelState.DuelAccepted } duelRoom && duelRoom.IsDuelist(this))
             {
                 await duelRoom.CancelDuelAsync().ConfigureAwait(false);
                 if (this.GameContext.Configuration.DuelConfiguration?.Exit is { } exit)
                 {
                     await this._mapTransitions.PlaceAtGateAsync(exit).ConfigureAwait(false);
                 }
+            }
+            else if (this.DuelRoom is { } spectatedRoom && !spectatedRoom.IsDuelist(this))
+            {
+                await spectatedRoom.RemoveSpectatorAsync(this).ConfigureAwait(false);
             }
 
             this.DuelRoom = null;

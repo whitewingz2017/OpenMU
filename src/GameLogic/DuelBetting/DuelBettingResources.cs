@@ -6,7 +6,7 @@ namespace MUnique.OpenMU.GameLogic.DuelBetting;
 
 using System.Globalization;
 
-/// <summary>Localized metadata for the experimental betting configuration.</summary>
+/// <summary>Localized metadata for duel betting.</summary>
 public static class DuelBettingResources
 {
     /// <summary>Gets the feature name.</summary>
@@ -14,4 +14,10 @@ public static class DuelBettingResources
 
     /// <summary>Gets the feature description.</summary>
     public static string Description => PlugInResources.ResourceManager.GetString("DuelBetting_Description", CultureInfo.CurrentUICulture) ?? string.Empty;
+
+    /// <summary>Gets the betting board view name.</summary>
+    public static string ViewName => PlugInResources.ResourceManager.GetString("DuelBetting_ViewName", CultureInfo.CurrentUICulture) ?? string.Empty;
+
+    /// <summary>Gets the betting board view description.</summary>
+    public static string ViewDescription => PlugInResources.ResourceManager.GetString("DuelBetting_ViewDescription", CultureInfo.CurrentUICulture) ?? string.Empty;
 }

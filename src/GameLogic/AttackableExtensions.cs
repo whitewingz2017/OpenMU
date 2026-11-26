@@ -51,7 +51,10 @@ public static class AttackableExtensions
         }
 
         var attackerPlayer = attacker as Player ?? (attacker as IPlayerSurrogate)?.Owner;
-        return attackerPlayer?.IsAtSafezone() is true;
+        var targetPlayer = target as Player ?? (target as Monster)?.SummonedBy;
+        return attackerPlayer?.IsAtSafezone() is true
+            || IsInPublicDuelCountdown(attackerPlayer)
+            || IsInPublicDuelCountdown(targetPlayer);
     }
 
     /// <summary>
@@ -736,6 +739,9 @@ public static class AttackableExtensions
     {
         return defender.Attributes[Stats.DefenseRatePvm] + defender.Attributes[Stats.IncreaseBlockBonus];
     }
+
+    private static bool IsInPublicDuelCountdown(Player? player)
+        => player?.DuelRoom is { Betting: not null, State: DuelState.DuelAccepted } room && room.IsDuelist(player);
 
     private static bool IsAttackSuccessfulTo(this IAttacker attacker, IAttackable defender)
     {

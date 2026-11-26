@@ -13,7 +13,6 @@ public sealed class DuelBettingSettings
         [DuelBetCurrency.Bless] = new(),
         [DuelBetCurrency.Soul] = new(),
         [DuelBetCurrency.Life] = new(),
-        [DuelBetCurrency.WCoinC] = new() { Maximum = 1_000_000 },
     };
 
     /// <summary>Gets or sets the pre-combat betting period in seconds.</summary>

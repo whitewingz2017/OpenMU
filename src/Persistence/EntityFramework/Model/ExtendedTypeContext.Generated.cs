@@ -39,6 +39,7 @@ public class ExtendedTypeContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CharacterMagicEffect>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CharacterQuestState>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.CrywolfData>();
+        modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.DuelBetEscrow>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.GensAbuse>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.GensMember>();
         modelBuilder.Ignore<MUnique.OpenMU.DataModel.Entities.Guild>();
