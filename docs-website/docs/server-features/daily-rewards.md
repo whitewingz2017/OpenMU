@@ -29,6 +29,7 @@ The window opens by itself when a character enters the game while today's
 reward is still unclaimed. Players can also open it from **DAILY** in the
 top-right button row (modern theme) or **Daily Rewards** in the window menu.
 Today's card is gold, claimed days are green and missed days are red.
+Select any day to preview its rewards. Only today's card offers the claim action.
 
 ## Configuration
 

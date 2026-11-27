@@ -4,12 +4,14 @@
 
 namespace MUnique.OpenMU.Tests;
 
+using System.Text.Json;
 using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.DailyRewards;
 using MUnique.OpenMU.GameLogic.PlugIns;
+using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using MUnique.OpenMU.Persistence;
 using MUnique.OpenMU.PlugIns;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
@@ -19,6 +21,38 @@ using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 public class DailyRewardTests
 {
     private static readonly DateTime Now = new(2026, 11, 14, 12, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>Includes every preview item while issuing a claim offer for today's reward only.</summary>
+    [Test]
+    public async Task CalendarIncludesItemsForOtherDaysWithoutAnOfferAsync()
+    {
+        var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
+        using (output)
+        {
+            var (_, today, _) = DailyRewardCalendar.Today(DateTime.UtcNow);
+            var previewDay = today == 1 ? 2 : 1;
+            var item = new BasicModel.ItemDefinition { Group = 14, Number = 0, Name = "Reward item" };
+            var settings = new DailyRewardSettings
+            {
+                Days = new[] { today, previewDay }.Select(day => new DailyRewardDay
+                {
+                    Day = day,
+                    ChooseOneItem = true,
+                    Items = [new DailyRewardItem { Item = item }, new DailyRewardItem { Item = item }],
+                }).ToList(),
+            };
+            player.GameContext.FeaturePlugIns.AddPlugIn(new DailyRewardFeaturePlugIn { Configuration = settings }, true);
+            await new DailyRewardView(player).ShowAsync(1, null).ConfigureAwait(false);
+
+            using var json = JsonDocument.Parse(output.ToArray().AsMemory(5));
+            var days = json.RootElement.GetProperty("Days").EnumerateArray().ToArray();
+            var preview = days.Single(day => day.GetProperty("Day").GetInt32() == previewDay);
+            var current = days.Single(day => day.GetProperty("Day").GetInt32() == today);
+            Assert.That(preview.GetProperty("Items").GetArrayLength(), Is.EqualTo(2));
+            Assert.That(preview.GetProperty("OfferKey").GetUInt32(), Is.Zero);
+            Assert.That(current.GetProperty("OfferKey").GetUInt32(), Is.Not.Zero);
+        }
+    }
 
     /// <summary>Today's reward grants every configured part once per account and day.</summary>
     [Test]

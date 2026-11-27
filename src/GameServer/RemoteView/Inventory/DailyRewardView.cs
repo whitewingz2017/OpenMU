@@ -36,8 +36,27 @@ public sealed class DailyRewardView : IDailyRewardView
         }
 
         var settings = DailyRewardFeaturePlugIn.Settings(this._player.GameContext);
-        var (month, today, daysInMonth) = DailyRewardCalendar.Today(DateTime.UtcNow);
-        var data = JsonSerializer.SerializeToUtf8Bytes(new
+        var calendar = DailyRewardCalendar.Today(DateTime.UtcNow);
+        var data = this.SerializeCalendar(requestId, messageKey, settings, calendar, includePreviewItems: true);
+        if (DailyRewardResponseExtendedRef.GetRequiredSize(data.Length) > ushort.MaxValue)
+        {
+            data = this.SerializeCalendar(requestId, messageKey, settings, calendar, includePreviewItems: false);
+        }
+
+        await connection.SendAsync(() =>
+        {
+            var size = DailyRewardResponseExtendedRef.GetRequiredSize(data.Length);
+            var packet = new DailyRewardResponseExtendedRef(connection.Output.GetSpan(size)[..size]);
+            data.CopyTo(packet.Data);
+            return size;
+        }).ConfigureAwait(false);
+    }
+
+    private byte[] SerializeCalendar(uint requestId, string? messageKey, DailyRewardSettings? settings,
+        (int Month, int Day, int DaysInMonth) calendar, bool includePreviewItems)
+    {
+        var (month, today, daysInMonth) = calendar;
+        return JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
             Status = messageKey is null ? "Ready" : this._player.GetLocalizedMessage(messageKey),
@@ -56,17 +75,10 @@ public sealed class DailyRewardView : IDailyRewardView
                 day.ItemCount,
                 day.ChooseOneItem,
                 Item = day.GetItems().Select(ProjectItem).FirstOrDefault(),
-                Items = day.Day == today && day.RequiresOffer ? day.GetItems().Select(ProjectItem).ToArray() : null,
+                Items = (includePreviewItems || day.Day == today) && day.RequiresOffer ? day.GetItems().Select(ProjectItem).ToArray() : null,
                 OfferKey = day.Day == today && day.RequiresOffer ? day.GetOfferKey(month) : 0,
             }),
         });
-        await connection.SendAsync(() =>
-        {
-            var size = DailyRewardResponseExtendedRef.GetRequiredSize(data.Length);
-            var packet = new DailyRewardResponseExtendedRef(connection.Output.GetSpan(size)[..size]);
-            data.CopyTo(packet.Data);
-            return size;
-        }).ConfigureAwait(false);
     }
 
     private static object ProjectItem(DailyRewardItem entry)
