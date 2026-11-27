@@ -39,7 +39,7 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
             ExcellentEffectItems = SkinShopFeaturePlugIn.GetSettings(this._player.GameContext)?
                 .ExcellentEffectItems(this._player.GameContext.Configuration.Items).ToArray() ?? [],
             Statistics = statistics,
-            Bonuses = bonuses,
+            Bonuses = bonuses.Concat(CharacterCombatStatistics.MasterBonuses(this._player)),
             StoredSkins = this._player.SelectedCharacter?.SkinInventory?.Items.OrderBy(i => i.ItemSlot)
                 .Select(i => new { Slot = i.ItemSlot, ItemType = (i.Definition!.Group * 512) + i.Definition.Number,
                     Level = i.Level, BonusFlags = ItemSerializerHelper.GetExcellentByte(i) }),

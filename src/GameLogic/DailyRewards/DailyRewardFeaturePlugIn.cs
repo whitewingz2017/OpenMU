@@ -33,7 +33,7 @@ public sealed class DailyRewardFeaturePlugIn : IFeaturePlugIn, IPlayerStateChang
         }
 
         var settings = feature.Configuration ??= new DailyRewardSettings();
-        return settings.IsValid() ? settings : null;
+        return settings.IsValid(context.Configuration) ? settings : null;
     }
 
     /// <inheritdoc />

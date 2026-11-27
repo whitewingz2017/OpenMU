@@ -304,6 +304,8 @@
   <data name="FixCharStatsForceWavePlugInBase_Description" xml:space="preserve"><value>This update fixes DW agility to defense multiplier stat.</value></data>
   <data name="FinishElfMasterTreePlugIn_Name" xml:space="preserve"><value>Finish Elf Master Tree PlugIn</value></data>
   <data name="FinishElfMasterTreePlugIn_Description" xml:space="preserve"><value>This update completes the elf master tree and fixes some of its skill values. It also adds the missing extra projectile (4th) on some higher level (cross)bows.</value></data>
+  <data name="AddCombatResistanceAttributesUpdatePlugIn_Name" xml:space="preserve"><value>Add Combat Resistance Attributes</value></data>
+  <data name="AddCombatResistanceAttributesUpdatePlugIn_Description" xml:space="preserve"><value>Adds excellent damage and ignore-defense resistance as configurable attributes.</value></data>
   <data name="AddItemRegistrationAttributesUpdatePlugIn_Name" xml:space="preserve"><value>Add Item Registration Attributes</value></data>
   <data name="AddItemRegistrationAttributesUpdatePlugIn_Description" xml:space="preserve"><value>This update adds data for the item registration attributes.</value></data>
   <data name="FixWingsDmgRatesUpdatePlugInBase_Name" xml:space="preserve"><value>Fix Wings Damage Rates</value></data>

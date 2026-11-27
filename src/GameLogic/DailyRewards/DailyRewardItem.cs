@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.DailyRewards;
 
+using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 
 /// <summary>An item and its configured options and lifetime.</summary>
@@ -24,6 +25,10 @@ public class DailyRewardItem
     /// <summary>Gets or sets the item definition granted to the character.</summary>
     [Display(Name = nameof(DailyRewardResources.Item), ResourceType = typeof(DailyRewardResources))]
     public ItemDefinition? Item { get; set; }
+
+    /// <summary>Gets or sets a base class which further restricts who may claim the item.</summary>
+    [Display(Name = nameof(DailyRewardResources.ClassFamily), ResourceType = typeof(DailyRewardResources))]
+    public CharacterClass? ClassFamily { get; set; }
 
     /// <summary>Gets or sets the level of the item, limited by its maximum level.</summary>
     [Display(Name = nameof(DailyRewardResources.ItemLevel), ResourceType = typeof(DailyRewardResources))]
@@ -64,4 +69,11 @@ public class DailyRewardItem
     /// <summary>Gets a value indicating whether the item options are within their limits.</summary>
     internal bool HasValidOptions => this.ItemLevel <= MaximumItemLevel && this.ItemOption <= MaximumItemOption
         && this.ItemExcellentOptions <= AllExcellentOptions && this.ItemDurationHours is >= 0 and <= MaximumItemDurationHours;
+
+    /// <summary>Checks the item definition and the optional restriction set for this reward.</summary>
+    /// <param name="family">The base class of the character claiming the reward.</param>
+    /// <returns>Whether this family can receive the item.</returns>
+    internal bool IsAvailableTo(CharacterClass? family)
+        => this.Item is { } item && (this.ClassFamily is null || this.ClassFamily.Number == family?.Number)
+            && CharacterClassFamily.Allows(item, family);
 }

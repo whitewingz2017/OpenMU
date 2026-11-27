@@ -1780,6 +1780,7 @@
   <data name="DailyRewards_WCoinP" xml:space="preserve"><value>WCoinP</value></data>
   <data name="DailyRewards_GoblinPoints" xml:space="preserve"><value>Goblin Points</value></data>
   <data name="DailyRewards_Item" xml:space="preserve"><value>Item</value></data>
+  <data name="DailyRewards_ClassFamily" xml:space="preserve"><value>Class family</value></data>
   <data name="DailyRewards_ItemLevel" xml:space="preserve"><value>Item level</value></data>
   <data name="DailyRewards_ItemQuantity" xml:space="preserve"><value>Item quantity (stackable items, 0 = full stack)</value></data>
   <data name="DailyRewards_ItemSkill" xml:space="preserve"><value>Item skill</value></data>

@@ -56,6 +56,7 @@ public sealed class DailyRewardView : IDailyRewardView
         (int Month, int Day, int DaysInMonth) calendar, bool includePreviewItems)
     {
         var (month, today, daysInMonth) = calendar;
+        var family = CharacterClassFamily.Of(this._player);
         return JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
@@ -65,7 +66,8 @@ public sealed class DailyRewardView : IDailyRewardView
             Today = today,
             DaysInMonth = daysInMonth,
             ClaimedMask = this._player.Account is { } account ? DailyRewardCalendar.ClaimedDays(account, month) : 0,
-            Days = (settings?.Days ?? []).Where(day => day.HasReward && day.Day <= daysInMonth).OrderBy(day => day.Day).Select(day => new
+            Days = (settings?.Days ?? []).Where(day => day.HasReward && day.Day <= daysInMonth)
+                .Select(day => day.ForClass(family)).OfType<DailyRewardDay>().OrderBy(day => day.Day).Select(day => new
             {
                 day.Day,
                 day.Zen,

@@ -32,13 +32,14 @@ public class DailyRewardTests
             var (_, today, _) = DailyRewardCalendar.Today(DateTime.UtcNow);
             var previewDay = today == 1 ? 2 : 1;
             var item = new BasicModel.ItemDefinition { Group = 14, Number = 0, Name = "Reward item" };
+            var restricted = new DailyRewardItem { Item = item, ClassFamily = new BasicModel.CharacterClass { Number = 8 } };
             var settings = new DailyRewardSettings
             {
                 Days = new[] { today, previewDay }.Select(day => new DailyRewardDay
                 {
                     Day = day,
                     ChooseOneItem = true,
-                    Items = [new DailyRewardItem { Item = item }, new DailyRewardItem { Item = item }],
+                    Items = [new DailyRewardItem { Item = item }, restricted, new DailyRewardItem { Item = item }],
                 }).ToList(),
             };
             player.GameContext.FeaturePlugIns.AddPlugIn(new DailyRewardFeaturePlugIn { Configuration = settings }, true);
@@ -301,9 +302,12 @@ public class DailyRewardTests
         var timed = AddSkin(day, 24);
         var skin = (BasicModel.ItemDefinition)timed.Item!;
         skin.Id = Guid.NewGuid();
+        var family = new BasicModel.CharacterClass { Id = Guid.NewGuid(), Number = 4 };
+        timed.ClassFamily = family;
         var source = new Mock<IDataSource<GameConfiguration>>();
         source.Setup(data => data.Get(primary.Id)).Returns(primary);
         source.Setup(data => data.Get(skin.Id)).Returns(skin);
+        source.Setup(data => data.Get(family.Id)).Returns(family);
         var references = new ByDataSourceReferenceHandler(source.Object);
         var plugIn = new BasicModel.PlugInConfiguration();
         plugIn.SetConfiguration(new DailyRewardSettings { Days = [day] }, references);
@@ -314,6 +318,81 @@ public class DailyRewardTests
         Assert.That(saved.ChooseOneItem, Is.True);
         Assert.That(saved.GetItems().Select(item => item.Item), Is.EqualTo(new[] { primary, skin }));
         Assert.That(saved.GetItems().Select(item => item.ItemDurationHours), Is.EqualTo(new[] { 0, 24 }));
+        Assert.That(saved.Items.Single().ClassFamily, Is.SameAs(family));
+    }
+
+    /// <summary>Complete sets for two class families fit on the same day and only the matching bundle can be claimed.</summary>
+    [TestCase(4, 1)]
+    [TestCase(6, 1)]
+    [TestCase(7, 1)]
+    [TestCase(8, 11)]
+    [TestCase(10, 11)]
+    [TestCase(11, 11)]
+    public async Task ClaimProjectsBundlesAcrossPromotionsAsync(byte characterClass, short expectedItem)
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        var classes = player.GameContext.Configuration.CharacterClasses;
+        var knight = new BasicModel.CharacterClass { Number = 4, NextGenerationClass = new BasicModel.CharacterClass
+            { Number = 6, NextGenerationClass = new BasicModel.CharacterClass { Number = 7 } } };
+        var elf = new BasicModel.CharacterClass { Number = 8, NextGenerationClass = new BasicModel.CharacterClass
+            { Number = 10, NextGenerationClass = new BasicModel.CharacterClass { Number = 11 } } };
+        var gladiator = new BasicModel.CharacterClass { Number = 12 };
+        foreach (var entry in new[] { knight, knight.NextGenerationClass!, knight.NextGenerationClass!.NextGenerationClass!,
+                     elf, elf.NextGenerationClass!, elf.NextGenerationClass!.NextGenerationClass!, gladiator })
+        {
+            classes.Add(entry);
+        }
+
+        player.SelectedCharacter!.CharacterClass = classes.Single(entry => entry.Number == characterClass);
+        var settings = DailyRewardFeaturePlugIn.Settings(player.GameContext)!;
+        var day = settings.GetDay(today)!;
+        day.Item = null;
+        for (byte group = 7; group <= 11; group++)
+        {
+            var dragon = new BasicModel.ItemDefinition { Group = group, Number = 1, Width = 1, Height = 1, Durability = 1 };
+            dragon.QualifiedCharacters.Add(knight.NextGenerationClass!);
+            dragon.QualifiedCharacters.Add(gladiator);
+            var silk = new BasicModel.ItemDefinition { Group = group, Number = 11, Width = 1, Height = 1, Durability = 1 };
+            silk.QualifiedCharacters.Add(elf.NextGenerationClass!.NextGenerationClass!);
+            day.Items.Add(new DailyRewardItem { Item = dragon, ClassFamily = knight });
+            day.Items.Add(new DailyRewardItem { Item = silk });
+        }
+
+        Assert.That(settings.IsValid(player.GameContext.Configuration), Is.True);
+        Assert.That(day.ForClass(gladiator)!.ItemCount, Is.Zero);
+        var offer = day.ForClass(CharacterClassFamily.Of(player))!;
+        Assert.That(offer.ItemCount, Is.EqualTo(5));
+
+        await actions.ExecuteAsync(player, 1, DailyRewardActions.ClaimOperation, today, Now, OfferKey(day)).ConfigureAwait(false);
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        await actions.ExecuteAsync(player, 2, DailyRewardActions.ClaimOperation, today, Now, OfferKey(offer)).ConfigureAwait(false);
+
+        Assert.That(player.Inventory.Items.Select(item => item.Definition!.Number), Is.EqualTo(Enumerable.Repeat(expectedItem, 5)));
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(10));
+    }
+
+    /// <summary>An ineligible class cannot claim either alternative and a sole eligible choice claims as a single item.</summary>
+    [Test]
+    public async Task FilteredChoiceUsesTheVisibleOfferAsync()
+    {
+        var (player, actions, today) = await CreateAsync().ConfigureAwait(false);
+        var day = DailyRewardFeaturePlugIn.Settings(player.GameContext)!.GetDay(today)!;
+        var knight = new BasicModel.CharacterClass { Number = 4 };
+        var elf = new BasicModel.CharacterClass { Number = 8 };
+        day.Item!.QualifiedCharacters.Add(knight);
+        AddSkin(day, 0).Item!.QualifiedCharacters.Add(elf);
+        day.ChooseOneItem = true;
+        day.Zen = day.WCoinC = day.WCoinP = day.GoblinPoints = 0;
+        Assert.That(day.ForClass(CharacterClassFamily.Of(player)), Is.Null);
+        await actions.ExecuteAsync(player, 1, DailyRewardActions.ClaimOperation, today, Now).ConfigureAwait(false);
+        Assert.That(player.Account!.DailyRewardClaimedDays, Is.Zero);
+
+        player.SelectedCharacter!.CharacterClass = knight;
+        var offer = day.ForClass(knight)!;
+        Assert.That(offer.ItemCount, Is.EqualTo(1));
+        Assert.That(offer.ChooseOneItem, Is.False);
+        await actions.ExecuteAsync(player, 2, DailyRewardActions.ClaimOperation, today, Now).ConfigureAwait(false);
+        Assert.That(player.Inventory!.Items.Single().Definition, Is.SameAs(day.Item));
     }
 
     private static uint OfferKey(DailyRewardDay reward) => reward.GetOfferKey(DailyRewardCalendar.Today(Now).Month);

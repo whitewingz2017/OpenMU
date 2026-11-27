@@ -7,6 +7,7 @@ namespace MUnique.OpenMU.Tests;
 using System.Text.Json;
 using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using Moq;
+using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
@@ -80,6 +81,55 @@ public class JewelBankTests
         await new JewelBankActions().ExecuteAsync(player, Configuration, 1, 1, 7181, 0).ConfigureAwait(false);
         Assert.That(Balance(player), Is.EqualTo(96));
         Assert.That(player.Inventory!.Items.Single().Level, Is.EqualTo(1));
+    }
+
+    /// <summary>Bulk deposits honor separate balances and use both sections of the bag.</summary>
+    [Test]
+    public async Task DepositAllUsesExpandedInventoryAndHonorsLimitsAsync()
+    {
+        var player = await CreateAsync(inventoryExtensions: 1).ConfigureAwait(false);
+        var configuration = new JewelBankConfiguration { Items = [7181, 7182], MaximumBalance = 100 };
+        var definitions = player.GameContext.Configuration.Items;
+        var soul = new BasicModel.ItemDefinition { Group = 14, Number = 14, Width = 1, Height = 1, Name = "Jewel of Soul" };
+        definitions.Add(soul);
+        player.Account!.JewelBankBalances = """{"7181:0":75}""";
+        await AddAsync(player, definitions.First()).ConfigureAwait(false);
+        var bundle = definitions.Single(d => d.Group == 12);
+        await AddAsync(player, bundle, level: 1).ConfigureAwait(false);
+        var remainder = await AddAsync(player, bundle, level: 0, slot: InventoryConstants.FirstExtensionItemSlotIndex).ConfigureAwait(false);
+        await AddAsync(player, soul, slot: (byte)(InventoryConstants.FirstExtensionItemSlotIndex + 1)).ConfigureAwait(false);
+
+        var actions = new JewelBankActions();
+        await actions.ExecuteAsync(player, configuration, 1, JewelBankActions.DepositAllOperation, 0, 0).ConfigureAwait(false);
+        var duplicate = await AddAsync(player, soul).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, configuration, 1, JewelBankActions.DepositAllOperation, 0, 0).ConfigureAwait(false);
+
+        var ledger = JsonSerializer.Deserialize<Dictionary<string, int>>(player.Account.JewelBankBalances)!;
+        Assert.That(ledger["7181:0"], Is.EqualTo(96));
+        Assert.That(ledger["7182:0"], Is.EqualTo(1));
+        Assert.That(player.Inventory!.Items, Is.EquivalentTo(new[] { remainder, duplicate }));
+    }
+
+    /// <summary>A failed bulk save restores each jewel and its previous balance.</summary>
+    [Test]
+    public async Task BulkDepositSaveFailureRollsBackAsync()
+    {
+        var player = await CreateAsync(inventoryExtensions: 1).ConfigureAwait(false);
+        var configuration = new JewelBankConfiguration { Items = [7181, 7182], MaximumBalance = 100 };
+        var definitions = player.GameContext.Configuration.Items;
+        var soul = new BasicModel.ItemDefinition { Group = 14, Number = 14, Width = 1, Height = 1, Name = "Jewel of Soul" };
+        definitions.Add(soul);
+        var first = await AddAsync(player, definitions.First()).ConfigureAwait(false);
+        var second = await AddAsync(player, soul, slot: InventoryConstants.FirstExtensionItemSlotIndex).ConfigureAwait(false);
+        var firstSlot = first.ItemSlot;
+        CashShopActionsTest.SaveFailingContext.Install(player, () => true);
+
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await new JewelBankActions()
+            .ExecuteAsync(player, configuration, 1, JewelBankActions.DepositAllOperation, 0, 0).ConfigureAwait(false));
+
+        Assert.That(player.Account!.JewelBankBalances, Is.EqualTo("{}"));
+        Assert.That(player.Inventory!.GetItem(firstSlot), Is.SameAs(first));
+        Assert.That(player.Inventory.GetItem(InventoryConstants.FirstExtensionItemSlotIndex), Is.SameAs(second));
     }
 
     /// <summary>Requests during NPC or trade windows do not modify inventory.</summary>
@@ -199,23 +249,35 @@ public class JewelBankTests
         return ledger.GetValueOrDefault("7181:0");
     }
 
-    private static async ValueTask<Item> AddAsync(Player player, ItemDefinition definition, byte level = 0)
+    private static async ValueTask<Item> AddAsync(Player player, ItemDefinition definition, byte level = 0, byte? slot = null)
     {
         var item = player.PersistenceContext.CreateNew<Item>();
         item.Definition = definition;
         item.Durability = 1;
         item.Level = level;
-        Assert.That(await player.Inventory!.AddItemAsync(item).ConfigureAwait(false), Is.True);
+        var inventory = player.Inventory!;
+        var added = slot.HasValue
+            ? await inventory.AddItemAsync(slot.Value, item).ConfigureAwait(false)
+            : await inventory.AddItemAsync(item).ConfigureAwait(false);
+        Assert.That(added, Is.True);
         return item;
     }
 
-    private static async ValueTask<Player> CreateAsync()
+    private static async ValueTask<Player> CreateAsync(byte inventoryExtensions = 0)
     {
         var player = await PlayerTestHelper.CreatePlayerAsync().ConfigureAwait(false);
         var single = new BasicModel.ItemDefinition { Group = 14, Number = 13, Width = 1, Height = 1, Durability = 1, Name = "Jewel of Bless" };
         var bundle = new BasicModel.ItemDefinition { Group = 12, Number = 30, Width = 1, Height = 1, Durability = 1, Name = "Bundle of Bless" };
         Mock.Get(player.GameContext.Configuration).Setup(c => c.Items).Returns(new List<ItemDefinition> { single, bundle });
         Mock.Get(player.GameContext.Configuration).Setup(c => c.JewelMixes).Returns(new List<JewelMix> { new() { SingleJewel = single, MixedJewel = bundle } });
+        if (inventoryExtensions > 0)
+        {
+            var character = player.SelectedCharacter!;
+            await player.SetSelectedCharacterAsync(null).ConfigureAwait(false);
+            character.InventoryExtensions = inventoryExtensions;
+            await player.SetSelectedCharacterAsync(character).ConfigureAwait(false);
+        }
+
         player.Account!.JewelBankBalances = "{}";
         await player.PlayerState.TryAdvanceToAsync(PlayerState.EnteredWorld).ConfigureAwait(false);
         return player;

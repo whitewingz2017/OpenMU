@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.DataModel.Configuration.Items;
+using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.DailyRewards;
 using MUnique.OpenMU.Persistence;
@@ -102,7 +103,7 @@ public partial class DailyRewards
         var duration = entry.ItemDurationHours > 0
             ? string.Format(CultureInfo.CurrentCulture, Text("DurationSummary"), entry.ItemDurationHours)
             : Text("Permanent");
-        return $"{name} · {duration}";
+        return entry.ClassFamily is { } family ? $"{name} · {duration} · {family.Name}" : $"{name} · {duration}";
     }
 
     private static bool IsSkin(ItemDefinition definition) => CosmeticArmorRules.GetSlot(definition) is not null;
@@ -202,7 +203,7 @@ public partial class DailyRewards
 
     private void SelectItem(DailyRewardDay day, string? value)
     {
-        if (day.ItemCount >= DailyRewardDay.MaximumItems
+        if (day.ItemCount >= DailyRewardDay.MaximumConfiguredItems
             || !int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var type)
             || this._gameConfiguration?.Items.FirstOrDefault(item => (item.Group * ItemsPerGroup) + item.Number == type) is not { } definition)
         {
@@ -214,11 +215,24 @@ public partial class DailyRewards
         this.EditItem(entry);
     }
 
+    private IEnumerable<CharacterClass> RewardFamilies(ItemDefinition definition)
+        => this._gameConfiguration is { } configuration
+            ? CharacterClassFamily.Roots(configuration).Where(family => CharacterClassFamily.Allows(definition, family)).OrderBy(family => family.Number)
+            : [];
+
+    private void SelectClassFamily(DailyRewardItem item, ItemDefinition definition, string? value)
+    {
+        item.ClassFamily = byte.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var number)
+            ? this.RewardFamilies(definition).FirstOrDefault(family => family.Number == number)
+            : null;
+    }
+
     private void RemoveItem(DailyRewardDay day, DailyRewardItem item)
     {
         if (ReferenceEquals(day, item))
         {
             day.Item = null;
+            day.ClassFamily = null;
         }
         else
         {
@@ -249,6 +263,7 @@ public partial class DailyRewards
     {
         day.Item = null;
         day.Items.Clear();
+        day.ClassFamily = null;
         day.ChooseOneItem = false;
         day.ItemDurationHours = 0;
         (day.Zen, day.WCoinC, day.WCoinP, day.GoblinPoints) = (0, 0, 0, 0);
@@ -264,7 +279,7 @@ public partial class DailyRewards
             return;
         }
 
-        if (!this._configuration.IsValid())
+        if (this._gameConfiguration is not { } configuration || !this._configuration.IsValid(configuration))
         {
             this.SetStatus("Invalid", true);
             return;

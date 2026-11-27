@@ -90,7 +90,7 @@
                         @ItemSummary(offered)
                     </button>
                 }
-                <button type="button" class="btn btn-sm btn-outline-primary mb-1" disabled="@(editing.ItemCount >= DailyRewardDay.MaximumItems)"
+                <button type="button" class="btn btn-sm btn-outline-primary mb-1" disabled="@(editing.ItemCount >= DailyRewardDay.MaximumConfiguredItems)"
                         @onclick="this.AddItem">@Text("AddItem")</button>
                 @if (this._addingItem)
                 {
@@ -110,6 +110,17 @@
                         <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => this.RemoveItem(editing, entry)">@Text("RemoveItem")</button>
                     </div>
                     <div class="row g-2">
+                        <div class="col-sm-6">
+                            <label class="form-label" for="daily-class-family">@DailyRewardResources.ClassFamily</label>
+                            <select id="daily-class-family" class="form-select" value="@entry.ClassFamily?.Number"
+                                    @onchange="args => this.SelectClassFamily(entry, definition, args.Value as string)">
+                                <option value="">@Text("AutomaticClassFamily")</option>
+                                @foreach (var family in this.RewardFamilies(definition))
+                                {
+                                    <option value="@family.Number">@family.Name</option>
+                                }
+                            </select>
+                        </div>
                         <div class="col-sm-4"><label class="form-label" for="daily-duration">@DailyRewardResources.ItemDurationHours</label><input id="daily-duration" type="number" class="form-control" min="0" @bind="entry.ItemDurationHours" /><small class="text-muted">@Text("DurationHint")</small></div>
                         <div class="col-sm-4"><label class="form-label" for="daily-level">@DailyRewardResources.ItemLevel</label><input id="daily-level" type="number" class="form-control" min="0" max="@Math.Min((int)definition.MaximumItemLevel, 15)" @bind="entry.ItemLevel" /></div>
                         @if (IsStackable(definition))

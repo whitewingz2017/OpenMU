@@ -8,12 +8,16 @@ using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text.Json;
 using MUnique.OpenMU.DataModel.Composition;
+using MUnique.OpenMU.DataModel.Configuration;
 
 /// <summary>The daily login reward of one day of the month.</summary>
 public sealed class DailyRewardDay : DailyRewardItem
 {
-    /// <summary>The largest number of items that can be offered on a single day.</summary>
+    /// <summary>The largest number of items a single class family can see on a day.</summary>
     public const int MaximumItems = 8;
+
+    /// <summary>Allows eight items for each of the seven Season 6 class families in the calendar editor.</summary>
+    public const int MaximumConfiguredItems = 56;
 
     /// <summary>Gets or sets the day of the month, from 1 to 31.</summary>
     [Display(Name = nameof(DailyRewardResources.Day), ResourceType = typeof(DailyRewardResources))]
@@ -48,7 +52,7 @@ public sealed class DailyRewardDay : DailyRewardItem
     public bool ChooseOneItem { get; set; }
 
     /// <summary>Gets a value indicating whether anything is granted on this day.</summary>
-    public bool HasReward => this.Zen > 0 || this.WCoinC > 0 || this.WCoinP > 0 || this.GoblinPoints > 0 || this.ItemCount > 0;
+    public bool HasReward => this.HasCurrency || this.ItemCount > 0;
 
     /// <summary>Gets the number of items, including the item from an older calendar configuration.</summary>
     public int ItemCount => (this.Item is null ? 0 : 1) + this.Items.Count;
@@ -58,12 +62,42 @@ public sealed class DailyRewardDay : DailyRewardItem
 
     /// <summary>Gets a value indicating whether the values are within their limits.</summary>
     internal bool IsValid => this is { Day: >= 1 and <= DailyRewardCalendar.MaximumDays, Zen: >= 0, WCoinC: >= 0, WCoinP: >= 0, GoblinPoints: >= 0, Items: not null }
-        && this.ItemCount <= MaximumItems && (!this.ChooseOneItem || this.ItemCount > 1)
+        && this.ItemCount <= MaximumConfiguredItems && (!this.ChooseOneItem || this.ItemCount > 1)
         && this.HasValidOptions && this.Items.All(item => item is { Item: not null, HasValidOptions: true });
+
+    private bool HasCurrency => this.Zen > 0 || this.WCoinC > 0 || this.WCoinP > 0 || this.GoblinPoints > 0;
 
     /// <summary>Gets all offered items in the order displayed by the client.</summary>
     /// <returns>The configured items.</returns>
     public IEnumerable<DailyRewardItem> GetItems() => this.Item is null ? this.Items : this.Items.Prepend(this);
+
+    /// <summary>Projects this day into the offer the current character is able to claim.</summary>
+    /// <param name="family">The base class of the selected character.</param>
+    /// <returns>The projected day, or null if there is no eligible reward.</returns>
+    public DailyRewardDay? ForClass(CharacterClass? family)
+    {
+        if (this.ItemCount == 0)
+        {
+            return this.HasCurrency ? this : null;
+        }
+
+        var items = this.GetItems().Where(item => item.IsAvailableTo(family)).ToList();
+        if (items.Count > MaximumItems || (items.Count == 0 && !this.HasCurrency))
+        {
+            return null;
+        }
+
+        return items.Count == this.ItemCount ? this : new DailyRewardDay
+        {
+            Day = this.Day,
+            Zen = this.Zen,
+            WCoinC = this.WCoinC,
+            WCoinP = this.WCoinP,
+            GoblinPoints = this.GoblinPoints,
+            ChooseOneItem = this.ChooseOneItem && items.Count > 1,
+            Items = items,
+        };
+    }
 
     /// <summary>Identifies the terms displayed for this day, so an admin edit cannot change a pending choice.</summary>
     /// <param name="month">The calendar month, including the year.</param>

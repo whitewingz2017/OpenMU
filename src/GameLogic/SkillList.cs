@@ -25,6 +25,8 @@ public sealed class SkillList : ISkillList, IDisposable
 
     private readonly Player _player;
 
+    private readonly List<(SkillEntry Skill, AttributeDefinition Attribute, PowerUpWrapper PowerUp)> _masterBonuses = [];
+
     private List<IDisposable>? _passivePowerUps;
 
     /// <summary>
@@ -63,6 +65,11 @@ public sealed class SkillList : ISkillList, IDisposable
     /// <inheritdoc/>
     public byte SkillCount => (byte)this._availableSkills.Count;
 
+    /// <summary>Gets the applied passive power-ups from learned master skills.</summary>
+    internal IEnumerable<(AttributeDefinition Attribute, IElement Element)> LearnedMasterBonuses
+        => this._masterBonuses.Where(bonus => bonus.Skill.Level > 0)
+            .Select(bonus => (bonus.Attribute, (IElement)bonus.PowerUp));
+
     private List<IDisposable> PassivePowerUps => this._passivePowerUps ??= new();
 
     /// <inheritdoc />
@@ -70,6 +77,7 @@ public sealed class SkillList : ISkillList, IDisposable
     {
         this._passivePowerUps?.ForEach(p => p.Dispose());
         this._passivePowerUps = null;
+        this._masterBonuses.Clear();
     }
 
     /// <inheritdoc/>
@@ -255,7 +263,9 @@ public sealed class SkillList : ISkillList, IDisposable
             }
 
             var element = skillAttributes.Attributes.CreateElement(powerUpDefinition);
-            this.PassivePowerUps.Add(new PowerUpWrapper(element, targetAttribute, this._player.Attributes!));
+            var powerUp = new PowerUpWrapper(element, targetAttribute, this._player.Attributes!);
+            this.PassivePowerUps.Add(powerUp);
+            this._masterBonuses.Add((skillEntry, targetAttribute, powerUp));
         }
     }
 

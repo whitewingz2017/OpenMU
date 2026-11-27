@@ -2583,10 +2583,11 @@
     <value>The daily reward configuration could not be loaded.</value>
   </data>
   <data name="DailyRewardsChooseOne" xml:space="preserve"><value>Let the player choose one item</value></data>
+  <data name="DailyRewardsAutomaticClassFamily" xml:space="preserve"><value>Automatic (use item class restrictions)</value></data>
   <data name="DailyRewardsAddItem" xml:space="preserve"><value>Add item</value></data>
   <data name="DailyRewardsPermanent" xml:space="preserve"><value>Permanent</value></data>
   <data name="DailyRewardsInvalid" xml:space="preserve">
-    <value>The rewards are invalid. Check the amounts and the item values.</value>
+    <value>The rewards are invalid. Check the amounts, item values, and the limit of eight eligible items per class family on each day.</value>
   </data>
   <data name="DailyRewardsSaved" xml:space="preserve">
     <value>Daily rewards saved. They apply to the next claim.</value>

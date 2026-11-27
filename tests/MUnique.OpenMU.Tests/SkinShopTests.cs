@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.Tests;
 
+using System.Text.Json;
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.DataModel.Entities;
@@ -11,6 +12,7 @@ using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.Cosmetics;
 using MUnique.OpenMU.GameLogic.PlugIns;
+using MUnique.OpenMU.GameServer.RemoteView.Inventory;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
 
 /// <summary>Verifies skin purchases, saved bonuses and coin rollback.</summary>
@@ -357,6 +359,34 @@ public class SkinShopTests
         settings.RentalThreeDaysPrice = 65;
         settings.RentalSevenDaysPrice = 125;
         return player;
+    }
+
+    /// <summary>The advertised and purchase rules agree for every promotion and a different family.</summary>
+    [TestCase(4, true)]
+    [TestCase(6, true)]
+    [TestCase(7, true)]
+    [TestCase(12, false)]
+    public async Task ShopEligibilityMatchesAcrossPromotionsAsync(byte characterClass, bool allowed)
+    {
+        var player = await CreateAsync().ConfigureAwait(false);
+        var bladeMaster = new BasicModel.CharacterClass { Number = 7 };
+        var bladeKnight = new BasicModel.CharacterClass { Number = 6, NextGenerationClass = bladeMaster };
+        var darkKnight = new BasicModel.CharacterClass { Number = 4, NextGenerationClass = bladeKnight };
+        var gladiator = new BasicModel.CharacterClass { Number = 12 };
+        foreach (var cls in new[] { darkKnight, bladeKnight, bladeMaster, gladiator })
+        {
+            player.GameContext.Configuration.CharacterClasses.Add(cls);
+        }
+
+        player.SelectedCharacter!.CharacterClass = player.GameContext.Configuration.CharacterClasses.Single(cls => cls.Number == characterClass);
+        var skin = player.GameContext.Configuration.Items.Single();
+        skin.QualifiedCharacters.Add(bladeMaster);
+        using var catalog = JsonDocument.Parse(SkinShopView.Serialize(player, 1, "Ready", true));
+        Assert.That(catalog.RootElement.GetProperty("Items")[0].GetProperty("Eligible").GetBoolean(), Is.EqualTo(allowed));
+        await new SkinShopActions().ExecuteAsync(player, 2, 1, 4196, 0, 100).ConfigureAwait(false);
+
+        Assert.That(player.Inventory!.Items.Count, Is.EqualTo(allowed ? 1 : 0));
+        Assert.That(player.Account!.WCoinC, Is.EqualTo(allowed ? 400 : 500));
     }
 
     private static async Task<Player> CreateAsync(int price = 100)

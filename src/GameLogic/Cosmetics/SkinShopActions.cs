@@ -91,7 +91,7 @@ public sealed class SkinShopActions
         }
 
         var definition = player.GameContext.Configuration.Items.SingleOrDefault(d => (d.Group * 512) + d.Number == itemType);
-        if (definition is null || !FenrirMountRules.IsShopItem(definition) || !CosmeticArmorRules.CanEquip(player, definition))
+        if (definition is null || !FenrirMountRules.IsShopItem(definition) || !CosmeticArmorRules.CanPurchase(player, definition))
         {
             return "This skin is unavailable for your character class.";
         }

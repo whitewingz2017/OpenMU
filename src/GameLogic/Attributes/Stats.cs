@@ -1229,6 +1229,12 @@ public class Stats
     /// </summary>
     public static AttributeDefinition DefenseIgnoreChance { get; } = new(new Guid("56BDC72E-9D37-4EDA-8AC8-9E12473966FC"), "Defense Ignore Chance", string.Empty);
 
+    /// <summary>Gets the defender's chance to cancel an incoming excellent hit, from zero to one.</summary>
+    public static AttributeDefinition ExcellentDamageResistance { get; } = new(new Guid("416CAE77-C351-4557-9938-4732DA468A77"), "Excellent Damage Resistance", "Chance to cancel an incoming excellent damage roll.");
+
+    /// <summary>Gets the defender's chance to prevent defense from being ignored, from zero to one.</summary>
+    public static AttributeDefinition IgnoreDefenseResistance { get; } = new(new Guid("D171E645-F6B5-47CF-9BEF-B69B785C6D1A"), "Ignore Defense Resistance", "Chance to cancel an incoming ignore-defense roll.");
+
     /// <summary>
     /// Gets the shield bypass chance attribute definition.
     /// </summary>

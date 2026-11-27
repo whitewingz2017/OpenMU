@@ -63,7 +63,7 @@ public sealed class DailyRewardActions
             return ("DailyReward_AlreadyClaimed", false);
         }
 
-        if (settings.GetDay(today) is not { } reward)
+        if (settings.GetDay(today)?.ForClass(CharacterClassFamily.Of(player)) is not { } reward)
         {
             return ("DailyReward_NoReward", false);
         }

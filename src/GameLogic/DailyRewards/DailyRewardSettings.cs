@@ -5,6 +5,7 @@
 namespace MUnique.OpenMU.GameLogic.DailyRewards;
 
 using MUnique.OpenMU.DataModel.Composition;
+using MUnique.OpenMU.DataModel.Configuration;
 
 /// <summary>The daily login rewards of the days of a month, configured in the admin panel.</summary>
 public sealed class DailyRewardSettings : IValidatableObject
@@ -33,6 +34,27 @@ public sealed class DailyRewardSettings : IValidatableObject
     public bool IsValid() => this.Days is { Count: <= DailyRewardCalendar.MaximumDays }
         && this.Days.All(day => day is not null && day.IsValid)
         && this.Days.Select(day => day.Day).Distinct().Count() == this.Days.Count;
+
+    /// <summary>Validates that each family's rewards fit into the client's offer.</summary>
+    /// <param name="configuration">The game configuration.</param>
+    /// <returns>Whether every family has a valid offer on every configured day.</returns>
+    public bool IsValid(GameConfiguration configuration)
+    {
+        if (!this.IsValid())
+        {
+            return false;
+        }
+
+        if (this.Days.All(day => day.ItemCount <= DailyRewardDay.MaximumItems))
+        {
+            return true;
+        }
+
+        var families = CharacterClassFamily.Roots(configuration).ToArray();
+        return this.Days.All(day => day.ItemCount <= DailyRewardDay.MaximumItems
+            || (families.Length > 0 && families.All(family =>
+                day.GetItems().Count(item => item.IsAvailableTo(family)) <= DailyRewardDay.MaximumItems)));
+    }
 
     /// <inheritdoc />
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

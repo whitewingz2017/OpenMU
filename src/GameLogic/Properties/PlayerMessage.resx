@@ -1225,4 +1225,7 @@ Claim the item from this letter.</value></data>
   <data name="NoKalimaGateInKalima" xml:space="preserve">
     <value>Cannot create kalima gate in Kalima.</value>
   </data>
+  <data name="CombatStatistics_MasterSkillBonus" xml:space="preserve">
+    <value>Master skills: {0}</value>
+  </data>
 </root>

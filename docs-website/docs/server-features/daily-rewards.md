@@ -18,10 +18,13 @@ Season 6 clients don't have this window.
 - Rewards are tracked per account: when one character claims the day's reward,
   the account's other characters can't claim it again that day.
 - Days follow the server's local time. A new day starts at the server's midnight.
-- A reward can include up to eight items, Zen, WCoinC, WCoinP and Goblin Points.
-  Players receive every item in a bundle or exactly one item on a choice day.
-  Both modes grant all configured currency. Zen and items go to the claiming
-  character, while coins go to the account.
+- The same day can offer different items to different class families. Each
+  character sees up to eight eligible items. Players receive every eligible
+  item in a bundle or one eligible item on a choice day. When only one item
+  matches, the player can claim it directly.
+- Configured currency is available to every class. Zen and items go to the
+  claiming character, while coins go to the account. A currency-only claim
+  still uses the account's claim for that day.
 - If the granted items cannot fit into the inventory or the Zen would exceed
   the carry limit, nothing is granted and the day stays claimable.
 
@@ -43,12 +46,18 @@ The feature is disabled by default. In the admin panel, open
    for each item, searching by name or `group:number`. Click an item in the list
    to edit its level, stack quantity, skill, luck and options. A skin can be
    assigned one of its allowed bonuses.
-4. Set **Item duration (hours)** for each item. Enter `24` for one day or `0`
+4. Leave **Class family** on **Automatic** to use the item's configured
+   classes across their full promotion chains. Select a family to narrow an
+   item to that family. For example, on day 3 assign Silk Helm to Elf and
+   Dragon Helm to Dark Knight. Muse Elf and High Elf see Silk Helm. Blade
+   Knight and Blade Master see Dragon Helm. To give complete sets, add each
+   piece to the same day and leave **Choose one** unchecked.
+5. Set **Item duration (hours)** for each item. Enter `24` for one day or `0`
    for permanent. The timer starts on claim and continues offline. Timed items
    require the **Item expiration** plugin.
-5. Check **Let the player choose one item** if the day offers two or more
+6. Check **Let the player choose one item** if the day offers two or more
    alternatives. Leave it unchecked to grant every item as a bundle.
-6. Click **Save changes**. **Clear day** removes all rewards from that day.
+7. Click **Save changes**. **Clear day** removes all rewards from that day.
    **Discard changes** reloads the saved rewards.
 
 Multi-item days require an updated client. Older clients can still claim

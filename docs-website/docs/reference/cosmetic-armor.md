@@ -251,6 +251,19 @@ native RmlUi checks.
 
 ### Character combat statistics
 
+Combat Statistics shows the live PvP and PvM defense rates and lists passive
+bonuses from learned master skills. The amount shown on an unlearned skill's
+tooltip is a preview. The server reports the bonus at the character's current
+skill level.
+
+Combat Statistics includes the server's elemental resistance ratings for
+earth, wind, ice, fire, water, poison, and lightning. Excellent damage
+resistance and ignore-defense resistance show the percentage chance of
+canceling the corresponding incoming effect. These two resistances start at
+zero and can be assigned through the game's attribute configuration. Apply
+**Add Combat Resistance Attributes** on existing Season 6 games to make the
+two attributes available for configuration.
+
 The custom mobile client's character window has an Attributes / Statistics switch.
 The statistics response uses live server attributes, including equipped skin
 bonuses. Chances and multiplier rows use percentage points: a configured 0.10
@@ -266,8 +279,10 @@ are included in the matching client data. Publish the server and apply
 or selling them. Existing wings need only the rebuilt client and packaged data
 for the animation, 25 fps atlas and reference lighting fixes.
 
-The shop combines local and server class requirements, including promotion
-limits. All-class placeholder sets use the reviewed male or female model
+The shop uses class families for previews, purchases, and rentals. Dark Knight,
+Blade Knight and Blade Master share the same shop eligibility. Magic Gladiator
+and Duel Master share their own eligibility. Equipped skins use their configured
+requirements. All-class placeholder sets use the reviewed male or female model
 family; specific class requirements from the reference are retained. Apply
 **Set 315 Cosmetic Armor version 20** for matching server restrictions. Owned
 items remain accessible in Skin Inventory for removal or trade. Armor 69 (8:394)

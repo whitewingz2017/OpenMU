@@ -83,8 +83,8 @@ public static class AttackableExtensions
 
         DamageAttributes attributes = DamageAttributes.Undefined;
         bool isCriticalHit = Rand.NextRandomBool(attacker.Attributes[Stats.CriticalDamageChance]);
-        bool isExcellentHit = Rand.NextRandomBool(attacker.Attributes[Stats.ExcellentDamageChance]);
-        bool isIgnoringDefense = Rand.NextRandomBool(attacker.Attributes[Stats.DefenseIgnoreChance]);
+        bool isExcellentHit = Rand.NextRandomBool(ResistedDamageChance(attacker.Attributes[Stats.ExcellentDamageChance], defender.Attributes[Stats.ExcellentDamageResistance]));
+        bool isIgnoringDefense = Rand.NextRandomBool(ResistedDamageChance(attacker.Attributes[Stats.DefenseIgnoreChance], defender.Attributes[Stats.IgnoreDefenseResistance]));
 
         var defense = 0;
         if (isIgnoringDefense)
@@ -739,6 +739,13 @@ public static class AttackableExtensions
     {
         return defender.Attributes[Stats.DefenseRatePvm] + defender.Attributes[Stats.IncreaseBlockBonus];
     }
+
+    /// <summary>Gets the chance that an incoming damage effect procs and the defender's resistance does not cancel it.</summary>
+    /// <param name="chance">The attacker's chance of applying the damage effect.</param>
+    /// <param name="resistance">The defender's chance of canceling it.</param>
+    /// <returns>The effective chance of applying the effect.</returns>
+    internal static double ResistedDamageChance(float chance, float resistance)
+        => resistance > 0 ? Math.Clamp(chance, 0, 1) * (1d - Math.Min(resistance, 1)) : chance;
 
     private static bool IsInPublicDuelCountdown(Player? player)
         => player?.DuelRoom is { Betting: not null, State: DuelState.DuelAccepted } room && room.IsDuelist(player);

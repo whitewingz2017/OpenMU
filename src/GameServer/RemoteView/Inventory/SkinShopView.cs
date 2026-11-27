@@ -77,7 +77,7 @@ public sealed class SkinShopView : ISkinShopView
             RentalSevenDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalSevenDaysPrice ?? 0) : 0,
             RentableItems = items.Where(d => rentalsEnabled && settings is not null && (settings.RentalPrice(d, 1) > 0 || settings.RentalPrice(d, 3) > 0 || settings.RentalPrice(d, 7) > 0)).Select(d => (d.Group * 512) + d.Number),
             ExcellentEffectItems = settings?.ExcellentEffectItems(player.GameContext.Configuration.Items).ToArray() ?? [],
-            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), GoblinPrice = settings.GoblinPrice(d), Eligible = CosmeticArmorRules.CanEquip(player, d), Pool = Pool(d), AttributePool = attributeIndices[d] }),
+            Items = items.Select(d => new { ItemType = (d.Group * 512) + d.Number, Name = d.Name.ValueInNeutralLanguage, Part = FenrirMountRules.IsCustom(d) ? 8 : CosmeticArmorRules.GetSlot(d) - CosmeticArmorRules.FirstSlot, Price = settings!.Price(d), GoblinPrice = settings.GoblinPrice(d), Eligible = CosmeticArmorRules.CanPurchase(player, d), Pool = Pool(d), AttributePool = attributeIndices[d] }),
             Pools = items.GroupBy(Pool).Select(group => new { Pool = group.Key, Bonuses = Array.Empty<object>() }),
             AttributePools = attributePools.Select(pool => pool.First().Lines),
         });

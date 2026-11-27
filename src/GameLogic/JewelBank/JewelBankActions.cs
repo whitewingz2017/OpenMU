@@ -6,19 +6,23 @@ namespace MUnique.OpenMU.GameLogic.JewelBank;
 
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using MUnique.OpenMU.DataModel;
 using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.Views.Inventory;
 
 /// <summary>Account-wide, server-authoritative jewel banking.</summary>
 public sealed class JewelBankActions
 {
+    /// <summary>Deposits all configured jewel types from the entire bag.</summary>
+    public const byte DepositAllOperation = 3;
+
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
 
     /// <summary>Executes a request under the same lock as inventory actions and progress saves.</summary>
     /// <param name="player">The player.</param>
     /// <param name="configuration">The bank configuration.</param>
     /// <param name="request">A monotonically increasing request identifier.</param>
-    /// <param name="operation">Zero refreshes, one deposits all, two withdraws.</param>
+    /// <param name="operation">Zero refreshes, one deposits a jewel type, two withdraws, and three deposits every type.</param>
     /// <param name="itemId">The configured item identifier.</param>
     /// <param name="amount">The withdrawal count, or zero for all that fits.</param>
     public ValueTask ExecuteAsync(Player player, JewelBankConfiguration configuration, uint request, byte operation, int itemId, uint amount)
@@ -29,6 +33,9 @@ public sealed class JewelBankActions
 
     private static string Key(int itemId) => $"{itemId}:0";
 
+    private static ItemDefinition? FindJewel(Player player, int id)
+        => player.GameContext.Configuration.Items.FirstOrDefault(d => (d.Group * 512) + d.Number == id && d.Width == 1 && d.Height == 1);
+
     private static bool Plain(Item item) => item.ItemOptions.Count == 0 && item.ItemSetGroups.Count == 0
         && !item.HasSkill && item.SocketCount == 0 && !item.StorePrice.HasValue;
 
@@ -37,7 +44,7 @@ public sealed class JewelBankActions
         var mixed = player.GameContext.Configuration.JewelMixes.FirstOrDefault(m => m.SingleJewel == definition)?.MixedJewel;
         foreach (var item in player.Inventory!.Items)
         {
-            if (item.ItemSlot <= MUnique.OpenMU.DataModel.InventoryConstants.LastEquippableItemSlotIndex || !Plain(item))
+            if (item.ItemSlot <= InventoryConstants.LastEquippableItemSlotIndex || item.ItemSlot >= player.InventorySize || !Plain(item))
             {
                 continue;
             }
@@ -77,6 +84,77 @@ public sealed class JewelBankActions
         await player.InvokeViewPlugInAsync<IJewelBankView>(p => p.ShowAsync(request, status, rows)).ConfigureAwait(false);
     }
 
+    private static int ReadBalance(IReadOnlyDictionary<string, int> ledger, int itemId)
+    {
+        var balance = ledger.GetValueOrDefault(Key(itemId));
+        return balance >= 0 ? balance : throw new InvalidOperationException("Invalid persisted jewel bank balance.");
+    }
+
+    private static List<(Item Item, int Count, int Id)>? PlanDeposits(
+        Player player,
+        JewelBankConfiguration configuration,
+        IReadOnlyDictionary<string, int> ledger,
+        bool bulkDeposit,
+        int itemId,
+        uint amount)
+    {
+        var plan = new List<(Item, int, int)>();
+        var reserved = new HashSet<Item>();
+        IEnumerable<int> ids = bulkDeposit ? configuration.Items.Distinct().Take(32) : [itemId];
+        foreach (var id in ids)
+        {
+            if (FindJewel(player, id) is not { } definition)
+            {
+                continue;
+            }
+
+            var capacity = configuration.MaximumBalance - ReadBalance(ledger, id);
+            var items = DepositItems(player, definition).Where(entry => !reserved.Contains(entry.Item));
+            if (amount != 0)
+            {
+                var exact = capacity >= amount ? SelectExactDeposit(items, (int)amount) : null;
+                if (exact is null)
+                {
+                    return null;
+                }
+
+                items = exact;
+            }
+
+            foreach (var entry in items)
+            {
+                if (entry.Count > capacity || !reserved.Add(entry.Item))
+                {
+                    continue;
+                }
+
+                capacity -= entry.Count;
+                plan.Add((entry.Item, entry.Count, id));
+            }
+        }
+
+        return plan;
+    }
+
+    private static List<(Item Item, int Count)>? SelectExactDeposit(IEnumerable<(Item Item, int Count)> items, int amount)
+    {
+        // Select whole singles or bundles for the exact count, keeping remainders in the bag.
+        var plans = new List<(Item Item, int Count)>?[amount + 1];
+        plans[0] = [];
+        foreach (var entry in items)
+        {
+            for (var count = amount; count >= entry.Count; count--)
+            {
+                if (plans[count] is null && plans[count - entry.Count] is { } previous)
+                {
+                    plans[count] = [.. previous, entry];
+                }
+            }
+        }
+
+        return plans[amount];
+    }
+
     private async ValueTask ExecuteCoreAsync(Player player, JewelBankConfiguration configuration, uint request, byte operation, int itemId, uint amount)
     {
         if (player.Account == null || player.Inventory == null || player.SelectedCharacter == null)
@@ -111,8 +189,10 @@ public sealed class JewelBankActions
             return;
         }
 
-        var definition = player.GameContext.Configuration.Items.FirstOrDefault(d => (d.Group * 512) + d.Number == itemId);
-        if (operation > 2 || !configuration.Items.Contains(itemId) || definition == null || definition.Width != 1 || definition.Height != 1
+        var bulkDeposit = operation == DepositAllOperation;
+        var definition = bulkDeposit ? null : FindJewel(player, itemId);
+        if (operation > DepositAllOperation
+            || (bulkDeposit ? itemId != 0 || amount != 0 : !configuration.Items.Contains(itemId) || definition is null)
             || (amount != 0 && amount != 1 && (amount > 50 || amount % 10 != 0)))
         {
             await ShowAsync(player, configuration, request, "Invalid bank request.").ConfigureAwait(false);
@@ -121,10 +201,11 @@ public sealed class JewelBankActions
 
         var original = player.Account.JewelBankBalances;
         var ledger = ReadLedger(original);
-        ledger.TryGetValue(Key(itemId), out var balance);
-        if (balance < 0)
+        List<(Item Item, int Count, int Id)>? deposits = operation == 2 ? [] : PlanDeposits(player, configuration, ledger, bulkDeposit, itemId, amount);
+        if (deposits is null)
         {
-            throw new InvalidOperationException("Invalid persisted jewel bank balance.");
+            await ShowAsync(player, configuration, request, "Not enough matching inventory jewels for that exact quantity, or bank limit reached. Unpack bundles if needed.").ConfigureAwait(false);
+            return;
         }
 
         var removed = new List<(Item Item, byte Slot)>();
@@ -133,42 +214,20 @@ public sealed class JewelBankActions
         var transferred = 0;
         try
         {
-            if (operation == 1)
+            if (operation != 2)
             {
-                var items = DepositItems(player, definition).ToArray();
-                if (amount > 0)
+                foreach (var (item, count, id) in deposits)
                 {
-                    // Select whole singles/bundles for the exact count; never destroy the remainder of a bundle.
-                    var plans = new List<(Item Item, int Count)>?[amount + 1];
-                    plans[0] = [];
-                    foreach (var entry in items)
-                        for (var count = (int)amount; count >= entry.Count; count--)
-                            if (plans[count] is null && plans[count - entry.Count] is { } previous)
-                                plans[count] = [.. previous, entry];
-                    if (plans[amount] is not { } selected || (long)balance + amount > configuration.MaximumBalance)
-                    {
-                        await ShowAsync(player, configuration, request, "Not enough matching inventory jewels for that exact quantity, or bank limit reached. Unpack bundles if needed.").ConfigureAwait(false);
-                        return;
-                    }
-                    items = selected.ToArray();
+                    removed.Add((item, item.ItemSlot));
+                    await player.Inventory.RemoveItemAsync(item).ConfigureAwait(false);
+                    await player.PersistenceContext.DeleteAsync(item).ConfigureAwait(false);
+                    ledger[Key(id)] = checked(ReadBalance(ledger, id) + count);
+                    transferred += count;
                 }
-                foreach (var entry in items)
-                {
-                    if ((long)balance + transferred + entry.Count > configuration.MaximumBalance)
-                    {
-                        continue;
-                    }
-
-                    removed.Add((entry.Item, entry.Item.ItemSlot));
-                    await player.Inventory.RemoveItemAsync(entry.Item).ConfigureAwait(false);
-                    await player.PersistenceContext.DeleteAsync(entry.Item).ConfigureAwait(false);
-                    transferred += entry.Count;
-                }
-
-                ledger[Key(itemId)] = checked(balance + transferred);
             }
             else
             {
+                var balance = ReadBalance(ledger, itemId);
                 var wanted = amount == 0 ? balance : (int)amount;
                 var slots = player.Inventory.FreeSlots.Take(Math.Min(wanted, balance)).ToArray();
                 if (amount != 0 && (balance < wanted || slots.Length < wanted))
@@ -181,7 +240,7 @@ public sealed class JewelBankActions
                 {
                     var item = player.PersistenceContext.CreateNew<Item>();
                     item.Definition = definition;
-                    item.Durability = definition.Durability;
+                    item.Durability = definition!.Durability;
                     added.Add(item);
                     if (!await player.Inventory.AddItemAsync(slot, item).ConfigureAwait(false))
                     {
@@ -236,7 +295,7 @@ public sealed class JewelBankActions
             await player.InvokeViewPlugInAsync<IItemAppearPlugIn>(p => p.ItemAppearAsync(item)).ConfigureAwait(false);
         }
 
-        await ShowAsync(player, configuration, request, transferred == 0 ? "Nothing transferred. Check inventory space and bank limit." : $"{transferred} jewels {(operation == 1 ? "deposited" : "withdrawn")}.").ConfigureAwait(false);
+        await ShowAsync(player, configuration, request, transferred == 0 ? "Nothing transferred. Check inventory space and bank limit." : $"{transferred} jewels {(operation == 2 ? "withdrawn" : "deposited")}.").ConfigureAwait(false);
     }
 
     private sealed class Session

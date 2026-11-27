@@ -37,6 +37,15 @@ public static class CosmeticArmorRules
         return definition.QualifiedCharacters.Count == 0 || definition.QualifiedCharacters.Contains(characterClass);
     }
 
+    /// <summary>Checks whether the selected character's family can buy or rent the skin.</summary>
+    /// <param name="player">The player.</param>
+    /// <param name="definition">The skin definition.</param>
+    /// <returns>Whether the selected character can acquire the skin in the shop.</returns>
+    public static bool CanPurchase(Player player, ItemDefinition definition)
+        => definition.Group is >= 7 and <= 11 && definition.Number == 315
+            ? CanEquip(player, definition)
+            : CharacterClassFamily.Of(player) is { } family && CharacterClassFamily.Allows(definition, family);
+
     /// <summary>Gets the configured cosmetic slot, or null for ordinary items.</summary>
     public static byte? GetSlot(ItemDefinition? definition)
     {

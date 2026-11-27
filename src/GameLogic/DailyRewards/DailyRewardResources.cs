@@ -42,6 +42,9 @@ public static class DailyRewardResources
     /// <summary>Gets the item field caption.</summary>
     public static string Item => Get("DailyRewards_Item");
 
+    /// <summary>Gets the caption of the optional reward class restriction.</summary>
+    public static string ClassFamily => Get("DailyRewards_ClassFamily");
+
     /// <summary>Gets the item level field caption.</summary>
     public static string ItemLevel => Get("DailyRewards_ItemLevel");
 

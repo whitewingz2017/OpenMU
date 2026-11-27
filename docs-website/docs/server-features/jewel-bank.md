@@ -1,13 +1,14 @@
 # Jewel Bank
 
-The custom MonoGame client can keep jewel counts in an account bank, shared by all
-characters on that account. Original Season 6 clients do not have this window.
+The custom Windows and Android clients can keep jewel counts in an account bank,
+shared by all characters on that account. Original Season 6 clients do not have this window.
 
 ## Use
 
 Press **J** in the desktop client or open **Bank** from the tablet function menu.
-Select a jewel, then deposit all matching jewels or withdraw 1, 10, 20, 30, or all
-that fits. Withdrawals produce individual jewels. Deposits also accept the
+Choose **Deposit All** to transfer supported jewels from the normal and expanded
+bags in one request, up to each jewel's bank limit. Select a jewel to deposit one
+type or withdraw a specific amount. Withdrawals produce individual jewels. Deposits also accept the
 configured Lahap bundles at levels 0, 1 and 2 as 10, 20 and 30 single jewels.
 Bundles are transferred whole; a bundle that exceeds the bank limit stays in the
 inventory. Equipment slots, personal store items, optioned items and unsupported
