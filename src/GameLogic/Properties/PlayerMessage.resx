@@ -1222,4 +1222,7 @@ Claim the item from this letter.</value></data>
   <data name="DuelBetting_CannotSpectate" xml:space="preserve">
     <value>The selected duel is unavailable for spectating.</value>
   </data>
+  <data name="NoKalimaGateInKalima" xml:space="preserve">
+    <value>Cannot create kalima gate in Kalima.</value>
+  </data>
 </root>

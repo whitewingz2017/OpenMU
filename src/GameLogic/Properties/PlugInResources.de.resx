@@ -1878,4 +1878,16 @@
   <data name="CastleSiegeRegistrationGuardsmanTalkPlugIn_Description" xml:space="preserve">
     <value>Öffnet das Anmeldefenster von Castle Siege mit dem aktuellen Status, wenn ein Spieler mit einem Gardisten auf der Karte von Castle Siege spricht.</value>
   </data>
+  <data name="KalimaTicketConsumeHandlerPlugIn_Name" xml:space="preserve">
+    <value>Verbrauchs-Handler für Kalima-Tickets</value>
+  </data>
+  <data name="KalimaTicketConsumeHandlerPlugIn_Description" xml:space="preserve">
+    <value>Öffnet ein Tor zu der Kalima-Stufe, die zum Level des Charakters passt. Jede Benutzung verbraucht eine der Benutzungen des Tickets.</value>
+  </data>
+  <data name="KalimaTicketConsumeHandlerConfiguration_MinimumLevels_Name" xml:space="preserve">
+    <value>Mindestlevel der Kalima-Stufen</value>
+  </data>
+  <data name="KalimaTicketConsumeHandlerConfiguration_SpecialCharacterMinimumLevels_Name" xml:space="preserve">
+    <value>Mindestlevel der Kalima-Stufen für Spezialcharaktere</value>
+  </data>
 </root>

@@ -115,6 +115,11 @@ public class ItemConstants
     public static ItemIdentifier Antidote => new(8, 14);
 
     /// <summary>
+    /// Gets the identifier for the Kalima Ticket.
+    /// </summary>
+    public static ItemIdentifier KalimaTicket => new(48, 13);
+
+    /// <summary>
     /// Gets the identifier for the town portal scroll.
     /// </summary>
     public static ItemIdentifier TownPortalScroll => new(10, 14);

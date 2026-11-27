@@ -258,3 +258,12 @@ servers need **Add cash shop** version 7 and the
 The account expiry is `VipExpiresAtUtc` in UTC, which website integrations or
 administrators can also set. The existing `IsVip` account attribute still grants
 VIP eligibility. This change does not configure separate Gold-only channels.
+
+### Kalima Ticket
+
+Use the ticket from the inventory outside a safe zone. It opens a gate for
+you and your party to the highest Kalima stage your character qualifies for.
+A successful use spends one charge. Safe zones, event maps and Kalima itself
+block the gate, and the ticket keeps its remaining charges when no gate opens.
+Administrators can configure stage requirements in **Kalima Ticket Consume
+Handler** on the Plugins page.

@@ -2856,5 +2856,14 @@ namespace MUnique.OpenMU.GameLogic.Properties {
                 return ResourceManager.GetString("YourChatBanRemovedByGameMaster", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create kalima gate in Kalima..
+        /// </summary>
+        public static string NoKalimaGateInKalima {
+            get {
+                return ResourceManager.GetString("NoKalimaGateInKalima", resourceCulture);
+            }
+        }
     }
 }

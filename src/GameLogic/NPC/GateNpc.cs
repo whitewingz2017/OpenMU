@@ -36,6 +36,8 @@ public class GateNpc : NonPlayerCharacter, ISummonable
         this._logger = summonedBy.GameContext.LoggerFactory.CreateLogger<GateNpc>();
         this._cts = new CancellationTokenSource(lifespan);
         this._warpTask = Task.Run(this.RunTaskAsync);
+        // Closing waits for the warp task, so it must run outside that task.
+        _ = this.CloseAfterWarpAsync();
     }
 
     /// <inheritdoc />
@@ -49,8 +51,12 @@ public class GateNpc : NonPlayerCharacter, ISummonable
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        this._cts.Cancel();
-        this._cts.Dispose();
+        if (disposing)
+        {
+            this._cts.Cancel();
+            this._cts.Dispose();
+        }
+
         base.Dispose(disposing);
     }
 
@@ -58,7 +64,6 @@ public class GateNpc : NonPlayerCharacter, ISummonable
     protected override async ValueTask DisposeAsyncCore()
     {
         await this._cts.CancelAsync().ConfigureAwait(false);
-        this._cts.Dispose();
 
         await this._warpTask.ConfigureAwait(false);
         await base.DisposeAsyncCore().ConfigureAwait(false);
@@ -117,9 +122,18 @@ public class GateNpc : NonPlayerCharacter, ISummonable
         {
             this._logger.LogError(ex, "Error in GateNpc task.");
         }
-        finally
+    }
+
+    private async Task CloseAfterWarpAsync()
+    {
+        await this._warpTask.ConfigureAwait(false);
+        try
         {
             await this.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            this._logger.LogError(ex, "Error closing the Kalima gate.");
         }
     }
 
