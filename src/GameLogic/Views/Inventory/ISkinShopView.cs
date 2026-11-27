@@ -11,5 +11,6 @@ public interface ISkinShopView : IViewPlugIn
     /// <param name="requestId">The processed request identifier.</param>
     /// <param name="status">The result shown to the player.</param>
     /// <param name="includeCatalog">Whether to send current prices and bonus choices.</param>
-    ValueTask ShowAsync(uint requestId, string status, bool includeCatalog);
+    /// <param name="compactCatalog">Whether the client accepts compact item rows.</param>
+    ValueTask ShowAsync(uint requestId, string status, bool includeCatalog, bool compactCatalog = false);
 }

@@ -27,13 +27,16 @@ public sealed class SkinShopActions
     /// <summary>The operation for a seven-day Goblin Points rental.</summary>
     public const byte RentSevenDaysOperation = 5;
 
+    /// <summary>The item identifier sent with a catalog request to advertise compact rows.</summary>
+    public const int CompactCatalogRequest = ushort.MaxValue;
+
     private readonly ConditionalWeakTable<Player, Session> _sessions = new();
 
     /// <summary>Handles catalog (0) and purchase requests (1 with WCoinC, 2 with Goblin Points) under the player's persistence lock.</summary>
     /// <param name="player">The purchasing player.</param>
     /// <param name="requestId">The monotonically increasing session request.</param>
     /// <param name="operation">Zero for catalog, one for a purchase with WCoinC or two for a purchase with Goblin Points.</param>
-    /// <param name="itemType">The item group times 512 plus its number.</param>
+    /// <param name="itemType">The item identifier, or the compact catalog marker on refresh.</param>
     /// <param name="bonus">Reserved for protocol compatibility; purchases use configured attributes and require zero.</param>
     /// <param name="quotedPrice">The price in the chosen currency which the client displayed.</param>
     /// <param name="level">The level selected in the purchase popup (0 to 15).</param>
@@ -74,7 +77,7 @@ public sealed class SkinShopActions
         }).ConfigureAwait(false);
 
         await player.InvokeViewPlugInAsync<IUpdateInventoryListPlugIn>(view => view.UpdateInventoryListAsync()).ConfigureAwait(false);
-        await player.InvokeViewPlugInAsync<ISkinShopView>(view => view.ShowAsync(requestId, status, operation == 0)).ConfigureAwait(false);
+        await player.InvokeViewPlugInAsync<ISkinShopView>(view => view.ShowAsync(requestId, status, operation == 0, itemType == CompactCatalogRequest)).ConfigureAwait(false);
     }
 
     private static async ValueTask<string> PurchaseAsync(Player player, SkinShopSettings settings, CashShopCoinType currency, int itemType, byte bonus, int quotedPrice, byte level, int rentalDays = 0)

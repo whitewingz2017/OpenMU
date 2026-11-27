@@ -90,14 +90,21 @@ public class SkinShopAttributeCatalogTests
             Assert.That(line.GetProperty("ByLevel").GetProperty("7").GetString(), Does.Contain("+7%"));
             Assert.That(pools[items[2].GetProperty("AttributePool").GetInt32()].GetArrayLength(), Is.Zero);
             Assert.That(json.RootElement.GetProperty("ExcellentEffectItems").EnumerateArray().Select(item => item.GetInt32()), Is.EqualTo(new[] { (8 * 512) + 321 }));
+            using var compact = JsonDocument.Parse(SkinShopView.Serialize(player, 1, "Ready", true, true));
+            var compactItem = compact.RootElement.GetProperty("Items")[0];
+            Assert.That(compactItem.EnumerateArray().Select(field => field.GetRawText()),
+                Is.EqualTo(items[0].EnumerateObject().Select(field => field.Value.GetRawText())));
+            Assert.That(compact.RootElement.GetProperty("AttributePools").GetRawText(), Is.EqualTo(pools.GetRawText()));
             using var confirmation = JsonDocument.Parse(SkinShopView.Serialize(player, 2, "Ready", false));
             Assert.That(confirmation.RootElement.GetProperty("ExcellentEffectItems").GetArrayLength(), Is.EqualTo(1));
         }
     }
 
     /// <summary>The complete default shop still fits the existing two-byte C2 packet length.</summary>
-    [Test]
-    public async Task DefaultCatalogFitsPacketAsync()
+    /// <param name="compact">Whether the client requests compact rows.</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task DefaultCatalogFitsPacketAsync(bool compact)
     {
         var provider = new InMemoryPersistenceContextProvider();
         var initializer = new Persistence.Initialization.VersionSeasonSix.DataInitialization(provider, NullLoggerFactory.Instance);
@@ -119,12 +126,16 @@ public class SkinShopAttributeCatalogTests
             settings.RentalOneDayPrice = 25;
             settings.RentalThreeDaysPrice = 65;
             settings.RentalSevenDaysPrice = 125;
-            var payload = SkinShopView.Serialize(player, 1, "Ready", true);
+            var payload = SkinShopView.Serialize(player, 1, "Ready", true, compact);
             Assert.That(payload.Length + 5, Is.LessThanOrEqualTo(ushort.MaxValue));
             using var json = JsonDocument.Parse(payload);
             Assert.That(json.RootElement.GetProperty("RentalOneDayPrice").GetInt32(), Is.EqualTo(25));
             Assert.That(json.RootElement.GetProperty("RentableItems").GetArrayLength(), Is.GreaterThan(0));
-            TestContext.Out.WriteLine($"Shop catalog including attributes: {payload.Length + 5} bytes.");
+            var wings = json.RootElement.GetProperty("Items").EnumerateArray()
+                .Select(item => (compact ? item[0] : item.GetProperty("ItemType")).GetInt32())
+                .Where(type => type is >= (12 * 512) + 400 and <= (12 * 512) + 504);
+            Assert.That(wings, Is.EqualTo(compact ? Enumerable.Range((12 * 512) + 400, 105) : []));
+            TestContext.Out.WriteLine($"Shop catalog including attributes (compact: {compact}): {payload.Length + 5} bytes.");
         }
     }
 }

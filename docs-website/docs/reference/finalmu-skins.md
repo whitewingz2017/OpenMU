@@ -230,3 +230,10 @@ require server configuration update version 10.
 - `rf5 Wing Skin`: `/item 12 382`
 - `sum7lvl Wing Skin`: `/item 12 383`
 - `rf7lvl Wing Skin`: `/item 12 384`
+
+## DevilzMU wing pack
+
+The 105 DevilzMU Wing skins are available in **Skin Shop > Wings** for every
+class. The server uses item numbers `12:400` through `12:504`, with the original
+wing numbers in their shop names. On existing servers, apply **Set 315 Cosmetic
+Armor v24** and install the matching Windows and Android clients.

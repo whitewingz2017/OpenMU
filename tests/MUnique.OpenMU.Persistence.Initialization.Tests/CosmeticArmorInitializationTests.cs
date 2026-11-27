@@ -60,7 +60,7 @@ internal class CosmeticArmorInitializationTests
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).Count(), Is.EqualTo(2));
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(wing).All(o => o.OptionType == ItemOptionTypes.Wing), Is.True);
         Assert.That(GameLogic.Cosmetics.SkinBonuses.Choices(configuration.Items.Single(d => d.Group == 13 && d.Number == 200)), Is.Empty);
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(442));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(547));
     }
 
     [Test]
@@ -81,7 +81,7 @@ internal class CosmeticArmorInitializationTests
             Assert.That(skin.Height, Is.EqualTo(2));
             Assert.That(skin.ItemSlot!.ItemSlots.Single(), Is.EqualTo(group == 5 ? 246 : 245));
         }
-        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(442));
+        Assert.That(configuration.Items.Count(i => i.ItemSlot?.ItemSlots.Any(s => s >= 240 && s <= 248) == true), Is.EqualTo(547));
         Assert.That(configuration.ItemSlotTypes.Count, Is.EqualTo(10));
         var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
         Assert.Multiple(() =>
@@ -120,6 +120,33 @@ internal class CosmeticArmorInitializationTests
         Assert.That(existing.GetId(), Is.EqualTo(existingId));
         Assert.That(entry.Version, Is.EqualTo(new CosmeticArmorItemsUpdatePlugIn().Version));
         Assert.That((await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Count(), Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task VersionTwentyThreeUpgradeAddsDevilzMuWingsAsync()
+    {
+        var provider = new InMemoryPersistenceContextProvider();
+        using var context = provider.CreateNewContext();
+        var configuration = context.CreateNew<GameConfiguration>();
+        FenrirMountFixture.Add(context, configuration);
+        var update = new CosmeticArmorItemsUpdatePlugIn();
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        foreach (var item in configuration.Items.Where(i => i.Group == 12 && i.Number is >= 400 and <= 504).ToArray())
+        {
+            configuration.Items.Remove(item);
+            await context.DeleteAsync(item).ConfigureAwait(false);
+        }
+
+        var entry = (await context.GetAsync<ConfigurationUpdate>().ConfigureAwait(false)).Single();
+        entry.Version = 23;
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+        await update.ApplyUpdateAsync(context, configuration).ConfigureAwait(false);
+
+        var wings = configuration.Items.Where(i => i.Group == 12 && i.Number is >= 400 and <= 504).OrderBy(i => i.Number).ToArray();
+        Assert.That(wings.Select(i => (int)i.Number), Is.EqualTo(Enumerable.Range(400, 105)));
+        Assert.That(wings.All(i => i.ItemSlot?.ItemSlots.SequenceEqual(new[] { 247 }) == true
+            && i.Width == 2 && i.Height == 2 && i.QualifiedCharacters.Count == 0), Is.True);
+        Assert.That(entry.Version, Is.EqualTo(24));
     }
 
     [Test]
