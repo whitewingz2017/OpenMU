@@ -1174,6 +1174,12 @@ Claim the item from this letter.</value></data>
   <data name="DuelBetting_Disabled" xml:space="preserve">
     <value>Public duel betting is disabled on this server.</value>
   </data>
+  <data name="DuelBetting_DisabledInAdmin" xml:space="preserve">
+    <value>Duel Betting is disabled in OpenMU under Configuration &gt; Plugins &gt; Feature Plugins.</value>
+  </data>
+  <data name="DuelBetting_ConfigInvalid" xml:space="preserve">
+    <value>Duel Betting has invalid settings in OpenMU. Check the stake limits and remove retired currency 3.</value>
+  </data>
   <data name="DuelBetting_Invalid" xml:space="preserve">
     <value>Invalid duel betting request.</value>
   </data>

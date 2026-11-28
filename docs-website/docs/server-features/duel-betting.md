@@ -1,6 +1,7 @@
 # Duel betting
 
-Enable the **Duel Betting** feature plugin and apply the `DuelBetEscrow`
+In OpenMU, go to **Configuration → Plugins → Feature Plugins**, enable
+**Duel Betting**, and apply the `DuelBetEscrow`
 database migration to offer public betting to custom clients. The plugin
 controls the pre-combat window (30 seconds by default), the total stake cap,
 and the ticket limit per account. `WCoinLimit` controls the permitted WCoinC
@@ -17,7 +18,9 @@ duels use their usual countdown. The invitation shows the server countdown and
 the score required to win. In the arena board, **View Details** shows the matchup
 and the payout terms. **Spectate Duel** joins an
 ongoing match when its spectator area has space. **Completed** and **My Bets**
-show results and wagers for rooms still listed by the channel.
+show results and wagers for rooms still listed by the channel. **Ongoing** also
+lists regular fights once combat starts. Duel Setup explains when the server
+cannot accept wagers.
 
 Bets close before combat begins. Each correct WCoinC pick pays twice the
 spectator's stake, including the original stake, even in a one-sided market.

@@ -198,6 +198,9 @@ public sealed class DuelRoom : AsyncDisposable
     /// <summary>Gets the winning score for this room.</summary>
     internal int WinningScore => this._maximumScore;
 
+    /// <summary>Gets the match identity for board actions, even when the arena is reused.</summary>
+    internal Guid MatchId { get; } = Guid.NewGuid();
+
     /// <summary>Gets or sets a value indicating whether the challenger opted into public betting.</summary>
     internal bool AllowBetting { get; set; }
 
@@ -468,6 +471,42 @@ public sealed class DuelRoom : AsyncDisposable
             this.Requester.Logger.LogError(ex, "Could not settle duel room {Room}; the escrow lease controls refunds.", this.Index);
         }
     }
+
+    /// <summary>Returns the current match with the viewing player's actions.</summary>
+    /// <param name="viewer">The player opening the board.</param>
+    /// <param name="pools">The confirmed spectator stakes by currency.</param>
+    /// <param name="hasBetting">Whether this match offered spectator bets.</param>
+    /// <param name="canBet">Whether the viewer can currently bet.</param>
+    /// <param name="secondsLeft">The time until betting closes.</param>
+    /// <param name="hasBet">Whether the viewer has staked a bet.</param>
+    /// <returns>The board entry for this viewer.</returns>
+    internal DuelBetBoardEntry CreateBoardEntry(Player viewer, DuelBetPool[] pools, bool hasBetting = false, bool canBet = false, int secondsLeft = 0, bool hasBet = false)
+        => new(
+            this.MatchId,
+            this.Requester.Name,
+            this.Opponent.Name,
+            this.ScoreRequester,
+            this.ScoreOpponent,
+            secondsLeft > 0,
+            canBet,
+            secondsLeft,
+            pools,
+            this.Requester.SelectedCharacter?.CharacterClass?.Number,
+            this.Opponent.SelectedCharacter?.CharacterClass?.Number,
+            this.State == DuelState.DuelStarted,
+            this.State == DuelState.DuelFinished,
+            hasBet,
+            this.CanSpectate(viewer),
+            this.WinningScore,
+            this.Wager?.Amount ?? 0,
+            hasBetting);
+
+    /// <summary>Checks whether the match has space and the player can enter as a spectator.</summary>
+    /// <param name="viewer">The player requesting to spectate.</param>
+    /// <returns>Whether the spectator may enter.</returns>
+    internal bool CanSpectate(Player viewer) => this.State == DuelState.DuelStarted && this.IsOpen
+        && this.Area.SpectatorsGate is not null && viewer.DuelRoom is null && viewer.CurrentMiniGame is null
+        && viewer.IsAlive && viewer.OpenedNpc is null && viewer.PlayerState.CurrentState == PlayerState.EnteredWorld;
 
     /// <inheritdoc />
     protected override async ValueTask DisposeAsyncCore()

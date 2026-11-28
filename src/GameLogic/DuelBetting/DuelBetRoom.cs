@@ -18,9 +18,6 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
     private Guid _escrowId = room.Wager?.EscrowId ?? Guid.Empty;
     private DateTime _leaseUntil = room.Wager?.LeaseUntil ?? default;
 
-    /// <summary>Gets the stable identity of this match for the board and stake requests.</summary>
-    internal Guid MatchId { get; } = Guid.NewGuid();
-
     /// <summary>Persists the stake before adding it to the public pool.</summary>
     /// <param name="player">The bettor, who holds the player persistence lock.</param>
     /// <param name="ticket">The proposed stake.</param>
@@ -82,36 +79,9 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
             pool.Key,
             pool.Where(ticket => ticket.Side == DuelBetSide.Requester).Sum(ticket => ticket.Amount),
             pool.Where(ticket => ticket.Side == DuelBetSide.Opponent).Sum(ticket => ticket.Amount))).ToArray();
-        var firstClass = room.Requester.SelectedCharacter?.CharacterClass?.Number;
-        var secondClass = room.Opponent.SelectedCharacter?.CharacterClass?.Number;
-        var started = room.State == DuelState.DuelStarted;
-        var completed = room.State == DuelState.DuelFinished;
         var hasBet = book.Tickets.Any(ticket => ticket.AccountId == accountId);
-        return new(
-            this.MatchId,
-            room.Requester.Name,
-            room.Opponent.Name,
-            room.ScoreRequester,
-            room.ScoreOpponent,
-            open,
-            eligible,
-            secondsLeft,
-            pools,
-            firstClass,
-            secondClass,
-            started,
-            completed,
-            hasBet,
-            this.CanSpectate(viewer),
-            room.WinningScore,
-            room.Wager?.Amount ?? 0);
+        return room.CreateBoardEntry(viewer, pools, hasBetting: true, canBet: eligible, secondsLeft: secondsLeft, hasBet: hasBet);
     }
-
-    /// <summary>Joins the spectator area of the selected match.</summary>
-    /// <param name="viewer">The player joining the match.</param>
-    /// <returns>Whether the player joined.</returns>
-    internal ValueTask<bool> SpectateAsync(Player viewer)
-        => this.CanSpectate(viewer) ? room.TryAddSpectatorAsync(viewer) : ValueTask.FromResult(false);
 
     /// <summary>Stops accepting new stakes before combat starts.</summary>
     internal async ValueTask CloseAsync()
@@ -140,7 +110,7 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
         }
         catch (Exception ex)
         {
-            room.Requester.Logger.LogWarning(ex, "Could not renew the escrow lease for duel {Match}", this.MatchId);
+            room.Requester.Logger.LogWarning(ex, "Could not renew the escrow lease for duel {Match}", room.MatchId);
         }
     }
 
@@ -166,7 +136,7 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
 
             if (!await DuelBetWallet.UpdateEscrowAsync(room.Requester.GameContext, escrowId, this._leaseUntil, payouts).ConfigureAwait(false))
             {
-                room.Requester.Logger.LogWarning("Duel {Match} could not settle its escrow and its stakes are refundable after lease expiry.", this.MatchId);
+                room.Requester.Logger.LogWarning("Duel {Match} could not settle its escrow and its stakes are refundable after lease expiry.", room.MatchId);
                 return;
             }
 
@@ -178,8 +148,4 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
             await DuelBetWallet.CreditOnlineAsync(room.Requester.GameContext, escrowId, payouts).ConfigureAwait(false);
         }
     }
-
-    private bool CanSpectate(Player viewer) => room.State == DuelState.DuelStarted && room.IsOpen
-        && room.Area.SpectatorsGate is not null && viewer.DuelRoom is null && viewer.CurrentMiniGame is null
-        && viewer.IsAlive && viewer.OpenedNpc is null && viewer.PlayerState.CurrentState == PlayerState.EnteredWorld;
 }

@@ -37,8 +37,11 @@ public sealed class DuelBettingActions
             await player.ShowBlueMessageAsync(status).ConfigureAwait(false);
         }
 
-        var matches = await player.GameContext.DuelRoomManager.GetPublicMatchesAsync(player).ConfigureAwait(false);
+        var matches = await player.GameContext.DuelRoomManager.GetBoardMatchesAsync(player).ConfigureAwait(false);
         var firstTo = player.GameContext.Configuration.DuelConfiguration?.MaximumScore ?? 0;
+        var setupStatus = enabled ? string.Empty : player.GetLocalizedMessage(
+            player.GameContext.FeaturePlugIns.GetPlugIn<DuelBettingFeaturePlugIn>() is null
+                ? "DuelBetting_DisabledInAdmin" : "DuelBetting_ConfigInvalid");
         await player.InvokeViewPlugInAsync<IDuelBettingView>(view => view.ShowAsync(
             requestId,
             enabled,
@@ -48,7 +51,8 @@ public sealed class DuelBettingActions
             DuelRoom.CombatCountdownSeconds,
             firstTo,
             settings?.WCoinLimit.Minimum ?? 0,
-            settings?.WCoinLimit.Maximum ?? 0)).ConfigureAwait(false);
+            settings?.WCoinLimit.Maximum ?? 0,
+            setupStatus)).ConfigureAwait(false);
     }
 
     private static async ValueTask<string> RunAsync(Player player, Guid accountId, DuelBetOperation operation, ReadOnlyMemory<byte> data, DuelBettingSettings? settings)
@@ -131,7 +135,7 @@ public sealed class DuelBettingActions
             return player.GetLocalizedMessage("DuelBetting_Invalid");
         }
 
-        var match = player.GameContext.DuelRoomManager.GetPublicMatch(request.Duel);
+        var match = player.GameContext.DuelRoomManager.GetMatch(request.Duel)?.Betting;
         if (match is null)
         {
             return player.GetLocalizedMessage("DuelBetting_Closed");
@@ -160,8 +164,8 @@ public sealed class DuelBettingActions
 
     private static async ValueTask<string> SpectateAsync(Player player, DuelBetRequest? request)
     {
-        if (request is not null && player.GameContext.DuelRoomManager.GetPublicMatch(request.Duel) is { } match
-            && await match.SpectateAsync(player).ConfigureAwait(false))
+        if (request is not null && player.GameContext.DuelRoomManager.GetMatch(request.Duel) is { } match
+            && match.CanSpectate(player) && await match.TryAddSpectatorAsync(player).ConfigureAwait(false))
         {
             return player.GetLocalizedMessage("DuelBetting_Spectating");
         }

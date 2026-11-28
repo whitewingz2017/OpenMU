@@ -118,16 +118,16 @@ public class DuelRoomManager
         await player.InvokeViewPlugInAsync<IDuelStatusUpdatePlugIn>(p => p.UpdateStatusAsync(this._duelRooms)).ConfigureAwait(false);
     }
 
-    /// <summary>Finds the exact public duel so a stale request cannot bet on a reused arena.</summary>
+    /// <summary>Finds the exact duel so a stale request cannot act on a reused arena.</summary>
     /// <param name="matchId">The unique match identity.</param>
     /// <returns>The match if it is still listed.</returns>
-    internal DuelBetRoom? GetPublicMatch(Guid matchId)
-        => this._duelRooms.Select(room => room?.Betting).FirstOrDefault(betting => betting?.MatchId == matchId);
+    internal DuelRoom? GetMatch(Guid matchId)
+        => this._duelRooms.FirstOrDefault(room => room?.MatchId == matchId);
 
-    /// <summary>Returns the public duels of this game channel as seen by one account.</summary>
+    /// <summary>Returns the listed duels of this game channel as seen by one account.</summary>
     /// <param name="viewer">The player viewing the board.</param>
-    /// <returns>The public match snapshots.</returns>
-    internal async ValueTask<DuelBetBoardEntry[]> GetPublicMatchesAsync(Player viewer)
+    /// <returns>The visible match snapshots.</returns>
+    internal async ValueTask<DuelBetBoardEntry[]> GetBoardMatchesAsync(Player viewer)
     {
         var matches = new List<DuelBetBoardEntry>();
         foreach (var room in this._duelRooms)
@@ -135,6 +135,10 @@ public class DuelRoomManager
             if (room is { Betting: { } betting, State: DuelState.DuelAccepted or DuelState.DuelStarted or DuelState.DuelFinished })
             {
                 matches.Add(await betting.SnapshotAsync(viewer).ConfigureAwait(false));
+            }
+            else if (room is { State: DuelState.DuelStarted or DuelState.DuelFinished })
+            {
+                matches.Add(room.CreateBoardEntry(viewer, []));
             }
         }
 

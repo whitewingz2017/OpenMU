@@ -218,7 +218,7 @@ public class DuelBettingTests
         var run = room.RunDuelAsync();
         try
         {
-            var board = await context.DuelRoomManager.GetPublicMatchesAsync(bettor).ConfigureAwait(false);
+            var board = await context.DuelRoomManager.GetBoardMatchesAsync(bettor).ConfigureAwait(false);
             if (allowBetting)
             {
                 var announcement = await notice.Task.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
@@ -237,6 +237,34 @@ public class DuelBettingTests
             await room.CancelDuelAsync().ConfigureAwait(false);
             await run.ConfigureAwait(false);
         }
+    }
+
+    /// <summary>Regular duels are listed while betting is disabled and cannot accept bets.</summary>
+    [Test]
+    public async Task BoardListsRegularDuelWithoutOfferingBetsAsync()
+    {
+        var requester = await CreateBettorAsync().ConfigureAwait(false);
+        var context = (GameContext)requester.GameContext;
+        var opponent = await CreateBettorAsync(context).ConfigureAwait(false);
+        var viewer = await CreateBettorAsync(context).ConfigureAwait(false);
+        var config = new Mock<DuelConfiguration>();
+        config.SetupGet(value => value.DuelAreas).Returns([new DuelArea()]);
+        var rooms = new DuelRoomManager(config.Object);
+        var room = (await rooms.GetFreeDuelRoomAsync(requester, opponent).ConfigureAwait(false))!;
+        Assert.That(await rooms.GetBoardMatchesAsync(viewer).ConfigureAwait(false), Is.Empty);
+
+        room.State = DuelState.DuelStarted;
+        room.ScoreRequester = 2;
+        var match = (await rooms.GetBoardMatchesAsync(viewer).ConfigureAwait(false)).Single();
+        Assert.That(match.Duel, Is.EqualTo(room.MatchId));
+        Assert.That(match.ScoreRequester, Is.EqualTo(2));
+        Assert.That(match.Started, Is.True);
+        Assert.That(match.HasBetting, Is.False);
+        Assert.That(match.CanBet, Is.False);
+        Assert.That(rooms.GetMatch(match.Duel)?.Betting, Is.Null);
+
+        await rooms.GiveBackDuelRoomAsync(room).ConfigureAwait(false);
+        Assert.That(rooms.GetMatch(match.Duel), Is.Null);
     }
 
     /// <summary>Both clients can answer the reserved challenger while outside their view.</summary>
@@ -489,7 +517,7 @@ public class DuelBettingTests
         var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
         var duel = Guid.NewGuid();
         await new DuelBettingView(player).ShowAsync(
-            13, true, string.Empty, [new(duel, "Alice", "Bob", 0, 0, true, true, 30, [], 0, 4, FirstTo: 10)], 30, 5, 10).ConfigureAwait(false);
+            13, true, string.Empty, [new(duel, "Alice", "Bob", 0, 0, true, true, 30, [], 0, 4, FirstTo: 10)], 30, 5, 10, 1, 250).ConfigureAwait(false);
         var data = output.ToArray();
         Assert.That(data[0], Is.EqualTo(0xC2));
         Assert.That((data[1] << 8) + data[2], Is.EqualTo(data.Length));
@@ -498,9 +526,11 @@ public class DuelBettingTests
         Assert.That(json.RootElement.GetProperty("RequestId").GetInt32(), Is.EqualTo(13));
         Assert.That(json.RootElement.GetProperty("PublicSeconds").GetInt32(), Is.EqualTo(30));
         Assert.That(json.RootElement.GetProperty("PrivateSeconds").GetInt32(), Is.EqualTo(5));
+        Assert.That(json.RootElement.GetProperty("WagerMaximum").GetInt32(), Is.EqualTo(250));
         var row = json.RootElement.GetProperty("Duels")[0];
         Assert.That(row.GetProperty("Duel").GetGuid(), Is.EqualTo(duel));
         Assert.That(row.GetProperty("CanBet").GetBoolean(), Is.True);
+        Assert.That(row.GetProperty("HasBetting").GetBoolean(), Is.True);
         Assert.That(row.GetProperty("SecondsLeft").GetInt32(), Is.EqualTo(30));
         Assert.That(row.GetProperty("RequesterClass").GetInt32(), Is.Zero);
         Assert.That(row.GetProperty("FirstTo").GetInt32(), Is.EqualTo(10));
