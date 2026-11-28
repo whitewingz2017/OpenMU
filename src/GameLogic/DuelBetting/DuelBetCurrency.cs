@@ -16,4 +16,7 @@ public enum DuelBetCurrency
 
     /// <summary>Jewels of Life.</summary>
     Life = 2,
+
+    /// <summary>WCoinC from the account's Cash Shop balance.</summary>
+    WCoinC = 4,
 }

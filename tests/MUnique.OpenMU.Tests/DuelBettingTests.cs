@@ -35,7 +35,8 @@ public class DuelBettingTests
         Assert.That(settings.IsValid(), Is.True);
         Assert.That(settings.FeePercent, Is.Zero);
         Assert.That(settings.BettingSeconds, Is.EqualTo(30));
-        Assert.That(settings.Limits.Keys, Is.EquivalentTo(Enum.GetValues<DuelBetCurrency>()));
+        Assert.That(settings.Limits.Keys, Is.EquivalentTo(new[] { DuelBetCurrency.Bless, DuelBetCurrency.Soul, DuelBetCurrency.Life }));
+        Assert.That(settings.WCoinLimit.Maximum, Is.EqualTo(250));
         settings.Limits[DuelBetCurrency.Bless].Minimum = 251;
         Assert.That(settings.IsValid(), Is.False);
     }
@@ -357,6 +358,114 @@ public class DuelBettingTests
         Assert.That(BlessBalance(player) + BlessBalance(other), Is.EqualTo(60));
     }
 
+    /// <summary>Only explicit acceptance can charge both fighters, and an unfinished match refunds them.</summary>
+    [Test]
+    public async Task WagerRequiresConsentAndBothBalancesAsync()
+    {
+        var challenger = await CreateBettorAsync().ConfigureAwait(false);
+        var context = (GameContext)challenger.GameContext;
+        var opponent = await CreateBettorAsync(context).ConfigureAwait(false);
+        challenger.SelectedCharacter!.Name = "Alice";
+        opponent.SelectedCharacter!.Name = "Bob";
+        var area = new DuelArea
+        {
+            FirstPlayerGate = new ExitGate { Map = challenger.CurrentMap!.Definition },
+            SecondPlayerGate = new ExitGate { Map = challenger.CurrentMap!.Definition },
+        };
+        var config = new Mock<DuelConfiguration>();
+        config.SetupGet(value => value.DuelAreas).Returns([area]);
+        context.Configuration.DuelConfiguration = config.Object;
+        context.DuelRoomManager = new(config.Object);
+        context.FeaturePlugIns.AddPlugIn(new DuelBettingFeaturePlugIn(), true);
+
+        challenger.Account!.WCoinC = 25;
+        opponent.Account!.WCoinC = 9;
+        await challenger.AddObserverAsync(opponent).ConfigureAwait(false);
+        var actions = new DuelBettingActions();
+        var challenge = JsonSerializer.SerializeToUtf8Bytes(new { TargetId = opponent.Id, TargetName = opponent.Name, Amount = 10 });
+        await actions.ExecuteAsync(challenger, 0, (byte)DuelBetOperation.Challenge, challenge).ConfigureAwait(false);
+        var room = challenger.DuelRoom!;
+        var wager = room.Wager!;
+        Assert.That(wager.Amount, Is.EqualTo(10));
+        var reply = JsonSerializer.SerializeToUtf8Bytes(new { wager.OfferId, Accepted = true });
+        await new DuelStartResponseHandlerPlugIn().HandlePacketAsync(opponent, CreateDuelReply(challenger, true, true)).ConfigureAwait(false);
+        await actions.ExecuteAsync(challenger, 0, (byte)DuelBetOperation.RespondToWager, reply).ConfigureAwait(false);
+        Assert.That(room.State, Is.EqualTo(DuelState.DuelRequested));
+        Assert.That(challenger.Account.WCoinC, Is.EqualTo(25));
+        await actions.ExecuteAsync(opponent, 0, (byte)DuelBetOperation.RespondToWager, reply).ConfigureAwait(false);
+        Assert.That(room.State, Is.EqualTo(DuelState.DuelStartFailed));
+        Assert.That(challenger.Account.WCoinC, Is.EqualTo(25));
+        Assert.That(opponent.Account.WCoinC, Is.EqualTo(9));
+
+        await actions.ExecuteAsync(challenger, 0, (byte)DuelBetOperation.Challenge, challenge).ConfigureAwait(false);
+        room = challenger.DuelRoom!;
+        await actions.ExecuteAsync(opponent, 0, (byte)DuelBetOperation.RespondToWager, reply).ConfigureAwait(false);
+        Assert.That(room.State, Is.EqualTo(DuelState.DuelRequested));
+        opponent.Account.WCoinC = 30;
+        reply = JsonSerializer.SerializeToUtf8Bytes(new { room.Wager!.OfferId, Accepted = true });
+        await actions.ExecuteAsync(opponent, 0, (byte)DuelBetOperation.RespondToWager, reply).ConfigureAwait(false);
+        Assert.That(room.State, Is.EqualTo(DuelState.DuelAccepted));
+        Assert.That(challenger.Account.WCoinC, Is.EqualTo(15));
+        Assert.That(opponent.Account.WCoinC, Is.EqualTo(20));
+        await room.CancelDuelAsync().ConfigureAwait(false);
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (opponent.DuelRoom is not null)
+        {
+            await Task.Delay(20, timeout.Token).ConfigureAwait(false);
+        }
+
+        Assert.That(await DuelBetWallet.ClaimAsync(challenger).ConfigureAwait(false), Is.EqualTo(10));
+        Assert.That(await DuelBetWallet.ClaimAsync(opponent).ConfigureAwait(false), Is.EqualTo(10));
+        Assert.That(challenger.Account.WCoinC, Is.EqualTo(25));
+        Assert.That(opponent.Account.WCoinC, Is.EqualTo(30));
+    }
+
+    /// <summary>The fighter takes both stakes. A correct spectator pick pays double, including in a one-sided market.</summary>
+    /// <param name="opposingBet">Whether a spectator also picked the losing fighter.</param>
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task WCoinWinnerTakesPotAndSpectatorGetsDoubleAsync(bool opposingBet)
+    {
+        var winner = await CreateBettorAsync().ConfigureAwait(false);
+        var other = await CreateBettorAsync(winner.GameContext).ConfigureAwait(false);
+        var correct = await CreateBettorAsync(winner.GameContext).ConfigureAwait(false);
+        var incorrect = await CreateBettorAsync(winner.GameContext).ConfigureAwait(false);
+        foreach (var participant in new[] { winner, other, correct, incorrect })
+        {
+            participant.Account!.WCoinC = 30;
+        }
+
+        var settings = new DuelBettingSettings { FeePercent = 15 };
+        var wager = new DuelWager(15, settings);
+        var room = new DuelRoom(new(), winner, other) { Wager = wager, State = DuelState.DuelAccepted };
+        Assert.That(await wager.FundAsync(winner, other).ConfigureAwait(false), Is.EqualTo(DuelBetRejection.None));
+        var book = new DuelBetBook(winner.Account!.GetId(), other.Account!.GetId(), DateTime.UtcNow.AddSeconds(20), settings, wCoinMatch: true);
+        var match = new DuelBetRoom(room, book);
+        var ticket = new DuelBetTicket(Guid.NewGuid(), correct.Account!.GetId(), DuelBetCurrency.WCoinC, DuelBetSide.Requester, 10);
+        Assert.That(await match.PlaceAsync(correct, ticket with { Currency = DuelBetCurrency.Bless }).ConfigureAwait(false), Is.EqualTo(DuelBetRejection.CurrencyDisabled));
+        Assert.That(await match.PlaceAsync(correct, ticket).ConfigureAwait(false), Is.EqualTo(DuelBetRejection.None));
+        Assert.That(await match.PlaceAsync(correct, ticket).ConfigureAwait(false), Is.EqualTo(DuelBetRejection.None));
+        if (opposingBet)
+        {
+            var wrong = new DuelBetTicket(Guid.NewGuid(), incorrect.Account!.GetId(), DuelBetCurrency.WCoinC, DuelBetSide.Opponent, 5);
+            Assert.That(await match.PlaceAsync(incorrect, wrong).ConfigureAwait(false), Is.EqualTo(DuelBetRejection.None));
+            var context = (GameContext)winner.GameContext;
+            await context.AddPlayerAsync(winner).ConfigureAwait(false);
+            await context.AddPlayerAsync(correct).ConfigureAwait(false);
+        }
+
+        await match.SettleAsync(DuelBetSide.Requester).ConfigureAwait(false);
+        Assert.That(await DuelBetWallet.ClaimAsync(winner).ConfigureAwait(false), Is.EqualTo(opposingBet ? 0 : 30));
+        Assert.That(await DuelBetWallet.ClaimAsync(other).ConfigureAwait(false), Is.Zero);
+        Assert.That(await DuelBetWallet.ClaimAsync(correct).ConfigureAwait(false), Is.EqualTo(opposingBet ? 0 : 20));
+        Assert.That(await DuelBetWallet.ClaimAsync(correct).ConfigureAwait(false), Is.Zero);
+        Assert.That(await DuelBetWallet.ClaimAsync(incorrect).ConfigureAwait(false), Is.Zero);
+        Assert.That(winner.Account!.WCoinC, Is.EqualTo(45));
+        Assert.That(other.Account!.WCoinC, Is.EqualTo(15));
+        Assert.That(correct.Account!.WCoinC, Is.EqualTo(40));
+        Assert.That(incorrect.Account!.WCoinC, Is.EqualTo(opposingBet ? 25 : 30));
+    }
+
     /// <summary>After an abandoned match lease expires, the stake can be recovered from a new session.</summary>
     [Test]
     public async Task ExpiredEscrowRefundsTheAccountAsync()
@@ -402,7 +511,8 @@ public class DuelBettingTests
     public async Task InvitationWireFormatAsync()
     {
         var (player, output) = CastleSiegeRemoteViewTestHelper.CreatePlayer();
-        await new DuelBettingView(player).ShowInvitationAsync(new("Alice", 4, true, 30, 10)).ConfigureAwait(false);
+        var id = Guid.NewGuid();
+        await new DuelBettingView(player).ShowInvitationAsync(new("Alice", 4, true, 30, 10, id, 15)).ConfigureAwait(false);
         var data = output.ToArray();
         Assert.That(data[3..5], Is.EqualTo(new byte[] { 0xFD, 0x10 }));
         using var json = JsonDocument.Parse(data.AsMemory(5));
@@ -411,6 +521,8 @@ public class DuelBettingTests
         Assert.That(offer.GetProperty("Public").GetBoolean(), Is.True);
         Assert.That(offer.GetProperty("Seconds").GetInt32(), Is.EqualTo(30));
         Assert.That(offer.GetProperty("FirstTo").GetInt32(), Is.EqualTo(10));
+        Assert.That(offer.GetProperty("OfferId").GetGuid(), Is.EqualTo(id));
+        Assert.That(offer.GetProperty("Wager").GetInt32(), Is.EqualTo(15));
     }
 
     private static byte[] CreateDuelReply(Player requester, bool windowsClient, bool accepted)

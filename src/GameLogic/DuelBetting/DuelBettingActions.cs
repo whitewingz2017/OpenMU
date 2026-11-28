@@ -31,19 +31,27 @@ public sealed class DuelBettingActions
         var accountId = account.GetId();
         var settings = DuelBettingFeaturePlugIn.GetSettings(player.GameContext);
         var enabled = settings is not null;
-        var status = await RunAsync(player, accountId, (DuelBetOperation)operation, data, enabled).ConfigureAwait(false);
-        if (operation == (byte)DuelBetOperation.Challenge && status.Length > 0)
+        var status = await RunAsync(player, accountId, (DuelBetOperation)operation, data, settings).ConfigureAwait(false);
+        if ((DuelBetOperation)operation is DuelBetOperation.Challenge or DuelBetOperation.RespondToWager && status.Length > 0)
         {
             await player.ShowBlueMessageAsync(status).ConfigureAwait(false);
         }
 
         var matches = await player.GameContext.DuelRoomManager.GetPublicMatchesAsync(player).ConfigureAwait(false);
         var firstTo = player.GameContext.Configuration.DuelConfiguration?.MaximumScore ?? 0;
-        await player.InvokeViewPlugInAsync<IDuelBettingView>(
-            view => view.ShowAsync(requestId, enabled, status, matches, settings?.BettingSeconds ?? 0, DuelRoom.CombatCountdownSeconds, firstTo)).ConfigureAwait(false);
+        await player.InvokeViewPlugInAsync<IDuelBettingView>(view => view.ShowAsync(
+            requestId,
+            enabled,
+            status,
+            matches,
+            settings?.BettingSeconds ?? 0,
+            DuelRoom.CombatCountdownSeconds,
+            firstTo,
+            settings?.WCoinLimit.Minimum ?? 0,
+            settings?.WCoinLimit.Maximum ?? 0)).ConfigureAwait(false);
     }
 
-    private static async ValueTask<string> RunAsync(Player player, Guid accountId, DuelBetOperation operation, ReadOnlyMemory<byte> data, bool enabled)
+    private static async ValueTask<string> RunAsync(Player player, Guid accountId, DuelBetOperation operation, ReadOnlyMemory<byte> data, DuelBettingSettings? settings)
     {
         try
         {
@@ -58,9 +66,11 @@ public sealed class DuelBettingActions
                 case DuelBetOperation.Place:
                     return await PlaceAsync(player, accountId, JsonSerializer.Deserialize<DuelBetRequest>(data.Span)).ConfigureAwait(false);
                 case DuelBetOperation.Challenge:
-                    return enabled
-                        ? await ChallengeAsync(player, JsonSerializer.Deserialize<DuelBetRequest>(data.Span)).ConfigureAwait(false)
+                    return settings is not null
+                        ? await ChallengeAsync(player, JsonSerializer.Deserialize<DuelBetRequest>(data.Span), settings).ConfigureAwait(false)
                         : player.GetLocalizedMessage("DuelBetting_Disabled");
+                case DuelBetOperation.RespondToWager:
+                    return await RespondToWagerAsync(player, JsonSerializer.Deserialize<DuelBetRequest>(data.Span)).ConfigureAwait(false);
                 default:
                     return player.GetLocalizedMessage("DuelBetting_Invalid");
             }
@@ -76,7 +86,7 @@ public sealed class DuelBettingActions
         }
     }
 
-    private static async ValueTask<string> ChallengeAsync(Player player, DuelBetRequest? request)
+    private static async ValueTask<string> ChallengeAsync(Player player, DuelBetRequest? request, DuelBettingSettings settings)
     {
         if (request?.TargetName is not { Length: > 0 } name
             || await player.GetObservingPlayerWithIdAsync(request.TargetId).ConfigureAwait(false) is not { } target
@@ -85,7 +95,32 @@ public sealed class DuelBettingActions
             return player.GetLocalizedMessage("DuelBetting_Invalid");
         }
 
-        await Duels.HandleDuelRequestAsync(player, target, allowBetting: true).ConfigureAwait(false);
+        if (request.Amount != 0)
+        {
+            if (request.Amount < settings.WCoinLimit.Minimum || request.Amount > settings.WCoinLimit.Maximum)
+            {
+                return player.GetLocalizedMessage("DuelBetting_InvalidAmount");
+            }
+
+            if (player.Account!.WCoinC < request.Amount)
+            {
+                return player.GetLocalizedMessage("DuelBetting_NotEnoughWCoins");
+            }
+        }
+
+        await Duels.HandleDuelRequestAsync(player, target, allowBetting: true, wagerAmount: request.Amount).ConfigureAwait(false);
+        return string.Empty;
+    }
+
+    private static async ValueTask<string> RespondToWagerAsync(Player player, DuelBetRequest? request)
+    {
+        if (request is not { Accepted: { } accepted } || request.OfferId == Guid.Empty
+            || player.DuelRoom is not { Wager: { } wager } room || wager.OfferId != request.OfferId)
+        {
+            return player.GetLocalizedMessage("DuelBetting_OfferExpired");
+        }
+
+        await Duels.HandleDuelResponseAsync(player, room.Requester.Id, room.Requester.Name, accepted, request.OfferId).ConfigureAwait(false);
         return string.Empty;
     }
 
@@ -104,6 +139,11 @@ public sealed class DuelBettingActions
 
         var ticket = new DuelBetTicket(request.Ticket, accountId, currency, side, request.Amount);
         var result = await player.RunPersistenceExclusiveAsync(() => match.PlaceAsync(player, ticket)).ConfigureAwait(false);
+        if (result == DuelBetRejection.None && currency == DuelBetCurrency.WCoinC)
+        {
+            return player.GetLocalizedMessage("DuelBetting_WCoinBetAccepted");
+        }
+
         return player.GetLocalizedMessage($"DuelBetting_{result}");
     }
 
@@ -114,7 +154,7 @@ public sealed class DuelBettingActions
         {
             < 0 => player.GetLocalizedMessage("DuelBetting_TryAgain"),
             0 => player.GetLocalizedMessage("DuelBetting_NothingToClaim"),
-            _ => player.GetLocalizedMessage("DuelBetting_Claimed", claimed),
+            _ => player.GetLocalizedMessage("DuelBetting_ClaimedBalances", claimed),
         };
     }
 

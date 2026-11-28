@@ -1177,6 +1177,27 @@ Claim the item from this letter.</value></data>
   <data name="DuelBetting_Invalid" xml:space="preserve">
     <value>Invalid duel betting request.</value>
   </data>
+  <data name="DuelBetting_OfferExpired" xml:space="preserve">
+    <value>This duel wager offer is no longer available.</value>
+  </data>
+  <data name="DuelBetting_ConfirmWager" xml:space="preserve">
+    <value>Update your client to see and accept WCoinC duel wager terms.</value>
+  </data>
+  <data name="DuelBetting_WagerCannotFund" xml:space="preserve">
+    <value>Both duelists need enough WCoinC to cover the wager.</value>
+  </data>
+  <data name="DuelBetting_NotEnoughWCoins" xml:space="preserve">
+    <value>You need more WCoinC to cover this stake.</value>
+  </data>
+  <data name="DuelBetting_WCoinBetAccepted" xml:space="preserve">
+    <value>Bet accepted. Your WCoinC was placed in escrow.</value>
+  </data>
+  <data name="DuelBetting_CoinsCredited" xml:space="preserve">
+    <value>Added {0} WCoinC from your duel payout or refund.</value>
+  </data>
+  <data name="DuelBetting_ClaimedBalances" xml:space="preserve">
+    <value>Your available duel payouts and refunds were credited.</value>
+  </data>
   <data name="DuelBetting_Closed" xml:space="preserve">
     <value>Betting has closed for this duel.</value>
   </data>

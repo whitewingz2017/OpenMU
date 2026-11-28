@@ -21,7 +21,8 @@ namespace MUnique.OpenMU.GameLogic.DuelBetting;
 /// <param name="HasBet">Whether the viewer has a confirmed stake.</param>
 /// <param name="CanSpectate">Whether the viewer may request a spectator slot.</param>
 /// <param name="FirstTo">The winning score.</param>
+/// <param name="Wager">The WCoinC stake per fighter, or zero for a jewel pool.</param>
 public sealed record DuelBetBoardEntry(
     Guid Duel, string Requester, string Opponent, byte ScoreRequester, byte ScoreOpponent,
     bool Open, bool CanBet, int SecondsLeft, DuelBetPool[] Pools, byte? RequesterClass = null, byte? OpponentClass = null,
-    bool Started = false, bool Completed = false, bool HasBet = false, bool CanSpectate = false, int FirstTo = 0);
+    bool Started = false, bool Completed = false, bool HasBet = false, bool CanSpectate = false, int FirstTo = 0, int Wager = 0);

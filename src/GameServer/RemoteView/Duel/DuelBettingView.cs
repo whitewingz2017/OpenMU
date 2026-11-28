@@ -21,8 +21,8 @@ using MUnique.OpenMU.PlugIns;
 public sealed class DuelBettingView(RemotePlayer player) : IDuelBettingView
 {
     /// <inheritdoc />
-    public ValueTask ShowAsync(uint requestId, bool enabled, string status, IReadOnlyList<DuelBetBoardEntry> duels, int publicSeconds = 0, int privateSeconds = 0, int firstTo = 0)
-        => this.SendAsync(new { RequestId = requestId, Enabled = enabled, Status = status, Duels = duels, PublicSeconds = publicSeconds, PrivateSeconds = privateSeconds, FirstTo = firstTo });
+    public ValueTask ShowAsync(uint requestId, bool enabled, string status, IReadOnlyList<DuelBetBoardEntry> duels, int publicSeconds = 0, int privateSeconds = 0, int firstTo = 0, int wagerMinimum = 0, int wagerMaximum = 0)
+        => this.SendAsync(new { RequestId = requestId, Enabled = enabled, Status = status, Duels = duels, PublicSeconds = publicSeconds, PrivateSeconds = privateSeconds, FirstTo = firstTo, WagerMinimum = wagerMinimum, WagerMaximum = wagerMaximum });
 
     /// <inheritdoc />
     public ValueTask ShowInvitationAsync(DuelBetInvitation invitation) => this.SendAsync(new { Invitation = invitation });

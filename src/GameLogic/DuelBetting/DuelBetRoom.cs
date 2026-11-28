@@ -11,13 +11,12 @@ using Nito.AsyncEx;
 internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
 {
     // An abandoned match becomes refundable after its last lease. Live matches renew the lease before it expires.
-    private static readonly TimeSpan LeaseDuration = TimeSpan.FromMinutes(2);
     private static readonly TimeSpan RenewalMargin = TimeSpan.FromMinutes(1);
 
     // Placement takes the player's persistence lock before this lock. Settlement and snapshots take only this lock.
     private readonly AsyncLock _lock = new();
-    private Guid _escrowId;
-    private DateTime _leaseUntil;
+    private Guid _escrowId = room.Wager?.EscrowId ?? Guid.Empty;
+    private DateTime _leaseUntil = room.Wager?.LeaseUntil ?? default;
 
     /// <summary>Gets the stable identity of this match for the board and stake requests.</summary>
     internal Guid MatchId { get; } = Guid.NewGuid();
@@ -51,7 +50,7 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
             return result;
         }
 
-        var leaseUntil = now.Add(LeaseDuration);
+        var leaseUntil = now.Add(DuelWager.LeaseDuration);
         var escrowId = await DuelBetWallet.DebitAsync(player, this._escrowId, ticket, leaseUntil).ConfigureAwait(false);
         if (escrowId is null)
         {
@@ -60,7 +59,7 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
 
         if (escrowId == Guid.Empty)
         {
-            return DuelBetRejection.NotEnoughJewels;
+            return ticket.Currency == DuelBetCurrency.WCoinC ? DuelBetRejection.NotEnoughWCoins : DuelBetRejection.NotEnoughJewels;
         }
 
         this._escrowId = escrowId.Value;
@@ -104,7 +103,8 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
             completed,
             hasBet,
             this.CanSpectate(viewer),
-            room.WinningScore);
+            room.WinningScore,
+            room.Wager?.Amount ?? 0);
     }
 
     /// <summary>Joins the spectator area of the selected match.</summary>
@@ -130,7 +130,7 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
             return;
         }
 
-        var leaseUntil = now.Add(LeaseDuration);
+        var leaseUntil = now.Add(DuelWager.LeaseDuration);
         try
         {
             if (await DuelBetWallet.UpdateEscrowAsync(room.Requester.GameContext, this._escrowId, leaseUntil, null).ConfigureAwait(false))
@@ -148,20 +148,35 @@ internal sealed class DuelBetRoom(DuelRoom room, DuelBetBook book)
     /// <param name="winner">The winning fighter, or null to refund all stakes.</param>
     internal async ValueTask SettleAsync(DuelBetSide? winner)
     {
-        using var l = await this._lock.LockAsync().ConfigureAwait(false);
-        var payouts = book.Settle(winner);
-        if (this._escrowId == Guid.Empty)
+        IReadOnlyList<DuelBetPayout> payouts;
+        Guid escrowId;
+        using (await this._lock.LockAsync().ConfigureAwait(false))
         {
-            return;
+            payouts = book.Settle(winner);
+            escrowId = this._escrowId;
+            if (escrowId == Guid.Empty)
+            {
+                return;
+            }
+
+            if (room.Wager is { } wager)
+            {
+                payouts = payouts.Concat(DuelBetSettlement.Calculate(wager.Stakes, winner, 0)).ToArray();
+            }
+
+            if (!await DuelBetWallet.UpdateEscrowAsync(room.Requester.GameContext, escrowId, this._leaseUntil, payouts).ConfigureAwait(false))
+            {
+                room.Requester.Logger.LogWarning("Duel {Match} could not settle its escrow and its stakes are refundable after lease expiry.", this.MatchId);
+                return;
+            }
+
+            this._escrowId = Guid.Empty;
         }
 
-        if (!await DuelBetWallet.UpdateEscrowAsync(room.Requester.GameContext, this._escrowId, this._leaseUntil, payouts).ConfigureAwait(false))
+        if (room.Wager is not null)
         {
-            room.Requester.Logger.LogWarning("Duel {Match} could not settle its escrow and its stakes are refundable after lease expiry.", this.MatchId);
-            return;
+            await DuelBetWallet.CreditOnlineAsync(room.Requester.GameContext, escrowId, payouts).ConfigureAwait(false);
         }
-
-        this._escrowId = Guid.Empty;
     }
 
     private bool CanSpectate(Player viewer) => room.State == DuelState.DuelStarted && room.IsOpen

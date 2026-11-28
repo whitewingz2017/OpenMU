@@ -39,4 +39,7 @@ public enum DuelBetRejection
 
     /// <summary>The transaction could not be completed.</summary>
     TryAgain,
+
+    /// <summary>The account has insufficient WCoinC.</summary>
+    NotEnoughWCoins,
 }

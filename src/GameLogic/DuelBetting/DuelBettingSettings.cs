@@ -15,6 +15,9 @@ public sealed class DuelBettingSettings
         [DuelBetCurrency.Life] = new(),
     };
 
+    /// <summary>Gets or sets the WCoinC range for each fighter's wager and each spectator's bet.</summary>
+    public DuelBetLimit WCoinLimit { get; set; } = new();
+
     /// <summary>Gets or sets the pre-combat betting period in seconds.</summary>
     [Range(5, 120)]
     public int BettingSeconds { get; set; } = 30;
@@ -35,7 +38,9 @@ public sealed class DuelBettingSettings
     /// <returns>Whether the settings are coherent.</returns>
     public bool IsValid()
         => Validator.TryValidateObject(this, new ValidationContext(this), null, true)
-            && this.Limits is { Count: > 0 } && this.Limits.All(pair => Enum.IsDefined(pair.Key)
+            && this.WCoinLimit is { Minimum: > 0 } wCoins && wCoins.Minimum <= wCoins.Maximum
+            && wCoins.Maximum <= int.MaxValue / 2
+            && this.Limits is { Count: > 0 } && this.Limits.All(pair => Enum.IsDefined(pair.Key) && pair.Key != DuelBetCurrency.WCoinC
                 && pair.Value is { } limit && Validator.TryValidateObject(limit, new ValidationContext(limit), null, true)
                 && limit.Minimum <= limit.Maximum && limit.Maximum <= this.MaximumPool);
 }

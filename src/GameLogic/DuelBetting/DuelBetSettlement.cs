@@ -4,7 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.DuelBetting;
 
-/// <summary>Computes deterministic integer settlements without exchanging currencies or creating units.</summary>
+/// <summary>Settles jewel pools and pays fixed-odds WCoinC tickets.</summary>
 public static class DuelBetSettlement
 {
     private const int Percent = 100;
@@ -34,6 +34,14 @@ public static class DuelBetSettlement
 
     private static IReadOnlyList<DuelBetPayout> SettlePool(DuelBetTicket[] pool, DuelBetSide? winner, int feePercent)
     {
+        if (pool[0].Currency == DuelBetCurrency.WCoinC)
+        {
+            return pool.Select(ticket => new DuelBetPayout(
+                ticket,
+                winner is null ? ticket.Amount : ticket.Side == winner ? checked(ticket.Amount * 2) : 0,
+                winner is null)).ToArray();
+        }
+
         var total = pool.Sum(ticket => (long)ticket.Amount);
         if (total > int.MaxValue)
         {

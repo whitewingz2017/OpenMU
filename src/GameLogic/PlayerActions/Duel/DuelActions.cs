@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameLogic.PlayerActions.Duel;
 
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.DataModel.Entities;
 using MUnique.OpenMU.GameLogic.DuelBetting;
@@ -27,7 +28,8 @@ public class DuelActions
     /// <param name="player">The player which sends the request.</param>
     /// <param name="target">The target player which receives the request.</param>
     /// <param name="allowBetting">Whether the challenger opted into public betting.</param>
-    public async ValueTask HandleDuelRequestAsync(Player player, Player target, bool allowBetting = false)
+    /// <param name="wagerAmount">The proposed stake per fighter in WCoinC.</param>
+    public async ValueTask HandleDuelRequestAsync(Player player, Player target, bool allowBetting = false, int wagerAmount = 0)
     {
         ArgumentNullException.ThrowIfNull(player);
         ArgumentNullException.ThrowIfNull(target);
@@ -49,7 +51,7 @@ public class DuelActions
             return;
         }
 
-        if (await player.GameContext.DuelRoomManager.GetFreeDuelRoomAsync(player, target, allowBetting: allowBetting).ConfigureAwait(false) is not { } duelRoom)
+        if (await player.GameContext.DuelRoomManager.GetFreeDuelRoomAsync(player, target, allowBetting: allowBetting, wagerAmount: wagerAmount).ConfigureAwait(false) is not { } duelRoom)
         {
             await player.InvokeViewPlugInAsync<IShowDuelRequestResultPlugIn>(p => p.ShowDuelRequestResultAsync(DuelStartResult.FailedByNoFreeRoom, target)).ConfigureAwait(false);
             return;
@@ -58,8 +60,13 @@ public class DuelActions
         _ = ExpireUnansweredRequestAsync(duelRoom);
         var publicDuel = duelRoom.PublicCountdownSeconds > 0;
         var settings = new DuelBetInvitation(
-            player.Name, player.SelectedCharacter?.CharacterClass?.Number, publicDuel,
-            publicDuel ? duelRoom.PublicCountdownSeconds : DuelRoom.CombatCountdownSeconds, duelRoom.WinningScore);
+            player.Name,
+            player.SelectedCharacter?.CharacterClass?.Number,
+            publicDuel,
+            publicDuel ? duelRoom.PublicCountdownSeconds : DuelRoom.CombatCountdownSeconds,
+            duelRoom.WinningScore,
+            duelRoom.Wager?.OfferId,
+            wagerAmount);
         await target.InvokeViewPlugInAsync<IDuelBettingView>(view => view.ShowInvitationAsync(settings)).ConfigureAwait(false);
         await target.InvokeViewPlugInAsync<IShowDuelRequestPlugIn>(p => p.ShowDuelRequestAsync(player)).ConfigureAwait(false);
     }
@@ -71,7 +78,8 @@ public class DuelActions
     /// <param name="requesterId">The challenger’s map ID sent with the invitation.</param>
     /// <param name="requesterName">The challenger’s character name sent with the invitation.</param>
     /// <param name="accepted">If set to <c>true</c> the duel request was accepted by the player.</param>
-    public async ValueTask HandleDuelResponseAsync(Player player, ushort requesterId, string requesterName, bool accepted)
+    /// <param name="offerId">The terms explicitly acknowledged by the opponent for a paid duel.</param>
+    public async ValueTask HandleDuelResponseAsync(Player player, ushort requesterId, string requesterName, bool accepted, Guid? offerId = null)
     {
         if (player.DuelRoom is not { } duelRoom)
         {
@@ -106,15 +114,27 @@ public class DuelActions
             return;
         }
 
-        if (!await CheckIfDuelCanBeStartedAsync(player, target).ConfigureAwait(false))
+        if (offerId is not null && offerId != duelRoom.Wager?.OfferId)
         {
-            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
+            await player.ShowLocalizedBlueMessageAsync("DuelBetting_OfferExpired").ConfigureAwait(false);
             return;
         }
 
         if (!accepted)
         {
             await duelRoom.ResetAndDisposeAsync(DuelStartResult.Refused).ConfigureAwait(false);
+            return;
+        }
+
+        if (duelRoom.Wager is not null && offerId is null)
+        {
+            await player.ShowLocalizedBlueMessageAsync("DuelBetting_ConfirmWager").ConfigureAwait(false);
+            return;
+        }
+
+        if (!await CheckIfDuelCanBeStartedAsync(player, target).ConfigureAwait(false))
+        {
+            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
             return;
         }
 
@@ -140,13 +160,32 @@ public class DuelActions
             return;
         }
 
-        player.TryRemoveMoney(duelConfig.EntranceFee);
-        target.TryRemoveMoney(duelConfig.EntranceFee);
-        await duelRoom.Requester.WarpToAsync(duelArea.FirstPlayerGate).ConfigureAwait(false);
-        await duelRoom.Opponent.WarpToAsync(duelArea.SecondPlayerGate).ConfigureAwait(false);
-        duelRoom.State = DuelState.DuelAccepted;
+        if (!await FundWagerAsync(duelRoom).ConfigureAwait(false))
+        {
+            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
+            return;
+        }
 
-        _ = Task.Run(duelRoom.RunDuelAsync);
+        try
+        {
+            player.TryRemoveMoney(duelConfig.EntranceFee);
+            target.TryRemoveMoney(duelConfig.EntranceFee);
+            await duelRoom.Requester.WarpToAsync(duelArea.FirstPlayerGate).ConfigureAwait(false);
+            await duelRoom.Opponent.WarpToAsync(duelArea.SecondPlayerGate).ConfigureAwait(false);
+            duelRoom.State = DuelState.DuelAccepted;
+
+            // The duel continues independently of the response packet's player persistence lock.
+            using (ExecutionContext.SuppressFlow())
+            {
+                _ = Task.Run(duelRoom.RunDuelAsync);
+            }
+        }
+        catch
+        {
+            await duelRoom.SettleBetsAsync(null, creditOnline: false).ConfigureAwait(false);
+            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
+            throw;
+        }
     }
 
     /// <summary>
@@ -280,6 +319,34 @@ public class DuelActions
         {
             duelRoom.Requester.Logger.LogError(ex, "Expiring the unanswered duel request of {player} failed.", duelRoom.Requester.Name);
         }
+    }
+
+    private static async ValueTask<bool> FundWagerAsync(DuelRoom duelRoom)
+    {
+        if (duelRoom.Wager is not { } wager)
+        {
+            return true;
+        }
+
+        var result = DuelBetRejection.TryAgain;
+        try
+        {
+            result = await wager.FundAsync(duelRoom.Requester, duelRoom.Opponent).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            duelRoom.Requester.Logger.LogWarning(ex, "Unable to fund the wager for duel room {Room}.", duelRoom.Index);
+        }
+
+        if (result == DuelBetRejection.None)
+        {
+            return true;
+        }
+
+        var message = result == DuelBetRejection.NotEnoughWCoins ? "DuelBetting_WagerCannotFund" : $"DuelBetting_{result}";
+        await duelRoom.Requester.ShowLocalizedBlueMessageAsync(message).ConfigureAwait(false);
+        await duelRoom.Opponent.ShowLocalizedBlueMessageAsync(message).ConfigureAwait(false);
+        return false;
     }
 
     private static async ValueTask<bool> CheckIfDuelCanBeStartedAsync(Player player, Player target)

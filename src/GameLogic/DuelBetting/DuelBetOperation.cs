@@ -21,4 +21,7 @@ internal enum DuelBetOperation : byte
 
     /// <summary>Joins the spectator area of a public match.</summary>
     Spectate,
+
+    /// <summary>Accepts or declines the wager offer shown to the invited duelist.</summary>
+    RespondToWager,
 }

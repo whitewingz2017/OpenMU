@@ -40,8 +40,9 @@ public class DuelRoomManager
     /// <param name="player2">The second player.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
     /// <param name="allowBetting">Whether the challenger elected public betting.</param>
+    /// <param name="wagerAmount">The WCoinC stake proposed for each fighter.</param>
     /// <returns>A <see cref="ValueTask"/> with a free <see cref="DuelRoom"/>.</returns>
-    public async ValueTask<DuelRoom?> GetFreeDuelRoomAsync(Player player1, Player player2, CancellationToken cancellationToken = default, bool allowBetting = false)
+    public async ValueTask<DuelRoom?> GetFreeDuelRoomAsync(Player player1, Player player2, CancellationToken cancellationToken = default, bool allowBetting = false, int wagerAmount = 0)
     {
         using var l = await this._lock.LockAsync(cancellationToken).ConfigureAwait(false);
         if (player1.DuelRoom is not null || player2.DuelRoom is not null)
@@ -56,7 +57,18 @@ public class DuelRoomManager
                 var area = this._configuration.DuelAreas.First(a => a.Index == i);
 
                 var room = new DuelRoom(area, player1, player2) { State = DuelState.DuelRequested, AllowBetting = allowBetting };
-                room.PublicCountdownSeconds = allowBetting ? DuelBettingFeaturePlugIn.GetSettings(player1.GameContext)?.BettingSeconds ?? 0 : 0;
+                var settings = allowBetting ? DuelBettingFeaturePlugIn.GetSettings(player1.GameContext) : null;
+                if (wagerAmount > 0)
+                {
+                    if (settings is null || wagerAmount < settings.WCoinLimit.Minimum || wagerAmount > settings.WCoinLimit.Maximum)
+                    {
+                        return null;
+                    }
+
+                    room.Wager = new(wagerAmount, settings);
+                }
+
+                room.PublicCountdownSeconds = settings?.BettingSeconds ?? 0;
                 this._duelRooms[i] = room;
                 player1.DuelRoom = room;
                 player2.DuelRoom = room;

@@ -27,4 +27,10 @@ internal sealed class DuelBetRequest
 
     /// <summary>Gets the observed player's name.</summary>
     public string? TargetName { get; init; }
+
+    /// <summary>Gets the wager offer being answered.</summary>
+    public Guid OfferId { get; init; }
+
+    /// <summary>Gets the opponent's explicit response to the wager terms.</summary>
+    public bool? Accepted { get; init; }
 }

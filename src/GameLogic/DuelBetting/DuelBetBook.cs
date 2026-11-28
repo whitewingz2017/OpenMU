@@ -24,7 +24,8 @@ public sealed class DuelBetBook
     /// <param name="opponent">The opponent's account.</param>
     /// <param name="closesAtUtc">The UTC betting deadline.</param>
     /// <param name="settings">The settings to capture.</param>
-    public DuelBetBook(Guid requester, Guid opponent, DateTime closesAtUtc, DuelBettingSettings settings)
+    /// <param name="wCoinMatch">Whether spectators stake WCoinC at fixed odds.</param>
+    public DuelBetBook(Guid requester, Guid opponent, DateTime closesAtUtc, DuelBettingSettings settings, bool wCoinMatch = false)
     {
         ArgumentNullException.ThrowIfNull(settings);
         if (requester == Guid.Empty || opponent == Guid.Empty || requester == opponent
@@ -36,7 +37,9 @@ public sealed class DuelBetBook
         this._requester = requester;
         this._opponent = opponent;
         this.ClosesAtUtc = closesAtUtc;
-        this._limits = settings.Limits.ToDictionary(pair => pair.Key, pair => (pair.Value.Minimum, pair.Value.Maximum));
+        this._limits = wCoinMatch
+            ? new() { [DuelBetCurrency.WCoinC] = (settings.WCoinLimit.Minimum, settings.WCoinLimit.Maximum) }
+            : settings.Limits.ToDictionary(pair => pair.Key, pair => (pair.Value.Minimum, pair.Value.Maximum));
         this._feePercent = settings.FeePercent;
         this._maximumPool = settings.MaximumPool;
         this._maximumTickets = settings.MaximumTicketsPerAccount;

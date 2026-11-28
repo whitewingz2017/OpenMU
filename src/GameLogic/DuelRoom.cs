@@ -201,6 +201,9 @@ public sealed class DuelRoom : AsyncDisposable
     /// <summary>Gets or sets a value indicating whether the challenger opted into public betting.</summary>
     internal bool AllowBetting { get; set; }
 
+    /// <summary>Gets or sets the terms of a WCoinC duel offered before acceptance.</summary>
+    internal DuelWager? Wager { get; set; }
+
     /// <summary>Gets or sets the public countdown presented on the invitation.</summary>
     internal int PublicCountdownSeconds { get; set; }
 
@@ -440,6 +443,32 @@ public sealed class DuelRoom : AsyncDisposable
         await this.DisposeAsyncCore().ConfigureAwait(false);
     }
 
+    /// <summary>Settles spectator bets and the fighters' wager, including when arena loading failed.</summary>
+    /// <param name="winner">The winner, or null to refund the stakes.</param>
+    /// <param name="creditOnline">Whether this flow can acquire another player's persistence lock to credit them.</param>
+    internal async ValueTask SettleBetsAsync(DuelBetSide? winner, bool creditOnline = true)
+    {
+        try
+        {
+            if (this.Betting is { } betting)
+            {
+                await betting.SettleAsync(winner).ConfigureAwait(false);
+            }
+            else if (this.Wager is { EscrowId: var id } wager && id != Guid.Empty)
+            {
+                var payouts = DuelBetSettlement.Calculate(wager.Stakes, winner, 0);
+                if (await DuelBetWallet.UpdateEscrowAsync(this.Requester.GameContext, id, wager.LeaseUntil, payouts).ConfigureAwait(false) && creditOnline)
+                {
+                    await DuelBetWallet.CreditOnlineAsync(this.Requester.GameContext, id, payouts).ConfigureAwait(false);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            this.Requester.Logger.LogError(ex, "Could not settle duel room {Room}; the escrow lease controls refunds.", this.Index);
+        }
+    }
+
     /// <inheritdoc />
     protected override async ValueTask DisposeAsyncCore()
     {
@@ -502,6 +531,11 @@ public sealed class DuelRoom : AsyncDisposable
         var lastAnnounced = -1;
         while (deadline - DateTime.UtcNow is { Ticks: > 0 } remaining)
         {
+            if (this.Wager is not null && this.Betting is { } activeBetting)
+            {
+                await activeBetting.RenewAsync().ConfigureAwait(false);
+            }
+
             var seconds = (int)Math.Ceiling(remaining.TotalSeconds);
             if (seconds != lastAnnounced && (seconds <= CombatCountdownSeconds || seconds % CombatCountdownSeconds == 0))
             {
@@ -524,7 +558,7 @@ public sealed class DuelRoom : AsyncDisposable
 
     private DateTime OpenBetting()
     {
-        var settings = DuelBettingFeaturePlugIn.GetSettings(this.Requester.GameContext);
+        var settings = this.Wager?.Settings ?? DuelBettingFeaturePlugIn.GetSettings(this.Requester.GameContext);
         var requester = this.Requester.Account?.GetId() ?? Guid.Empty;
         var opponent = this.Opponent.Account?.GetId() ?? Guid.Empty;
         if (!this.AllowBetting || settings is null || requester == Guid.Empty || opponent == Guid.Empty || requester == opponent)
@@ -533,7 +567,7 @@ public sealed class DuelRoom : AsyncDisposable
         }
 
         var deadline = DateTime.UtcNow.AddSeconds(this.PublicCountdownSeconds > 0 ? this.PublicCountdownSeconds : settings.BettingSeconds);
-        this.Betting = new DuelBetRoom(this, new DuelBetBook(requester, opponent, deadline, settings));
+        this.Betting = new DuelBetRoom(this, new DuelBetBook(requester, opponent, deadline, settings, this.Wager is not null));
         return deadline;
     }
 
@@ -551,23 +585,6 @@ public sealed class DuelRoom : AsyncDisposable
         catch (Exception ex)
         {
             this.Requester.Logger.LogWarning(ex, "Could not announce betting for duel {Room}", this.Index);
-        }
-    }
-
-    private async ValueTask SettleBetsAsync(DuelBetSide? winner)
-    {
-        if (this.Betting is not { } betting)
-        {
-            return;
-        }
-
-        try
-        {
-            await betting.SettleAsync(winner).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            this.Requester.Logger.LogError(ex, "Could not settle duel {Match}; its stakes become refundable when the lease expires.", betting.MatchId);
         }
     }
 

@@ -17,8 +17,10 @@ public interface IDuelBettingView : IViewPlugIn
     /// <param name="publicSeconds">The server's public countdown.</param>
     /// <param name="privateSeconds">The server's regular countdown.</param>
     /// <param name="firstTo">The server's winning score for new matches.</param>
+    /// <param name="wagerMinimum">The smallest allowed WCoinC wager.</param>
+    /// <param name="wagerMaximum">The largest allowed WCoinC wager.</param>
     /// <returns>The asynchronous completion.</returns>
-    ValueTask ShowAsync(uint requestId, bool enabled, string status, IReadOnlyList<DuelBetBoardEntry> duels, int publicSeconds = 0, int privateSeconds = 0, int firstTo = 0);
+    ValueTask ShowAsync(uint requestId, bool enabled, string status, IReadOnlyList<DuelBetBoardEntry> duels, int publicSeconds = 0, int privateSeconds = 0, int firstTo = 0, int wagerMinimum = 0, int wagerMaximum = 0);
 
     /// <summary>Provides presentation details for the following standard invitation packet.</summary>
     /// <param name="invitation">The incoming challenge settings.</param>
