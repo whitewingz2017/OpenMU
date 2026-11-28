@@ -1823,6 +1823,8 @@
 <data name="ItemAttributeRefresh_Name" xml:space="preserve"><value>Item Attributes: live update</value></data>
 <data name="ItemAttributeRefresh_Description" xml:space="preserve"><value>Gives worn items the base power-up attributes an administrator changes in the admin panel within a few seconds, without a restart and without taking the items off.</value></data>
   <data name="DailyRewards_ItemDurationHours" xml:space="preserve"><value>Item duration (hours, 0 = permanent)</value></data>
+  <data name="PvpBalance_Name" xml:space="preserve"><value>PvP Class Balance</value></data>
+  <data name="PvpBalance_Description" xml:space="preserve"><value>Adjusts the attack rating and direct damage used against players by each character class family.</value></data>
   <data name="DuelBetting_Name" xml:space="preserve"><value>Duel Betting</value></data>
   <data name="DuelBetting_Description" xml:space="preserve"><value>Allows challengers to open public pre-duel betting with Bless, Soul, and Life stakes from the Jewel Bank.</value></data>
   <data name="DuelBetting_ViewName" xml:space="preserve">

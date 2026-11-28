@@ -12,11 +12,12 @@ using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.DuelBetting;
 using MUnique.OpenMU.GameLogic.Views;
 using MUnique.OpenMU.GameServer.MessageHandler.Duel;
-using MUnique.OpenMU.Network.Packets.ClientToServer;
 using MUnique.OpenMU.GameServer.RemoteView.Duel;
 using MUnique.OpenMU.Interfaces;
+using MUnique.OpenMU.Network.Packets.ClientToServer;
 using MUnique.OpenMU.Persistence;
 using BasicModel = MUnique.OpenMU.Persistence.BasicModel;
+using DuelInvitationPacket = MUnique.OpenMU.Network.Packets.ServerToClient.DuelStartRequest;
 
 /// <summary>Checks exact pool settlement, remote betting and escrow claims.</summary>
 [TestFixture]
@@ -237,17 +238,22 @@ public class DuelBettingTests
         }
     }
 
-    /// <summary>The reserved opponent can accept while the challenger is outside their view.</summary>
-    [Test]
-    public async Task AcceptWaitsForBothClientsToLoadArenaAsync()
+    /// <summary>Both clients can answer the reserved challenger while outside their view.</summary>
+    /// <param name="windowsClient">Whether the reply serializes the challenger ID in big-endian order.</param>
+    /// <param name="accepted">Whether the opponent accepts the invitation.</param>
+    [TestCase(true, true)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(false, false)]
+    public async Task DuelReplyMatchesInvitationAsync(bool windowsClient, bool accepted)
     {
         var requester = await CreateBettorAsync().ConfigureAwait(false);
         var context = (GameContext)requester.GameContext;
         var opponent = await CreateBettorAsync(context).ConfigureAwait(false);
         requester.SelectedCharacter!.Name = "Alice";
         opponent.SelectedCharacter!.Name = "Bob";
-        requester.Id = 101;
-        opponent.Id = 102;
+        requester.Id = 0x0234;
+        opponent.Id = 0x0235;
         var map = requester.CurrentMap!;
         var area = new DuelArea
         {
@@ -263,16 +269,30 @@ public class DuelBettingTests
             ?? throw new InvalidOperationException("Could not allocate the test duel.");
         await opponent.RemoveObserverAsync(requester).ConfigureAwait(false);
         Assert.That(await opponent.GetObservingPlayerWithIdAsync(requester.Id).ConfigureAwait(false), Is.Null);
-        var packet = new byte[DuelStartResponse.Length];
-        _ = new DuelStartResponse(packet) { Response = true, PlayerId = requester.Id, PlayerName = "Different" };
+        var packet = CreateDuelReply(requester, windowsClient, accepted);
         var handler = new DuelStartResponseHandlerPlugIn();
-        await handler.HandlePacketAsync(opponent, packet).ConfigureAwait(false);
+        await handler.HandlePacketAsync(requester, packet).ConfigureAwait(false);
+        var wrongName = CreateDuelReply(requester, windowsClient, true);
+        _ = new DuelStartResponse(wrongName) { PlayerName = "Different" };
+        await handler.HandlePacketAsync(opponent, wrongName).ConfigureAwait(false);
+        var wrongId = CreateDuelReply(requester, windowsClient, true);
+        _ = new DuelStartResponse(wrongId) { PlayerId = opponent.Id };
+        await handler.HandlePacketAsync(opponent, wrongId).ConfigureAwait(false);
         Assert.That(room.State, Is.EqualTo(DuelState.DuelRequested));
 
-        _ = new DuelStartResponse(packet) { Response = true, PlayerId = requester.Id, PlayerName = requester.Name };
         await handler.HandlePacketAsync(opponent, packet).ConfigureAwait(false);
+        if (!accepted)
+        {
+            await handler.HandlePacketAsync(opponent, CreateDuelReply(requester, windowsClient, true)).ConfigureAwait(false);
+            Assert.That(room.State, Is.EqualTo(DuelState.DuelRefused));
+            Assert.That(requester.DuelRoom, Is.Null);
+            Assert.That(opponent.DuelRoom, Is.Null);
+            return;
+        }
+
         try
         {
+            await handler.HandlePacketAsync(opponent, packet).ConfigureAwait(false);
             Assert.That(room.State, Is.EqualTo(DuelState.DuelAccepted));
             Assert.That(requester.CurrentMap, Is.Null);
             Assert.That(opponent.CurrentMap, Is.Null);
@@ -391,6 +411,28 @@ public class DuelBettingTests
         Assert.That(offer.GetProperty("Public").GetBoolean(), Is.True);
         Assert.That(offer.GetProperty("Seconds").GetInt32(), Is.EqualTo(30));
         Assert.That(offer.GetProperty("FirstTo").GetInt32(), Is.EqualTo(10));
+    }
+
+    private static byte[] CreateDuelReply(Player requester, bool windowsClient, bool accepted)
+    {
+        const int invitationIdOffset = 4;
+        const int replyIdOffset = 5;
+        const int idLength = sizeof(ushort);
+        var invitation = new byte[DuelInvitationPacket.Length];
+        _ = new DuelInvitationPacket(invitation) { RequesterId = requester.Id, RequesterName = requester.Name };
+        var reply = new byte[DuelStartResponse.Length];
+        _ = new DuelStartResponse(reply) { Response = accepted };
+
+        // Both clients read the invitation ID as little-endian. Windows then writes it as big-endian.
+        var replyId = reply.AsSpan(replyIdOffset, idLength);
+        invitation.AsSpan(invitationIdOffset, idLength).CopyTo(replyId);
+        if (windowsClient)
+        {
+            replyId.Reverse();
+        }
+
+        invitation.AsSpan(invitationIdOffset + idLength).CopyTo(reply.AsSpan(replyIdOffset + idLength));
+        return reply;
     }
 
     private static async ValueTask<Player> CreateBettorAsync(IGameContext? context = null)

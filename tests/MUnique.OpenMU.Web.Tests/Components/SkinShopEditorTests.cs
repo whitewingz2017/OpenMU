@@ -61,6 +61,15 @@ public class SkinShopEditorTests
         Assert.That(settings.Items[4414].AuraColor, Is.EqualTo(SkinAuraColor.Gold));
         Assert.That(settings.Items[4416].AuraColor, Is.EqualTo(SkinAuraColor.Default));
         Assert.That(settings.AuraColors(definitions).Single(), Is.EqualTo(new[] { 4414, (int)SkinAuraColor.Gold }));
+        form.Find("#skin-rental-1-4414").Change("38");
+        form.Find("#skin-rental-3-4414").Change("0");
+        form.Find("#skin-rental-7-4414").Change("112");
+        Assert.That(settings.Items[4414].RentalOneDayPrice, Is.EqualTo(38));
+        Assert.That(settings.Items[4414].RentalThreeDaysPrice, Is.Zero);
+        Assert.That(settings.Items[4414].RentalSevenDaysPrice, Is.EqualTo(112));
+        Assert.That(settings.Items[4416].RentalOneDayPrice, Is.Null);
+        form.Find("#skin-rental-1-4414").Change("");
+        Assert.That(settings.Items[4414].RentalOneDayPrice, Is.Null);
         form.Find("#skin-price-4416").Change("250");
         form.Find("#skin-sale-4414").Change(false);
         Assert.That(form.FindAll("tbody tr input[id^=skin-sale-]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4416", "skin-sale-4414" }));

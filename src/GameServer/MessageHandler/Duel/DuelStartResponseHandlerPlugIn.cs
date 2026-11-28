@@ -4,6 +4,7 @@
 
 namespace MUnique.OpenMU.GameServer.MessageHandler.Duel;
 
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using MUnique.OpenMU.GameLogic;
@@ -40,6 +41,17 @@ internal class DuelStartResponseHandlerPlugIn : ISubPacketHandlerPlugIn
         }
 
         DuelStartResponse response = packet;
-        await this._action.HandleDuelResponseAsync(player, response.PlayerId, response.PlayerName, response.Response).ConfigureAwait(false);
+        var requesterId = response.PlayerId;
+        if (player.DuelRoom is { Requester.Id: var expectedId } && requesterId != expectedId)
+        {
+            // The Windows packet library writes this field big-endian. Android writes it little-endian.
+            var bigEndianId = BinaryPrimitives.ReverseEndianness(requesterId);
+            if (bigEndianId == expectedId)
+            {
+                requesterId = bigEndianId;
+            }
+        }
+
+        await this._action.HandleDuelResponseAsync(player, requesterId, response.PlayerName, response.Response).ConfigureAwait(false);
     }
 }

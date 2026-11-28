@@ -24,4 +24,16 @@ public sealed class SkinShopItemSettings
     /// <summary>Gets or sets the Goblin Points price. Zero means the skin can only be bought with WCoinC.</summary>
     [Range(0, int.MaxValue)]
     public int GoblinPrice { get; set; }
+
+    /// <summary>Gets or sets the one-day Goblin Points price. Null inherits the default and zero disables rental.</summary>
+    [Range(0, int.MaxValue)]
+    public int? RentalOneDayPrice { get; set; }
+
+    /// <summary>Gets or sets the three-day Goblin Points price. Null inherits the default and zero disables rental.</summary>
+    [Range(0, int.MaxValue)]
+    public int? RentalThreeDaysPrice { get; set; }
+
+    /// <summary>Gets or sets the seven-day Goblin Points price. Null inherits the default and zero disables rental.</summary>
+    [Range(0, int.MaxValue)]
+    public int? RentalSevenDaysPrice { get; set; }
 }

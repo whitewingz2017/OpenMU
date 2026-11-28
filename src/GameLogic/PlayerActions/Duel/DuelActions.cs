@@ -84,10 +84,25 @@ public class DuelActions
 
         // The invitation belongs to the reserved challenger, even if they moved out of sight.
         if (duelRoom != player.DuelRoom || duelRoom != target.DuelRoom || duelRoom.Opponent != player
-            || duelRoom.State != DuelState.DuelRequested || requesterId != target.Id
-            || !string.Equals(requesterName, target.Name, StringComparison.Ordinal))
+            || duelRoom.State != DuelState.DuelRequested)
         {
-            player.Logger.LogWarning($"Player {player.Name} sent duel response, but the duel contexts didn't match.");
+            player.Logger.LogWarning(
+                "Player {player} sent a duel response outside their pending invitation. Room state: {state}, invited opponent: {opponent}.",
+                player.Name,
+                duelRoom.State,
+                duelRoom.Opponent.Name);
+            return;
+        }
+
+        var nameMatches = string.Equals(requesterName, target.Name, StringComparison.Ordinal);
+        if (requesterId != target.Id || !nameMatches)
+        {
+            player.Logger.LogWarning(
+                "Player {player} sent a duel response with a mismatched challenger. Received ID: {requesterId}, expected ID: {expectedId}, name matches: {nameMatches}.",
+                player.Name,
+                requesterId,
+                target.Id,
+                nameMatches);
             return;
         }
 

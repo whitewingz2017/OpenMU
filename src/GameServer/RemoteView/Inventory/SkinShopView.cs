@@ -72,7 +72,14 @@ public sealed class SkinShopView : ISkinShopView
             .GroupBy(item => JsonSerializer.Serialize(item.Lines)).ToArray();
         var attributeIndices = attributePools.SelectMany((pool, index) => pool.Select(item => (item.Definition, Index: index)))
             .ToDictionary(item => item.Definition, item => item.Index);
-        var rentalsEnabled = player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn));
+        var rentalsEnabled = settings is not null && player.GameContext.PlugInManager.IsPlugInActive(typeof(ItemExpirationPlugIn));
+        var defaults = rentalsEnabled ? (
+            One: Math.Max(0, settings!.RentalOneDayPrice),
+            Three: Math.Max(0, settings.RentalThreeDaysPrice),
+            Seven: Math.Max(0, settings.RentalSevenDaysPrice)) : (One: 0, Three: 0, Seven: 0);
+        (List<int> DefaultItems, List<int[]> CustomQuotes) rentals = rentalsEnabled
+            ? BuildRentalCatalog(items, settings!, defaults, compactCatalog)
+            : ([], []);
         var offers = items.Select(d => new
         {
             ItemType = (d.Group * 512) + d.Number,
@@ -90,10 +97,11 @@ public sealed class SkinShopView : ISkinShopView
             Status = status,
             Balance = player.Account?.WCoinC ?? 0,
             GoblinBalance = player.Account?.GoblinPoints ?? 0,
-            RentalOneDayPrice = rentalsEnabled ? Math.Max(0, settings?.RentalOneDayPrice ?? 0) : 0,
-            RentalThreeDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalThreeDaysPrice ?? 0) : 0,
-            RentalSevenDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalSevenDaysPrice ?? 0) : 0,
-            RentableItems = items.Where(d => rentalsEnabled && settings is not null && (settings.RentalPrice(d, 1) > 0 || settings.RentalPrice(d, 3) > 0 || settings.RentalPrice(d, 7) > 0)).Select(d => (d.Group * 512) + d.Number),
+            RentalOneDayPrice = defaults.One,
+            RentalThreeDaysPrice = defaults.Three,
+            RentalSevenDaysPrice = defaults.Seven,
+            RentableItems = rentals.DefaultItems,
+            RentalQuotes = rentals.CustomQuotes,
             SkinAuraColors = settings?.AuraColors(player.GameContext.Configuration.Items).ToArray() ?? [],
             ExcellentEffectItems = settings?.ExcellentEffectItems(player.GameContext.Configuration.Items).ToArray() ?? [],
             Items = compactCatalog
@@ -103,6 +111,37 @@ public sealed class SkinShopView : ISkinShopView
             Pools = items.GroupBy(Pool).Select(group => new { Pool = group.Key, Bonuses = Array.Empty<object>() }),
             AttributePools = attributePools.Select(pool => pool.First().Lines),
         });
+    }
+
+    private static (List<int> DefaultItems, List<int[]> CustomQuotes) BuildRentalCatalog(
+        IEnumerable<ItemDefinition> items,
+        SkinShopSettings settings,
+        (int One, int Three, int Seven) defaults,
+        bool compactCatalog)
+    {
+        var defaultItems = new List<int>();
+        var customQuotes = new List<int[]>();
+        foreach (var definition in items)
+        {
+            var quote = (One: settings.RentalPrice(definition, 1), Three: settings.RentalPrice(definition, 3), Seven: settings.RentalPrice(definition, 7));
+            if (quote == (0, 0, 0))
+            {
+                continue;
+            }
+
+            var type = (definition.Group * 512) + definition.Number;
+            if (quote == defaults)
+            {
+                defaultItems.Add(type);
+            }
+            else if (compactCatalog)
+            {
+                // Older clients can still rent items with default prices from RentableItems.
+                customQuotes.Add([type, quote.One, quote.Three, quote.Seven]);
+            }
+        }
+
+        return (defaultItems, customQuotes);
     }
 
     private static bool IsDevilzMuWing(ItemDefinition definition)

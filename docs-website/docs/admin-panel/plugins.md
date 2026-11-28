@@ -90,6 +90,45 @@ documented separately:
 
 * [Server-side AI bots](../server-features/bots.md)
 
+### PvP class balance
+
+In **Configuration → Plugins → Feature Plugins**, enable **PvP Class Balance**
+and save its custom configuration to apply the preset. Under **Class Rates**,
+use **Create** to add a row with the base class number, attack rate percent,
+and damage percent.
+All promotions use the base class entry. Unlisted families and nonpositive
+percentages use `100%`. If multiple rows specify the same class, the first row
+takes precedence.
+
+Attack rate percent scales the **Attack rate (PvP)** shown in Combat Statistics
+and used when a character rolls to hit another player. Damage percent applies
+after defense, skill and event modifiers and before splitting damage between
+HP and shield (SD).
+
+The base class numbers in Season 6 are Dark Wizard (`0`), Dark Knight (`4`),
+Fairy Elf (`8`), Magic Gladiator (`12`), Dark Lord (`16`), Summoner (`20`), and
+Rage Fighter (`24`). A row with base class `4` and damage percent `95` reduces
+the direct PvP damage dealt by Dark Knights, Blade Knights, and Blade Masters
+by 5%. The same percentages apply in duels, open-world PvP, and events. A
+Dark Raven's direct damage uses its owner's damage percentage. Dragon Slasher's
+separate SD drain uses its skill setting. Damage against monsters, damage over
+time, and reflected damage are handled independently.
+
+Direct player-versus-player attacks subtract the defense-to-attack rate ratio
+from 100%, with a 3% hit chance floor. The floor keeps the hit chance from
+rising when increasing defense reaches an opponent's attack rate.
+
+The default profile for non-reset Season 6 sets Rage Fighter's attack rate to
+`120%`. The sample used level 400, master level 200, and maximum PvP attack and
+defense master skills. A Fist Master with 520 agility had 5,884 attack rating
+against a Blade Master with 550 agility and 6,073 defense rating. The profile
+raises this matchup's chance per strike from 3% to about 14%.
+
+To choose damage percentages, compare repeat matches at the level, reset
+count and gear tier players actually use. Record how often attacks land and
+how long it takes to deplete both SD and HP. Use [scripted test actors](../server-features/test-actors.md)
+to repeat attacks on a test server with the same builds.
+
 ## Game event publisher
 
 The *Game Event Publisher* plugin publishes notable events of the game to the

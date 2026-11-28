@@ -138,6 +138,20 @@ public class SkinShopAttributeCatalogTests
                 .Where(type => type is >= (12 * 512) + 400 and <= (12 * 512) + 504);
             Assert.That(wings, Is.EqualTo(compact ? Enumerable.Range((12 * 512) + 400, 105) : []));
             TestContext.Out.WriteLine($"Shop catalog including attributes (compact: {compact}): {payload.Length + 5} bytes.");
+            foreach (var item in settings.Items.Values)
+            {
+                item.RentalOneDayPrice = int.MaxValue;
+                item.RentalThreeDaysPrice = int.MaxValue;
+                item.RentalSevenDaysPrice = int.MaxValue;
+            }
+
+            var largeQuotes = SkinShopView.Serialize(player, 2, "Ready", true, compact);
+            Assert.That(largeQuotes.Length + 5, Is.LessThanOrEqualTo(ushort.MaxValue));
+            using var largeCatalog = JsonDocument.Parse(largeQuotes);
+            Assert.That(largeCatalog.RootElement.GetProperty("RentableItems").GetArrayLength(), Is.Zero);
+            Assert.That(largeCatalog.RootElement.GetProperty("RentalQuotes").GetArrayLength(),
+                Is.EqualTo(compact ? largeCatalog.RootElement.GetProperty("Items").GetArrayLength() : 0));
+            TestContext.Out.WriteLine($"Shop catalog with item rental quotes (compact: {compact}): {largeQuotes.Length + 5} bytes.");
         }
     }
 }

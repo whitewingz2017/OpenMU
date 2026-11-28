@@ -293,6 +293,39 @@ public class SkinShopTests
         Assert.That(item.ExpiresAtUtc, Is.InRange(start.AddDays(days), DateTime.UtcNow.AddDays(days)));
     }
 
+    /// <summary>One skin can override or disable a duration without changing other skins' prices.</summary>
+    [Test]
+    public async Task RentalUsesItemPriceAndRejectsDefaultQuoteAsync()
+    {
+        var player = await CreateRentalPlayerAsync().ConfigureAwait(false);
+        var settings = SkinShopFeaturePlugIn.GetSettings(player.GameContext)!;
+        var original = player.GameContext.Configuration.Items.Single();
+        var other = new BasicModel.ItemDefinition { Id = Guid.NewGuid(), Group = 8, Number = 101, Name = "Other Skin", ItemSlot = original.ItemSlot };
+        player.GameContext.Configuration.Items.Add(other);
+        settings.Items[4196] = new SkinShopItemSettings { RentalOneDayPrice = 40, RentalThreeDaysPrice = 0 };
+        Assert.That(settings.RentalPrice(original, 1), Is.EqualTo(40));
+        Assert.That(settings.RentalPrice(original, 3), Is.Zero);
+        Assert.That(settings.RentalPrice(original, 7), Is.EqualTo(125));
+        Assert.That(settings.RentalPrice(other, 1), Is.EqualTo(25));
+
+        using var compact = JsonDocument.Parse(SkinShopView.Serialize(player, 1, "Ready", true, compactCatalog: true));
+        Assert.That(compact.RootElement.GetProperty("RentalQuotes")[0].EnumerateArray().Select(v => v.GetInt32()),
+            Is.EqualTo(new[] { 4196, 40, 0, 125 }));
+        using var legacy = JsonDocument.Parse(SkinShopView.Serialize(player, 1, "Ready", true));
+        Assert.That(legacy.RootElement.GetProperty("RentableItems").EnumerateArray().Select(v => v.GetInt32()),
+            Is.EqualTo(new[] { 4197 }));
+        Assert.That(legacy.RootElement.GetProperty("RentalQuotes").GetArrayLength(), Is.Zero);
+
+        var actions = new SkinShopActions();
+        await actions.ExecuteAsync(player, 1, SkinShopActions.RentOneDayOperation, 4196, 0, 25).ConfigureAwait(false);
+        await actions.ExecuteAsync(player, 2, SkinShopActions.RentThreeDaysOperation, 4196, 0, 65).ConfigureAwait(false);
+        Assert.That(player.Account!.GoblinPoints, Is.EqualTo(500));
+        Assert.That(player.Inventory!.Items, Is.Empty);
+        await actions.ExecuteAsync(player, 3, SkinShopActions.RentOneDayOperation, 4196, 0, 40).ConfigureAwait(false);
+        Assert.That(player.Account.GoblinPoints, Is.EqualTo(460));
+        Assert.That(player.Inventory.Items.Single().Definition, Is.SameAs(original));
+    }
+
     /// <summary>Changed prices, unavailable skins and failed saves cannot charge rental points.</summary>
     [TestCase(true, false, 25)]
     [TestCase(false, true, 25)]

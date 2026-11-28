@@ -186,13 +186,20 @@ public sealed class SkinShopSettings
     /// <returns>The Goblin Points price, or zero when unavailable.</returns>
     public int RentalPrice(ItemDefinition definition, int days)
     {
+        SkinShopItemSettings? item = null;
         if (this.DisabledCategories?.Contains(Category(definition)) == true
-            || (this.Items?.TryGetValue((definition.Group * 512) + definition.Number, out var item) == true && item is not { Enabled: true }))
+            || (this.Items?.TryGetValue((definition.Group * 512) + definition.Number, out item) == true && item is not { Enabled: true }))
         {
             return 0;
         }
 
-        return Math.Max(0, days switch { 1 => this.RentalOneDayPrice, 3 => this.RentalThreeDaysPrice, 7 => this.RentalSevenDaysPrice, _ => 0 });
+        return Math.Max(0, days switch
+        {
+            1 => item?.RentalOneDayPrice ?? this.RentalOneDayPrice,
+            3 => item?.RentalThreeDaysPrice ?? this.RentalThreeDaysPrice,
+            7 => item?.RentalSevenDaysPrice ?? this.RentalSevenDaysPrice,
+            _ => 0,
+        });
     }
 
 }

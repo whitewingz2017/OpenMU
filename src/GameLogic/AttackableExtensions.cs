@@ -11,6 +11,7 @@ using MUnique.OpenMU.DataModel.Configuration.Items;
 using MUnique.OpenMU.GameLogic.Attributes;
 using MUnique.OpenMU.GameLogic.NPC;
 using MUnique.OpenMU.GameLogic.Pet;
+using MUnique.OpenMU.GameLogic.Pvp;
 using MUnique.OpenMU.GameLogic.Views.World;
 using MUnique.OpenMU.Pathfinding;
 
@@ -19,6 +20,7 @@ using MUnique.OpenMU.Pathfinding;
 /// </summary>
 public static class AttackableExtensions
 {
+    private const float MinimumHitChance = 0.03f;
     private const short ExplosionMagicEffectNumber = 75;   // 0x4B
     private const short StunnedMagicEffectNumber = 61;     // 0x3D
 
@@ -70,12 +72,13 @@ public static class AttackableExtensions
     /// </returns>
     public static async ValueTask<HitInfo> CalculateDamageAsync(this IAttacker attacker, IAttackable defender, SkillEntry? skill, bool isCombo, double damageFactor = 1.0)
     {
-        if (!attacker.IsAttackSuccessfulTo(defender))
+        Player? attackerPlayer = attacker is AttackerSurrogate surrogate ? surrogate.Owner : (attacker is Player player ? player : null);
+        var classRate = attackerPlayer is not null && defender is Player ? PvpBalanceFeaturePlugIn.GetClassRate(attackerPlayer) : null;
+        if (!Rand.NextRandomBool(attacker.GetHitChanceTo(defender, classRate)))
         {
             return new HitInfo(0, 0, DamageAttributes.Undefined);
         }
 
-        Player? attackerPlayer = attacker is AttackerSurrogate surrogate ? surrogate.Owner : (attacker is Player player ? player : null);
         bool isPvp = attackerPlayer is not null && defender is Player;
         bool isClassicPvp = isPvp && defender.Attributes[Stats.MaximumShield] == 0;
         bool isClassicPvpDuel = isClassicPvp && attackerPlayer!.DuelRoom?.Opponent == defender;
@@ -309,7 +312,8 @@ public static class AttackableExtensions
             }
         }
 
-        return defender.GetHitInfo((uint)dmg, attributes, attacker, (uint)manaToll, skill);
+        var finalDamage = classRate?.ScaleDamage(dmg) ?? dmg;
+        return defender.GetHitInfo((uint)finalDamage, attributes, attacker, (uint)manaToll, skill);
     }
 
     /// <summary>
@@ -747,37 +751,29 @@ public static class AttackableExtensions
     internal static double ResistedDamageChance(float chance, float resistance)
         => resistance > 0 ? Math.Clamp(chance, 0, 1) * (1d - Math.Min(resistance, 1)) : chance;
 
+    /// <summary>Calculates the PvP hit chance with a floor that also applies before defense reaches attack rate.</summary>
+    /// <param name="attackRate">The attacker's PvP attack rate.</param>
+    /// <param name="defenseRate">The defender's PvP defense rate.</param>
+    /// <returns>The chance to land the attack.</returns>
+    internal static float GetPvpHitChance(float attackRate, float defenseRate)
+        => attackRate > 0 && defenseRate < attackRate
+            ? Math.Clamp(1 - (defenseRate / attackRate), MinimumHitChance, 1)
+            : MinimumHitChance;
+
     private static bool IsInPublicDuelCountdown(Player? player)
         => player?.DuelRoom is { Betting: not null, State: DuelState.DuelAccepted } room && room.IsDuelist(player);
 
-    private static bool IsAttackSuccessfulTo(this IAttacker attacker, IAttackable defender)
+    private static float GetHitChanceTo(this IAttacker attacker, IAttackable defender, PvpClassRate? classRate)
     {
-        var hitChance = attacker.GetHitChanceTo(defender);
-        return Rand.NextRandomBool(hitChance);
-    }
-
-    private static float GetHitChanceTo(this IAttacker attacker, IAttackable defender)
-    {
-        float defenseRate;
-        float attackRate;
         if (defender is Player && attacker is Player)
         {
-            defenseRate = defender.Attributes[Stats.DefenseRatePvp];
-            attackRate = attacker.Attributes[Stats.AttackRatePvp];
-        }
-        else
-        {
-            defenseRate = defender.GetDefenseRatePvm();
-            attackRate = attacker.Attributes[Stats.AttackRatePvm];
+            var pvpAttackRate = attacker.Attributes[Stats.AttackRatePvp];
+            return GetPvpHitChance(classRate?.ScaleAttackRate(pvpAttackRate) ?? pvpAttackRate, defender.Attributes[Stats.DefenseRatePvp]);
         }
 
-        float hitChance = 0.03f;
-        if (defenseRate < attackRate)
-        {
-            hitChance = 1.0f - (defenseRate / attackRate);
-        }
-
-        return hitChance;
+        var defenseRate = defender.GetDefenseRatePvm();
+        var attackRate = attacker.Attributes[Stats.AttackRatePvm];
+        return defenseRate < attackRate ? 1 - (defenseRate / attackRate) : MinimumHitChance;
     }
 
     private static AttributeDefinition GetDefenseAttribute(this IAttackable defender, IAttacker attacker)

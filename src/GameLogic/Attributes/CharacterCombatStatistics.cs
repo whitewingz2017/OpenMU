@@ -6,6 +6,7 @@ namespace MUnique.OpenMU.GameLogic.Attributes;
 
 using MUnique.OpenMU.AttributeSystem;
 using MUnique.OpenMU.GameLogic.ItemBonuses;
+using MUnique.OpenMU.GameLogic.Pvp;
 
 /// <summary>Reads the live combat totals used by the server, including equipment, skins and buffs.</summary>
 public static class CharacterCombatStatistics
@@ -53,7 +54,10 @@ public static class CharacterCombatStatistics
             return new Dictionary<string, float>();
         }
 
-        return Rows.ToDictionary(row => row.Label, row => attributes[row.Attribute] * row.Factor);
+        var classRate = PvpBalanceFeaturePlugIn.GetClassRate(player);
+        return Rows.ToDictionary(row => row.Label, row => (row.Attribute == Stats.AttackRatePvp && classRate is not null
+            ? classRate.ScaleAttackRate(attributes[row.Attribute])
+            : attributes[row.Attribute]) * row.Factor);
     }
 
     /// <summary>Reports the live passive contributions of learned master skills alongside the totals.</summary>

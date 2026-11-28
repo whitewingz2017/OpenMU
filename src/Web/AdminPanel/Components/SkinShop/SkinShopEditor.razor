@@ -48,7 +48,9 @@
                         {
                             <th>@Text("AuraColor")</th>
                         }
-                        <th>@Text("Price")</th><th>@Text("GoblinPrice")</th></tr></thead>
+                        <th>@Text("Price")</th><th>@Text("GoblinPrice")</th>
+                        <th>@Text("RentalOneDay")</th><th>@Text("RentalThreeDays")</th><th>@Text("RentalSevenDays")</th>
+                    </tr></thead>
                     <tbody>
                         @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderByDescending(d => this.Item.Items[(d.Group * 512) + d.Number].Enabled).ThenBy(d => d.Number))
                         {
@@ -77,6 +79,21 @@
                                 <td>
                                     <InputNumber id="@($"skin-goblin-price-{type}")" class="form-control" @bind-Value="sale.GoblinPrice" min="0" max="@int.MaxValue" aria-label="@(Text("GoblinPrice") + " " + definition.Name.ValueInNeutralLanguage)" />
                                     <ValidationMessage For="@(() => sale.GoblinPrice)" />
+                                </td>
+                                <td>
+                                    <InputNumber id="@($"skin-rental-1-{type}")" class="form-control" min="0" placeholder="@this.Item.RentalOneDayPrice"
+                                                 @bind-Value="sale.RentalOneDayPrice" aria-label="@(Text("RentalOneDay") + " " + definition.Name.ValueInNeutralLanguage)" />
+                                    <ValidationMessage For="@(() => sale.RentalOneDayPrice)" />
+                                </td>
+                                <td>
+                                    <InputNumber id="@($"skin-rental-3-{type}")" class="form-control" min="0" placeholder="@this.Item.RentalThreeDaysPrice"
+                                                 @bind-Value="sale.RentalThreeDaysPrice" aria-label="@(Text("RentalThreeDays") + " " + definition.Name.ValueInNeutralLanguage)" />
+                                    <ValidationMessage For="@(() => sale.RentalThreeDaysPrice)" />
+                                </td>
+                                <td>
+                                    <InputNumber id="@($"skin-rental-7-{type}")" class="form-control" min="0" placeholder="@this.Item.RentalSevenDaysPrice"
+                                                 @bind-Value="sale.RentalSevenDaysPrice" aria-label="@(Text("RentalSevenDays") + " " + definition.Name.ValueInNeutralLanguage)" />
+                                    <ValidationMessage For="@(() => sale.RentalSevenDaysPrice)" />
                                 </td>
                             </tr>
                         }
