@@ -66,6 +66,9 @@ public sealed class DuelRoom : AsyncDisposable
     /// <summary>The seconds of the countdown before combat starts, when the duel takes no bets.</summary>
     internal const int CombatCountdownSeconds = 5;
 
+    private static readonly TimeSpan ArenaLoadTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan ArenaLoadPollInterval = TimeSpan.FromMilliseconds(100);
+
     private readonly AsyncLock _spectatorLock = new();
 
     private CancellationTokenSource? _cts = new();
@@ -258,18 +261,7 @@ public sealed class DuelRoom : AsyncDisposable
         {
             var cancellationToken = this._cts?.Token ?? default;
 
-            // We first wait until both players are on the map
-            while (this.Requester.Id == default || this.Opponent.Id == default)
-            {
-                await Task.Delay(500, cancellationToken).ConfigureAwait(false);
-            }
-
-            if (this.Requester.CurrentMap?.Definition != this.Area.FirstPlayerGate?.Map
-                || this.Opponent.CurrentMap?.Definition != this.Area.SecondPlayerGate?.Map)
-            {
-                throw new InvalidOperationException("Duel cannot start when any of the players left the duel map");
-            }
-
+            await this.WaitForArenaAsync(cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             this.State = DuelState.DuelAccepted;
 
@@ -476,6 +468,27 @@ public sealed class DuelRoom : AsyncDisposable
         cts.Dispose();
 
         await base.DisposeAsyncCore().ConfigureAwait(false);
+    }
+
+    private static bool IsInArena(Player player, ExitGate? gate)
+        => player.Id != 0 && player.CurrentMap is { } map && map.Definition == gate?.Map
+            && player.PlayerState.CurrentState == PlayerState.EnteredWorld;
+
+    private async ValueTask WaitForArenaAsync(CancellationToken cancellationToken)
+    {
+        var elapsed = System.Diagnostics.Stopwatch.StartNew();
+        while (!IsInArena(this.Requester, this.Area.FirstPlayerGate) || !IsInArena(this.Opponent, this.Area.SecondPlayerGate))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (elapsed.Elapsed >= ArenaLoadTimeout
+                || (this.Requester.CurrentMap is { } requesterMap && requesterMap.Definition != this.Area.FirstPlayerGate?.Map)
+                || (this.Opponent.CurrentMap is { } opponentMap && opponentMap.Definition != this.Area.SecondPlayerGate?.Map))
+            {
+                throw new InvalidOperationException("Both duelists must finish loading the arena before the countdown.");
+            }
+
+            await Task.Delay(ArenaLoadPollInterval, cancellationToken).ConfigureAwait(false);
+        }
     }
 
     private async ValueTask CountDownAsync(CancellationToken cancellationToken)

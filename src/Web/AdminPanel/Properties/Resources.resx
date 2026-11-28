@@ -2619,4 +2619,5 @@
   <data name="SkinShopRentalOneDay" xml:space="preserve"><value>1 day (Goblin Points)</value></data>
   <data name="SkinShopRentalThreeDays" xml:space="preserve"><value>3 days (Goblin Points)</value></data>
   <data name="SkinShopRentalSevenDays" xml:space="preserve"><value>7 days (Goblin Points)</value></data>
+  <data name="SkinShopAuraColor" xml:space="preserve"><value>Aura color</value></data>
 </root>

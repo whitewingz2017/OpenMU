@@ -94,6 +94,7 @@ public sealed class SkinShopView : ISkinShopView
             RentalThreeDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalThreeDaysPrice ?? 0) : 0,
             RentalSevenDaysPrice = rentalsEnabled ? Math.Max(0, settings?.RentalSevenDaysPrice ?? 0) : 0,
             RentableItems = items.Where(d => rentalsEnabled && settings is not null && (settings.RentalPrice(d, 1) > 0 || settings.RentalPrice(d, 3) > 0 || settings.RentalPrice(d, 7) > 0)).Select(d => (d.Group * 512) + d.Number),
+            SkinAuraColors = settings?.AuraColors(player.GameContext.Configuration.Items).ToArray() ?? [],
             ExcellentEffectItems = settings?.ExcellentEffectItems(player.GameContext.Configuration.Items).ToArray() ?? [],
             Items = compactCatalog
                 ? (object)offers.Select(offer => new object?[] { offer.ItemType, offer.Name, offer.Part, offer.Price,

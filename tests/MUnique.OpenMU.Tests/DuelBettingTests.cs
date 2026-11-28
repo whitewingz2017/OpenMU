@@ -5,11 +5,14 @@
 namespace MUnique.OpenMU.Tests;
 
 using System.Text.Json;
+using System.Threading;
 using Moq;
 using MUnique.OpenMU.DataModel.Configuration;
 using MUnique.OpenMU.GameLogic;
 using MUnique.OpenMU.GameLogic.DuelBetting;
 using MUnique.OpenMU.GameLogic.Views;
+using MUnique.OpenMU.GameServer.MessageHandler.Duel;
+using MUnique.OpenMU.Network.Packets.ClientToServer;
 using MUnique.OpenMU.GameServer.RemoteView.Duel;
 using MUnique.OpenMU.Interfaces;
 using MUnique.OpenMU.Persistence;
@@ -231,6 +234,68 @@ public class DuelBettingTests
         {
             await room.CancelDuelAsync().ConfigureAwait(false);
             await run.ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>The reserved opponent can accept while the challenger is outside their view.</summary>
+    [Test]
+    public async Task AcceptWaitsForBothClientsToLoadArenaAsync()
+    {
+        var requester = await CreateBettorAsync().ConfigureAwait(false);
+        var context = (GameContext)requester.GameContext;
+        var opponent = await CreateBettorAsync(context).ConfigureAwait(false);
+        requester.SelectedCharacter!.Name = "Alice";
+        opponent.SelectedCharacter!.Name = "Bob";
+        requester.Id = 101;
+        opponent.Id = 102;
+        var map = requester.CurrentMap!;
+        var area = new DuelArea
+        {
+            FirstPlayerGate = new ExitGate { Map = map.Definition },
+            SecondPlayerGate = new ExitGate { Map = map.Definition },
+        };
+        var config = new Mock<DuelConfiguration>();
+        config.SetupGet(value => value.DuelAreas).Returns([area]);
+        context.Configuration.DuelConfiguration = config.Object;
+        context.DuelRoomManager = new DuelRoomManager(config.Object);
+        context.FeaturePlugIns.AddPlugIn(new DuelBettingFeaturePlugIn { Configuration = new DuelBettingSettings { BettingSeconds = 5 } }, true);
+        var room = await context.DuelRoomManager.GetFreeDuelRoomAsync(requester, opponent, allowBetting: true).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("Could not allocate the test duel.");
+        await opponent.RemoveObserverAsync(requester).ConfigureAwait(false);
+        Assert.That(await opponent.GetObservingPlayerWithIdAsync(requester.Id).ConfigureAwait(false), Is.Null);
+        var packet = new byte[DuelStartResponse.Length];
+        _ = new DuelStartResponse(packet) { Response = true, PlayerId = requester.Id, PlayerName = "Different" };
+        var handler = new DuelStartResponseHandlerPlugIn();
+        await handler.HandlePacketAsync(opponent, packet).ConfigureAwait(false);
+        Assert.That(room.State, Is.EqualTo(DuelState.DuelRequested));
+
+        _ = new DuelStartResponse(packet) { Response = true, PlayerId = requester.Id, PlayerName = requester.Name };
+        await handler.HandlePacketAsync(opponent, packet).ConfigureAwait(false);
+        try
+        {
+            Assert.That(room.State, Is.EqualTo(DuelState.DuelAccepted));
+            Assert.That(requester.CurrentMap, Is.Null);
+            Assert.That(opponent.CurrentMap, Is.Null);
+            await requester.ClientReadyAfterMapChangeAsync().ConfigureAwait(false);
+            Assert.That(room.Betting, Is.Null);
+            await opponent.ClientReadyAfterMapChangeAsync().ConfigureAwait(false);
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            while (room.Betting is null)
+            {
+                await Task.Delay(20, timeout.Token).ConfigureAwait(false);
+            }
+
+            Assert.That(room.CanTakeBets, Is.True);
+            while (room.State == DuelState.DuelAccepted)
+            {
+                await Task.Delay(20, timeout.Token).ConfigureAwait(false);
+            }
+
+            Assert.That(room.State, Is.EqualTo(DuelState.DuelStarted));
+        }
+        finally
+        {
+            await room.CancelDuelAsync().ConfigureAwait(false);
         }
     }
 

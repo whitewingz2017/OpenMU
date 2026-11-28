@@ -32,11 +32,13 @@ public sealed class CosmeticArmorView : ICosmeticArmorView
         // The worn items' attributes stay out of the statistics' values and show beside them.
         var statistics = CharacterCombatStatistics.Create(this._player);
         var bonuses = GameLogic.ItemBonuses.ItemBonusStatistics.Apply(this._player, statistics);
+        var skinSettings = SkinShopFeaturePlugIn.GetSettings(this._player.GameContext);
         var data = JsonSerializer.SerializeToUtf8Bytes(new
         {
             RequestId = requestId,
             Status = status,
-            ExcellentEffectItems = SkinShopFeaturePlugIn.GetSettings(this._player.GameContext)?
+            SkinAuraColors = skinSettings?.AuraColors(this._player.GameContext.Configuration.Items).ToArray() ?? [],
+            ExcellentEffectItems = skinSettings?
                 .ExcellentEffectItems(this._player.GameContext.Configuration.Items).ToArray() ?? [],
             Statistics = statistics,
             Bonuses = bonuses.Concat(CharacterCombatStatistics.MasterBonuses(this._player)),

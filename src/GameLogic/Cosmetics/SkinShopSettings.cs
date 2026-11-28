@@ -96,6 +96,23 @@ public sealed class SkinShopSettings
             .Select(definition => (definition.Group * 512) + definition.Number)
             .Where(type => this.Items?.TryGetValue(type, out var item) == true && item is { ExcellentEffect: true });
 
+    /// <summary>Gets the explicitly configured visual aura colors for full sets.</summary>
+    /// <param name="definitions">The configured item definitions.</param>
+    /// <returns>Item types paired with their client palette values.</returns>
+    public IEnumerable<int[]> AuraColors(IEnumerable<ItemDefinition> definitions)
+    {
+        foreach (var definition in definitions.Where(d => Category(d) == SkinShopCategory.Sets
+            && CosmeticArmorRules.GetSlot(d) == CosmeticArmorRules.FirstSlot + 1))
+        {
+            var type = (definition.Group * 512) + definition.Number;
+            if (this.Items?.TryGetValue(type, out var item) == true && item is not null
+                && item.AuraColor != SkinAuraColor.Default && Enum.IsDefined(item.AuraColor))
+            {
+                yield return [type, (int)item.AuraColor];
+            }
+        }
+    }
+
     /// <summary>Gets the configured default price for a category.</summary>
     /// <param name="category">The skin category.</param>
     /// <returns>The category price, or zero if unknown.</returns>

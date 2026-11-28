@@ -57,6 +57,10 @@ public class SkinShopEditorTests
         form.Find("#skin-excellent-effect-4414").Change(true);
         Assert.That(settings.Items[4414].ExcellentEffect, Is.True);
         Assert.That(settings.Items[4416].ExcellentEffect, Is.False);
+        form.Find("#skin-aura-4414").Change("Gold");
+        Assert.That(settings.Items[4414].AuraColor, Is.EqualTo(SkinAuraColor.Gold));
+        Assert.That(settings.Items[4416].AuraColor, Is.EqualTo(SkinAuraColor.Default));
+        Assert.That(settings.AuraColors(definitions).Single(), Is.EqualTo(new[] { 4414, (int)SkinAuraColor.Gold }));
         form.Find("#skin-price-4416").Change("250");
         form.Find("#skin-sale-4414").Change(false);
         Assert.That(form.FindAll("tbody tr input[id^=skin-sale-]").Select(input => input.Id), Is.EqualTo(new[] { "skin-sale-4416", "skin-sale-4414" }));

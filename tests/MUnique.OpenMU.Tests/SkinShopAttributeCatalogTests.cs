@@ -34,12 +34,14 @@ public class SkinShopAttributeCatalogTests
             slot.ItemSlots.Add(241);
             configuration.Items.Add(new BasicModel.ItemDefinition { Group = 8, Number = 320, ItemSlot = slot });
             var settings = new SkinShopSettings();
-            settings.Items[(8 * 512) + 320] = new SkinShopItemSettings { Enabled = false, ExcellentEffect = true };
+            settings.Items[(8 * 512) + 320] = new SkinShopItemSettings { Enabled = false, ExcellentEffect = true, AuraColor = SkinAuraColor.Gold };
             player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);
             await new CosmeticArmorView(player).ShowAsync(1, "Ready").ConfigureAwait(false);
             using var json = JsonDocument.Parse(output.ToArray().AsMemory(5));
             Assert.That(json.RootElement.GetProperty("ExcellentEffectItems").EnumerateArray().Select(item => item.GetInt32()), Is.EqualTo(new[] { (8 * 512) + 320 }));
             Assert.That(json.RootElement.GetProperty("Skins").GetArrayLength(), Is.Zero);
+            Assert.That(json.RootElement.GetProperty("SkinAuraColors")[0].EnumerateArray().Select(field => field.GetInt32()),
+                Is.EqualTo(new[] { (8 * 512) + 320, (int)SkinAuraColor.Gold }));
         }
     }
 
@@ -118,7 +120,7 @@ public class SkinShopAttributeCatalogTests
             var settings = new SkinShopSettings();
             foreach (var definition in configuration.Items.Where(FenrirMountRules.IsShopItem))
             {
-                settings.Items[(definition.Group * 512) + definition.Number] = new SkinShopItemSettings { ExcellentEffect = true };
+                settings.Items[(definition.Group * 512) + definition.Number] = new SkinShopItemSettings { ExcellentEffect = true, AuraColor = SkinAuraColor.Blue };
             }
 
             player.GameContext.FeaturePlugIns.AddPlugIn(new SkinShopFeaturePlugIn { Configuration = settings }, true);

@@ -43,7 +43,12 @@
             </label>
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("ExcellentEffect")</th><th>@Text("Price")</th><th>@Text("GoblinPrice")</th></tr></thead>
+                    <thead><tr><th>@Text("Sell")</th><th>@Text("Item")</th><th>@Text("ExcellentEffect")</th>
+                        @if (category == SkinShopCategory.Sets)
+                        {
+                            <th>@Text("AuraColor")</th>
+                        }
+                        <th>@Text("Price")</th><th>@Text("GoblinPrice")</th></tr></thead>
                     <tbody>
                         @foreach (var definition in this.Definitions.Where(d => FenrirMountRules.IsShopItem(d) && SkinShopSettings.Category(d) == category).OrderByDescending(d => this.Item.Items[(d.Group * 512) + d.Number].Enabled).ThenBy(d => d.Number))
                         {
@@ -53,6 +58,18 @@
                                 <td><InputCheckbox id="@($"skin-sale-{type}")" class="form-check-input" @bind-Value="sale.Enabled" aria-label="@(Text("Sell") + " " + definition.Name.ValueInNeutralLanguage)" /></td>
                                 <td><label for="@($"skin-sale-{type}")">@definition.Name.ValueInNeutralLanguage</label> <small class="text-muted">(@definition.Group:@definition.Number)</small></td>
                                 <td><InputCheckbox id="@($"skin-excellent-effect-{type}")" class="form-check-input" @bind-Value="sale.ExcellentEffect" aria-label="@(Text("ExcellentEffect") + " " + definition.Name.ValueInNeutralLanguage)" /></td>
+                                @if (category == SkinShopCategory.Sets)
+                                {
+                                    <td>
+                                        <InputSelect id="@($"skin-aura-{type}")" class="form-select" @bind-Value="sale.AuraColor"
+                                                     aria-label="@(Text("AuraColor") + " " + definition.Name.ValueInNeutralLanguage)">
+                                            @foreach (var color in Enum.GetValues<SkinAuraColor>().OrderBy(color => (int)color))
+                                            {
+                                                <option value="@color">@color</option>
+                                            }
+                                        </InputSelect>
+                                    </td>
+                                }
                                 <td>
                                     <InputNumber id="@($"skin-price-{type}")" class="form-control" @bind-Value="sale.Price" min="0" max="@int.MaxValue" aria-label="@(Text("Price") + " " + definition.Name.ValueInNeutralLanguage)" />
                                     <ValidationMessage For="@(() => sale.Price)" />

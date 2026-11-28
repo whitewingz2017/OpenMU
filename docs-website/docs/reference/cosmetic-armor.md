@@ -354,3 +354,11 @@ deadline atomically. The timer continues offline. Expired rentals are removed
 from the bag, Skin Inventory, or cosmetic equipment, including their bonuses
 and appearance. Timed items cannot be traded. Deploy the updated server and
 Windows or mobile client together.
+
+## Set aura colors
+
+Open **Game Configuration > Skin Shop > Sets**, choose the **Aura color** for a
+custom set, and save. **Default** retains the original violet aura on Armor
+42–47 and Armor 52. **Off** disables a set's aura. The nine colors are available
+for every custom set, regardless of its sale availability. Players can refresh
+Skin Shop or reconnect to load changes.

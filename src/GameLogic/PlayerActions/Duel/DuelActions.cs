@@ -65,32 +65,13 @@ public class DuelActions
     }
 
     /// <summary>
-    /// Cancels the duel request which the player got, because the player's answer couldn't be handled,
-    /// so that neither player stays bound to a duel which never starts.
-    /// </summary>
-    /// <param name="player">The player who answered the request.</param>
-    /// <returns>A <see cref="ValueTask"/>.</returns>
-    public async ValueTask CancelUnhandledResponseAsync(Player player)
-    {
-        if (player.DuelRoom is not { } duelRoom || duelRoom.Opponent != player)
-        {
-            return;
-        }
-
-        using var l = await duelRoom.Lock.LockAsync().ConfigureAwait(false);
-        if (player.DuelRoom == duelRoom && duelRoom.State == DuelState.DuelRequested)
-        {
-            await duelRoom.ResetAndDisposeAsync(DuelStartResult.FailedByError).ConfigureAwait(false);
-        }
-    }
-
-    /// <summary>
     /// Handles the duel response.
     /// </summary>
     /// <param name="player">The player which responds to the request.</param>
-    /// <param name="target">The target, which is the requester of the duel.</param>
+    /// <param name="requesterId">The challenger’s map ID sent with the invitation.</param>
+    /// <param name="requesterName">The challenger’s character name sent with the invitation.</param>
     /// <param name="accepted">If set to <c>true</c> the duel request was accepted by the player.</param>
-    public async ValueTask HandleDuelResponseAsync(Player player, Player target, bool accepted)
+    public async ValueTask HandleDuelResponseAsync(Player player, ushort requesterId, string requesterName, bool accepted)
     {
         if (player.DuelRoom is not { } duelRoom)
         {
@@ -99,8 +80,12 @@ public class DuelActions
         }
 
         using var l = await duelRoom.Lock.LockAsync().ConfigureAwait(false);
-        if (duelRoom != player.DuelRoom || duelRoom != target.DuelRoom || duelRoom.Requester != target
-            || duelRoom.Opponent != player || duelRoom.State != DuelState.DuelRequested)
+        var target = duelRoom.Requester;
+
+        // The invitation belongs to the reserved challenger, even if they moved out of sight.
+        if (duelRoom != player.DuelRoom || duelRoom != target.DuelRoom || duelRoom.Opponent != player
+            || duelRoom.State != DuelState.DuelRequested || requesterId != target.Id
+            || !string.Equals(requesterName, target.Name, StringComparison.Ordinal))
         {
             player.Logger.LogWarning($"Player {player.Name} sent duel response, but the duel contexts didn't match.");
             return;
@@ -140,14 +125,11 @@ public class DuelActions
             return;
         }
 
-        // we risk that the money is not sufficient anymore,
-        // but we don't care anymore if it fails.
         player.TryRemoveMoney(duelConfig.EntranceFee);
         target.TryRemoveMoney(duelConfig.EntranceFee);
-        duelRoom.State = DuelState.DuelAccepted;
-
         await duelRoom.Requester.WarpToAsync(duelArea.FirstPlayerGate).ConfigureAwait(false);
         await duelRoom.Opponent.WarpToAsync(duelArea.SecondPlayerGate).ConfigureAwait(false);
+        duelRoom.State = DuelState.DuelAccepted;
 
         _ = Task.Run(duelRoom.RunDuelAsync);
     }

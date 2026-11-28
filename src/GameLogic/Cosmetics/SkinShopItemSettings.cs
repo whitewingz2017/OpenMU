@@ -13,6 +13,10 @@ public sealed class SkinShopItemSettings
     /// <summary>Gets or sets a value indicating whether every copy displays the excellent effect without changing its options.</summary>
     public bool ExcellentEffect { get; set; }
 
+    /// <summary>Gets or sets the aura on every copy of this full set.</summary>
+    [EnumDataType(typeof(SkinAuraColor))]
+    public SkinAuraColor AuraColor { get; set; } = SkinAuraColor.Default;
+
     /// <summary>Gets or sets the WCoinC price. Zero makes the skin preview only.</summary>
     [Range(0, int.MaxValue)]
     public int Price { get; set; } = 100;

@@ -1889,4 +1889,5 @@
   <data name="SkinShopExcellentEffectHint" xml:space="preserve"><value>卓越特效仅改变该皮肤所有物品的外观，不增加卓越选项或属性。保存后请刷新皮肤商店或重新登录以查看更改。</value></data>
   <data name="DailyRewardsDurationHint" xml:space="preserve"><value>0 = 永久；24 = 1天。从领取时开始计时，离线期间仍计时。限时奖励需要启用物品过期插件。</value></data>
   <data name="DailyRewardsDurationSummary" xml:space="preserve"><value>{0}小时</value></data>
+  <data name="SkinShopAuraColor" xml:space="preserve"><value>光环颜色</value></data>
 </root>
